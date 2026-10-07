@@ -8,7 +8,7 @@ import * as auth from './auth.js';
 import * as engine from './engine.js';
 import { buildToday, buildPlan, buildLedger } from './state.js';
 import { vapidKeys, saveSubscription, removeSubscription, sendPush, subscriptionCount } from './push.js';
-import { chat, coachHistory, generateBrief, aiEnabled } from './coach.js';
+import { chat, coachHistory, generateBrief, aiEnabled, checkCoach } from './coach.js';
 import { startLoop, runOnce, healIfEmpty } from './loop.js';
 import * as drive from './drive.js';
 import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleUpdate, webhookSecret } from './telegram.js';
@@ -213,6 +213,7 @@ if (isMain) {
   await engine.ensureGame();
   await vapidKeys();
   initTelegram().catch((err) => console.error('telegram init failed:', err.message));
+  checkCoach();
   const port = Number(process.env.PORT || 3000);
   const server = serve({ fetch: app.fetch, port, hostname: '0.0.0.0' }, () => console.log(`Oath listening on ${port}`));
   const loop = startLoop();

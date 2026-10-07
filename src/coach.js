@@ -16,6 +16,21 @@ function anthropic() {
 
 export const aiEnabled = () => Boolean(process.env.ANTHROPIC_API_KEY);
 
+// Run once at boot: confirms the key works and the model name exists, without spending tokens.
+export async function checkCoach() {
+  const c = anthropic();
+  if (!c) {
+    console.log('coach: no ANTHROPIC_API_KEY, running on plain-number briefs');
+    return;
+  }
+  try {
+    const info = await c.models.retrieve(MODEL());
+    console.log(`coach ready: ${info.id}`);
+  } catch (err) {
+    console.error(`coach check failed: ${err.status || ''} ${err.message}`);
+  }
+}
+
 const PERSONA = `You are the accountability partner inside Oath, a personal habit and task app used by one person, Daniel.
 Daniel asked for a ruthless partner. Your job is to make him do what he said he would do.
 
