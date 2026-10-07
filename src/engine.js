@@ -8,6 +8,7 @@ const ts = () => nowUTC().toJSDate();
 export const DEFAULT_SETTINGS = {
   timezone: 'Europe/Malta',
   morningTime: '07:00',
+  middayTime: '13:00',
   eveningTime: '21:00',
   cleanBonus: 5,
   taskPenalty: 15,
@@ -227,6 +228,7 @@ async function dueReminders(s, local, today, tz) {
         title: `${it.title}: ${left} left`,
         body: `Due ${it.deadline}. Miss it and you lose ${it.penalty} HP (you have ${game.hp}).`,
         tag: `remind-${it.kind}-${it.id}`,
+        item: { kind: it.kind, id: it.id },
       });
     }
   }

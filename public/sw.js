@@ -1,5 +1,5 @@
 // Service worker: offline shell and push notifications.
-const CACHE = 'oath-v1';
+const CACHE = 'oath-v2';
 const SHELL = ['/', '/app.css', '/app.js', '/manifest.webmanifest', '/icons/apple-touch-icon.png', '/icons/icon-192.png', '/icons/badge.png', '/fonts/archivo-latin-wdth-normal.woff2'];
 
 self.addEventListener('install', (event) => {

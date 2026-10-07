@@ -14,6 +14,9 @@ const state = {
   editingHabit: null,
   editingTask: null,
   sending: false,
+  focusMinutes: 25,
+  dodging: null,
+  telegram: null,
   push: { supported: false, permission: 'default', subscribed: false },
 };
 
@@ -48,11 +51,15 @@ async function api(method, path, body) {
 }
 
 let toastTimer;
-function toast(msg, bad = false) {
+function toast(msg, bad = false, ms = null, big = false) {
   $toast.textContent = msg;
-  $toast.className = `toast show${bad ? ' bad' : ''}`;
+  $toast.className = `toast show${bad ? ' bad' : ''}${big ? ' big' : ''}`;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { $toast.className = 'toast'; }, bad ? 4200 : 2400);
+  toastTimer = setTimeout(() => { $toast.className = 'toast'; }, ms || (bad ? 4200 : 2400));
+}
+
+function react(r) {
+  if (r?.text) toast(r.text, false, r.big ? 6500 : 4500, Boolean(r.big));
 }
 
 const tz = () => state.today?.timezone || 'Europe/Malta';
@@ -215,6 +222,130 @@ function hpBars(days, n = 14) {
     <div class="bars-legend"><span>${fmtDay(list[0].date)}</span><span>${fmtDay(list[list.length - 1].date)}</span></div>`;
 }
 
+// ---------- The daily drive ----------
+
+const REASONS = ['Tired', 'No time', 'Don\'t feel like it', 'Waiting on something', 'Scared of it'];
+const DURATIONS = [15, 25, 45, 60];
+
+function openDue(t) {
+  return [
+    ...t.items.filter((i) => i.status === 'open'),
+    ...t.tasks.filter((k) => k.status === 'open' && k.dueDate && k.dueDate <= t.today),
+  ].sort((a, b) => (a.dueAt || '9').localeCompare(b.dueAt || '9'));
+}
+
+function oathView(t) {
+  const open = openDue(t);
+  const weekday = fmtDay(t.today, { weekday: 'long' });
+  const choices = open.map((i) => `<label class="pick-row${i.heavy ? ' heavy' : ''}">
+      <input type="radio" name="focus" value="${i.kind}:${i.id}">
+      <span class="pick-mark" aria-hidden="true"></span>
+      <span><span class="pick-title">${esc(i.title)}</span>
+        <span class="pick-meta">by ${i.deadline || '23:59'}${i.heavy ? `, ${i.penalty} HP at stake` : ''}</span></span>
+    </label>`).join('');
+  return `<section class="oath">
+    <h1 class="oath-title">${weekday}. Take the oath.</h1>
+    <p class="oath-sub">${open.length} ${open.length === 1 ? 'thing stands' : 'things stand'} between you and a clean day. ${t.progress.atStake} HP at stake.</p>
+    <form data-form="oath">
+      <fieldset class="pick"><legend>Pick the one that matters most today</legend>${choices}</fieldset>
+      <label class="field"><span>Why it matters today</span>
+        <input class="input" name="intention" maxlength="300" autocomplete="off" placeholder="One line. The coach will hold you to it."></label>
+      <button type="button" class="hold" data-hold="oath"><span class="hold-fill"></span><span class="hold-label">Hold to take the oath</span></button>
+    </form>
+  </section>`;
+}
+
+function nowPanel(t) {
+  if (t.focus) {
+    const total = t.focus.minutes * 60000;
+    const leftMs = new Date(t.focus.endsAt).getTime() - Date.now();
+    const pct = Math.min(100, Math.max(0, 100 - (leftMs / total) * 100));
+    return `<section class="now in-focus">
+      <p class="now-label">In focus</p>
+      <h2 class="now-title">${esc(t.focus.title)}</h2>
+      <div class="clock" data-ends="${t.focus.endsAt}">${clockText(t.focus.endsAt)}</div>
+      <div class="focus-bar"><i data-bar-start="${t.focus.startedAt}" data-bar-end="${t.focus.endsAt}" style="width:${pct}%"></i></div>
+      <div class="now-actions">
+        <button class="btn big" data-action="focus-done" data-id="${t.focus.id}">Done</button>
+        <button class="btn quiet" data-action="focus-stop" data-id="${t.focus.id}">Stop</button>
+      </div>
+    </section>`;
+  }
+  const n = t.next;
+  if (!n) {
+    if (!t.progress.total) return '';
+    return `<section class="now secured">
+      <p class="now-label">Day secured</p>
+      <h2 class="now-title">Everything due today is done.</h2>
+      <p class="now-meta">Keep it clean to midnight for +${t.settings.cleanBonus} HP. Then close the day below.</p>
+    </section>`;
+  }
+  const l = n.dueAt ? left(n.dueAt) : null;
+  const meta = [n.dueAt ? `Due ${n.deadline || '23:59'}, <span class="${l.cls}" data-left="${n.dueAt}">${l.text}</span>` : 'No deadline', n.heavy ? `${n.penalty} HP at stake` : ''].filter(Boolean).join(', ');
+  const isTask = n.kind === 'task';
+  if (state.dodging && state.dodging.kind === n.kind && state.dodging.id === n.id) {
+    const chips = REASONS.map((r) => `<label class="chip"><input type="radio" name="reason" value="${esc(r)}"><span>${esc(r)}</span></label>`).join('');
+    return `<section class="now dodging">
+      <p class="now-label">Not now?</p>
+      <h2 class="now-title">${esc(n.title)}</h2>
+      <form data-form="defer" data-kind="${n.kind}" data-id="${n.id}">
+        <fieldset class="chips"><legend>Why not now</legend>${chips}</fieldset>
+        <label class="field"><span>Or in your own words</span><input class="input" name="own" maxlength="300" autocomplete="off"></label>
+        ${isTask && !n.heavy ? '<label class="check"><input type="checkbox" name="move"> Move it to tomorrow</label>' : `<p class="note">${n.kind === 'habit' ? 'Habits cannot be moved.' : 'Hard tasks cannot be moved.'} The deadline stays ${n.deadline || '23:59'}.</p>`}
+        <div class="now-actions">
+          <button class="btn" type="submit">Log it</button>
+          <button class="btn quiet" type="button" data-action="dodge-cancel">Back, I will do it</button>
+        </div>
+      </form>
+    </section>`;
+  }
+  const chips = DURATIONS.map((d) => `<button type="button" class="dur${state.focusMinutes === d ? ' on' : ''}" data-action="dur" data-min="${d}" aria-pressed="${state.focusMinutes === d}">${d}</button>`).join('');
+  return `<section class="now${n.isFocus ? ' is-focus' : ''}">
+    <p class="now-label">${n.isFocus ? 'Your one thing. Do it now.' : 'Do this now'}</p>
+    <h2 class="now-title">${esc(n.title)}</h2>
+    <p class="now-meta">${meta}</p>
+    <div class="now-actions">
+      <button class="btn big" data-action="focus-start" data-kind="${n.kind}" data-id="${n.id}">Start ${state.focusMinutes} min</button>
+      <button class="btn quiet" data-action="now-done" data-kind="${n.kind}" data-id="${n.id}">Done</button>
+      <button class="btn quiet" data-action="not-now" data-kind="${n.kind}" data-id="${n.id}">Not now</button>
+    </div>
+    <div class="durs" role="group" aria-label="Focus length in minutes">${chips}<span class="faint">min</span></div>
+  </section>`;
+}
+
+function progressStrip(t) {
+  if (!t.progress.total) return '';
+  const pct = Math.round((t.progress.done / t.progress.total) * 100);
+  return `<div class="progress">
+    <div class="progress-text"><b>${t.progress.done} of ${t.progress.total} done</b><span>${t.progress.atStake ? `${t.progress.atStake} HP still at stake` : 'Nothing at stake'}${t.dodgesToday ? `, ${t.dodgesToday} ${t.dodgesToday === 1 ? 'dodge' : 'dodges'} today` : ''}</span></div>
+    <div class="progress-bar"><i style="width:${pct}%"></i></div>
+  </div>`;
+}
+
+function planCard(t) {
+  if (!t.plan?.coachPlan) return '';
+  return `<details class="plan-card"${t.localHour < 12 ? ' open' : ''}>
+    <summary>Battle plan${t.plan.intention ? `: "${esc(t.plan.intention)}"` : ''}</summary>
+    <div class="plan-text">${esc(t.plan.coachPlan)}</div>
+  </details>`;
+}
+
+function closeDayCard(t) {
+  if (t.reflection) {
+    return `<section class="section"><div class="section-head"><h3>Day closed</h3><span class="count">${t.reflection.rating} out of 5</span></div>
+      <div class="brief">${esc(t.reflection.coachReply || 'The coach is writing back.')}<div class="brief-who">Coach</div></div></section>`;
+  }
+  if (t.localHour < 18 && t.progress.open) return '';
+  const stars = [1, 2, 3, 4, 5].map((n) => `<label class="rate"><input type="radio" name="rating" value="${n}" required><span>${n}</span></label>`).join('');
+  return `<section class="section"><div class="section-head"><h3>Close the day</h3></div>
+    <form class="card" data-form="reflect">
+      <fieldset class="rates"><legend>How was today, honestly?</legend>${stars}</fieldset>
+      <label class="field"><span>What got in the way</span><input class="input" name="blocker" maxlength="500" autocomplete="off"></label>
+      <label class="field"><span>One win</span><input class="input" name="win" maxlength="500" autocomplete="off"></label>
+      <div class="form-actions"><button class="btn" type="submit">Close the day</button></div>
+    </form></section>`;
+}
+
 function viewToday() {
   const t = state.today;
   if (!t) return shell('<p class="muted">Loading</p>');
@@ -223,19 +354,41 @@ function viewToday() {
   const m = meter(g, lostToday);
   const seasonDay = daysBetween(g.seasonStart, t.today) + 1;
 
-  const openDue = [
-    ...t.items.filter((i) => i.status === 'open').map((i) => ({ title: i.title, dueAt: i.dueAt, deadline: i.deadline })),
-    ...t.tasks.filter((k) => k.status === 'open' && k.heavy && k.dueDate === t.today && k.dueAt).map((k) => ({ title: k.title, dueAt: k.dueAt, deadline: k.deadline || '23:59' })),
-  ].sort((a, b) => a.dueAt.localeCompare(b.dueAt));
-  const next = openDue[0];
-  const nextLine = next
-    ? (() => { const l = left(next.dueAt); return `<span>Next: <b>${esc(next.title)}</b> at ${next.deadline}</span><span class="${l.cls}" data-left="${next.dueAt}">${l.text}</span>`; })()
-    : t.items.length || t.tasks.length ? '<span>Nothing left with a deadline today.</span>' : '<span>No habits yet. Add your first in Plan.</span>';
+  const vitals = `<header class="vitals">
+      <div class="vitals-top">
+        <div class="hp${m.low ? ' low' : ''}">${g.hp}<small>HP</small></div>
+        <div class="vitals-meta">
+          <strong>${fmtDay(t.today, { weekday: 'long', day: 'numeric', month: 'long' })}</strong><br>
+          Season ${g.season}, day ${seasonDay}<br>
+          ${g.pardonsLeft} ${g.pardonsLeft === 1 ? 'pardon' : 'pardons'} left, ${g.deaths} ${g.deaths === 1 ? 'death' : 'deaths'}
+        </div>
+      </div>
+      ${m.html}
+    </header>`;
+
+  // A brief is only shown for four hours; after that the day has moved on.
+  const brief = t.briefs.find((x) => Date.now() - new Date(x.at).getTime() < 4 * 3600 * 1000);
+  const briefTitles = { morning: 'Morning brief', midday: 'Midday check', evening: 'Evening check' };
+  const briefHtml = brief ? `<div class="brief">${esc(brief.text)}<div class="brief-who">${briefTitles[brief.kind] || 'Coach'}, ${fmtClock(brief.at)}</div></div>` : '';
+
+  // No oath yet and something is due: the oath comes first.
+  if (!t.plan && t.progress.open > 0) {
+    shell(`<div class="split"><div>${vitals}${oathView(t)}</div>
+      <aside><div class="only-wide">${briefHtml}</div></aside></div>`);
+    applyResponsiveBrief();
+    return;
+  }
+
+  if (!t.items.length && !t.tasks.length) {
+    shell(`${vitals}<section class="now"><p class="now-label">Nothing yet</p><h2 class="now-title">Add the habits you swear to.</h2>
+      <p class="now-meta">Start with two or three non-negotiables. You can add more once they stick.</p>
+      <div class="now-actions"><a class="btn big" href="#/plan">Add habits</a></div></section>`);
+    return;
+  }
 
   const heavy = t.items.filter((i) => i.heavy);
   const normal = t.items.filter((i) => !i.heavy);
   const keptCount = (list) => list.filter((i) => i.status === 'kept' || i.status === 'pardoned').length;
-
   const section = (title, list, rows) => (list.length ? `<section class="section">
       <div class="section-head"><h2>${title}</h2><span class="count">${keptCount(list)} of ${list.length} kept</span></div>
       <div class="list">${rows}</div></section>` : '');
@@ -245,7 +398,7 @@ function viewToday() {
   const tasksHtml = `<section class="section">
     <div class="section-head"><h2>Tasks</h2><span class="count">${doneTasks.length} done today</span></div>
     <div class="list">
-      ${[...openTasks, ...doneTasks].map((k) => taskRow(k, t)).join('') || ''}
+      ${[...openTasks, ...doneTasks].map((k) => taskRow(k, t)).join('')}
       <form class="inline-form" data-form="quick-task">
         <label class="sr" for="quick-task">New task</label>
         <input id="quick-task" class="input" name="title" placeholder="Add a task" autocomplete="off" maxlength="200" required>
@@ -253,40 +406,36 @@ function viewToday() {
       </form>
     </div></section>`;
 
-  const brief = t.briefs[0];
-  const briefHtml = brief ? `<div class="brief">${esc(brief.text)}<div class="brief-who">${brief.kind === 'morning' ? 'Morning brief' : 'Evening check'}, ${fmtClock(brief.at)}</div></div>` : '';
-
   const upcoming = t.upcoming.length ? `<section class="section"><div class="section-head"><h3>Coming up</h3></div>
     <div class="list">${t.upcoming.slice(0, 6).map((u) => `<div class="row${u.heavy ? ' heavy' : ''}" style="grid-template-columns:1fr auto;min-height:48px">
       <span class="row-title">${esc(u.title)}</span><span class="row-side">${fmtDay(u.dueDate)}${u.deadline ? ` ${u.deadline}` : ''}${u.heavy ? ', hard' : ''}</span></div>`).join('')}</div></section>` : '';
 
   shell(`<div class="split">
     <div>
-      <header class="vitals">
-        <div class="vitals-top">
-          <div class="hp${m.low ? ' low' : ''}">${g.hp}<small>HP</small></div>
-          <div class="vitals-meta">
-            <strong>${fmtDay(t.today, { weekday: 'long', day: 'numeric', month: 'long' })}</strong><br>
-            Season ${g.season}, day ${seasonDay}<br>
-            ${g.pardonsLeft} ${g.pardonsLeft === 1 ? 'pardon' : 'pardons'} left, ${g.deaths} ${g.deaths === 1 ? 'death' : 'deaths'}
-          </div>
-        </div>
-        ${m.html}
-        <div class="next">${nextLine}</div>
-      </header>
-      <div class="only-narrow">${briefHtml}</div>
+      ${vitals}
+      ${nowPanel(t)}
+      ${progressStrip(t)}
+      <div class="only-narrow">${planCard(t)}${briefHtml}</div>
       ${section('Non-negotiables', heavy, heavy.map((i) => habitRow(i, t)).join(''))}
       ${section('Habits', normal, normal.map((i) => habitRow(i, t)).join(''))}
       ${tasksHtml}
+      ${closeDayCard(t)}
     </div>
     <aside>
-      <div class="only-wide">${briefHtml}</div>
+      <div class="only-wide">${planCard(t)}${briefHtml}</div>
       <section class="section"><div class="section-head"><h3>Last 14 days</h3><span class="count">HP at day end</span></div>
         <div class="card">${hpBars(t.recentDays)}</div></section>
       ${upcoming}
     </aside>
   </div>`);
   applyResponsiveBrief();
+}
+
+function clockText(endsAt) {
+  const ms = new Date(endsAt).getTime() - Date.now();
+  if (ms <= 0) return 'Time is up';
+  const s = Math.ceil(ms / 1000);
+  return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 }
 
 function applyResponsiveBrief() {
@@ -390,8 +539,9 @@ function viewCoach() {
       <div class="section-head"><h2>Coach</h2><span class="count">${c.aiEnabled ? 'Claude' : 'Offline'}</span></div>
       ${c.aiEnabled ? '' : '<div class="banner">The coach is offline. It needs an Anthropic API key in the app\'s Railway variables. Briefs still arrive with plain numbers until then.</div>'}
       <div class="form-actions">
-        <button class="btn quiet small" data-action="brief" data-kind="morning">Morning brief now</button>
-        <button class="btn quiet small" data-action="brief" data-kind="evening">Evening check now</button>
+        <button class="btn quiet small" data-action="brief" data-kind="morning">Morning brief</button>
+        <button class="btn quiet small" data-action="brief" data-kind="midday">Midday check</button>
+        <button class="btn quiet small" data-action="brief" data-kind="evening">Evening check</button>
       </div>
       <div class="chat" id="chat">${msgs || '<p class="muted">Ask for a plan, report a slip, or tell it what you are avoiding. It sees your HP, deadlines, streaks and pardon reasons.</p>'}
         ${state.sending ? '<div class="msg assistant faint">Thinking</div>' : ''}</div>
@@ -463,16 +613,35 @@ function pushCard() {
   return `<div class="card"><h3>Reminders</h3><p class="muted" style="margin-top:6px">${status}</p>${action ? `<div class="form-actions">${action}</div>` : ''}</div>`;
 }
 
+function telegramCard() {
+  const tg = state.telegram || {};
+  let body;
+  let actions = '';
+  if (!tg.enabled) {
+    body = 'Create a bot with @BotFather in Telegram and add its token in Railway as TELEGRAM_BOT_TOKEN. This turns on after the next deploy.';
+  } else if (tg.linked) {
+    body = `Connected${tg.botUsername ? ` to @${esc(tg.botUsername)}` : ''}. Reminders, misses and briefs arrive there with Done buttons, and anything you write goes to the coach. Commands: /today, /next, /hp.`;
+    actions = '<button class="btn quiet" data-action="tg-test">Send a test</button><button class="btn quiet" data-action="tg-unlink">Disconnect</button>';
+  } else {
+    body = 'Connect your Telegram so the coach can reach you there. The button opens Telegram; tap Start in the chat with your bot.';
+    actions = '<button class="btn" data-action="tg-link">Connect Telegram</button>';
+    if (tg.linkUrl) body += ` If Telegram did not open, use this link: <a href="${esc(tg.linkUrl)}">${esc(tg.linkUrl)}</a>`;
+  }
+  return `<div class="card"><h3>Telegram</h3><p class="muted" style="margin-top:6px">${body}</p>${actions ? `<div class="form-actions">${actions}</div>` : ''}</div>`;
+}
+
 function viewSettings() {
   const s = state.settings;
   if (!s) return shell('<p class="muted">Loading</p>');
   shell(`<div class="split"><div>
     <section class="section"><div class="section-head"><h2>Settings</h2></div>
       ${pushCard()}
+      ${telegramCard()}
       <div class="card"><h3>Coach schedule</h3>
         <form data-form="settings">
-          <div class="grid2">
+          <div class="grid3">
             <label class="field"><span>Morning brief</span><input class="input" type="time" name="morningTime" value="${esc(s.morningTime)}" required></label>
+            <label class="field"><span>Midday check</span><input class="input" type="time" name="middayTime" value="${esc(s.middayTime || '13:00')}" required></label>
             <label class="field"><span>Evening check</span><input class="input" type="time" name="eveningTime" value="${esc(s.eveningTime)}" required></label>
           </div>
           <label class="field"><span>Time zone</span><input class="input" name="timezone" value="${esc(s.timezone)}" required></label>
@@ -496,6 +665,8 @@ function viewSettings() {
         <p style="margin-top:10px">At 0 HP you die. Every streak is wiped and a new season starts at full HP.</p>
         <p style="margin-top:10px">You get ${s.pardonsPerMonth} pardons a month for real emergencies. A pardon needs a written reason, must be used within 24 hours and restores the HP and the streak.</p>
         <p style="margin-top:10px">Changing a habit that is still open today only takes effect tomorrow.</p>
+        <p style="margin-top:10px">Every morning you take the oath: pick the one thing that matters most. Until you do, Today shows nothing else.</p>
+        <p style="margin-top:10px">"Not now" needs a reason. Every dodge is logged and the coach reads them.</p>
       </div></section></aside></div>`);
 }
 
@@ -538,6 +709,7 @@ async function load(route) {
   if (route === 'ledger') state.ledger = await api('GET', '/api/ledger');
   if (route === 'settings') {
     state.settings = await api('GET', '/api/settings');
+    state.telegram = { ...(state.telegram || {}), ...(await api('GET', '/api/telegram')) };
     await refreshPushState();
   }
 }
@@ -644,14 +816,50 @@ $app.addEventListener('click', async (e) => {
   const a = el.dataset.action;
   if (a === 'keep') {
     el.disabled = true;
-    const ok = await act(() => api('POST', `/api/habits/${id}/keep`, {}), 'Kept. You can undo for 10 minutes.');
-    if (ok) await refreshToday(); else el.disabled = false;
+    const ok = await act(() => api('POST', `/api/habits/${id}/keep`, {}));
+    if (ok) { react(ok.reaction); await refreshToday(); } else el.disabled = false;
   } else if (a === 'undo') {
     if (await act(() => api('POST', `/api/habits/${id}/undo`, {}), 'Undone.')) await refreshToday();
   } else if (a === 'task-done') {
-    if (await act(() => api('POST', `/api/tasks/${id}/done`, {}), 'Done.')) await refreshToday();
+    const ok = await act(() => api('POST', `/api/tasks/${id}/done`, {}));
+    if (ok) { react(ok.reaction); await refreshToday(); }
   } else if (a === 'task-undo') {
     if (await act(() => api('POST', `/api/tasks/${id}/undo`, {}), 'Undone.')) await refreshToday();
+  } else if (a === 'dur') {
+    state.focusMinutes = Number(el.dataset.min);
+    render();
+  } else if (a === 'focus-start') {
+    el.disabled = true;
+    const r = await act(() => api('POST', '/api/focus', { kind: el.dataset.kind, id, minutes: state.focusMinutes }), `Clock is running. ${state.focusMinutes} minutes. Phone down.`);
+    if (r) await refreshToday(); else el.disabled = false;
+  } else if (a === 'focus-done' || a === 'focus-stop') {
+    el.disabled = true;
+    const r = await act(() => api('POST', `/api/focus/${id}/finish`, { outcome: a === 'focus-done' ? 'done' : 'stopped' }));
+    if (r) { react(r.reaction); await refreshToday(); } else el.disabled = false;
+  } else if (a === 'now-done') {
+    el.disabled = true;
+    const path = el.dataset.kind === 'habit' ? `/api/habits/${id}/keep` : `/api/tasks/${id}/done`;
+    const r = await act(() => api('POST', path, {}));
+    if (r) { react(r.reaction); await refreshToday(); } else el.disabled = false;
+  } else if (a === 'not-now') {
+    state.dodging = { kind: el.dataset.kind, id };
+    render();
+  } else if (a === 'dodge-cancel') {
+    state.dodging = null;
+    toast('Good. Start it now.');
+    render();
+  } else if (a === 'tg-link') {
+    const r = await act(() => api('POST', '/api/telegram/link', {}));
+    if (r) {
+      state.telegram = { ...state.telegram, linkUrl: r.url };
+      render();
+      window.location.href = r.url;
+    }
+  } else if (a === 'tg-test') {
+    await act(() => api('POST', '/api/telegram/test', {}), (r) => (r.sent ? 'Sent. Check Telegram.' : 'Not linked yet.'));
+  } else if (a === 'tg-unlink') {
+    if (!confirm('Disconnect Telegram?')) return;
+    if (await act(() => api('POST', '/api/telegram/unlink', {}), 'Telegram disconnected.')) { await load('settings'); render(); }
   } else if (a === 'pardon') {
     state.pardoning = id;
     render();
@@ -721,6 +929,14 @@ $app.addEventListener('submit', async (e) => {
         toast('Password set. Add your first habit.');
         await go();
       } catch (err) { gateError(err.message); }
+    } else if (kind === 'defer') {
+      const f = new FormData(form);
+      const reason = (f.get('own') || '').trim() || f.get('reason') || '';
+      const r = await act(() => api('POST', '/api/defer', { kind: form.dataset.kind, id: Number(form.dataset.id), reason, moveToTomorrow: f.get('move') === 'on' }));
+      if (r) { state.dodging = null; react(r.reaction); await refreshToday(); }
+    } else if (kind === 'reflect') {
+      const r = await act(() => api('POST', '/api/reflection', form2obj(form)), 'Day closed.');
+      if (r) await refreshToday();
     } else if (kind === 'quick-task') {
       const title = form2obj(form).title;
       if (await act(() => api('POST', '/api/tasks', { title }), 'Task added.')) await refreshToday();
@@ -766,6 +982,72 @@ $app.addEventListener('keydown', (e) => {
     e.target.form.requestSubmit();
   }
 });
+
+// ---------- Hold to take the oath ----------
+
+const HOLD_MS = 1300;
+let holdTimer = null;
+
+async function takeOath(form) {
+  const f = new FormData(form);
+  const [kind, id] = String(f.get('focus') || ':').split(':');
+  const r = await act(() => api('POST', '/api/oath', { focusKind: kind, focusId: Number(id), intention: f.get('intention') || '' }));
+  if (r) {
+    toast('Sworn. Now do it.', false, 3500, true);
+    await refreshToday();
+    window.scrollTo({ top: 0 });
+  }
+}
+
+function holdStart(e) {
+  const btn = e.target.closest('[data-hold]');
+  if (!btn) return;
+  const form = btn.closest('form');
+  if (!form.querySelector('input[name="focus"]:checked')) {
+    toast('Pick your one thing first.', true);
+    return;
+  }
+  e.preventDefault();
+  btn.classList.add('holding');
+  holdTimer = setTimeout(() => {
+    holdTimer = null;
+    btn.classList.remove('holding');
+    btn.classList.add('sworn');
+    takeOath(form);
+  }, HOLD_MS);
+}
+
+function holdEnd(e) {
+  const btn = e.target.closest('[data-hold]');
+  if (!btn || !holdTimer) return;
+  clearTimeout(holdTimer);
+  holdTimer = null;
+  btn.classList.remove('holding');
+  toast('Hold it until it fills.');
+}
+
+$app.addEventListener('pointerdown', holdStart);
+['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => $app.addEventListener(ev, holdEnd));
+$app.addEventListener('contextmenu', (e) => { if (e.target.closest('[data-hold]')) e.preventDefault(); });
+// Keyboard users press Enter or Space once.
+$app.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-hold]');
+  if (btn && e.detail === 0) {
+    const form = btn.closest('form');
+    if (!form.querySelector('input[name="focus"]:checked')) toast('Pick your one thing first.', true);
+    else takeOath(form);
+  }
+});
+
+// The focus clock ticks every second.
+setInterval(() => {
+  document.querySelectorAll('[data-ends]').forEach((el) => { el.textContent = clockText(el.dataset.ends); });
+  document.querySelectorAll('[data-bar-end]').forEach((el) => {
+    const a = new Date(el.dataset.barStart).getTime();
+    const b = new Date(el.dataset.barEnd).getTime();
+    el.style.width = `${Math.min(100, Math.max(0, ((Date.now() - a) / (b - a)) * 100))}%`;
+  });
+}, 1000);
 
 // Keep countdowns live without re-rendering the page.
 setInterval(() => {

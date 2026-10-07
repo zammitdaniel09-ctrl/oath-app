@@ -99,6 +99,47 @@ export async function buildToday() {
   const briefs = await db()`select kind, text, at from briefs where date = ${today} order by at desc`;
   const week = await db()`select date, hp_end, clean, missed from days where date >= ${addDays(today, -13, tz)} order by date`;
 
+  // ---------- The daily drive ----------
+  const [planRow] = await db()`select * from day_plans where date = ${today}`;
+  const [focusRow] = await db()`select * from focus_sessions where ended_at is null order by id desc limit 1`;
+  const [reflRow] = await db()`select * from reflections where date = ${today}`;
+  const recentDefer = await db()`select kind, ref_id from deferrals where at > ${nowUTC().minus({ minutes: 60 }).toJSDate()}`;
+  const [{ dodges }] = await db()`select count(*)::int as dodges from deferrals where date = ${today}`;
+
+  const openDue = [
+    ...items.filter((i) => i.status === 'open'),
+    ...tasks.filter((k) => k.status === 'open' && k.dueDate && k.dueDate <= today),
+  ];
+  const doneDue = items.filter((i) => i.status === 'kept' || i.status === 'pardoned').length
+    + tasks.filter((k) => k.dueDate && k.dueDate <= today && (k.status === 'done' || k.status === 'pardoned')).length;
+  const progress = {
+    done: doneDue,
+    total: doneDue + openDue.length + items.filter((i) => i.status === 'missed').length
+      + tasks.filter((k) => k.status === 'missed').length,
+    atStake: openDue.reduce((n, i) => n + (i.penalty || 0), 0),
+    open: openDue.length,
+  };
+
+  // Next: soonest deadline first, undated tasks last. Something dodged in the last hour steps aside
+  // unless it is due within 30 minutes. The chosen one thing jumps the queue when nothing is urgent.
+  const candidates = [...openDue, ...tasks.filter((k) => k.status === 'open' && !k.dueDate)];
+  const dodged = new Set(recentDefer.map((d) => `${d.kind}:${d.ref_id}`));
+  const minutesLeft = (i) => (i.dueAt ? (new Date(i.dueAt).getTime() - nowUTC().toMillis()) / 60000 : Infinity);
+  const sorted = [...candidates].sort((a, b) => minutesLeft(a) - minutesLeft(b));
+  let queue = sorted.filter((i) => !dodged.has(`${i.kind}:${i.id}`) || minutesLeft(i) <= 30);
+  if (!queue.length) queue = sorted;
+  if (planRow) {
+    const focusItem = queue.find((i) => i.kind === planRow.focus_kind && i.id === planRow.focus_id);
+    const urgent = queue.some((i) => i !== focusItem && minutesLeft(i) <= 90);
+    if (focusItem && !urgent) queue = [focusItem, ...queue.filter((i) => i !== focusItem)];
+  }
+  const pick = queue[0];
+  const next = pick ? {
+    kind: pick.kind, id: pick.id, title: pick.title, deadline: pick.deadline, dueAt: pick.dueAt,
+    heavy: pick.heavy, penalty: pick.penalty,
+    isFocus: Boolean(planRow && planRow.focus_kind === pick.kind && planRow.focus_id === pick.id),
+  } : null;
+
   return {
     now: local.toISO(),
     today,
@@ -112,6 +153,20 @@ export async function buildToday() {
     recentDays: week,
     settings: s,
     aiEnabled: Boolean(process.env.ANTHROPIC_API_KEY),
+    plan: planRow ? {
+      focusKind: planRow.focus_kind, focusId: planRow.focus_id, focusTitle: planRow.focus_title,
+      intention: planRow.intention, coachPlan: planRow.coach_plan, committedAt: planRow.committed_at,
+    } : null,
+    focus: focusRow ? {
+      id: focusRow.id, kind: focusRow.kind, refId: focusRow.ref_id, title: focusRow.title, minutes: focusRow.minutes,
+      startedAt: new Date(focusRow.started_at).toISOString(),
+      endsAt: new Date(new Date(focusRow.started_at).getTime() + focusRow.minutes * 60000).toISOString(),
+    } : null,
+    reflection: reflRow ? { rating: reflRow.rating, blocker: reflRow.blocker, win: reflRow.win, coachReply: reflRow.coach_reply } : null,
+    dodgesToday: dodges,
+    progress,
+    next,
+    localHour: local.hour,
   };
 }
 
@@ -211,6 +266,29 @@ export async function coachSnapshot() {
   if (misses.length) {
     lines.push('Recent misses:');
     for (const m of misses) lines.push(`  ${m.date} ${m.title} -${m.hp_lost} HP${m.pardoned_at ? ` | PARDONED, reason given: "${m.pardon_reason}"` : ''}`);
+  }
+  if (t.plan) {
+    lines.push(`Today's oath: his one thing is "${t.plan.focusTitle}".${t.plan.intention ? ` Why it matters, in his words: "${t.plan.intention}".` : ''}`);
+  } else if (t.progress.open) {
+    lines.push('He has NOT taken today\'s oath yet (no one thing chosen).');
+  }
+  lines.push(`Progress today: ${t.progress.done} of ${t.progress.total} done, ${t.progress.atStake} HP still at stake.`);
+  if (t.focus) lines.push(`He is in a ${t.focus.minutes} minute focus block on "${t.focus.title}" that started ${t.focus.startedAt}.`);
+  const { tz: zone } = await localNow();
+  const dodges = await db()`select * from deferrals where date >= ${addDays(t.today, -6, zone)} order by at desc limit 25`;
+  if (dodges.length) {
+    lines.push('Dodges in the last 7 days (he pressed "Not now" and gave a reason):');
+    for (const d of dodges) lines.push(`  ${d.date} ${d.title}: "${d.reason}"${d.moved_to ? ` (moved to ${d.moved_to})` : ''}`);
+  }
+  const focus = await db()`select * from focus_sessions where date >= ${addDays(t.today, -6, zone)} and ended_at is not null order by id desc limit 15`;
+  if (focus.length) {
+    lines.push('Recent focus blocks:');
+    for (const f of focus) lines.push(`  ${f.date} ${f.title}: ${f.minutes} min planned, ${f.outcome}`);
+  }
+  const refl = await db()`select * from reflections order by date desc limit 7`;
+  if (refl.length) {
+    lines.push('His own end-of-day reflections (newest first):');
+    for (const r of refl) lines.push(`  ${r.date}: rated ${r.rating}/5${r.blocker ? `, got in the way: "${r.blocker}"` : ''}${r.win ? `, win: "${r.win}"` : ''}`);
   }
   return lines.join('\n');
 }

@@ -1,21 +1,64 @@
 // Runs the engine every 30 seconds and fires the scheduled briefs.
 import { db, migrate } from './db.js';
-import { deadlineAt } from './time.js';
+import { deadlineAt, nowUTC } from './time.js';
 import { tick, localNow, ensureGame } from './engine.js';
 import { sendPush, vapidKeys } from './push.js';
 import { generateBrief } from './coach.js';
+import { buildToday } from './state.js';
+
+const BRIEF_TITLES = { morning: 'Morning brief', midday: 'Midday check', evening: 'Evening check' };
+
+async function claim(key) {
+  const rows = await db()`insert into reminders_sent (key) values (${key}) on conflict do nothing returning key`;
+  return rows.length > 0;
+}
 
 async function scheduledBriefs() {
   const { s, local, today, tz } = await localNow();
-  for (const kind of ['morning', 'evening']) {
-    const at = deadlineAt(today, kind === 'morning' ? s.morningTime : s.eveningTime, tz);
+  const times = { morning: s.morningTime, midday: s.middayTime, evening: s.eveningTime };
+  for (const kind of ['morning', 'midday', 'evening']) {
+    const at = deadlineAt(today, times[kind], tz);
     if (local < at || local >= at.plus({ hours: 3 })) continue;
-    const key = `brief:${kind}:${today}`;
-    const claimed = await db()`insert into reminders_sent (key) values (${key}) on conflict do nothing returning key`;
-    if (!claimed.length) continue;
-    const { text } = await generateBrief(kind);
+    if (!(await claim(`brief:${kind}:${today}`))) continue;
+    const { text, openCount } = await generateBrief(kind);
+    if (kind === 'midday' && !openCount) continue;
     const body = text.length > 220 ? `${text.slice(0, 217).trimEnd()}...` : text;
-    await sendPush({ title: kind === 'morning' ? 'Morning brief' : 'Evening check', body, tag: `brief-${kind}`, url: '/#/today' });
+    await sendPush({ title: BRIEF_TITLES[kind], body, fullText: text, tag: `brief-${kind}`, url: '/#/today' });
+  }
+
+  // No oath two hours after the morning brief: chase it once.
+  const oathBy = deadlineAt(today, s.morningTime, tz).plus({ hours: 2 });
+  if (local >= oathBy && local < oathBy.plus({ hours: 10 })) {
+    const [plan] = await db()`select 1 from day_plans where date = ${today}`;
+    if (!plan) {
+      const t = await buildToday();
+      if (t.progress.open && (await claim(`oath-chase:${today}`))) {
+        await sendPush({
+          title: 'You have not taken today\'s oath',
+          body: `${t.progress.open} things due today, ${t.progress.atStake} HP at stake. Open Oath and pick your one thing.`,
+          tag: 'oath-chase',
+          url: '/#/today',
+        });
+      }
+    }
+  }
+}
+
+// A focus block that has run out gets one nudge asking whether it is done.
+async function focusEnds() {
+  const rows = await db()`select * from focus_sessions where ended_at is null and not notified`;
+  for (const f of rows) {
+    const end = new Date(f.started_at).getTime() + f.minutes * 60000;
+    if (nowUTC().toMillis() < end) continue;
+    await db()`update focus_sessions set notified = true where id = ${f.id}`;
+    await sendPush({
+      title: `Time: ${f.title}`,
+      body: `Your ${f.minutes} minute block is over. Is it done? Mark it, or start another block.`,
+      tag: `focus-${f.id}`,
+      url: '/#/today',
+      item: { kind: f.kind, id: f.ref_id },
+      focusId: f.id,
+    });
   }
 }
 
@@ -37,8 +80,9 @@ export async function runOnce() {
         url: '/#/ledger',
       });
     } else {
-      for (const n of notes) await sendPush({ ...n, url: '/#/today' });
+      for (const n of notes) await sendPush({ url: '/#/today', ...n });
     }
+    await focusEnds();
     await scheduledBriefs();
     return notes;
   } finally {

@@ -150,9 +150,17 @@ export async function chat(userText) {
 
 // ---------- Scheduled briefs ----------
 
+const byDeadline = (a, b) => (a.dueAt || '9').localeCompare(b.dueAt || '9');
+
+function openDue(t) {
+  return [
+    ...t.items.filter((i) => i.status === 'open'),
+    ...t.tasks.filter((k) => k.status === 'open' && k.dueDate && k.dueDate <= t.today),
+  ].sort(byDeadline);
+}
+
 function fallbackMorning(t) {
-  const open = t.items.filter((i) => i.status === 'open');
-  const first = [...open].sort((a, b) => a.deadline.localeCompare(b.deadline))[0];
+  const open = openDue(t);
   const yesterday = t.recentDays.length ? t.recentDays[t.recentDays.length - 1] : null;
   const parts = [];
   if (yesterday) {
@@ -160,19 +168,32 @@ function fallbackMorning(t) {
   } else {
     parts.push(`HP ${t.game.hp}.`);
   }
-  parts.push(`${open.length} habit${open.length === 1 ? '' : 's'} today.`);
-  if (first) parts.push(`First deadline: ${first.title} at ${first.deadline}.`);
+  parts.push(`${open.length} ${open.length === 1 ? 'thing' : 'things'} due today, ${t.progress.atStake} HP at stake.`);
+  if (open[0]) parts.push(`First deadline: ${open[0].title} at ${open[0].deadline || '23:59'}.`);
+  parts.push('Open Oath and take today\'s oath.');
   return parts.join(' ');
 }
 
-function fallbackEvening(t) {
-  const open = t.items.filter((i) => i.status === 'open');
-  const hard = t.tasks.filter((k) => k.heavy && k.status === 'open');
-  const atStake = open.reduce((n, i) => n + i.penalty, 0) + hard.reduce((n, k) => n + k.penalty, 0);
-  if (!open.length && !hard.length) return 'Everything is kept. Protect tomorrow: sleep on time.';
-  const names = [...open.map((i) => `${i.title} (${i.deadline})`), ...hard.map((k) => k.title)].join(', ');
-  return `Still open: ${names}. ${atStake} HP at stake. You have ${t.game.hp}.`;
+function fallbackMidday(t) {
+  const open = openDue(t);
+  if (!open.length) return `Everything due today is done by midday. ${t.game.hp} HP. Do not get lazy now.`;
+  return `${t.progress.done} of ${t.progress.total} done. Next: ${open[0].title} by ${open[0].deadline || '23:59'}. ${t.progress.atStake} HP still at stake.`;
 }
+
+function fallbackEvening(t) {
+  const open = openDue(t);
+  if (!t.progress.total) return 'Nothing was scheduled today. Add your habits in Plan so tomorrow counts.';
+  if (!open.length) return 'Everything is kept. Close the day in Oath and protect tomorrow: sleep on time.';
+  const names = open.map((i) => `${i.title} (${i.deadline || '23:59'})`).join(', ');
+  return `Still open: ${names}. ${t.progress.atStake} HP at stake. You have ${t.game.hp}.`;
+}
+
+const BRIEF_ASKS = {
+  morning: 'Write the morning brief. First, a blunt verdict on yesterday in two sentences using the numbers. Then today: list what is due in deadline order and name the one item that matters most. Tell him to open Oath and take the oath if he has not. Under 120 words. No headings.',
+  midday: 'Write the midday check-in. Say what is done, what is still open, and the one thing he must do in the next hour, with its deadline. If he has dodged something today, name it. Under 50 words.',
+  evening: 'Write the evening check. Say exactly what is still open today, the deadlines, and how much HP is at stake. If everything is kept, say so in one line and tell him to close the day in the app. Under 60 words.',
+};
+const FALLBACKS = { morning: fallbackMorning, midday: fallbackMidday, evening: fallbackEvening };
 
 export async function generateBrief(kind) {
   const { today } = await localNow();
@@ -180,17 +201,81 @@ export async function generateBrief(kind) {
   let text;
   if (aiEnabled()) {
     try {
-      const ask = kind === 'morning'
-        ? 'Write the morning brief. First, a blunt verdict on yesterday in two sentences using the numbers. Then today: list what is due in deadline order and name the one item that matters most. Under 120 words. No headings.'
-        : 'Write the evening check. Say exactly what is still open today, the deadlines, and how much HP is at stake. If everything is kept, say so in one line and tell him to protect tomorrow. Under 60 words.';
       const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
-      text = await complete({ system, messages: [{ role: 'user', content: ask }], maxTokens: 400, tools: [] });
+      text = await complete({ system, messages: [{ role: 'user', content: BRIEF_ASKS[kind] }], maxTokens: 400, tools: [] });
     } catch (err) {
       console.error('brief error', err.status || '', err.message);
     }
   }
-  if (!text) text = kind === 'morning' ? fallbackMorning(t) : fallbackEvening(t);
+  if (!text) text = FALLBACKS[kind](t);
   await db()`insert into briefs (date, kind, text) values (${today}, ${kind}, ${text})
              on conflict (date, kind) do update set text = excluded.text, at = now()`;
-  return { text, openCount: t.items.filter((i) => i.status === 'open').length };
+  return { text, openCount: openDue(t).length };
+}
+
+// ---------- The oath and the end of the day ----------
+
+function fallbackPlan(t) {
+  const open = openDue(t);
+  const lines = [];
+  if (t.plan) lines.push(`Your one thing: ${t.plan.focusTitle}.${t.plan.intention ? ` You said: "${t.plan.intention}".` : ''}`);
+  if (open.length) {
+    lines.push('Order of battle:');
+    open.forEach((i, n) => lines.push(`${n + 1}. ${i.title}, by ${i.deadline || '23:59'}`));
+  }
+  lines.push('Start the first one now. Not after coffee, not after messages. Now.');
+  return lines.join('\n');
+}
+
+async function writePlan(today) {
+  const t = await buildToday();
+  let text = null;
+  if (aiEnabled()) {
+    try {
+      const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
+      const ask = 'He just took today\'s oath. Write his battle plan for the rest of today: a numbered order of attack with a start time for each open item, built around his one thing and the deadlines. Then one blunt line holding him to his own words. Under 110 words. No headings.';
+      text = await complete({ system, messages: [{ role: 'user', content: ask }], maxTokens: 450, tools: [] });
+    } catch (err) {
+      console.error('plan error', err.status || '', err.message);
+    }
+  }
+  if (text) await db()`update day_plans set coach_plan = ${text} where date = ${today}`;
+}
+
+// Writes a plain plan immediately; when the coach is on, its own plan replaces it a few seconds later.
+export async function battlePlan(today, { background = false } = {}) {
+  const t = await buildToday();
+  await db()`update day_plans set coach_plan = ${fallbackPlan(t)} where date = ${today}`;
+  if (!aiEnabled()) return;
+  const job = writePlan(today);
+  if (!background) await job;
+  else job.catch((err) => console.error('plan error', err.message));
+}
+
+function fallbackReflection(r, t) {
+  const parts = [];
+  if (r.rating <= 2) parts.push(`A ${r.rating} out of 5. Own it.`);
+  else if (r.rating >= 4) parts.push(`A ${r.rating} out of 5. Good. Now repeat it tomorrow.`);
+  else parts.push('A middling day. Middling days compound into a middling year.');
+  if (r.blocker) parts.push(`You named "${r.blocker}" as the problem. Write down one thing that removes it before tomorrow starts.`);
+  parts.push(`${t.progress.done} of ${t.progress.total} done today, ${t.game.hp} HP.`);
+  return parts.join(' ');
+}
+
+export async function reflectionReply(today) {
+  const [r] = await db()`select * from reflections where date = ${today}`;
+  const t = await buildToday();
+  let text = null;
+  if (aiEnabled()) {
+    try {
+      const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
+      const ask = `He just closed the day. Rating ${r.rating}/5. What got in the way: "${r.blocker || 'nothing given'}". Win: "${r.win || 'nothing given'}". Reply in under 70 words: an honest verdict on today using the numbers, the pattern you see across recent days if there is one, and exactly one change for tomorrow.`;
+      text = await complete({ system, messages: [{ role: 'user', content: ask }], maxTokens: 300, tools: [] });
+    } catch (err) {
+      console.error('reflection error', err.status || '', err.message);
+    }
+  }
+  if (!text) text = fallbackReflection(r, t);
+  await db()`update reflections set coach_reply = ${text} where date = ${today}`;
+  return text;
 }

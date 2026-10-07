@@ -125,7 +125,51 @@ create table if not exists briefs (
   at timestamptz not null default now(),
   unique (date, kind)
 );
+create table if not exists day_plans (
+  date text primary key,
+  focus_kind text,
+  focus_id int,
+  focus_title text,
+  intention text not null default '',
+  coach_plan text,
+  committed_at timestamptz not null
+);
+create table if not exists focus_sessions (
+  id serial primary key,
+  kind text not null,
+  ref_id int not null,
+  title text not null,
+  date text not null,
+  minutes int not null,
+  started_at timestamptz not null,
+  ended_at timestamptz,
+  outcome text,
+  notified boolean not null default false
+);
+create table if not exists deferrals (
+  id serial primary key,
+  kind text not null,
+  ref_id int not null,
+  title text not null,
+  date text not null,
+  reason text not null,
+  moved_to text,
+  at timestamptz not null
+);
+create table if not exists reflections (
+  date text primary key,
+  rating int not null,
+  blocker text not null default '',
+  win text not null default '',
+  coach_reply text,
+  at timestamptz not null
+);
+create table if not exists telegram_updates (
+  update_id bigint primary key,
+  at timestamptz not null default now()
+);
 create index if not exists completions_date_idx on completions (date);
+create index if not exists deferrals_date_idx on deferrals (date);
 create index if not exists misses_date_idx on misses (date);
 create index if not exists events_at_idx on events (at);
 `;

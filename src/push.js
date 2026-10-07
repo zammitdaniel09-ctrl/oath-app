@@ -1,5 +1,6 @@
 import webpush from 'web-push';
 import { db, getKV, setKV } from './db.js';
+import { sendTelegram } from './telegram.js';
 
 let configured = false;
 
@@ -40,6 +41,8 @@ export async function subscriptionCount() {
 }
 
 export async function sendPush(note) {
+  // Telegram gets every notification too, with a Done button when it is about one item.
+  sendTelegram(note).catch((err) => console.error('telegram send failed', err.message));
   await configure();
   const subs = await db()`select endpoint, sub from push_subs`;
   const payload = JSON.stringify({ title: note.title, body: note.body, tag: note.tag || 'oath', url: note.url || '/' });
