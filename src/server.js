@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { IANAZone } from 'luxon';
-import { connect, migrate } from './db.js';
+import { connect, migrate, close as closeDb } from './db.js';
 import { validTime, validDate } from './time.js';
 import * as auth from './auth.js';
 import * as engine from './engine.js';
@@ -164,8 +164,17 @@ if (isMain) {
   await engine.ensureGame();
   await vapidKeys();
   const port = Number(process.env.PORT || 3000);
-  serve({ fetch: app.fetch, port, hostname: '0.0.0.0' }, () => console.log(`Oath listening on ${port}`));
-  startLoop();
+  const server = serve({ fetch: app.fetch, port, hostname: '0.0.0.0' }, () => console.log(`Oath listening on ${port}`));
+  const loop = startLoop();
+  const shutdown = async (signal) => {
+    console.log(`${signal} received, shutting down`);
+    clearInterval(loop);
+    server.close();
+    await closeDb().catch(() => {});
+    process.exit(0);
+  };
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 }
 
 export { runOnce };
