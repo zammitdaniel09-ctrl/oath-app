@@ -224,3 +224,14 @@ test('non-JSON writes are refused', async () => {
   const res = await app.request('/api/tasks', { method: 'POST', headers: { cookie, 'content-type': 'application/x-www-form-urlencoded' }, body: 'title=x' });
   assert.equal(res.status, 415);
 });
+
+test('an emptied database rebuilds itself without a restart', async () => {
+  await dbmod.db().unsafe('drop schema public cascade; create schema public;');
+  const first = await call('GET', '/api/session');
+  assert.equal(first.status, 503);
+  const second = await call('GET', '/api/session');
+  assert.equal(second.status, 200);
+  assert.equal(second.data.setupDone, false);
+  await runOnce();
+  assert.ok((await dbmod.getKV('game')).hp > 0);
+});

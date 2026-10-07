@@ -9,7 +9,7 @@ import * as engine from './engine.js';
 import { buildToday, buildPlan, buildLedger } from './state.js';
 import { vapidKeys, saveSubscription, removeSubscription, sendPush, subscriptionCount } from './push.js';
 import { chat, coachHistory, generateBrief, aiEnabled } from './coach.js';
-import { startLoop, runOnce } from './loop.js';
+import { startLoop, runOnce, healIfEmpty } from './loop.js';
 
 const v = { validTime, validDate };
 const app = new Hono();
@@ -30,8 +30,11 @@ app.use('/api/*', async (c, next) => {
   await next();
 });
 
-app.onError((err, c) => {
+app.onError(async (err, c) => {
   if (err instanceof engine.RuleError) return c.json({ error: err.message }, err.status);
+  if (await healIfEmpty(err).catch(() => false)) {
+    return c.json({ error: 'The database was just reset and has been rebuilt. Try again.' }, 503);
+  }
   console.error(err);
   return c.json({ error: 'Something broke on the server. Check the Railway logs.' }, 500);
 });

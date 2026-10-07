@@ -1,8 +1,8 @@
 // Runs the engine every 30 seconds and fires the scheduled briefs.
-import { db } from './db.js';
+import { db, migrate } from './db.js';
 import { deadlineAt } from './time.js';
-import { tick, localNow } from './engine.js';
-import { sendPush } from './push.js';
+import { tick, localNow, ensureGame } from './engine.js';
+import { sendPush, vapidKeys } from './push.js';
 import { generateBrief } from './coach.js';
 
 async function scheduledBriefs() {
@@ -46,8 +46,21 @@ export async function runOnce() {
   }
 }
 
+// If the database comes back empty (restored, recreated or moved), rebuild the schema without a restart.
+export async function healIfEmpty(err) {
+  if (err?.code !== '42P01') return false;
+  console.warn('tables missing, recreating schema');
+  await migrate();
+  await ensureGame();
+  await vapidKeys();
+  return true;
+}
+
 export function startLoop(intervalMs = 30000) {
-  const run = () => runOnce().catch((err) => console.error('tick failed', err));
+  const run = () => runOnce().catch(async (err) => {
+    if (await healIfEmpty(err).catch(() => false)) return;
+    console.error('tick failed', err);
+  });
   run();
   return setInterval(run, intervalMs);
 }
