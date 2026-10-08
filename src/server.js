@@ -296,6 +296,12 @@ app.use('/sw.js', async (c, next) => {
   c.header('Cache-Control', 'no-cache');
   c.header('Service-Worker-Allowed', '/');
 });
+// The app's own code and pages are always revalidated, so a deploy shows up on the next open.
+app.use('*', async (c, next) => {
+  await next();
+  const p = c.req.path;
+  if (p === '/' || /\.(js|css|html|webmanifest)$/.test(p)) c.header('Cache-Control', 'no-cache');
+});
 app.use('*', serveStatic({ root: './public' }));
 app.get('*', serveStatic({ path: './public/index.html' }));
 
