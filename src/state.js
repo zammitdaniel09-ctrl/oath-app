@@ -5,6 +5,11 @@ import { localNow, getGame, rulesOn } from './engine.js';
 import { isActive, isScheduled, isFlexible, weekStartOf, weekDates, weekTargetFor } from './rules.js';
 import { habitStats, restSet } from './strength.js';
 import { listGoals } from './goals.js';
+import { busyMinutes, calendarForCoach, eventsForDate } from './calendar.js';
+import { businessForCoach } from './business.js';
+
+// health.js is imported lazily: state > health > push > telegram > state would be a cycle.
+const health = () => import('./health.js');
 
 // Streaks count consecutive kept occurrences this season (weeks, for X-a-week habits).
 async function streaksFor(habits, today, tz, seasonStart, rest) {
@@ -96,6 +101,8 @@ export async function buildToday() {
       buildingDay: st.buildingDay || 1,
       goalId: h.goal_id,
       rulesChangeFrom: h.next_rules_from || null,
+      keptBy: c?.source || null,
+      auto: h.auto_metric ? { metric: h.auto_metric, target: h.auto_target, filter: h.auto_filter || '' } : null,
       flexible: false,
     };
     if (isFlexible(h, today)) {
@@ -209,11 +216,16 @@ export async function buildToday() {
     isFocus: Boolean(planRow && planRow.focus_kind === pick.kind && planRow.focus_id === pick.id),
   } : null;
 
-  // Capacity: estimated task time against the hours left before the day ends (planning fallacy).
+  // Capacity: estimated task time against the free time left before the day ends (planning
+  // fallacy). Time already booked in his calendars is not free.
   const estimated = openDue.filter((i) => i.kind === 'task').reduce((n, k) => n + (k.estimate || 0), 0);
   const dayEnd = deadlineAt(today, s.dayEnd || '22:00', tz);
-  const available = Math.max(0, Math.round(dayEnd.diff(local, 'minutes').minutes));
-  const capacity = estimated ? { estimated, available, over: Math.max(0, estimated - available) } : null;
+  const left = Math.max(0, Math.round(dayEnd.diff(local, 'minutes').minutes));
+  const busy = left ? await busyMinutes(today, local.toFormat('HH:mm'), s.dayEnd || '22:00').catch(() => 0) : 0;
+  const available = Math.max(0, left - busy);
+  const capacity = estimated ? { estimated, available, busy, over: Math.max(0, estimated - available) } : null;
+  const calendar = await eventsForDate(today).catch(() => []);
+  const healthToday = await (await health()).todayHealth().catch(() => null);
 
   // Weekly review: last week's, available Monday to Sunday until done, prompted on Monday and Tuesday.
   const lastWeek = addDays(weekStartOf(today, tz), -7, tz);
@@ -252,6 +264,8 @@ export async function buildToday() {
     dodgesToday: dodges,
     progress,
     capacity,
+    calendar,
+    health: healthToday,
     next,
     goals,
     weekFocus: review?.done_at ? review.focus : null,
@@ -293,6 +307,7 @@ export async function buildPlan() {
         penalty: h.penalty,
         goalId: h.goal_id,
         goalTitle: h.goal_title,
+        auto: h.auto_metric ? { metric: h.auto_metric, target: h.auto_target, filter: h.auto_filter || '' } : null,
         startDate: h.start_date,
         archivedFrom: h.archived_from,
         nextRules: h.next_rules,
@@ -405,7 +420,7 @@ export async function buildReview() {
     days,
     misses: misses.map((m) => ({
       id: m.id, kind: m.kind, title: m.title, date: m.date, hpLost: m.hp_lost, repeat: m.repeat,
-      pardoned: Boolean(m.pardoned_at), reason: m.pardon_reason, plan: m.pardon_plan,
+      pardoned: Boolean(m.pardoned_at) && !m.overturned, overturned: Boolean(m.overturned), reason: m.pardon_reason, plan: m.pardon_plan,
     })),
     deaths: deaths.map((d) => ({ ...d.data, at: d.at })),
   };
@@ -444,7 +459,11 @@ export async function coachSnapshot() {
     lines.push('Upcoming tasks:');
     for (const k of t.upcoming.slice(0, 15)) lines.push(`  #${k.id} ${k.title} | due ${k.dueDate} ${k.deadline || ''}${k.heavy ? ' | HARD' : ''}`);
   }
-  if (t.capacity) lines.push(`Capacity: ${t.capacity.estimated} min of estimated task work today, ${t.capacity.available} min left before the day ends.`);
+  if (t.capacity) {
+    lines.push(`Capacity: ${t.capacity.estimated} min of estimated task work today, ${t.capacity.available} min of free time left before the day ends${t.capacity.busy ? ` (${t.capacity.busy} min more are booked in his calendar)` : ''}.`);
+  }
+  const calendarText = await calendarForCoach().catch(() => '');
+  if (calendarText) lines.push(calendarText);
   const goals = await listGoals();
   if (goals.length) {
     lines.push('Active goals (WOOP):');
@@ -487,5 +506,9 @@ export async function coachSnapshot() {
   }
   const rest = await db()`select date from rest_days where date >= ${t.today} order by date limit 4`;
   if (rest.length) lines.push(`Booked rest days ahead: ${rest.map((r) => r.date).join(', ')}.`);
+  const healthText = await (await health()).healthForCoach().catch(() => '');
+  if (healthText) lines.push(healthText);
+  const business = await businessForCoach().catch(() => '');
+  if (business) lines.push(business);
   return lines.join('\n');
 }

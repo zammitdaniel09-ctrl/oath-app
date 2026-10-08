@@ -6,6 +6,8 @@ import { sendPush, vapidKeys } from './push.js';
 import { generateBrief } from './coach.js';
 import { buildToday } from './state.js';
 import { prepareReview } from './review.js';
+import { syncAllFeeds } from './calendar.js';
+import { refreshBusiness, businessSources } from './business.js';
 
 const BRIEF_TITLES = { morning: 'Morning brief', midday: 'Midday check', evening: 'Evening check' };
 
@@ -119,5 +121,13 @@ export function startLoop(intervalMs = 30000) {
     console.error('tick failed', err);
   });
   run();
+  // Calendars every 15 minutes and business sites every 10, off the tick so a slow server never
+  // delays judging.
+  const syncCalendars = () => syncAllFeeds().catch((err) => console.error('calendar sync failed', err));
+  const syncBusiness = () => (businessSources().length ? refreshBusiness() : Promise.resolve()).catch((err) => console.error('business refresh failed', err));
+  syncCalendars();
+  syncBusiness();
+  setInterval(syncCalendars, 15 * 60000).unref();
+  setInterval(syncBusiness, 10 * 60000).unref();
   return setInterval(run, intervalMs);
 }

@@ -1,6 +1,6 @@
 // Goals and their mind maps. Outline first on iPhone (the research is clear that canvases are the
 // weakest way to edit maps on a phone); the map view gives the overview and works best on iPad.
-import { state, esc, api, act, toast, fmtDay, bar, strengthChip, haptic, DAY_NAMES, form2obj, localToday } from './ui.js';
+import { state, esc, api, act, toast, fmtDay, bar, strengthChip, haptic, DAY_NAMES, form2obj, localToday, icon, pageHead, miniRing } from './ui.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 export function initGoals(c) { ctx = c; }
@@ -28,10 +28,10 @@ function dueText(g) {
 function goalCard(g) {
   const closed = g.status !== 'active';
   return `<a class="goal-card${closed ? ' closed' : ''}" href="#/goals/${g.id}">
-    <span class="goal-top"><span class="goal-title">${esc(g.title)}</span>
-      <span class="goal-pct">${g.pct === null ? '' : `${g.pct}<small>%</small>`}</span></span>
-    ${bar(g.pct)}
-    <span class="goal-meta">${closed ? (g.status === 'done' ? 'Achieved' : 'Dropped') : esc(g.label)}${dueText(g) && !closed ? `. ${dueText(g)}` : ''}</span>
+    <span class="goal-ring">${miniRing(g.pct ?? 0, 52)}<b>${g.pct === null ? '' : `${g.pct}<small>%</small>`}</b></span>
+    <span class="goal-text"><span class="goal-title">${esc(g.title)}</span>
+      <span class="goal-meta">${closed ? (g.status === 'done' ? 'Achieved' : 'Dropped') : esc(g.label)}${dueText(g) && !closed ? `. ${dueText(g)}` : ''}</span></span>
+    ${icon('chevron', 'chev')}
   </a>`;
 }
 
@@ -40,16 +40,17 @@ export function viewGoals() {
   if (!goals) return ctx.shell('<p class="muted">Loading</p>');
   const active = goals.filter((g) => g.status === 'active');
   const closed = goals.filter((g) => g.status !== 'active');
-  ctx.shell(`<div class="split"><div>
-    <section class="section"><div class="section-head"><h2>Goals</h2><a class="btn small" href="#/goals/new">New goal</a></div>
+  ctx.shell(`${pageHead('Goals', { over: `${active.length} active`, actions: `<a class="icon-btn accent" href="#/goals/new" aria-label="New goal">${icon('plus')}</a>` })}
+    <div class="split"><div>
+    <section class="section">
       ${active.length ? `<div class="goal-list">${active.map(goalCard).join('')}</div>`
         : `<div class="card empty-goal"><h3>What are you working towards?</h3>
             <p class="muted" style="margin-top:6px">A goal gets a number or a set of steps, a date, and the obstacle you expect. Then you break it down in a map, and any branch can become a habit or a task. Progress rolls back up on its own.</p>
-            <div class="form-actions"><a class="btn" href="#/goals/new">Set your first goal</a></div></div>`}
+            <div class="form-actions"><a class="btn primary" href="#/goals/new">Set your first goal</a></div></div>`}
     </section>
-    ${closed.length ? `<section class="section"><div class="section-head"><h3>Closed</h3></div><div class="goal-list">${closed.map(goalCard).join('')}</div></section>` : ''}
+    ${closed.length ? `<section class="section"><div class="gh"><h2>Closed</h2></div><div class="goal-list">${closed.map(goalCard).join('')}</div></section>` : ''}
   </div><aside>
-    <section class="section"><div class="section-head"><h3>How goals work here</h3></div>
+    <section class="section"><div class="gh"><h2>How goals work here</h2></div>
       <div class="card prose">
         <p>Each goal is written as WOOP: what you want, why it matters, what inside you will get in the way, and your if-then plan for that moment. That format has the best evidence behind it.</p>
         <p>Give it a number when you can. Specific, measurable goals beat "do your best".</p>
@@ -89,16 +90,15 @@ function goalForm(g) {
           <textarea class="input" name="plan" maxlength="500" placeholder="If I open the code before noon, then I message two VIP members first">${esc(g?.plan || '')}</textarea></label></li>
     </ol>
     <div class="form-actions">
-      <button class="btn" type="submit">${g ? 'Save goal' : 'Set the goal'}</button>
-      ${g ? '<button class="btn quiet" type="button" data-action="goal-edit-cancel">Cancel</button>' : '<a class="btn quiet" href="#/goals">Cancel</a>'}
+      <button class="btn primary" type="submit">${g ? 'Save goal' : 'Set the goal'}</button>
+      ${g ? '<button class="btn tinted" type="button" data-action="goal-edit-cancel">Cancel</button>' : '<a class="btn tinted" href="#/goals">Cancel</a>'}
     </div>
   </form>`;
 }
 
 export function viewGoalNew() {
-  ctx.shell(`<div class="narrow">
-    <section class="section"><div class="section-head"><h2>New goal</h2></div>
-      <div class="card">${goalForm(null)}</div></section></div>`);
+  ctx.shell(`<a class="back" href="#/goals">${icon('back')}Goals</a>${pageHead('New goal', { over: 'Wish, outcome, obstacle, plan' })}<div class="narrow">
+      <div class="card">${goalForm(null)}</div></div>`);
 }
 
 // ---------- One goal ----------
@@ -146,7 +146,7 @@ function outline(goal, tree) {
     <form class="node-add" data-form="node-add">
       <label class="sr" for="node-add-text">New branch</label>
       <input id="node-add-text" class="input" name="text" maxlength="200" autocomplete="off" placeholder="${parent ? `Add under "${esc(parent.text)}"` : 'Add a branch'}" required>
-      <button class="btn" type="submit">Add</button>
+      <button class="btn primary" type="submit">Add</button>
     </form>
     ${parent ? `<p class="note">Adding under "${esc(parent.text)}". <button class="linkish" data-action="node-parent-clear">Add at the top level instead</button></p>` : ''}
   </div>`;
@@ -225,8 +225,8 @@ function mapSvg(goal, tree) {
   }).join('');
   return `<div class="map-wrap">
     <div class="map-tools" role="group" aria-label="Zoom">
-      <button class="btn quiet small" data-action="map-zoom" data-z="-1" aria-label="Zoom out">Smaller</button>
-      <button class="btn quiet small" data-action="map-zoom" data-z="1" aria-label="Zoom in">Bigger</button>
+      <button class="btn tinted small" data-action="map-zoom" data-z="-1" aria-label="Zoom out">-</button>
+      <button class="btn tinted small" data-action="map-zoom" data-z="1" aria-label="Zoom in">+</button>
     </div>
     <div class="map-scroll">
       <svg class="map" viewBox="0 0 ${width} ${height}" data-w="${width}" data-h="${height}" width="${Math.round(width * z)}" height="${Math.round(height * z)}" role="img" aria-label="Mind map of ${esc(goal.title)}">
@@ -251,7 +251,7 @@ function sheet(tree) {
         <label class="field"><span>Time</span><input class="input" type="time" name="deadline"></label>
       </div>
       <label class="field"><span>Estimate in minutes</span><input class="input" type="number" name="estimate_min" min="5" max="600" step="5" inputmode="numeric" placeholder="30"></label>
-      <div class="form-actions"><button class="btn" type="submit">Make it a task</button><button class="btn quiet" type="button" data-action="sheet-mode" data-mode="">Back</button></div>
+      <div class="form-actions"><button class="btn primary" type="submit">Make it a task</button><button class="btn tinted" type="button" data-action="sheet-mode" data-mode="">Back</button></div>
     </form>`;
   } else if (state.sheetMode === 'habit') {
     const dayBoxes = DAY_NAMES.map((d, i) => `<label><input type="checkbox" name="days" value="${i + 1}" checked><span>${d.slice(0, 2)}</span></label>`).join('');
@@ -266,28 +266,29 @@ function sheet(tree) {
       <label class="field weekly-only"><span>Times a week</span><input class="input" type="number" name="weekly_target" min="1" max="7" value="3" inputmode="numeric"></label>
       <label class="field"><span>Due by</span><input class="input" type="time" name="deadline" value="21:00"></label>
       <label class="check"><input type="checkbox" name="non_negotiable"> Non-negotiable</label>
-      <div class="form-actions"><button class="btn" type="submit">Make it a habit</button><button class="btn quiet" type="button" data-action="sheet-mode" data-mode="">Back</button></div>
+      <div class="form-actions"><button class="btn primary" type="submit">Make it a habit</button><button class="btn tinted" type="button" data-action="sheet-mode" data-mode="">Back</button></div>
     </form>`;
   }
   const converted = n.kind !== 'idea';
   return `<div class="sheet-backdrop" data-action="sheet-close"></div>
   <div class="sheet" role="dialog" aria-modal="true" aria-label="Branch">
+    <div class="sheet-grab" aria-hidden="true"></div>
     <form data-form="node-edit" data-id="${n.id}">
       <label class="field"><span>Branch</span><input class="input" name="text" maxlength="200" required value="${esc(n.text)}"></label>
-      <div class="form-actions"><button class="btn" type="submit">Save</button><button class="btn quiet" type="button" data-action="sheet-close">Close</button></div>
+      <div class="form-actions"><button class="btn primary" type="submit">Save</button><button class="btn tinted" type="button" data-action="sheet-close">Close</button></div>
     </form>
     ${extra || `<div class="sheet-actions">
-      <button class="btn quiet" data-action="node-parent" data-id="${n.id}">Add a branch under it</button>
+      <button class="btn tinted" data-action="node-parent" data-id="${n.id}">Add a branch under it</button>
       ${converted ? `<p class="note">This branch is a ${n.kind}${n.kind === 'habit' && n.ref ? ` at ${n.ref.strength}% strength` : ''}.</p>`
-        : `<button class="btn quiet" data-action="sheet-mode" data-mode="task">Make it a task</button>
-           <button class="btn quiet" data-action="sheet-mode" data-mode="habit">Make it a habit</button>`}
+        : `<button class="btn tinted" data-action="sheet-mode" data-mode="task">Make it a task</button>
+           <button class="btn tinted" data-action="sheet-mode" data-mode="habit">Make it a habit</button>`}
       <div class="sheet-move" role="group" aria-label="Move">
-        <button class="btn quiet small" data-action="node-move" data-op="up" data-id="${n.id}">Up</button>
-        <button class="btn quiet small" data-action="node-move" data-op="down" data-id="${n.id}">Down</button>
-        <button class="btn quiet small" data-action="node-move" data-op="outdent" data-id="${n.id}">Out a level</button>
-        <button class="btn quiet small" data-action="node-move" data-op="indent" data-id="${n.id}">In a level</button>
+        <button class="btn tinted small" data-action="node-move" data-op="up" data-id="${n.id}">Up</button>
+        <button class="btn tinted small" data-action="node-move" data-op="down" data-id="${n.id}">Down</button>
+        <button class="btn tinted small" data-action="node-move" data-op="outdent" data-id="${n.id}">Out a level</button>
+        <button class="btn tinted small" data-action="node-move" data-op="indent" data-id="${n.id}">In a level</button>
       </div>
-      <button class="btn quiet danger-text" data-action="node-delete" data-id="${n.id}">Delete branch</button>
+      <button class="btn tinted danger-text" data-action="node-delete" data-id="${n.id}">Delete branch</button>
     </div>`}
   </div>`;
 }
@@ -297,12 +298,11 @@ export function viewGoal() {
   if (!d || d.goal.id !== Number(state.param)) return ctx.shell('<p class="muted">Loading</p>');
   const g = d.goal;
   if (state.editingGoal) {
-    return ctx.shell(`<div class="narrow"><section class="section"><div class="section-head"><h2>Edit goal</h2></div>
-      <div class="card">${goalForm(g)}</div></section></div>`);
+    return ctx.shell(`${pageHead('Edit goal')}<div class="narrow"><div class="card">${goalForm(g)}</div></div>`);
   }
   const closed = g.status !== 'active';
   const head = `<header class="goal-head">
-    <a class="back" href="#/goals">Goals</a>
+    <a class="back" href="#/goals">${icon('back')}Goals</a>
     <h1 class="goal-h">${esc(g.title)}</h1>
     <div class="goal-progress">
       <span class="goal-big">${g.pct === null ? '' : `${g.pct}<small>%</small>`}</span>
@@ -312,32 +312,32 @@ export function viewGoal() {
     ${g.measure === 'number' && !closed ? `<form class="inline-form log-form" data-form="goal-log" data-id="${g.id}">
       <label class="sr" for="goal-log">New value</label>
       <input id="goal-log" class="input" name="value" inputmode="decimal" autocomplete="off" placeholder="New total, or +${g.unit ? `N ${esc(g.unit)}` : 'N'}" required>
-      <button class="btn" type="submit">Update</button></form>
+      <button class="btn primary" type="submit">Update</button></form>
       <p class="note">Now at ${g.currentValue ?? g.startValue ?? 0}${g.unit ? ` ${esc(g.unit)}` : ''}, aiming for ${g.targetValue}${g.unit ? ` ${esc(g.unit)}` : ''}.</p>` : ''}
   </header>`;
 
-  const woop = `<details class="card woop-card"${d.tree.length ? '' : ' open'}>
-    <summary>Why, obstacle and plan</summary>
+  const woop = `<details class="card woop-card disclosure"${d.tree.length ? '' : ' open'}>
+    <summary>${icon('shield')}Why, obstacle and plan</summary>
     <dl>
       <dt>Why it matters</dt><dd>${g.why ? esc(g.why) : '<span class="faint">Not written yet</span>'}</dd>
       <dt>What will get in the way</dt><dd>${g.obstacle ? esc(g.obstacle) : '<span class="faint">Not written yet</span>'}</dd>
       <dt>If-then plan</dt><dd>${g.plan ? esc(g.plan) : '<span class="faint">Not written yet</span>'}</dd>
     </dl>
     <div class="form-actions">
-      <button class="btn quiet small" data-action="goal-edit">Edit</button>
-      <a class="btn quiet small" href="#/coach?ask=${encodeURIComponent(`Help me sharpen my goal "${g.title}". Walk me through WOOP one step at a time, then suggest the next 3 steps.`)}">Sharpen with the coach</a>
-      ${closed ? `<button class="btn quiet small" data-action="goal-status" data-status="active">Reopen</button>`
-        : `<button class="btn quiet small" data-action="goal-status" data-status="done">Mark achieved</button>
-           <button class="btn quiet small" data-action="goal-status" data-status="dropped">Drop</button>`}
+      <button class="btn tinted small" data-action="goal-edit">Edit</button>
+      <a class="btn tinted small" href="#/coach?ask=${encodeURIComponent(`Help me sharpen my goal "${g.title}". Walk me through WOOP one step at a time, then suggest the next 3 steps.`)}">Sharpen with the coach</a>
+      ${closed ? `<button class="btn tinted small" data-action="goal-status" data-status="active">Reopen</button>`
+        : `<button class="btn tinted small" data-action="goal-status" data-status="done">Mark achieved</button>
+           <button class="btn tinted small" data-action="goal-status" data-status="dropped">Drop</button>`}
     </div>
   </details>`;
 
-  const linkedHabits = d.habits.map((h) => `<div class="row" style="grid-template-columns:1fr auto;min-height:50px">
-      <span><span class="row-title">${esc(h.title)}</span>${h.cue ? `<span class="row-meta" style="display:block">After ${esc(h.cue)}</span>` : ''}</span>
-      <span class="row-side">${strengthChip(h.strength)}</span></div>`).join('');
-  const linkedTasks = d.tasks.map((t) => `<div class="row ${t.done ? 'done' : ''}" style="grid-template-columns:1fr auto;min-height:50px">
-      <span class="row-title">${esc(t.title)}</span>
-      <span class="row-side">${t.done ? 'done' : t.dueDate ? fmtDay(t.dueDate) : 'no date'}</span></div>`).join('');
+  const linkedHabits = d.habits.map((h) => `<div class="li li-plain">
+      <span class="li-body"><span class="li-title">${esc(h.title)}</span>${h.cue ? `<span class="li-sub">After ${esc(h.cue)}</span>` : ''}</span>
+      <span class="li-side">${strengthChip(h.strength)}</span></div>`).join('');
+  const linkedTasks = d.tasks.map((t) => `<div class="li li-plain${t.done ? ' done' : ''}">
+      <span class="li-body"><span class="li-title">${esc(t.title)}</span></span>
+      <span class="li-side small faint">${t.done ? 'done' : t.dueDate ? fmtDay(t.dueDate) : 'no date'}</span></div>`).join('');
 
   const seg = `<div class="seg map-seg only-narrow-flex" role="tablist" aria-label="View">
       <button role="tab" aria-selected="${state.mapView === 'outline'}" data-action="map-view" data-view="outline">Outline</button>
@@ -347,7 +347,7 @@ export function viewGoal() {
   ctx.shell(`${head}
     <div class="split goal-split">
       <div>
-        <section class="section"><div class="section-head"><h2>Map</h2>${seg}</div>
+        <section class="section"><div class="gh"><h2>Map</h2>${seg}</div>
           <div class="map-panes view-${state.mapView}">
             <div class="pane-outline">${outline(g, d.tree)}</div>
             <div class="pane-map">${mapSvg(g, d.tree)}</div>
@@ -356,8 +356,8 @@ export function viewGoal() {
       </div>
       <aside>
         ${woop}
-        ${linkedHabits ? `<section class="section"><div class="section-head"><h3>Habits</h3></div><div class="list">${linkedHabits}</div></section>` : ''}
-        ${linkedTasks ? `<section class="section"><div class="section-head"><h3>Tasks</h3><span class="count">${d.tasks.filter((t) => t.done).length} of ${d.tasks.length} done</span></div><div class="list">${linkedTasks}</div></section>` : ''}
+        ${linkedHabits ? `<section class="section"><div class="gh"><h2>Habits</h2></div><div class="group">${linkedHabits}</div></section>` : ''}
+        ${linkedTasks ? `<section class="section"><div class="gh"><h2>Tasks</h2><span class="gh-count">${d.tasks.filter((t) => t.done).length} of ${d.tasks.length} done</span></div><div class="group">${linkedTasks}</div></section>` : ''}
       </aside>
     </div>
     ${sheet(d.tree)}`);

@@ -15,6 +15,9 @@ import { vapidKeys, saveSubscription, removeSubscription, sendPush, subscription
 import { chat, coachHistory, generateBrief, aiEnabled, checkCoach } from './coach.js';
 import { startLoop, runOnce, healIfEmpty } from './loop.js';
 import * as drive from './drive.js';
+import { healthApi, healthShortcut } from './health.js';
+import { calendarApi } from './calendar.js';
+import { businessApi } from './business.js';
 import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleUpdate, webhookSecret } from './telegram.js';
 
 const v = { validTime, validDate };
@@ -94,6 +97,7 @@ shortcut.post('/add', async (c) => {
 });
 shortcut.post('/done', async (c) => c.json(await doneByText((await body(c)).text)));
 shortcut.get('/next', async (c) => c.json(await nextSay()));
+shortcut.route('/', healthShortcut); // POST /api/shortcut/health: Health Auto Export or the free Shortcut
 app.route('/api/shortcut', shortcut);
 
 const api = new Hono();
@@ -142,7 +146,8 @@ api.delete('/rest/:date', async (c) => c.json(await engine.cancelRest(c.req.para
 
 // ---------- Export: everything, as one JSON file ----------
 const EXPORT_TABLES = ['habits', 'completions', 'tasks', 'misses', 'days', 'reflections', 'deferrals', 'focus_sessions',
-  'day_plans', 'goals', 'goal_logs', 'nodes', 'rest_days', 'weekly_reviews', 'coach_messages', 'briefs', 'events'];
+  'day_plans', 'goals', 'goal_logs', 'nodes', 'rest_days', 'weekly_reviews', 'coach_messages', 'briefs', 'events',
+  'health_samples', 'health_workouts', 'cal_events'];
 api.get('/export', async (c) => {
   const out = { exportedAt: new Date().toISOString(), app: 'Oath' };
   for (const t of EXPORT_TABLES) out[t] = await db().unsafe(`select * from ${t} order by 1`);
@@ -265,6 +270,11 @@ api.post('/password', async (c) => {
   const r = await auth.changePassword(b.current, b.next);
   return r.error ? c.json({ error: r.error }, r.status) : c.json({ ok: true });
 });
+
+// ---------- Your data: Apple Health, calendars, business sites ----------
+api.route('/', healthApi);
+api.route('/', calendarApi);
+api.route('/', businessApi);
 
 app.route('/api', api);
 
