@@ -6,7 +6,11 @@ import { connect, migrate, close as closeDb } from './db.js';
 import { validTime, validDate } from './time.js';
 import * as auth from './auth.js';
 import * as engine from './engine.js';
-import { buildToday, buildPlan, buildLedger } from './state.js';
+import { buildToday, buildPlan, buildLedger, buildReview } from './state.js';
+import * as goals from './goals.js';
+import { captureTask, createToken, revokeTokens, tokenCount, tokenValid, doneByText, nextSay } from './capture.js';
+import { prepareReview, finishReview } from './review.js';
+import { db } from './db.js';
 import { vapidKeys, saveSubscription, removeSubscription, sendPush, subscriptionCount } from './push.js';
 import { chat, coachHistory, generateBrief, aiEnabled, checkCoach } from './coach.js';
 import { startLoop, runOnce, healIfEmpty } from './loop.js';
@@ -71,12 +75,82 @@ app.post('/api/logout', async (c) => {
   return c.json({ ok: true });
 });
 
+// ---------- Siri and Shortcuts (personal token, no cookie) ----------
+const shortcut = new Hono();
+shortcut.use('*', async (c, next) => {
+  if (!(await tokenValid(c.req.header('authorization'))) && !(await auth.isAuthed(c))) {
+    return c.json({ error: 'Bad token.', say: 'Oath did not accept the token. Make a new one in Oath settings.' }, 401);
+  }
+  await next();
+});
+shortcut.onError((err, c) => {
+  if (err instanceof engine.RuleError) return c.json({ error: err.message, say: err.message }, err.status);
+  console.error(err);
+  return c.json({ error: 'Server error', say: 'Oath hit an error. Try again in the app.' }, 500);
+});
+shortcut.post('/add', async (c) => {
+  const r = await captureTask((await body(c)).text, 'siri');
+  return c.json({ ok: true, say: r.say, task: { id: r.task.id, title: r.task.title, due: r.task.due_date, deadline: r.task.deadline } });
+});
+shortcut.post('/done', async (c) => c.json(await doneByText((await body(c)).text)));
+shortcut.get('/next', async (c) => c.json(await nextSay()));
+app.route('/api/shortcut', shortcut);
+
 const api = new Hono();
 api.use('*', auth.requireAuth());
 
 api.get('/today', async (c) => c.json(await buildToday()));
 api.get('/plan', async (c) => c.json(await buildPlan()));
 api.get('/ledger', async (c) => c.json(await buildLedger()));
+api.get('/review', async (c) => c.json(await buildReview()));
+api.post('/review/write', async (c) => c.json(await prepareReview()));
+api.post('/review/finish', async (c) => c.json(await finishReview(await body(c))));
+
+// ---------- Capture ----------
+api.post('/capture', async (c) => c.json(await captureTask((await body(c)).text, 'you')));
+api.get('/tokens', async (c) => c.json({ count: await tokenCount() }));
+api.post('/tokens', async (c) => c.json(await createToken((await body(c)).label)));
+api.delete('/tokens', async (c) => c.json(await revokeTokens()));
+
+// ---------- Goals and maps ----------
+api.get('/goals', async (c) => c.json({ goals: await goals.listGoals({ includeClosed: c.req.query('all') === '1' }) }));
+api.post('/goals', async (c) => c.json(await goals.createGoal(await body(c))));
+api.get('/goals/:id', async (c) => c.json(await goals.getGoal(idParam(c))));
+api.patch('/goals/:id', async (c) => c.json(await goals.updateGoal(idParam(c), await body(c))));
+api.post('/goals/:id/status', async (c) => c.json(await goals.setGoalStatus(idParam(c), (await body(c)).status)));
+api.post('/goals/:id/log', async (c) => {
+  const b = await body(c);
+  return c.json(await goals.logGoal(idParam(c), b.value, b.note));
+});
+api.post('/goals/:id/nodes', async (c) => c.json(await goals.addNode(idParam(c), await body(c))));
+api.patch('/nodes/:id', async (c) => c.json(await goals.updateNode(idParam(c), await body(c))));
+api.post('/nodes/:id/move', async (c) => c.json(await goals.moveNode(idParam(c), (await body(c)).op)));
+api.delete('/nodes/:id', async (c) => c.json(await goals.deleteNode(idParam(c))));
+api.post('/nodes/:id/convert', async (c) => {
+  const b = await body(c);
+  return c.json(await goals.convertNode(idParam(c), b.to, b.options || {}));
+});
+api.post('/nodes/:id/toggle', async (c) => c.json(await goals.toggleNodeTask(idParam(c))));
+
+// ---------- Rest days ----------
+api.get('/rest', async (c) => c.json({ days: await engine.listRest() }));
+api.post('/rest', async (c) => {
+  const b = await body(c);
+  return c.json(await engine.bookRest(b.date, b.reason));
+});
+api.delete('/rest/:date', async (c) => c.json(await engine.cancelRest(c.req.param('date'))));
+
+// ---------- Export: everything, as one JSON file ----------
+const EXPORT_TABLES = ['habits', 'completions', 'tasks', 'misses', 'days', 'reflections', 'deferrals', 'focus_sessions',
+  'day_plans', 'goals', 'goal_logs', 'nodes', 'rest_days', 'weekly_reviews', 'coach_messages', 'briefs', 'events'];
+api.get('/export', async (c) => {
+  const out = { exportedAt: new Date().toISOString(), app: 'Oath' };
+  for (const t of EXPORT_TABLES) out[t] = await db().unsafe(`select * from ${t} order by 1`);
+  out.game = (await db()`select value from kv where key = 'game'`)[0]?.value || null;
+  out.settings = (await db()`select value from kv where key = 'settings'`)[0]?.value || null;
+  c.header('Content-Disposition', `attachment; filename="oath-export-${new Date().toISOString().slice(0, 10)}.json"`);
+  return c.json(out);
+});
 
 // ---------- Habits ----------
 api.post('/habits', async (c) => c.json(await engine.createHabit(await body(c), v)));
@@ -84,9 +158,10 @@ api.patch('/habits/:id', async (c) => c.json(await engine.updateHabit(idParam(c)
 api.delete('/habits/:id', async (c) => c.json(await engine.archiveHabit(idParam(c))));
 api.post('/habits/:id/keep', async (c) => {
   const id = idParam(c);
-  await engine.completeHabit(id, (await body(c)).note);
+  const b = await body(c);
+  const r = await engine.completeHabit(id, { note: b.note, minimum: b.minimum });
   await drive.closeFocusFor('habit', id);
-  return c.json({ ok: true, reaction: await drive.reactionAfterDone('habit', id) });
+  return c.json({ ok: true, comeback: r.comeback || 0, reaction: await drive.reactionAfterDone('habit', id, { comeback: r.comeback, minimum: r.minimum }) });
 });
 api.post('/habits/:id/undo', async (c) => c.json(await engine.undoHabit(idParam(c))));
 
@@ -101,6 +176,7 @@ api.post('/tasks/:id/done', async (c) => {
   return c.json({ ok: true, reaction: await drive.reactionAfterDone('task', id) });
 });
 api.post('/tasks/:id/undo', async (c) => c.json(await engine.undoTask(idParam(c))));
+api.post('/tasks/:id/triage', async (c) => c.json(await engine.triageTask(idParam(c), (await body(c)).action)));
 
 // ---------- The daily drive ----------
 api.post('/oath', async (c) => c.json(await drive.commitDay(await body(c))));
@@ -123,7 +199,8 @@ api.post('/telegram/test', async (c) => {
 
 // ---------- Pardons ----------
 api.post('/misses/:id/pardon', async (c) => {
-  const r = await engine.pardon(idParam(c), (await body(c)).reason);
+  const b = await body(c);
+  const r = await engine.pardon(idParam(c), { reason: b.reason, plan: b.plan });
   return c.json(r);
 });
 
@@ -160,6 +237,14 @@ api.patch('/settings', async (c) => {
   if (b.morningTime !== undefined) {
     if (!validTime(b.morningTime)) throw new engine.RuleError('Morning time must be HH:MM.');
     patch.morningTime = b.morningTime;
+  }
+  if (b.dayEnd !== undefined) {
+    if (!validTime(b.dayEnd)) throw new engine.RuleError('Day end must be HH:MM.');
+    patch.dayEnd = b.dayEnd;
+  }
+  if (b.alerts !== undefined) {
+    if (!['smart', 'both', 'push'].includes(b.alerts)) throw new engine.RuleError('Unknown alert setting.');
+    patch.alerts = b.alerts;
   }
   if (b.middayTime !== undefined) {
     if (!validTime(b.middayTime)) throw new engine.RuleError('Midday time must be HH:MM.');

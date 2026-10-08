@@ -105,12 +105,13 @@ test('keep, undo window and deadline lock', async () => {
 test('pardons restore HP once, need a reason and are limited', async () => {
   const t = await today();
   const missId = t.data.items.find((i) => i.status === 'missed').missId;
-  assert.equal((await call('POST', `/api/misses/${missId}/pardon`, { reason: 'too short' })).status, 400);
-  const p = await call('POST', `/api/misses/${missId}/pardon`, { reason: 'Hospital visit with my dad all morning' });
+  assert.equal((await call('POST', `/api/misses/${missId}/pardon`, { reason: 'too short', plan: 'If it happens, I will read at night' })).status, 400);
+  assert.equal((await call('POST', `/api/misses/${missId}/pardon`, { reason: 'Hospital visit with my dad all morning' })).status, 400, 'a pardon needs an if-then plan');
+  const p = await call('POST', `/api/misses/${missId}/pardon`, { reason: 'Hospital visit with my dad all morning', plan: 'If a family thing eats the morning, I read 10 pages at lunch' });
   assert.equal(p.status, 200);
   assert.equal(p.data.hp, 100);
   assert.equal(p.data.pardonsLeft, 1);
-  assert.equal((await call('POST', `/api/misses/${missId}/pardon`, { reason: 'Hospital visit with my dad all morning' })).status, 409);
+  assert.equal((await call('POST', `/api/misses/${missId}/pardon`, { reason: 'Hospital visit with my dad all morning', plan: 'If a family thing eats the morning, I read 10 pages at lunch' })).status, 409);
 });
 
 test('rule changes on an open habit wait until tomorrow', async () => {
@@ -138,7 +139,7 @@ test('reminders fire in their window and only once', async () => {
 
 test('hard tasks cost HP and cannot be deleted once due', async () => {
   setLocal('2026-10-07T14:40');
-  const t = await call('POST', '/api/tasks', { title: 'Send the VAT return', due_date: '2026-10-07', deadline: '15:00', hard: true });
+  const t = await call('POST', '/api/tasks', { title: 'Send the VAT return', due_date: '2026-10-07', deadline: '15:00', hard: true, first_step: 'Open the VAT portal' });
   assert.equal(t.status, 200);
   assert.equal((await call('DELETE', `/api/tasks/${t.data.id}`)).status, 409);
   assert.equal((await call('PATCH', `/api/tasks/${t.data.id}`, { due_date: '2026-10-09' })).status, 409);
@@ -189,10 +190,12 @@ test('day close, clean-day bonus and catch-up after downtime', async () => {
 test('running out of HP kills you and resets the season', async () => {
   setLocal('2026-10-11T09:05');
   const before = (await today()).data.game;
-  await call('POST', '/api/habits', { name: 'Cold plunge', deadline: '10:00', non_negotiable: true, penalty: 100 });
+  const cap = await call('POST', '/api/habits', { name: 'Cold plunge', deadline: '10:00', non_negotiable: true, penalty: 100 });
+  assert.equal(cap.status, 409, 'a fourth non-negotiable is refused while the others are weak');
+  await call('POST', '/api/habits', { name: 'Cold plunge', deadline: '10:00', penalty: 100 });
   setLocal('2026-10-11T10:01');
   const notes = await runOnce();
-  assert.ok(notes.some((n) => n.title === 'You died.'), JSON.stringify(notes));
+  assert.ok(notes.some((n) => n.tag === 'death' && /Season \d+ is over/.test(n.title) && /keeps its strength/.test(n.body)), JSON.stringify(notes));
   const g = (await today()).data.game;
   assert.equal(g.deaths, before.deaths + 1);
   assert.equal(g.season, before.season + 1);

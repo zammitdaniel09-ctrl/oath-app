@@ -1,6 +1,6 @@
 // Service worker: offline shell and push notifications.
-const CACHE = 'oath-v2';
-const SHELL = ['/', '/app.css', '/app.js', '/manifest.webmanifest', '/icons/apple-touch-icon.png', '/icons/icon-192.png', '/icons/badge.png', '/fonts/archivo-latin-wdth-normal.woff2'];
+const CACHE = 'oath-v4';
+const SHELL = ['/', '/app.css', '/app.js', '/ui.js', '/parse.js', '/goals.js', '/manifest.webmanifest', '/icons/apple-touch-icon.png', '/icons/icon-192.png', '/icons/badge.png', '/fonts/archivo-latin-wdth-normal.woff2'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -38,16 +38,28 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; } catch { data = { title: 'Oath', body: event.data?.text() || '' }; }
-  event.waitUntil(
-    self.registration.showNotification(data.title || 'Oath', {
-      body: data.body || '',
-      tag: data.tag || 'oath',
-      renotify: true,
+  // Declarative Web Push payloads ({web_push: 8030, notification: {...}}) and the older shape.
+  const n = data.web_push === 8030 && data.notification ? data.notification : data;
+  let target = n.url || '/#/today';
+  if (n.navigate) {
+    try {
+      const u = new URL(n.navigate);
+      target = u.pathname + u.search + u.hash;
+    } catch { /* keep the default */ }
+  }
+  const badge = Number(n.app_badge);
+  event.waitUntil(Promise.all([
+    self.registration.showNotification(n.title || 'Oath', {
+      body: n.body || '',
+      tag: n.tag || undefined,
       icon: '/icons/icon-192.png',
       badge: '/icons/badge.png',
-      data: { url: data.url || '/#/today' },
+      data: { url: target },
     }),
-  );
+    Number.isFinite(badge) && self.navigator.setAppBadge
+      ? (badge > 0 ? self.navigator.setAppBadge(badge) : self.navigator.clearAppBadge()).catch(() => {})
+      : Promise.resolve(),
+  ]));
 });
 
 self.addEventListener('notificationclick', (event) => {

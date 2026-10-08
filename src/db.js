@@ -170,6 +170,81 @@ create table if not exists telegram_updates (
 );
 create index if not exists completions_date_idx on completions (date);
 create index if not exists deferrals_date_idx on deferrals (date);
+
+-- Research-driven additions (Oct 2026): cues, minimum versions, weekly targets, goals, maps, rest days.
+alter table habits add column if not exists cue text not null default '';
+alter table habits add column if not exists if_then text not null default '';
+alter table habits add column if not exists minimum text not null default '';
+alter table habits add column if not exists weekly_target int;
+alter table habits add column if not exists remind_at text;
+alter table habits add column if not exists goal_id int;
+alter table completions add column if not exists minimum boolean not null default false;
+alter table completions add column if not exists comeback boolean not null default false;
+alter table tasks add column if not exists goal_id int;
+alter table tasks add column if not exists node_id int;
+alter table tasks add column if not exists first_step text not null default '';
+alter table tasks add column if not exists estimate_min int;
+alter table misses add column if not exists pardon_plan text;
+alter table misses add column if not exists repeat boolean not null default false;
+alter table days add column if not exists rest boolean not null default false;
+alter table reflections add column if not exists tomorrow text not null default '';
+
+create table if not exists goals (
+  id serial primary key,
+  title text not null,
+  why text not null default '',
+  obstacle text not null default '',
+  plan text not null default '',
+  measure text not null default 'steps',
+  unit text not null default '',
+  start_value double precision,
+  target_value double precision,
+  current_value double precision,
+  target_date text,
+  status text not null default 'active',
+  sort int not null default 0,
+  created_at timestamptz not null,
+  done_at timestamptz
+);
+create table if not exists goal_logs (
+  id serial primary key,
+  goal_id int not null references goals(id),
+  value double precision not null,
+  note text not null default '',
+  at timestamptz not null
+);
+create table if not exists nodes (
+  id serial primary key,
+  goal_id int not null references goals(id),
+  parent_id int,
+  text text not null,
+  sort double precision not null default 0,
+  kind text not null default 'idea',
+  ref_id int,
+  created_at timestamptz not null
+);
+create table if not exists rest_days (
+  date text primary key,
+  reason text not null default '',
+  booked_at timestamptz not null
+);
+create table if not exists api_tokens (
+  token_hash text primary key,
+  label text not null default '',
+  created_at timestamptz not null,
+  last_used timestamptz
+);
+create table if not exists weekly_reviews (
+  week_start text primary key,
+  coach_text text,
+  focus text not null default '',
+  obstacle_plan text not null default '',
+  decisions jsonb,
+  done_at timestamptz,
+  created_at timestamptz not null default now()
+);
+create index if not exists nodes_goal_idx on nodes (goal_id);
+create index if not exists tasks_goal_idx on tasks (goal_id);
 create index if not exists misses_date_idx on misses (date);
 create index if not exists events_at_idx on events (at);
 `;

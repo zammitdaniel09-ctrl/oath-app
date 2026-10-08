@@ -1,123 +1,36 @@
 // Oath web app. Plain modules, no build step.
-
-const $app = document.getElementById('app');
-const $toast = document.getElementById('toast');
-
-const state = {
-  route: 'today',
-  today: null,
-  plan: null,
-  ledger: null,
-  coach: null,
-  settings: null,
-  pardoning: null,
-  editingHabit: null,
-  editingTask: null,
-  sending: false,
-  focusMinutes: 25,
-  dodging: null,
-  telegram: null,
-  push: { supported: false, permission: 'default', subscribed: false },
-};
-
-// ---------- Utilities ----------
-
-const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-
-class ApiError extends Error {
-  constructor(message, status) { super(message); this.status = status; }
-}
-
-async function api(method, path, body) {
-  const opts = { method, credentials: 'same-origin', headers: {} };
-  if (method !== 'GET') {
-    opts.headers['content-type'] = 'application/json';
-    opts.body = JSON.stringify(body ?? {});
-  }
-  let res;
-  try {
-    res = await fetch(path, opts);
-  } catch {
-    throw new ApiError('You are offline. Try again when you have a connection.', 0);
-  }
-  let data = null;
-  try { data = await res.json(); } catch { /* empty body */ }
-  if (res.status === 401 && !['/api/login', '/api/setup', '/api/password'].includes(path)) {
-    renderLogin();
-    throw new ApiError('Log in first.', 401);
-  }
-  if (!res.ok) throw new ApiError(data?.error || `Request failed (${res.status}).`, res.status);
-  return data;
-}
-
-let toastTimer;
-function toast(msg, bad = false, ms = null, big = false) {
-  $toast.textContent = msg;
-  $toast.className = `toast show${bad ? ' bad' : ''}${big ? ' big' : ''}`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { $toast.className = 'toast'; }, ms || (bad ? 4200 : 2400));
-}
-
-function react(r) {
-  if (r?.text) toast(r.text, false, r.big ? 6500 : 4500, Boolean(r.big));
-}
-
-const tz = () => state.today?.timezone || 'Europe/Malta';
-
-function fmtClock(iso) {
-  if (!iso) return '';
-  return new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: tz() }).format(new Date(iso));
-}
-
-function fmtDay(dateStr, opts = { weekday: 'short', day: 'numeric', month: 'short' }) {
-  if (!dateStr) return '';
-  return new Intl.DateTimeFormat('en-GB', { ...opts, timeZone: 'UTC' }).format(new Date(`${dateStr}T12:00:00Z`));
-}
-
-function left(iso) {
-  const ms = new Date(iso).getTime() - Date.now();
-  if (ms <= 0) return { text: 'due now', cls: 'gone' };
-  const min = Math.ceil(ms / 60000);
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  const text = h ? `${h} h ${m} min left` : `${m} min left`;
-  return { text, cls: min <= 60 ? 'soon' : '' };
-}
-
-function daysBetween(a, b) {
-  return Math.round((new Date(`${b}T12:00:00Z`) - new Date(`${a}T12:00:00Z`)) / 86400000);
-}
-
-const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-function scheduleText(days, deadline) {
-  const set = [...days].sort();
-  let when;
-  if (set.length === 7) when = 'Every day';
-  else if (set.join() === '1,2,3,4,5') when = 'Weekdays';
-  else if (set.join() === '6,7') when = 'Weekends';
-  else when = set.map((d) => DAY_NAMES[d - 1]).join(', ');
-  return `${when} by ${deadline}`;
-}
-
-const CHECK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
-
-const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+import {
+  $app, state, hooks, esc, ApiError, api, toast, react, act, form2obj, fmtClock, fmtDay, left, daysBetween, fmtMin,
+  DAY_NAMES, scheduleText, CHECK, isStandalone, isIOS, haptic, bar, strengthChip, localToday, localNowHM,
+} from './ui.js';
+import { parseCapture } from './parse.js';
+import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
 
 // ---------- Shell ----------
 
 const TABS = [
   ['today', 'Today'],
   ['plan', 'Plan'],
+  ['goals', 'Goals'],
   ['coach', 'Coach'],
-  ['ledger', 'Ledger'],
-  ['settings', 'Settings'],
+  ['review', 'Review'],
 ];
+const ROUTES = ['today', 'plan', 'goals', 'coach', 'review', 'settings'];
 
 function shell(inner) {
   const nav = TABS.map(([id, label]) => `<a href="#/${id}"${state.route === id ? ' aria-current="page"' : ''}>${label}</a>`).join('');
-  $app.innerHTML = `<main>${inner}</main><nav class="tabbar" aria-label="Sections">${nav}</nav>`;
+  const settings = `<a href="#/settings" class="wide-only"${state.route === 'settings' ? ' aria-current="page"' : ''}>Settings</a>`;
+  $app.innerHTML = `<main>${inner}</main><nav class="tabbar" aria-label="Sections">${nav}${settings}</nav>`;
+  applyResponsive();
 }
+
+function applyResponsive() {
+  const wide = window.matchMedia('(min-width: 900px)').matches;
+  document.querySelectorAll('.only-wide').forEach((el) => { el.hidden = !wide; });
+  document.querySelectorAll('.only-narrow').forEach((el) => { el.hidden = wide; });
+}
+
+initGoals({ shell, render: () => render(), go: () => go() });
 
 // ---------- Today ----------
 
@@ -131,25 +44,39 @@ function meter(game, lostToday) {
   return { html: `<div class="meter${low ? ' low' : ''}" role="img" aria-label="${game.hp} of ${game.maxHp} HP">${cells}</div>`, low };
 }
 
+function streakText(i) {
+  if (!i.streak) return '';
+  return i.flexible ? `${i.streak} ${i.streak === 1 ? 'week' : 'weeks'} in a row` : `${i.streak} day streak`;
+}
+
 function habitRow(i, t) {
   const cls = `row ${i.status}${i.heavy ? ' heavy' : ''}`;
-  const side = `<span class="row-side">${i.streak ? `<span class="streak">${i.streak}<small>${i.streak === 1 ? 'day' : 'days'}</small></span>` : ''}</span>`;
+  const side = `<span class="row-side">${strengthChip(i.strength)}</span>`;
   const rulesNote = i.rulesChangeFrom ? `, new rules from ${fmtDay(i.rulesChangeFrom)}` : '';
+  const cue = i.cue ? `After ${esc(i.cue)}. ` : '';
+  const flexLine = i.flexible ? `${i.weekDone} of ${i.weekTarget} this week` : '';
   if (i.status === 'open') {
     const l = left(i.dueAt);
+    const when = i.flexible
+      ? `${flexLine}${i.mustToday ? `, <span class="soon">must be today</span>` : ''}`
+      : `Due ${i.deadline}, <span class="${l.cls}" data-left="${i.dueAt}">${l.text}</span>${i.heavy ? `, ${i.penalty} HP at stake` : ''}`;
+    const relapse = i.missedLast ? '<span class="tag">Missed last time</span> ' : '';
     return `<button class="${cls}" data-action="keep" data-id="${i.id}">
       <span class="box">${CHECK}</span>
-      <span><span class="row-title">${esc(i.title)}</span>
-        <span class="row-meta" style="display:block">Due ${i.deadline}, <span class="${l.cls}" data-left="${i.dueAt}">${l.text}</span>${i.heavy ? `, ${i.penalty} HP at stake` : ''}${rulesNote}</span></span>
+      <span><span class="row-title">${relapse}${esc(i.title)}</span>
+        <span class="row-meta" style="display:block">${cue}${when}${rulesNote}</span></span>
       ${side}</button>`;
   }
   let meta = '';
   let actions = '';
   if (i.status === 'kept') {
-    meta = `<span class="good">Kept</span> at ${fmtClock(i.keptAt)}${rulesNote}`;
+    meta = `<span class="good">${i.keptMinimum ? 'Minimum kept' : i.comeback ? 'Comeback' : 'Kept'}</span> at ${fmtClock(i.keptAt)}${i.flexible ? `. ${flexLine}` : ''}${streakText(i) ? `. ${streakText(i)}` : ''}`;
     if (i.canUndo) actions = `<button class="btn quiet small" data-action="undo" data-id="${i.id}">Undo</button>`;
+  } else if (i.status === 'met') {
+    meta = `<span class="good">Week done</span>. ${flexLine}. Log more if you like.`;
+    actions = `<button class="btn quiet small" data-action="keep" data-id="${i.id}">Log today</button>`;
   } else if (i.status === 'missed') {
-    meta = `<span class="bad">Missed at ${i.deadline}, minus ${i.penalty} HP</span>`;
+    meta = `<span class="bad">Missed at ${i.deadline}, minus ${i.penalty} HP${i.missRepeat ? ' (second in a row)' : ''}</span>. Keep it next time for +${t.settings.comebackBonus} HP.`;
     actions = pardonControls(i.missId, t);
   } else if (i.status === 'pardoned') {
     meta = 'Pardoned. Streak kept, HP restored.';
@@ -166,8 +93,11 @@ function pardonControls(missId, t) {
   if (!missId || !t.pardonable.some((p) => p.id === missId)) return '';
   if (state.pardoning === missId) {
     return `<form class="pardon-form" data-form="pardon" data-id="${missId}" style="width:100%">
-      <label class="field"><span>Why should this not count? The coach reads this.</span>
-        <textarea class="input" name="reason" minlength="15" required></textarea></label>
+      <label class="field"><span>What specifically got in the way?</span>
+        <textarea class="input" name="reason" minlength="10" required></textarea></label>
+      <label class="field"><span>If that happens again, I will...</span>
+        <input class="input" name="plan" minlength="10" required value="If " autocomplete="off"></label>
+      <p class="note">Your plan is quoted back in this habit's next reminder.</p>
       <div class="form-actions">
         <button class="btn" type="submit">Pardon it</button>
         <button class="btn quiet" type="button" data-action="pardon-cancel">Cancel</button>
@@ -184,14 +114,19 @@ function taskRow(k, t) {
     const dayText = k.dueDate === t.today ? 'today' : fmtDay(k.dueDate);
     due = k.overdue ? `<span class="bad">Overdue since ${fmtDay(k.dueDate)}</span>` : `Due ${dayText}${k.deadline ? ` ${k.deadline}` : ''}`;
   }
-  const hardText = k.heavy ? `, ${k.penalty} HP at stake` : '';
-  const by = k.createdBy === 'coach' ? ', added by the coach' : '';
+  const extras = [
+    k.heavy ? `${k.penalty} HP at stake` : '',
+    k.estimate ? `about ${fmtMin(k.estimate)}` : '',
+    k.goalTitle ? esc(k.goalTitle) : '',
+    k.createdBy === 'coach' ? 'added by the coach' : k.createdBy === 'siri' ? 'added by Siri' : '',
+  ].filter(Boolean).join(', ');
   if (k.status === 'open') {
     const l = k.heavy && k.dueAt && k.dueDate === t.today ? left(k.dueAt) : null;
     return `<button class="${cls}" data-action="task-done" data-id="${k.id}">
       <span class="box">${CHECK}</span>
       <span><span class="row-title">${esc(k.title)}</span>
-        <span class="row-meta" style="display:block">${due}${l ? `, <span class="${l.cls}" data-left="${k.dueAt}">${l.text}</span>` : ''}${hardText}${by}</span></span>
+        <span class="row-meta" style="display:block">${due}${l ? `, <span class="${l.cls}" data-left="${k.dueAt}">${l.text}</span>` : ''}${extras ? `, ${extras}` : ''}</span>
+        ${k.heavy && k.firstStep ? `<span class="row-meta first-step" style="display:block">First step: ${esc(k.firstStep)}</span>` : ''}</span>
       <span></span></button>`;
   }
   let meta = '';
@@ -217,25 +152,22 @@ function taskRow(k, t) {
 function hpBars(days, n = 14) {
   const list = days.slice(-n);
   if (!list.length) return '<p class="muted" style="margin-top:8px">Your first day closes at midnight.</p>';
-  const bars = list.map((d) => `<i class="${d.clean ? 'clean' : d.missed > 0 ? 'dirty' : ''}" style="height:${Math.max(3, d.hp_end)}%" title="${fmtDay(d.date)}: ${d.hp_end} HP"></i>`).join('');
+  const bars = list.map((d) => `<i class="${d.rest ? 'rest' : d.clean ? 'clean' : d.missed > 0 ? 'dirty' : ''}" style="height:${Math.max(3, d.hp_end)}%" title="${fmtDay(d.date)}: ${d.hp_end} HP"></i>`).join('');
   return `<div class="bars" role="img" aria-label="HP at the end of each of the last ${list.length} days">${bars}</div>
     <div class="bars-legend"><span>${fmtDay(list[0].date)}</span><span>${fmtDay(list[list.length - 1].date)}</span></div>`;
 }
 
-// ---------- The daily drive ----------
-
 const REASONS = ['Tired', 'No time', 'Don\'t feel like it', 'Waiting on something', 'Scared of it'];
 const DURATIONS = [15, 25, 45, 60];
 
-function openDue(t) {
-  return [
-    ...t.items.filter((i) => i.status === 'open'),
-    ...t.tasks.filter((k) => k.status === 'open' && k.dueDate && k.dueDate <= t.today),
-  ].sort((a, b) => (a.dueAt || '9').localeCompare(b.dueAt || '9'));
+function capacityLine(c, settings) {
+  if (!c) return '';
+  const over = c.over > 0;
+  return `<p class="capacity${over ? ' over' : ''}">Estimated task work today: <b>${fmtMin(c.estimated)}</b>. Time left before ${settings.dayEnd}: <b>${fmtMin(c.available)}</b>.${over ? ` That is ${fmtMin(c.over)} more than you have. Move or cut something now, not at 21:00.` : ''}</p>`;
 }
 
 function oathView(t) {
-  const open = openDue(t);
+  const open = [...t.openDue].sort((a, b) => (a.dueAt || '9').localeCompare(b.dueAt || '9'));
   const weekday = fmtDay(t.today, { weekday: 'long' });
   const choices = open.map((i) => `<label class="pick-row${i.heavy ? ' heavy' : ''}">
       <input type="radio" name="focus" value="${i.kind}:${i.id}">
@@ -246,10 +178,12 @@ function oathView(t) {
   return `<section class="oath">
     <h1 class="oath-title">${weekday}. Take the oath.</h1>
     <p class="oath-sub">${open.length} ${open.length === 1 ? 'thing stands' : 'things stand'} between you and a clean day. ${t.progress.atStake} HP at stake.</p>
+    ${t.lastNight ? `<p class="last-night">Last night you planned: <b>${esc(t.lastNight)}</b></p>` : ''}
+    ${capacityLine(t.capacity, t.settings)}
     <form data-form="oath">
       <fieldset class="pick"><legend>Pick the one that matters most today</legend>${choices}</fieldset>
-      <label class="field"><span>Why it matters today</span>
-        <input class="input" name="intention" maxlength="300" autocomplete="off" placeholder="One line. The coach will hold you to it."></label>
+      <label class="field"><span>When and where will you do it?</span>
+        <input class="input" name="intention" maxlength="300" autocomplete="off" required value="${esc(t.lastNight || '')}" placeholder="10:00 at my desk, phone in the kitchen"></label>
       <button type="button" class="hold" data-hold="oath"><span class="hold-fill"></span><span class="hold-label">Hold to take the oath</span></button>
     </form>
   </section>`;
@@ -281,13 +215,19 @@ function nowPanel(t) {
     </section>`;
   }
   const l = n.dueAt ? left(n.dueAt) : null;
-  const meta = [n.dueAt ? `Due ${n.deadline || '23:59'}, <span class="${l.cls}" data-left="${n.dueAt}">${l.text}</span>` : 'No deadline', n.heavy ? `${n.penalty} HP at stake` : ''].filter(Boolean).join(', ');
+  const metaParts = [];
+  if (n.flexible) metaParts.push(`${n.weekDone} of ${n.weekTarget} this week`);
+  else if (n.dueAt) metaParts.push(`Due ${n.deadline || '23:59'}, <span class="${l.cls}" data-left="${n.dueAt}">${l.text}</span>`);
+  else metaParts.push('No deadline');
+  if (n.heavy) metaParts.push(`${n.penalty} HP at stake`);
   const isTask = n.kind === 'task';
   if (state.dodging && state.dodging.kind === n.kind && state.dodging.id === n.id) {
     const chips = REASONS.map((r) => `<label class="chip"><input type="radio" name="reason" value="${esc(r)}"><span>${esc(r)}</span></label>`).join('');
     return `<section class="now dodging">
       <p class="now-label">Not now?</p>
       <h2 class="now-title">${esc(n.title)}</h2>
+      ${n.minimum ? `<button class="btn big minimum-btn" data-action="keep-minimum" data-id="${n.id}">Do the minimum now: ${esc(n.minimum)}</button>
+        <p class="note">The minimum saves the HP and the streak. It does not earn the clean-day bonus.</p>` : ''}
       <form data-form="defer" data-kind="${n.kind}" data-id="${n.id}">
         <fieldset class="chips"><legend>Why not now</legend>${chips}</fieldset>
         <label class="field"><span>Or in your own words</span><input class="input" name="own" maxlength="300" autocomplete="off"></label>
@@ -300,10 +240,18 @@ function nowPanel(t) {
     </section>`;
   }
   const chips = DURATIONS.map((d) => `<button type="button" class="dur${state.focusMinutes === d ? ' on' : ''}" data-action="dur" data-min="${d}" aria-pressed="${state.focusMinutes === d}">${d}</button>`).join('');
-  return `<section class="now${n.isFocus ? ' is-focus' : ''}">
-    <p class="now-label">${n.isFocus ? 'Your one thing. Do it now.' : 'Do this now'}</p>
+  let label = 'Do this now';
+  if (n.isFocus) label = 'Your one thing. Do it now.';
+  else if (n.missedLast) label = `Missed last time. Keep it now for +${t.settings.comebackBonus} HP.`;
+  const sub = [];
+  if (n.cue) sub.push(`After ${esc(n.cue)}`);
+  if (n.firstStep) sub.push(`First step: ${esc(n.firstStep)}`);
+  if (n.lastPlan) sub.push(`Your plan: ${esc(n.lastPlan)}`);
+  return `<section class="now${n.isFocus ? ' is-focus' : ''}${n.missedLast ? ' relapse' : ''}">
+    <p class="now-label">${label}</p>
     <h2 class="now-title">${esc(n.title)}</h2>
-    <p class="now-meta">${meta}</p>
+    <p class="now-meta">${metaParts.join(', ')}</p>
+    ${sub.length ? `<p class="now-cue">${sub.join('<br>')}</p>` : ''}
     <div class="now-actions">
       <button class="btn big" data-action="focus-start" data-kind="${n.kind}" data-id="${n.id}">Start ${state.focusMinutes} min</button>
       <button class="btn quiet" data-action="now-done" data-kind="${n.kind}" data-id="${n.id}">Done</button>
@@ -325,15 +273,37 @@ function progressStrip(t) {
 function planCard(t) {
   if (!t.plan?.coachPlan) return '';
   return `<details class="plan-card"${t.localHour < 12 ? ' open' : ''}>
-    <summary>Battle plan${t.plan.intention ? `: "${esc(t.plan.intention)}"` : ''}</summary>
+    <summary>Battle plan${t.plan.intention ? `: ${esc(t.plan.intention)}` : ''}</summary>
     <div class="plan-text">${esc(t.plan.coachPlan)}</div>
   </details>`;
+}
+
+function triageCard(t) {
+  if (!t.triage.length) return '';
+  const rows = t.triage.slice(0, 5).map((k) => `<div class="triage-row">
+      <span class="row-title">${esc(k.title)}</span>
+      <span class="row-meta">${k.dueDate ? `Was due ${fmtDay(k.dueDate)}` : `No date for ${k.ageDays} days`}</span>
+      <div class="triage-actions" role="group" aria-label="Decide">
+        <button class="btn quiet small" data-action="triage" data-do="today" data-id="${k.id}">Today</button>
+        <button class="btn quiet small" data-action="triage" data-do="tomorrow" data-id="${k.id}">Tomorrow</button>
+        <button class="btn quiet small" data-action="triage" data-do="week" data-id="${k.id}">Next week</button>
+        <button class="btn quiet small" data-action="triage" data-do="drop" data-id="${k.id}">Drop</button>
+      </div></div>`).join('');
+  return `<section class="section"><div class="section-head"><h3>Clear the backlog</h3><span class="count">${t.triage.length} waiting</span></div>
+    <div class="card triage">${rows}<p class="note">One decision each. A pile you never look at is worse than a short list you trust.</p></div></section>`;
+}
+
+function goalsStrip(t) {
+  if (!t.goals?.length) return '';
+  return `<section class="section"><div class="section-head"><h3>Goals</h3><a class="count" href="#/goals">All goals</a></div>
+    <div class="goal-mini">${t.goals.map((g) => `<a href="#/goals/${g.id}" class="goal-mini-row">
+      <span class="goal-mini-title">${esc(g.title)}</span>${bar(g.pct)}<span class="goal-mini-label">${esc(g.label)}</span></a>`).join('')}</div></section>`;
 }
 
 function closeDayCard(t) {
   if (t.reflection) {
     return `<section class="section"><div class="section-head"><h3>Day closed</h3><span class="count">${t.reflection.rating} out of 5</span></div>
-      <div class="brief">${esc(t.reflection.coachReply || 'The coach is writing back.')}<div class="brief-who">Coach</div></div></section>`;
+      <div class="brief">${esc(t.reflection.coachReply || 'The coach is writing back.')}<div class="brief-who">Coach${t.reflection.tomorrow ? `. Tomorrow's one thing: ${esc(t.reflection.tomorrow)}` : ''}</div></div></section>`;
   }
   if (t.localHour < 18 && t.progress.open) return '';
   const stars = [1, 2, 3, 4, 5].map((n) => `<label class="rate"><input type="radio" name="rating" value="${n}" required><span>${n}</span></label>`).join('');
@@ -342,8 +312,18 @@ function closeDayCard(t) {
       <fieldset class="rates"><legend>How was today, honestly?</legend>${stars}</fieldset>
       <label class="field"><span>What got in the way</span><input class="input" name="blocker" maxlength="500" autocomplete="off"></label>
       <label class="field"><span>One win</span><input class="input" name="win" maxlength="500" autocomplete="off"></label>
+      <label class="field"><span>Tomorrow's one thing, when and where</span><input class="input" name="tomorrow" maxlength="300" autocomplete="off" placeholder="EA settings review, 9:00 at my desk"></label>
       <div class="form-actions"><button class="btn" type="submit">Close the day</button></div>
     </form></section>`;
+}
+
+function quickAdd(id = 'quick-task') {
+  return `<form class="inline-form quick" data-form="quick-task">
+    <label class="sr" for="${id}">New task</label>
+    <input id="${id}" class="input" name="title" placeholder="Add a task: call bank fri 3pm" autocomplete="off" maxlength="200" required data-preview>
+    <button class="btn" type="submit">Add</button>
+    <div class="parse-preview" aria-live="polite"></div>
+  </form>`;
 }
 
 function viewToday() {
@@ -364,7 +344,12 @@ function viewToday() {
         </div>
       </div>
       ${m.html}
+      ${t.weekFocus ? `<p class="week-focus">This week: <b>${esc(t.weekFocus)}</b></p>` : ''}
     </header>`;
+  const banners = [
+    t.rest ? '<div class="banner rest">Rest day. Fixed habits are excused today. Hard tasks still count.</div>' : '',
+    t.reviewDue ? '<a class="banner review-due" href="#/review"><b>Weekly review is ready.</b> Five minutes: keep, adjust or drop each habit and pick this week\'s focus.</a>' : '',
+  ].join('');
 
   // A brief is only shown for four hours; after that the day has moved on.
   const brief = t.briefs.find((x) => Date.now() - new Date(x.at).getTime() < 4 * 3600 * 1000);
@@ -373,38 +358,38 @@ function viewToday() {
 
   // No oath yet and something is due: the oath comes first.
   if (!t.plan && t.progress.open > 0) {
-    shell(`<div class="split"><div>${vitals}${oathView(t)}</div>
+    shell(`<div class="split"><div>${vitals}${banners}${oathView(t)}</div>
       <aside><div class="only-wide">${briefHtml}</div></aside></div>`);
-    applyResponsiveBrief();
     return;
   }
 
-  if (!t.items.length && !t.tasks.length) {
-    shell(`${vitals}<section class="now"><p class="now-label">Nothing yet</p><h2 class="now-title">Add the habits you swear to.</h2>
-      <p class="now-meta">Start with two or three non-negotiables. You can add more once they stick.</p>
-      <div class="now-actions"><a class="btn big" href="#/plan">Add habits</a></div></section>`);
+  if (!t.items.length && !t.tasks.length && !t.anytime.length && !t.triage.length) {
+    shell(`${vitals}${banners}<section class="now"><p class="now-label">Nothing yet</p><h2 class="now-title">Add the habits you swear to.</h2>
+      <p class="now-meta">Start with two or three non-negotiables, each tied to something you already do every day. Add more once they are strong.</p>
+      <div class="now-actions"><a class="btn big" href="#/plan">Add habits</a><a class="btn quiet" href="#/goals/new">Set a goal</a></div></section>`);
     return;
   }
 
-  const heavy = t.items.filter((i) => i.heavy);
-  const normal = t.items.filter((i) => !i.heavy);
+  const fixed = t.items.filter((i) => !i.flexible);
+  const heavy = fixed.filter((i) => i.heavy);
+  const normal = fixed.filter((i) => !i.heavy);
+  const flex = t.items.filter((i) => i.flexible);
   const keptCount = (list) => list.filter((i) => i.status === 'kept' || i.status === 'pardoned').length;
-  const section = (title, list, rows) => (list.length ? `<section class="section">
-      <div class="section-head"><h2>${title}</h2><span class="count">${keptCount(list)} of ${list.length} kept</span></div>
+  const section = (title, list, rows, count) => (list.length ? `<section class="section">
+      <div class="section-head"><h2>${title}</h2><span class="count">${count ?? `${keptCount(list)} of ${list.length} kept`}</span></div>
       <div class="list">${rows}</div></section>` : '');
 
-  const openTasks = t.tasks.filter((k) => k.status !== 'done');
   const doneTasks = t.tasks.filter((k) => k.status === 'done');
+  const openTasks = t.tasks.filter((k) => k.status !== 'done');
   const tasksHtml = `<section class="section">
     <div class="section-head"><h2>Tasks</h2><span class="count">${doneTasks.length} done today</span></div>
     <div class="list">
       ${[...openTasks, ...doneTasks].map((k) => taskRow(k, t)).join('')}
-      <form class="inline-form" data-form="quick-task">
-        <label class="sr" for="quick-task">New task</label>
-        <input id="quick-task" class="input" name="title" placeholder="Add a task" autocomplete="off" maxlength="200" required>
-        <button class="btn" type="submit">Add</button>
-      </form>
-    </div></section>`;
+      ${quickAdd()}
+    </div>
+    ${t.anytime.length ? `<details class="anytime"><summary>Anytime, ${t.anytime.length} ${t.anytime.length === 1 ? 'task' : 'tasks'} with no date</summary>
+      <div class="list">${t.anytime.map((k) => taskRow(k, t)).join('')}</div></details>` : ''}
+  </section>`;
 
   const upcoming = t.upcoming.length ? `<section class="section"><div class="section-head"><h3>Coming up</h3></div>
     <div class="list">${t.upcoming.slice(0, 6).map((u) => `<div class="row${u.heavy ? ' heavy' : ''}" style="grid-template-columns:1fr auto;min-height:48px">
@@ -413,22 +398,26 @@ function viewToday() {
   shell(`<div class="split">
     <div>
       ${vitals}
+      ${banners}
       ${nowPanel(t)}
       ${progressStrip(t)}
+      ${t.plan ? capacityLine(t.capacity, t.settings) : ''}
       <div class="only-narrow">${planCard(t)}${briefHtml}</div>
+      ${triageCard(t)}
       ${section('Non-negotiables', heavy, heavy.map((i) => habitRow(i, t)).join(''))}
       ${section('Habits', normal, normal.map((i) => habitRow(i, t)).join(''))}
+      ${section('This week', flex, flex.map((i) => habitRow(i, t)).join(''), `${flex.filter((i) => i.status === 'met').length} of ${flex.length} met`)}
       ${tasksHtml}
       ${closeDayCard(t)}
     </div>
     <aside>
       <div class="only-wide">${planCard(t)}${briefHtml}</div>
+      ${goalsStrip(t)}
       <section class="section"><div class="section-head"><h3>Last 14 days</h3><span class="count">HP at day end</span></div>
         <div class="card">${hpBars(t.recentDays)}</div></section>
       ${upcoming}
     </aside>
   </div>`);
-  applyResponsiveBrief();
 }
 
 function clockText(endsAt) {
@@ -438,26 +427,56 @@ function clockText(endsAt) {
   return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 }
 
-function applyResponsiveBrief() {
-  const wide = window.matchMedia('(min-width: 900px)').matches;
-  document.querySelectorAll('.only-wide').forEach((el) => { el.hidden = !wide; });
-  document.querySelectorAll('.only-narrow').forEach((el) => { el.hidden = wide; });
-}
-
 // ---------- Plan ----------
 
+function heatmap(heat, today) {
+  if (!heat?.length) return '';
+  // Only the habit's own history, one column per week, Monday on top. Hidden in the first week.
+  const firstActive = heat.findIndex((s) => s !== 'off');
+  if (firstActive < 0 || heat.length - firstActive < 7) return '';
+  const days = heat.slice(firstActive);
+  const first = new Date(`${today}T12:00:00Z`);
+  first.setUTCDate(first.getUTCDate() - (days.length - 1));
+  const offset = (first.getUTCDay() + 6) % 7;
+  const cells = [...Array(offset).fill('<i class="h-pad"></i>'), ...days.map((s) => `<i class="h-${s}"></i>`)].join('');
+  return `<div class="heat" role="img" aria-label="Since it started: ${days.filter((s) => s === 'kept' || s === 'min' || s === 'pardoned').length} kept, ${days.filter((s) => s === 'missed').length} missed">${cells}</div>`;
+}
+
+function goalOptions(selected) {
+  const goals = state.plan?.goals || [];
+  if (!goals.length) return '';
+  return `<label class="field"><span>Serves goal</span><select class="input" name="goal_id">
+    <option value="">None</option>${goals.map((g) => `<option value="${g.id}"${Number(selected) === g.id ? ' selected' : ''}>${esc(g.title)}</option>`).join('')}</select></label>`;
+}
+
 function habitForm(h) {
-  const days = h ? h.nextRules?.days || h.days : [1, 2, 3, 4, 5, 6, 7];
-  const r = h ? { ...h, ...(h.nextRules || {}) } : { deadline: '21:00', non_negotiable: false, penalty: '' };
+  const r = h ? { ...h, ...(h.nextRules || {}), weeklyTarget: h.nextRules ? h.nextRules.weekly_target : h.weeklyTarget, minimum: h.nextRules ? h.nextRules.minimum : h.minimum } : { deadline: '21:00', non_negotiable: false, penalty: '' };
+  const days = r.days || [1, 2, 3, 4, 5, 6, 7];
+  const weekly = Boolean(r.weeklyTarget);
   const dayBoxes = DAY_NAMES.map((n, i) => `<label><input type="checkbox" name="days" value="${i + 1}"${days.includes(i + 1) ? ' checked' : ''}><span>${n.slice(0, 2)}</span></label>`).join('');
-  return `<form data-form="${h ? 'edit-habit' : 'new-habit'}"${h ? ` data-id="${h.id}"` : ''}>
-    <label class="field"><span>Name</span><input class="input" name="name" maxlength="120" required value="${esc(h?.name || '')}" placeholder="Gym, read 20 pages, no sugar"></label>
+  const nnCount = (state.plan?.habits || []).filter((x) => x.non_negotiable && x.id !== h?.id).length;
+  const cap = state.plan?.settings?.maxNonNegotiables ?? 3;
+  return `<form class="habit-form" data-form="${h ? 'edit-habit' : 'new-habit'}"${h ? ` data-id="${h.id}"` : ''}>
+    <label class="field"><span>Habit</span><input class="input" name="name" maxlength="120" required value="${esc(h?.name || '')}" placeholder="20 push-ups"></label>
+    <label class="field"><span>After I... (an existing routine it follows)</span><input class="input" name="cue" maxlength="120" value="${esc(h?.cue || '')}" placeholder="pour my morning coffee"></label>
+    <div class="seg" role="radiogroup" aria-label="How often">
+      <label><input type="radio" name="freq" value="fixed"${weekly ? '' : ' checked'}><span>Fixed days</span></label>
+      <label><input type="radio" name="freq" value="weekly"${weekly ? ' checked' : ''}><span>Times a week</span></label>
+    </div>
+    <div class="field fixed-only"><span>Days</span><div class="days">${dayBoxes}</div></div>
+    <label class="field weekly-only"><span>Times a week, settled Sunday night</span><input class="input" type="number" name="weekly_target" min="1" max="7" inputmode="numeric" value="${esc(r.weeklyTarget || 3)}"></label>
     <div class="grid2">
-      <label class="field"><span>Deadline</span><input class="input" type="time" name="deadline" required value="${esc(r.deadline)}"></label>
+      <label class="field"><span><span class="fixed-only">Due by</span><span class="weekly-only">Log by</span></span><input class="input" type="time" name="deadline" required value="${esc(r.deadline || '21:00')}"></label>
+      <label class="field"><span>Cue reminder at (optional)</span><input class="input" type="time" name="remind_at" value="${esc(h?.remindAt || '')}"></label>
+    </div>
+    <label class="field"><span>Minimum version for a bad day (optional)</span><input class="input" name="minimum" maxlength="120" value="${esc(r.minimum || '')}" placeholder="5 push-ups"></label>
+    <label class="field"><span>If-then plan for the obstacle (optional)</span><input class="input" name="if_then" maxlength="300" value="${esc(h?.ifThen || '')}" placeholder="If I skip the morning, then I do it before dinner"></label>
+    <div class="grid2">
+      <label class="check"><input type="checkbox" name="non_negotiable"${r.non_negotiable ? ' checked' : ''}> Non-negotiable</label>
       <label class="field"><span>HP lost on a miss</span><input class="input" type="number" name="penalty" min="1" max="100" inputmode="numeric" value="${esc(r.penalty)}" placeholder="25 or 10"></label>
     </div>
-    <div class="field"><span>Days</span><div class="days">${dayBoxes}</div></div>
-    <label class="check"><input type="checkbox" name="non_negotiable"${r.non_negotiable ? ' checked' : ''}> Non-negotiable: more reminders, bigger penalty</label>
+    ${!h?.non_negotiable && nnCount >= cap ? `<p class="note">You already have ${nnCount} non-negotiables. A new one is only allowed once each of them is above 80% strength.</p>` : ''}
+    ${goalOptions(h?.goalId)}
     <label class="field"><span>Notes</span><input class="input" name="notes" maxlength="1000" value="${esc(h?.notes || '')}" placeholder="Optional"></label>
     ${h && h.nextRulesFrom ? `<p class="note">New rules start ${fmtDay(h.nextRulesFrom)}. Today keeps the old ones.</p>` : ''}
     <div class="form-actions">
@@ -465,19 +484,22 @@ function habitForm(h) {
       ${h ? '<button class="btn quiet" type="button" data-action="edit-cancel">Cancel</button>' : ''}
       ${h ? `<button class="btn quiet" type="button" data-action="archive-habit" data-id="${h.id}">Archive</button>` : ''}
     </div>
-    <p class="note">Changes to a habit that is still open today take effect tomorrow.</p>
+    <p class="note">${h ? 'Changes to a habit still open today, and any new minimum version, take effect tomorrow.' : 'Most habits take about two months to feel automatic, anywhere from two weeks to eight months. Strength shows how far along you are; one miss costs a few points, not everything.'}</p>
   </form>`;
 }
 
 function taskForm(k) {
   const locked = k?.locked;
-  return `<form data-form="${k ? 'edit-task' : 'new-task'}"${k ? ` data-id="${k.id}"` : ''}>
+  return `<form class="task-form" data-form="${k ? 'edit-task' : 'new-task'}"${k ? ` data-id="${k.id}"` : ''}>
     <label class="field"><span>Task</span><input class="input" name="title" maxlength="200" required value="${esc(k?.title || '')}"></label>
     <div class="grid2">
       <label class="field"><span>Due date</span><input class="input" type="date" name="due_date" value="${esc(k?.dueDate || '')}"${locked ? ' disabled' : ''}></label>
       <label class="field"><span>Time</span><input class="input" type="time" name="deadline" value="${esc(k?.deadline || '')}"${locked ? ' disabled' : ''}></label>
     </div>
+    <label class="field"><span>Estimate in minutes</span><input class="input" type="number" name="estimate_min" min="5" max="600" step="5" inputmode="numeric" value="${esc(k?.estimate || '')}" placeholder="30"></label>
+    ${goalOptions(k?.goalId)}
     <label class="check"><input type="checkbox" name="hard"${k?.hard ? ' checked' : ''}${locked ? ' disabled' : ''}> Hard task: costs HP if not done by the deadline</label>
+    <label class="field hard-only"><span>First step: the very first physical action</span><input class="input" name="first_step" maxlength="200" value="${esc(k?.firstStep || '')}" placeholder="Open the VAT portal and log in"></label>
     ${locked ? '<p class="note">This hard task is due, so its date and penalty are locked.</p>' : ''}
     <div class="form-actions">
       <button class="btn" type="submit">${k ? 'Save task' : 'Add task'}</button>
@@ -487,44 +509,73 @@ function taskForm(k) {
   </form>`;
 }
 
+function habitCard(h, p) {
+  const r = h.nextRules || {};
+  const weekly = h.weeklyTarget;
+  const sched = weekly ? `${weekly} times a week, ${h.weekDone} done this week` : scheduleText(h.days, h.deadline);
+  const pending = h.nextRulesFrom ? `<p class="note">From ${fmtDay(h.nextRulesFrom)}: ${r.weekly_target ? `${r.weekly_target} times a week` : scheduleText(r.days, r.deadline)}${r.minimum ? `, minimum "${esc(r.minimum)}"` : ''}.</p>` : '';
+  const building = h.strength < 80 ? `<p class="faint small">Day ${h.buildingDay} of building. The median is about 66.</p>` : '<p class="faint small">Established. Reminders now fade.</p>';
+  return `<div class="card habit-card">
+    <div class="habit-card-top">
+      <div><h3>${esc(h.name)}</h3>
+        <p class="muted small">${sched}, ${h.non_negotiable ? 'non-negotiable' : 'normal'}, minus ${h.penalty} HP</p>
+        ${h.cue ? `<p class="small">After ${esc(h.cue)}</p>` : ''}
+        ${h.minimum ? `<p class="small">Minimum: ${esc(h.minimum)}</p>` : ''}
+        ${h.ifThen ? `<p class="small">${esc(h.ifThen)}</p>` : ''}
+        ${h.goalTitle ? `<p class="small"><a href="#/goals/${h.goalId}">${esc(h.goalTitle)}</a></p>` : ''}
+      </div>
+      <div class="habit-card-side">${strengthChip(h.strength)}${h.streak ? `<span class="faint small">${h.streak} ${weekly ? 'week' : 'day'} streak</span>` : ''}</div>
+    </div>
+    ${heatmap(h.heat, p.today)}
+    ${building}
+    ${pending}${h.archivedFrom ? `<p class="note">Archived from ${fmtDay(h.archivedFrom)}.</p>` : ''}
+    <div class="form-actions"><button class="btn quiet small" data-action="edit-habit" data-id="${h.id}">Edit</button></div>
+  </div>`;
+}
+
+function restCard(p) {
+  const list = p.restDays.map((d) => `<div class="row" style="grid-template-columns:1fr auto;min-height:48px">
+    <span><span class="row-title">${fmtDay(d.date, { weekday: 'long', day: 'numeric', month: 'long' })}</span>${d.reason ? `<span class="row-meta" style="display:block">${esc(d.reason)}</span>` : ''}</span>
+    <button class="btn quiet small" data-action="rest-cancel" data-date="${d.date}">Cancel</button></div>`).join('');
+  return `<section class="section"><div class="section-head"><h3>Rest days</h3><span class="count">${p.settings.restDaysPerMonth} a month</span></div>
+    <div class="card">
+      <p class="muted small">For travel or a planned day off. Fixed habits are excused, X-a-week targets shrink, hard tasks still count, and there is no clean-day bonus. Book before the day starts.</p>
+      ${list ? `<div class="list" style="margin-top:10px">${list}</div>` : ''}
+      <form class="inline-form rest-form" data-form="rest">
+        <label class="sr" for="rest-date">Date</label>
+        <input id="rest-date" class="input" type="date" name="date" min="${p.today}" required>
+        <input class="input" name="reason" maxlength="200" placeholder="Reason" autocomplete="off">
+        <button class="btn" type="submit">Book</button>
+      </form>
+    </div></section>`;
+}
+
 function viewPlan() {
   const p = state.plan;
   if (!p) return shell('<p class="muted">Loading</p>');
-  const habits = p.habits.map((h) => {
-    if (state.editingHabit === h.id) return `<div class="card">${habitForm(h)}</div>`;
-    const archiving = h.archivedFrom ? `<p class="note">Archived from ${fmtDay(h.archivedFrom)}.</p>` : '';
-    const pending = h.nextRulesFrom ? `<p class="note">New rules from ${fmtDay(h.nextRulesFrom)}: ${scheduleText(h.nextRules.days, h.nextRules.deadline)}.</p>` : '';
-    return `<div class="card">
-      <div style="display:flex;justify-content:space-between;gap:12px;align-items:start">
-        <div><h3>${esc(h.name)}</h3>
-          <p class="muted" style="margin-top:4px;font-size:15px">${scheduleText(h.days, h.deadline)}, ${h.non_negotiable ? 'non-negotiable' : 'normal'}, minus ${h.penalty} HP</p>
-          ${h.notes ? `<p class="faint" style="margin-top:4px;font-size:14px">${esc(h.notes)}</p>` : ''}
-          ${pending}${archiving}</div>
-        <div style="text-align:right"><span class="streak">${h.streak}<small>${h.streak === 1 ? 'day' : 'days'}</small></span><br>
-          <button class="btn quiet small" style="margin-top:8px" data-action="edit-habit" data-id="${h.id}">Edit</button></div>
-      </div></div>`;
-  }).join('');
-
+  const habits = p.habits.map((h) => (state.editingHabit === h.id ? `<div class="card">${habitForm(h)}</div>` : habitCard(h, p))).join('');
   const tasks = p.tasks.map((k) => {
     if (state.editingTask === k.id) return `<div class="card">${taskForm(k)}</div>`;
     const due = k.dueDate ? `${fmtDay(k.dueDate)}${k.deadline ? ` ${k.deadline}` : ''}` : 'No date';
+    const extras = [k.hard ? 'hard' : '', k.estimate ? fmtMin(k.estimate) : '', k.goalTitle ? esc(k.goalTitle) : '', k.createdBy === 'coach' ? 'added by the coach' : k.createdBy === 'siri' ? 'added by Siri' : ''].filter(Boolean).join(', ');
     return `<div class="row${k.hard ? ' heavy' : ''}" style="grid-template-columns:1fr auto">
-      <span><span class="row-title">${esc(k.title)}</span><span class="row-meta" style="display:block">${due}${k.hard ? ', hard' : ''}${k.createdBy === 'coach' ? ', added by the coach' : ''}</span></span>
+      <span><span class="row-title">${esc(k.title)}</span><span class="row-meta" style="display:block">${due}${extras ? `, ${extras}` : ''}</span></span>
       <button class="btn quiet small" data-action="edit-task" data-id="${k.id}">Edit</button></div>`;
   }).join('');
 
   shell(`<div class="split">
     <div>
       <section class="section"><div class="section-head"><h2>Habits</h2><span class="count">${p.habits.length} active</span></div>
-        ${habits || '<div class="card muted">No habits yet. Add the first one below.</div>'}
+        ${habits || '<div class="card muted">No habits yet. Add the first one below. Start with two or three.</div>'}
       </section>
       <section class="section"><div class="section-head"><h3>New habit</h3></div><div class="card">${habitForm(null)}</div></section>
+      ${restCard(p)}
     </div>
     <aside>
-      <section class="section"><div class="section-head"><h2>Open tasks</h2><span class="count">${p.tasks.length}</span></div>
-        ${tasks ? `<div class="list">${tasks}</div>` : '<div class="card muted">No open tasks.</div>'}
+      <section class="section"><div class="section-head"><h2>Tasks</h2><span class="count">${p.tasks.length} open</span></div>
+        <div class="list">${quickAdd('plan-quick')}${tasks}</div>
       </section>
-      <section class="section"><div class="section-head"><h3>New task</h3></div><div class="card">${taskForm(null)}</div></section>
+      <section class="section"><div class="section-head"><h3>New task, in full</h3></div><div class="card">${taskForm(null)}</div></section>
     </aside>
   </div>`);
 }
@@ -535,7 +586,8 @@ function viewCoach() {
   const c = state.coach;
   if (!c) return shell('<p class="muted">Loading</p>');
   const msgs = c.messages.map((m) => `<div class="msg ${m.role}">${esc(m.text)}${m.at ? `<time>${fmtClock(m.at)}</time>` : ''}</div>`).join('');
-  shell(`<section class="section" style="margin-top:8px">
+  const ask = state.query.get('ask') || '';
+  shell(`<section class="section">
       <div class="section-head"><h2>Coach</h2><span class="count">${c.aiEnabled ? 'Claude' : 'Offline'}</span></div>
       ${c.aiEnabled ? '' : '<div class="banner">The coach is offline. It needs an Anthropic API key in the app\'s Railway variables. Briefs still arrive with plain numbers until then.</div>'}
       <div class="form-actions">
@@ -543,11 +595,11 @@ function viewCoach() {
         <button class="btn quiet small" data-action="brief" data-kind="midday">Midday check</button>
         <button class="btn quiet small" data-action="brief" data-kind="evening">Evening check</button>
       </div>
-      <div class="chat" id="chat">${msgs || '<p class="muted">Ask for a plan, report a slip, or tell it what you are avoiding. It sees your HP, deadlines, streaks and pardon reasons.</p>'}
+      <div class="chat" id="chat">${msgs || '<p class="muted">Ask for a plan, report a slip, or tell it what you are avoiding. It sees your HP, deadlines, habit strength, goals, dodges and pardon reasons.</p>'}
         ${state.sending ? '<div class="msg assistant faint">Thinking</div>' : ''}</div>
       <form class="composer" data-form="coach">
         <label class="sr" for="coach-text">Message</label>
-        <textarea id="coach-text" class="input" name="text" rows="1" maxlength="4000" placeholder="Message the coach" required></textarea>
+        <textarea id="coach-text" class="input" name="text" rows="1" maxlength="4000" placeholder="Message the coach" required>${esc(ask)}</textarea>
         <button class="btn" type="submit"${state.sending ? ' disabled' : ''}>Send</button>
       </form>
     </section>`);
@@ -555,37 +607,96 @@ function viewCoach() {
   if (chat) chat.lastElementChild?.scrollIntoView({ block: 'end' });
 }
 
-// ---------- Ledger ----------
+// ---------- Review ----------
 
-function viewLedger() {
-  const l = state.ledger;
-  if (!l) return shell('<p class="muted">Loading</p>');
-  const g = l.game;
-  const days = [...l.days].reverse();
-  const habitRows = l.habitStats.map((h) => `<tr><td>${esc(h.name)}</td><td class="num">${h.streak}</td><td class="num">${h.kept30} of ${h.scheduled30}</td></tr>`).join('');
-  const dayRows = l.days.slice(0, 30).map((d) => `<tr><td>${fmtDay(d.date)}</td><td class="num">${d.kept}</td><td class="num">${d.missed ? `<span style="color:var(--breach);font-weight:600">${d.missed}</span>` : 0}</td><td class="num">${d.hp_end}${d.bonus ? ` <span class="faint">(+${d.bonus})</span>` : ''}</td></tr>`).join('');
-  const missRows = l.misses.slice(0, 40).map((m) => `<div class="row" style="grid-template-columns:1fr auto;min-height:52px">
-      <span><span class="row-title">${esc(m.title)}</span>${m.pardoned ? `<div class="reason">Pardoned: ${esc(m.reason)}</div>` : ''}</span>
-      <span class="row-side">${fmtDay(m.date)}<br>${m.pardoned ? 'pardoned' : `<span style="color:var(--breach);font-weight:600">minus ${m.hpLost}</span>`}</span></div>`).join('');
-  const deaths = l.deaths.map((d) => `<div class="row" style="grid-template-columns:1fr auto;min-height:48px"><span class="row-title">Killed by ${esc(d.cause)}</span><span class="row-side">${fmtDay(d.date)}, season ${d.season - 1} ended</span></div>`).join('');
+const signed = (n) => (n > 0 ? `+${n}` : String(n));
+
+function weekStats(w) {
+  const hp = w.hpStart !== null && w.hpEnd !== null ? `${w.hpStart} to ${w.hpEnd}` : '-';
+  return `<div class="stats four">
+    <div class="stat"><b>${w.cleanDays}</b><span>Clean ${w.cleanDays === 1 ? 'day' : 'days'} of ${w.judgedDays}</span></div>
+    <div class="stat"><b>${hp}</b><span>HP</span></div>
+    <div class="stat"><b>${w.focusMin ? fmtMin(w.focusMin) : '0'}</b><span>Focus time</span></div>
+    <div class="stat"><b>${w.tasksDone}</b><span>Tasks done</span></div>
+  </div>
+  ${w.dodges.length ? `<p class="small muted" style="margin-top:10px">"Not now" reasons: ${w.dodges.map((d) => `${esc(d.reason)} (${d.n})`).join(', ')}.</p>` : ''}`;
+}
+
+function reviewCard(r) {
+  const rv = r.review;
+  const w = r.lastWeek;
+  if (rv.doneAt) {
+    return `<section class="section"><div class="section-head"><h2>Week of ${fmtDay(rv.weekStart)}</h2><span class="count">Reviewed</span></div>
+      <div class="card"><p>This week's focus: <b>${esc(rv.focus)}</b></p>${rv.obstaclePlan ? `<p class="small" style="margin-top:6px">${esc(rv.obstaclePlan)}</p>` : ''}
+      ${rv.coachText ? `<details style="margin-top:10px"><summary class="small">Coach's review</summary><div class="plan-text">${esc(rv.coachText)}</div></details>` : ''}</div></section>`;
+  }
+  if (!w.judgedDays) {
+    return `<section class="section"><div class="section-head"><h2>Weekly review</h2></div>
+      <div class="card muted">Your first weekly review opens on Monday, once a full week has been judged.</div></section>`;
+  }
+  const rows = w.habits.map((h) => {
+    const d = state.decisions[h.id] || 'keep';
+    const opts = ['keep', 'adjust', 'drop'].map((o) => `<label><input type="radio" name="d-${h.id}" value="${o}"${d === o ? ' checked' : ''} data-decide="${h.id}"><span>${o[0].toUpperCase()}${o.slice(1)}</span></label>`).join('');
+    return `<div class="review-row">
+      <div><span class="row-title">${esc(h.name)}</span>
+        <span class="row-meta" style="display:block">${h.flexible ? `${h.done} of ${h.target} this week` : `kept ${h.done} of ${h.target}`}${h.minimum ? `, ${h.minimum} minimum` : ''}${h.missed ? `, ${h.missed} missed` : ''}. Strength ${h.strength}% (${signed(h.trend)})</span></div>
+      <div class="seg small" role="radiogroup" aria-label="Decision for ${esc(h.name)}">${opts}</div>
+    </div>`;
+  }).join('');
+  return `<section class="section"><div class="section-head"><h2>Weekly review</h2><span class="count">Week of ${fmtDay(rv.weekStart)}</span></div>
+    <div class="card review">
+      ${rv.coachText ? `<div class="plan-text">${esc(rv.coachText)}</div>` : '<button class="btn quiet" data-action="review-write">Let the coach pre-fill it</button>'}
+      ${weekStats(w)}
+      <form data-form="review-finish">
+        ${rows ? `<h3 style="margin-top:16px">Each habit: keep, adjust or drop</h3>${rows}` : ''}
+        <label class="field"><span>This week's one or two things that matter most</span><input class="input" name="focus" maxlength="300" required autocomplete="off"></label>
+        <label class="field"><span>If-then plan for the week's biggest obstacle</span><input class="input" name="obstaclePlan" maxlength="300" autocomplete="off" placeholder="If I skip Monday's gym, then I go Tuesday at 7:00"></label>
+        <div class="form-actions"><button class="btn" type="submit">Finish the review</button></div>
+        <p class="note">Drop archives the habit. Adjust takes you to it after the review.</p>
+      </form>
+    </div></section>`;
+}
+
+function viewReview() {
+  const r = state.review;
+  if (!r) return shell('<p class="muted">Loading</p>');
+  const g = r.game;
+  const days = [...r.days].reverse();
+  const strengthRows = r.habitStrength.map((h) => `<tr><td>${esc(h.name)}</td><td class="num">${h.kept14} of ${h.sched14}</td><td class="num">${strengthChip(h.strength)}</td></tr>`).join('');
+  const dayRows = r.days.slice(0, 30).map((d) => `<tr><td>${fmtDay(d.date)}${d.rest ? ' <span class="faint">rest</span>' : ''}</td><td class="num">${d.kept}</td><td class="num">${d.missed ? `<span style="color:var(--breach);font-weight:600">${d.missed}</span>` : 0}</td><td class="num">${d.hp_end}${d.bonus ? ` <span class="faint">(+${d.bonus})</span>` : ''}</td></tr>`).join('');
+  const missRows = r.misses.slice(0, 40).map((m) => `<div class="row" style="grid-template-columns:1fr auto;min-height:52px">
+      <span><span class="row-title">${esc(m.title)}</span>${m.pardoned ? `<div class="reason">Pardoned: ${esc(m.reason)}${m.plan ? `<br>Plan: ${esc(m.plan)}` : ''}</div>` : ''}</span>
+      <span class="row-side">${fmtDay(m.date)}<br>${m.pardoned ? 'pardoned' : `<span style="color:var(--breach);font-weight:600">minus ${m.hpLost}${m.repeat ? ', twice' : ''}</span>`}</span></div>`).join('');
+  const deaths = r.deaths.map((d) => `<div class="row" style="grid-template-columns:1fr auto;min-height:48px"><span class="row-title">Killed by ${esc(d.cause)}</span><span class="row-side">${fmtDay(d.date)}, season ${d.season - 1} ended</span></div>`).join('');
+  const stale = r.stale.map((k) => `<div class="triage-row"><span class="row-title">${esc(k.title)}</span>
+      <div class="triage-actions" role="group" aria-label="Decide">
+        <button class="btn quiet small" data-action="triage" data-do="week" data-id="${k.id}">Next week</button>
+        <button class="btn quiet small" data-action="triage" data-do="someday" data-id="${k.id}">Someday</button>
+        <button class="btn quiet small" data-action="triage" data-do="drop" data-id="${k.id}">Drop</button>
+      </div></div>`).join('');
+  const goals = r.goals.map((x) => `<a href="#/goals/${x.id}" class="goal-mini-row"><span class="goal-mini-title">${esc(x.title)}</span>${bar(x.pct)}<span class="goal-mini-label">${esc(x.label)}</span></a>`).join('');
 
   shell(`<div class="split"><div>
-      <section class="section"><div class="section-head"><h2>Ledger</h2></div>
+      <div class="page-head"><h1 class="page-title">Review</h1><a class="btn quiet small narrow-only" href="#/settings">Settings</a></div>
+      ${reviewCard(r)}
+      <section class="section"><div class="section-head"><h3>This week so far</h3></div><div class="card">${weekStats(r.thisWeek)}</div></section>
+      ${stale ? `<section class="section"><div class="section-head"><h3>Clear the backlog</h3><span class="count">${r.stale.length}</span></div><div class="card triage">${stale}</div></section>` : ''}
+      <section class="section"><div class="section-head"><h3>Habit strength</h3><span class="count">last 14 days</span></div>
+        ${strengthRows ? `<div class="list"><table class="table"><thead><tr><th>Habit</th><th class="num">Kept</th><th class="num">Strength</th></tr></thead><tbody>${strengthRows}</tbody></table></div>` : '<div class="card muted">No habits yet.</div>'}
+      </section>
+      <section class="section"><div class="section-head"><h3>HP, last 30 days</h3></div><div class="card">${hpBars(days, 30)}</div></section>
+    </div><aside>
+      ${goals ? `<section class="section"><div class="section-head"><h3>Goals</h3></div><div class="goal-mini">${goals}</div></section>` : ''}
+      <section class="section"><div class="section-head"><h3>Ledger</h3></div>
         <div class="stats">
           <div class="stat"><b>${g.season}</b><span>Season</span></div>
           <div class="stat"><b>${g.deaths}</b><span>${g.deaths === 1 ? 'Death' : 'Deaths'}</span></div>
           <div class="stat"><b>${g.pardonsLeft}</b><span>Pardons left</span></div>
-        </div>
-      </section>
-      <section class="section"><div class="section-head"><h3>HP, last 30 days</h3></div><div class="card">${hpBars(days, 30)}</div></section>
-      <section class="section"><div class="section-head"><h3>Habits, last 30 days</h3></div>
-        ${habitRows ? `<div class="list"><table class="table"><thead><tr><th>Habit</th><th class="num">Streak</th><th class="num">Kept</th></tr></thead><tbody>${habitRows}</tbody></table></div>` : '<div class="card muted">No habits yet.</div>'}
-      </section>
+        </div></section>
       <section class="section"><div class="section-head"><h3>Days</h3></div>
         ${dayRows ? `<div class="list"><table class="table"><thead><tr><th>Day</th><th class="num">Kept</th><th class="num">Missed</th><th class="num">HP</th></tr></thead><tbody>${dayRows}</tbody></table></div>` : '<div class="card muted">Your first day closes at midnight.</div>'}
       </section>
-    </div><aside>
-      <section class="section"><div class="section-head"><h3>Misses</h3><span class="count">${l.misses.length}</span></div>
+      <section class="section"><div class="section-head"><h3>Misses</h3><span class="count">${r.misses.length}</span></div>
         ${missRows ? `<div class="list">${missRows}</div>` : '<div class="card muted">No misses yet.</div>'}</section>
       ${deaths ? `<section class="section"><div class="section-head"><h3>Deaths</h3></div><div class="list">${deaths}</div></section>` : ''}
     </aside></div>`);
@@ -604,13 +715,25 @@ function pushCard() {
   } else if (p.permission === 'denied') {
     status = 'Notifications are blocked. Turn them on in iOS Settings, Notifications, Oath.';
   } else if (p.subscribed) {
-    status = `Reminders are on for this device. ${state.today ? '' : ''}`;
+    status = 'Reminders are on for this device. The app icon shows how many things can still cost HP today.';
     action = '<button class="btn quiet" data-action="push-test">Send a test</button><button class="btn quiet" data-action="push-off">Turn off on this device</button>';
   } else {
-    status = 'Reminders are off on this device. Turn them on so deadlines, misses and briefs reach your lock screen.';
+    status = 'Reminders are off on this device. Turn them on so last calls and briefs reach your lock screen.';
     action = '<button class="btn" data-action="push-on">Turn on reminders</button>';
   }
   return `<div class="card"><h3>Reminders</h3><p class="muted" style="margin-top:6px">${status}</p>${action ? `<div class="form-actions">${action}</div>` : ''}</div>`;
+}
+
+function alertsCard(s) {
+  const opt = (v, label, hint) => `<label class="radio-row"><input type="radio" name="alerts" value="${v}"${(s.alerts || 'smart') === v ? ' checked' : ''}><span><b>${label}</b><br><span class="muted small">${hint}</span></span></label>`;
+  return `<div class="card"><h3>Where alerts go</h3>
+    <form data-form="alerts">
+      ${opt('smart', 'One channel per alert', 'Telegram gets reminders with Done buttons, misses and briefs. The lock screen gets last calls and deaths. Fewer, sharper alerts.')}
+      ${opt('both', 'Everything, everywhere', 'Every alert on both the lock screen and Telegram.')}
+      ${opt('push', 'App only', 'Telegram stays quiet except when you write to it.')}
+      <div class="form-actions"><button class="btn" type="submit">Save</button></div>
+    </form>
+    <p class="note">Reminders fade on their own once a habit passes 80% strength. Non-negotiables always keep a last call.</p></div>`;
 }
 
 function telegramCard() {
@@ -620,7 +743,7 @@ function telegramCard() {
   if (!tg.enabled) {
     body = 'Create a bot with @BotFather in Telegram and add its token in Railway as TELEGRAM_BOT_TOKEN. This turns on after the next deploy.';
   } else if (tg.linked) {
-    body = `Connected${tg.botUsername ? ` to @${esc(tg.botUsername)}` : ''}. Reminders, misses and briefs arrive there with Done buttons, and anything you write goes to the coach. Commands: /today, /next, /hp.`;
+    body = `Connected${tg.botUsername ? ` to @${esc(tg.botUsername)}` : ''}. Anything you write goes to the coach. Commands: /today, /next, /hp, /add call the bank friday 3pm, /done gym.`;
     actions = '<button class="btn quiet" data-action="tg-test">Send a test</button><button class="btn quiet" data-action="tg-unlink">Disconnect</button>';
   } else {
     body = 'Connect your Telegram so the coach can reach you there. The button opens Telegram; tap Start in the chat with your bot.';
@@ -630,13 +753,43 @@ function telegramCard() {
   return `<div class="card"><h3>Telegram</h3><p class="muted" style="margin-top:6px">${body}</p>${actions ? `<div class="form-actions">${actions}</div>` : ''}</div>`;
 }
 
+function siriCard() {
+  const host = location.origin;
+  const tokenBlock = state.newToken
+    ? `<label class="field"><span>Your key. Copy it now; it is only shown once.</span>
+        <span class="copy-row"><input class="input mono" id="siri-key" readonly value="${esc(state.newToken)}"><button class="btn quiet small" data-action="copy" data-target="siri-key">Copy</button></span></label>`
+    : '';
+  const count = state.tokens?.count || 0;
+  return `<div class="card"><h3>Siri and Shortcuts</h3>
+    <p class="muted" style="margin-top:6px">Say "Add to Oath", "Oath done" or "What's next in Oath" from your iPhone, Apple Watch or the Action button. It works through three small shortcuts that call Oath with a personal key.</p>
+    ${tokenBlock}
+    <div class="form-actions">
+      <button class="btn${count ? ' quiet' : ''}" data-action="token-new">${count ? 'Make a new key' : 'Make a key'}</button>
+      ${count ? '<button class="btn quiet" data-action="token-revoke">Turn off all keys</button>' : ''}
+    </div>
+    <details class="howto"><summary>Build the "Add to Oath" shortcut</summary>
+      <ol>
+        <li>Open the Shortcuts app, tap +, and name it <b>Add to Oath</b>.</li>
+        <li>Add <b>Ask for Input</b>, type Text, prompt "What should I add?".</li>
+        <li>Add <b>Get Contents of URL</b> with URL <code>${esc(host)}/api/shortcut/add</code>. Tap Show More: Method <b>POST</b>; Headers: <b>Authorization</b> = <code>Bearer</code> followed by a space and your key; Request Body <b>JSON</b> with key <b>text</b> set to Provided Input.</li>
+        <li>Add <b>Get Dictionary Value</b> for key <b>say</b>, then <b>Show Result</b>.</li>
+        <li>Say "Hey Siri, Add to Oath", or put it on the Action button or a Home Screen widget.</li>
+      </ol>
+      <p class="small">"Oath done": the same, with URL <code>${esc(host)}/api/shortcut/done</code> and prompt "What did you do?". "What's next in Oath": Get Contents of URL with <code>${esc(host)}/api/shortcut/next</code>, Method GET, the same header, then Get Dictionary Value <b>say</b> and Speak Text.</p>
+      <p class="small">Things added by voice are normal tasks. Making something hard stays a decision you make in the app.</p>
+    </details>
+  </div>`;
+}
+
 function viewSettings() {
   const s = state.settings;
   if (!s) return shell('<p class="muted">Loading</p>');
   shell(`<div class="split"><div>
-    <section class="section"><div class="section-head"><h2>Settings</h2></div>
+    <section class="section"><div class="page-head"><h1 class="page-title">Settings</h1></div>
       ${pushCard()}
+      ${alertsCard(s)}
       ${telegramCard()}
+      ${siriCard()}
       <div class="card"><h3>Coach schedule</h3>
         <form data-form="settings">
           <div class="grid3">
@@ -644,10 +797,16 @@ function viewSettings() {
             <label class="field"><span>Midday check</span><input class="input" type="time" name="middayTime" value="${esc(s.middayTime || '13:00')}" required></label>
             <label class="field"><span>Evening check</span><input class="input" type="time" name="eveningTime" value="${esc(s.eveningTime)}" required></label>
           </div>
-          <label class="field"><span>Time zone</span><input class="input" name="timezone" value="${esc(s.timezone)}" required></label>
+          <div class="grid2">
+            <label class="field"><span>Your day ends at</span><input class="input" type="time" name="dayEnd" value="${esc(s.dayEnd || '22:00')}" required></label>
+            <label class="field"><span>Time zone</span><input class="input" name="timezone" value="${esc(s.timezone)}" required></label>
+          </div>
           <div class="form-actions"><button class="btn" type="submit">Save schedule</button></div>
         </form>
       </div>
+      <div class="card"><h3>Your data</h3>
+        <p class="muted" style="margin-top:6px">Download everything Oath holds: habits, completions, misses, pardons, deaths, goals, maps, reflections and coach notes, as one JSON file.</p>
+        <div class="form-actions"><a class="btn quiet" href="/api/export" download>Download my data</a></div></div>
       <div class="card"><h3>Password</h3>
         <form data-form="password">
           <label class="field"><span>Current password</span><input class="input" type="password" name="current" autocomplete="current-password" required></label>
@@ -657,16 +816,19 @@ function viewSettings() {
       </div>
     </section></div>
     <aside><section class="section"><div class="section-head"><h3>The rules</h3></div>
-      <div class="card" style="font-size:15px;line-height:1.55">
-        <p>You have ${s.maxHp} HP. Every habit has a deadline. Miss it and you lose its HP, and its streak resets.</p>
-        <p style="margin-top:10px">Once a deadline passes, the habit is locked. You cannot tick it late. A mistaken tick can be undone within ${s.undoMinutes} minutes.</p>
-        <p style="margin-top:10px">Hard tasks cost ${s.taskPenalty} HP if they are not done by their deadline, and cannot be deleted or moved once due.</p>
-        <p style="margin-top:10px">A clean day, with nothing missed, gives back ${s.cleanBonus} HP.</p>
-        <p style="margin-top:10px">At 0 HP you die. Every streak is wiped and a new season starts at full HP.</p>
-        <p style="margin-top:10px">You get ${s.pardonsPerMonth} pardons a month for real emergencies. A pardon needs a written reason, must be used within 24 hours and restores the HP and the streak.</p>
-        <p style="margin-top:10px">Changing a habit that is still open today only takes effect tomorrow.</p>
-        <p style="margin-top:10px">Every morning you take the oath: pick the one thing that matters most. Until you do, Today shows nothing else.</p>
-        <p style="margin-top:10px">"Not now" needs a reason. Every dodge is logged and the coach reads them.</p>
+      <div class="card prose">
+        <p>You have ${s.maxHp} HP. Miss a habit's deadline and you lose its HP. Miss the same habit twice in a row and the second costs ${s.repeatMultiplier}x.</p>
+        <p>Keep a habit right after missing it and you earn ${s.comebackBonus} HP back. One miss is an accident; the second is the start of a new habit.</p>
+        <p>Strength is the real measure: it grows with every repetition and a miss costs a few points, never everything. Streaks reset on a miss.</p>
+        <p>Once a deadline passes, the habit is locked. A mistaken tick can be undone within ${s.undoMinutes} minutes.</p>
+        <p>"Times a week" habits are settled on Sunday night. Each missing session costs its share of the HP.</p>
+        <p>A minimum version, set a day ahead, saves the HP and the streak but not the clean-day bonus.</p>
+        <p>Hard tasks cost ${s.taskPenalty} HP if not done by their deadline, need a first step, and cannot be deleted or moved once due.</p>
+        <p>A clean day, with nothing missed and no minimums, gives back ${s.cleanBonus} HP.</p>
+        <p>At 0 HP you die. The season ends and streaks reset, but every habit keeps its strength.</p>
+        <p>${s.pardonsPerMonth} pardons a month, within 24 hours, each with what got in the way and an if-then plan. ${s.restDaysPerMonth} rest days a month, booked before the day starts.</p>
+        <p>At most ${s.maxNonNegotiables} non-negotiables until each is above 80% strength.</p>
+        <p>Every morning you take the oath: the one thing, and when and where. "Not now" needs a reason; every dodge is logged.</p>
       </div></section></aside></div>`);
 }
 
@@ -682,6 +844,7 @@ function renderLogin() {
       <p class="note bad" id="gate-error" hidden></p>
     </form></div>`;
 }
+hooks.onUnauthed = renderLogin;
 
 function renderSetup(code) {
   $app.innerHTML = `<div class="gate">
@@ -700,28 +863,57 @@ function gateError(msg) {
   if (el) { el.textContent = msg; el.hidden = false; }
 }
 
-// ---------- Data loading ----------
+// ---------- Data loading and routing ----------
+
+function setBadge() {
+  const n = state.today?.openDue?.length || 0;
+  try {
+    if (navigator.setAppBadge) (n ? navigator.setAppBadge(n) : navigator.clearAppBadge()).catch(() => {});
+  } catch { /* not supported */ }
+}
 
 async function load(route) {
-  if (route === 'today') state.today = await api('GET', '/api/today');
+  if (route === 'today') {
+    state.today = await api('GET', '/api/today');
+    setBadge();
+  }
   if (route === 'plan') state.plan = await api('GET', '/api/plan');
   if (route === 'coach') state.coach = await api('GET', '/api/coach');
-  if (route === 'ledger') state.ledger = await api('GET', '/api/ledger');
+  if (route === 'review') state.review = await api('GET', '/api/review');
+  if (route === 'goals') {
+    if (state.param === 'new') return;
+    if (state.param) await loadGoal(state.param);
+    else await loadGoals();
+  }
   if (route === 'settings') {
     state.settings = await api('GET', '/api/settings');
     state.telegram = { ...(state.telegram || {}), ...(await api('GET', '/api/telegram')) };
+    state.tokens = await api('GET', '/api/tokens');
     await refreshPushState();
   }
 }
 
 function render() {
-  const views = { today: viewToday, plan: viewPlan, coach: viewCoach, ledger: viewLedger, settings: viewSettings };
+  if (state.route === 'goals') {
+    if (state.param === 'new') return viewGoalNew();
+    if (state.param) return viewGoal();
+    return viewGoals();
+  }
+  const views = { today: viewToday, plan: viewPlan, coach: viewCoach, review: viewReview, settings: viewSettings };
   (views[state.route] || viewToday)();
 }
 
+function parseHash() {
+  const raw = location.hash.replace(/^#\/?/, '');
+  const [path, qs] = raw.split('?');
+  const [route, param] = (path || 'today').split('/');
+  state.route = ROUTES.includes(route) ? route : route === 'ledger' ? 'review' : 'today';
+  state.param = param || null;
+  state.query = new URLSearchParams(qs || '');
+}
+
 async function go() {
-  const route = (location.hash.replace(/^#\/?/, '').split('?')[0]) || 'today';
-  state.route = TABS.some(([id]) => id === route) ? route : 'today';
+  parseHash();
   render();
   try {
     await load(state.route);
@@ -733,7 +925,14 @@ async function go() {
 
 async function refreshToday() {
   state.today = await api('GET', '/api/today');
+  setBadge();
   if (state.route === 'today') render();
+}
+
+async function refreshCurrent() {
+  if (state.route === 'today') return refreshToday();
+  await load(state.route);
+  render();
 }
 
 // ---------- Push ----------
@@ -772,19 +971,34 @@ async function pushOff() {
   }
 }
 
-// ---------- Events ----------
+// iOS never tells the page when a push subscription changes, so re-send it on every launch.
+async function resyncPush() {
+  try {
+    if (!('serviceWorker' in navigator) || !('Notification' in window) || Notification.permission !== 'granted') return;
+    const reg = await navigator.serviceWorker.getRegistration();
+    const sub = reg ? await reg.pushManager.getSubscription() : null;
+    if (sub) await api('POST', '/api/push/subscribe', sub.toJSON());
+  } catch { /* try again next launch */ }
+}
 
-const form2obj = (form) => Object.fromEntries(new FormData(form).entries());
+// ---------- Events ----------
 
 function habitPayload(form) {
   const f = new FormData(form);
   const penalty = f.get('penalty');
+  const weekly = f.get('freq') === 'weekly';
   return {
     name: f.get('name'),
+    cue: f.get('cue') || '',
     deadline: f.get('deadline'),
-    days: f.getAll('days').map(Number),
+    remind_at: f.get('remind_at') || null,
+    days: weekly ? undefined : f.getAll('days').map(Number),
+    weekly_target: weekly ? Number(f.get('weekly_target')) : null,
     non_negotiable: f.get('non_negotiable') === 'on',
     penalty: penalty === '' ? undefined : Number(penalty),
+    minimum: f.get('minimum') || '',
+    if_then: f.get('if_then') || '',
+    goal_id: f.has('goal_id') ? f.get('goal_id') || null : undefined,
     notes: f.get('notes') || '',
   };
 }
@@ -795,17 +1009,26 @@ function taskPayload(form) {
   if (f.has('due_date')) out.due_date = f.get('due_date') || null;
   if (f.has('deadline')) out.deadline = f.get('deadline') || null;
   if (!form.querySelector('[name="hard"]').disabled) out.hard = f.get('hard') === 'on';
+  out.first_step = f.get('first_step') || '';
+  out.estimate_min = f.get('estimate_min') || null;
+  if (f.has('goal_id')) out.goal_id = f.get('goal_id') || null;
   return out;
 }
 
-async function act(fn, okMsg) {
-  try {
-    const r = await fn();
-    if (okMsg) toast(typeof okMsg === 'function' ? okMsg(r) : okMsg);
-    return r;
-  } catch (err) {
-    if (err.status !== 401) toast(err.message, true);
-    return null;
+// Optimistic tick: the row turns green at once, then the server confirms.
+async function keepHabit(el, id, minimum = false) {
+  const row = el.closest('.row');
+  haptic();
+  if (row) row.classList.add('kept', 'pending');
+  el.disabled = true;
+  const ok = await act(() => api('POST', `/api/habits/${id}/keep`, { minimum }));
+  if (ok) {
+    react(ok.reaction);
+    state.dodging = null;
+    await refreshToday();
+  } else {
+    if (row) row.classList.remove('kept', 'pending');
+    el.disabled = false;
   }
 }
 
@@ -814,30 +1037,40 @@ $app.addEventListener('click', async (e) => {
   if (!el) return;
   const id = Number(el.dataset.id);
   const a = el.dataset.action;
+  if (await goalsClick(a, el)) return;
   if (a === 'keep') {
-    el.disabled = true;
-    const ok = await act(() => api('POST', `/api/habits/${id}/keep`, {}));
-    if (ok) { react(ok.reaction); await refreshToday(); } else el.disabled = false;
+    await keepHabit(el, id);
+  } else if (a === 'keep-minimum') {
+    await keepHabit(el, id, true);
   } else if (a === 'undo') {
     if (await act(() => api('POST', `/api/habits/${id}/undo`, {}), 'Undone.')) await refreshToday();
   } else if (a === 'task-done') {
+    haptic();
+    const row = el.closest('.row');
+    if (row) row.classList.add('done', 'pending');
     const ok = await act(() => api('POST', `/api/tasks/${id}/done`, {}));
-    if (ok) { react(ok.reaction); await refreshToday(); }
+    if (ok) { react(ok.reaction); await refreshCurrent(); } else if (row) row.classList.remove('done', 'pending');
   } else if (a === 'task-undo') {
     if (await act(() => api('POST', `/api/tasks/${id}/undo`, {}), 'Undone.')) await refreshToday();
+  } else if (a === 'triage') {
+    const labels = { today: 'Moved to today.', tomorrow: 'Moved to tomorrow.', week: 'Moved to next Monday.', someday: 'Moved to someday.', drop: 'Dropped.' };
+    if (await act(() => api('POST', `/api/tasks/${id}/triage`, { action: el.dataset.do }), labels[el.dataset.do])) await refreshCurrent();
   } else if (a === 'dur') {
     state.focusMinutes = Number(el.dataset.min);
     render();
   } else if (a === 'focus-start') {
     el.disabled = true;
+    haptic();
     const r = await act(() => api('POST', '/api/focus', { kind: el.dataset.kind, id, minutes: state.focusMinutes }), `Clock is running. ${state.focusMinutes} minutes. Phone down.`);
     if (r) await refreshToday(); else el.disabled = false;
   } else if (a === 'focus-done' || a === 'focus-stop') {
     el.disabled = true;
+    if (a === 'focus-done') haptic();
     const r = await act(() => api('POST', `/api/focus/${id}/finish`, { outcome: a === 'focus-done' ? 'done' : 'stopped' }));
     if (r) { react(r.reaction); await refreshToday(); } else el.disabled = false;
   } else if (a === 'now-done') {
     el.disabled = true;
+    haptic();
     const path = el.dataset.kind === 'habit' ? `/api/habits/${id}/keep` : `/api/tasks/${id}/done`;
     const r = await act(() => api('POST', path, {}));
     if (r) { react(r.reaction); await refreshToday(); } else el.disabled = false;
@@ -848,6 +1081,12 @@ $app.addEventListener('click', async (e) => {
     state.dodging = null;
     toast('Good. Start it now.');
     render();
+  } else if (a === 'rest-cancel') {
+    if (await act(() => api('DELETE', `/api/rest/${el.dataset.date}`), 'Rest day cancelled.')) await refreshCurrent();
+  } else if (a === 'review-write') {
+    el.disabled = true;
+    toast('The coach is writing your review');
+    if (await act(() => api('POST', '/api/review/write', {}))) await refreshCurrent(); else el.disabled = false;
   } else if (a === 'tg-link') {
     const r = await act(() => api('POST', '/api/telegram/link', {}));
     if (r) {
@@ -860,6 +1099,21 @@ $app.addEventListener('click', async (e) => {
   } else if (a === 'tg-unlink') {
     if (!confirm('Disconnect Telegram?')) return;
     if (await act(() => api('POST', '/api/telegram/unlink', {}), 'Telegram disconnected.')) { await load('settings'); render(); }
+  } else if (a === 'token-new') {
+    const r = await act(() => api('POST', '/api/tokens', { label: 'Shortcuts' }));
+    if (r) { state.newToken = r.token; state.tokens = { count: (state.tokens?.count || 0) + 1 }; render(); }
+  } else if (a === 'token-revoke') {
+    if (!confirm('Turn off every key? Your shortcuts stop working until you make a new key.')) return;
+    if (await act(() => api('DELETE', '/api/tokens'), 'All keys turned off.')) { state.newToken = null; await load('settings'); render(); }
+  } else if (a === 'copy') {
+    const input = document.getElementById(el.dataset.target);
+    try {
+      await navigator.clipboard.writeText(input.value);
+      toast('Copied.');
+    } catch {
+      input.select();
+      toast('Select and copy it by hand.');
+    }
   } else if (a === 'pardon') {
     state.pardoning = id;
     render();
@@ -906,6 +1160,25 @@ $app.addEventListener('click', async (e) => {
   }
 });
 
+$app.addEventListener('change', (e) => {
+  const d = e.target.closest('[data-decide]');
+  if (d) state.decisions[d.dataset.decide] = d.value;
+});
+
+// Live preview of what quick add understood: the date, time, estimate and goal.
+$app.addEventListener('input', (e) => {
+  const input = e.target.closest('[data-preview]');
+  if (!input) return;
+  const out = input.form.querySelector('.parse-preview');
+  const p = parseCapture(input.value, { today: localToday(), now: localNowHM() });
+  const chips = [];
+  if (p.due_date) chips.push(p.due_date === localToday() ? 'Today' : fmtDay(p.due_date));
+  if (p.deadline) chips.push(p.deadline);
+  if (p.estimate_min) chips.push(`about ${fmtMin(p.estimate_min)}`);
+  if (p.goalTag) chips.push(`#${esc(p.goalTag)}`);
+  out.innerHTML = chips.length && p.title ? `<span class="faint">${esc(p.title)}</span> ${chips.map((c) => `<span class="pchip">${c}</span>`).join('')}` : '';
+});
+
 $app.addEventListener('submit', async (e) => {
   const form = e.target.closest('form[data-form]');
   if (!form) return;
@@ -914,11 +1187,13 @@ $app.addEventListener('submit', async (e) => {
   const submit = form.querySelector('[type="submit"]');
   if (submit) submit.disabled = true;
   try {
+    if (await goalsSubmit(kind, form)) return;
     if (kind === 'login') {
       try {
         await api('POST', '/api/login', form2obj(form));
         location.hash = '#/today';
         await go();
+        resyncPush();
       } catch (err) { gateError(err.message); }
     } else if (kind === 'setup') {
       const { password, again } = form2obj(form);
@@ -929,6 +1204,9 @@ $app.addEventListener('submit', async (e) => {
         toast('Password set. Add your first habit.');
         await go();
       } catch (err) { gateError(err.message); }
+    } else if (kind === 'oath') {
+      // The hold button submits through takeOath; Enter in the text field lands here.
+      await takeOath(form);
     } else if (kind === 'defer') {
       const f = new FormData(form);
       const reason = (f.get('own') || '').trim() || f.get('reason') || '';
@@ -938,11 +1216,18 @@ $app.addEventListener('submit', async (e) => {
       const r = await act(() => api('POST', '/api/reflection', form2obj(form)), 'Day closed.');
       if (r) await refreshToday();
     } else if (kind === 'quick-task') {
-      const title = form2obj(form).title;
-      if (await act(() => api('POST', '/api/tasks', { title }), 'Task added.')) await refreshToday();
+      const text = form2obj(form).title;
+      const r = await act(() => api('POST', '/api/capture', { text }));
+      if (r) {
+        haptic();
+        toast(r.say);
+        form.reset();
+        form.querySelector('.parse-preview').innerHTML = '';
+        await refreshCurrent();
+      }
     } else if (kind === 'pardon') {
-      const reason = form2obj(form).reason;
-      const r = await act(() => api('POST', `/api/misses/${form.dataset.id}/pardon`, { reason }), (x) => `Pardoned. ${x.pardonsLeft} left this month.`);
+      const f = form2obj(form);
+      const r = await act(() => api('POST', `/api/misses/${form.dataset.id}/pardon`, { reason: f.reason, plan: f.plan }), (x) => `Pardoned. ${x.pardonsLeft} left this month.`);
       if (r) { state.pardoning = null; await refreshToday(); }
     } else if (kind === 'new-habit') {
       const r = await act(() => api('POST', '/api/habits', habitPayload(form)), (x) => (x.startsToday ? 'Habit added. It counts from today.' : 'Habit added. Today\'s deadline has passed, so it starts tomorrow.'));
@@ -954,11 +1239,28 @@ $app.addEventListener('submit', async (e) => {
       if (await act(() => api('POST', '/api/tasks', taskPayload(form)), 'Task added.')) await go();
     } else if (kind === 'edit-task') {
       if (await act(() => api('PATCH', `/api/tasks/${form.dataset.id}`, taskPayload(form)), 'Saved.')) { state.editingTask = null; await go(); }
+    } else if (kind === 'rest') {
+      const f = form2obj(form);
+      if (await act(() => api('POST', '/api/rest', f), `Rest day booked for ${fmtDay(f.date)}.`)) await refreshCurrent();
+    } else if (kind === 'review-finish') {
+      const f = form2obj(form);
+      const decisions = {};
+      for (const [k, val] of Object.entries(f)) if (k.startsWith('d-')) decisions[k.slice(2)] = val;
+      const r = await act(() => api('POST', '/api/review/finish', { decisions, focus: f.focus, obstaclePlan: f.obstaclePlan }), 'Review done. The week starts now.');
+      if (r) {
+        state.decisions = {};
+        if (r.adjust?.length) {
+          state.editingHabit = r.adjust[0];
+          location.hash = '#/plan';
+        } else await refreshCurrent();
+      }
     } else if (kind === 'coach') {
       const text = form2obj(form).text.trim();
       if (!text) return;
       state.coach.messages.push({ role: 'user', text, at: new Date().toISOString() });
       state.sending = true;
+      if (state.query.has('ask')) history.replaceState(null, '', '#/coach');
+      state.query = new URLSearchParams();
       render();
       const r = await act(() => api('POST', '/api/coach', { text }));
       state.sending = false;
@@ -967,6 +1269,8 @@ $app.addEventListener('submit', async (e) => {
       state.today = null;
     } else if (kind === 'settings') {
       if (await act(() => api('PATCH', '/api/settings', form2obj(form)), 'Schedule saved.')) await go();
+    } else if (kind === 'alerts') {
+      if (await act(() => api('PATCH', '/api/settings', form2obj(form)), 'Saved.')) await go();
     } else if (kind === 'password') {
       if (await act(() => api('POST', '/api/password', form2obj(form)), 'Password changed.')) form.reset();
     }
@@ -981,6 +1285,11 @@ $app.addEventListener('keydown', (e) => {
     e.preventDefault();
     e.target.form.requestSubmit();
   }
+  const g = e.target.closest('g[data-action]');
+  if (g && (e.key === 'Enter' || e.key === ' ')) {
+    e.preventDefault();
+    g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  }
 });
 
 // ---------- Hold to take the oath ----------
@@ -990,12 +1299,17 @@ let holdTimer = null;
 
 async function takeOath(form) {
   const f = new FormData(form);
-  const [kind, id] = String(f.get('focus') || ':').split(':');
+  if (!f.get('focus')) { toast('Pick your one thing first.', true); return; }
+  if (String(f.get('intention') || '').trim().length < 3) { toast('Say when and where you will do it.', true); form.querySelector('[name="intention"]')?.focus(); return; }
+  const [kind, id] = String(f.get('focus')).split(':');
   const r = await act(() => api('POST', '/api/oath', { focusKind: kind, focusId: Number(id), intention: f.get('intention') || '' }));
   if (r) {
+    haptic();
     toast('Sworn. Now do it.', false, 3500, true);
     await refreshToday();
     window.scrollTo({ top: 0 });
+  } else {
+    form.querySelector('.hold')?.classList.remove('sworn');
   }
 }
 
@@ -1005,6 +1319,10 @@ function holdStart(e) {
   const form = btn.closest('form');
   if (!form.querySelector('input[name="focus"]:checked')) {
     toast('Pick your one thing first.', true);
+    return;
+  }
+  if (String(form.querySelector('[name="intention"]').value || '').trim().length < 3) {
+    toast('Say when and where you will do it.', true);
     return;
   }
   e.preventDefault();
@@ -1032,11 +1350,7 @@ $app.addEventListener('contextmenu', (e) => { if (e.target.closest('[data-hold]'
 // Keyboard users press Enter or Space once.
 $app.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-hold]');
-  if (btn && e.detail === 0) {
-    const form = btn.closest('form');
-    if (!form.querySelector('input[name="focus"]:checked')) toast('Pick your one thing first.', true);
-    else takeOath(form);
-  }
+  if (btn && e.detail === 0) takeOath(btn.closest('form'));
 });
 
 // The focus clock ticks every second.
@@ -1059,21 +1373,25 @@ setInterval(() => {
 }, 15000);
 
 setInterval(() => {
-  if (document.visibilityState === 'visible' && state.route === 'today' && state.today) refreshToday().catch(() => {});
+  if (document.visibilityState === 'visible' && state.route === 'today' && state.today && !document.activeElement?.matches('input, textarea')) refreshToday().catch(() => {});
 }, 60000);
 
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && state.today !== undefined && document.querySelector('.tabbar')) go();
+  if (document.visibilityState === 'visible' && document.querySelector('.tabbar') && !document.activeElement?.matches('input, textarea')) go();
 });
 
 window.addEventListener('hashchange', () => {
   state.pardoning = null;
-  state.editingHabit = null;
+  state.editingHabit = state.route === 'review' ? state.editingHabit : null;
   state.editingTask = null;
+  state.editingGoal = false;
+  state.sheetNode = null;
+  state.sheetMode = null;
+  state.dodging = null;
   go();
 });
 
-window.matchMedia('(min-width: 900px)').addEventListener('change', applyResponsiveBrief);
+window.matchMedia('(min-width: 900px)').addEventListener('change', applyResponsive);
 
 // ---------- Boot ----------
 
@@ -1097,6 +1415,7 @@ async function boot() {
       return renderLogin();
     }
     await go();
+    resyncPush();
   } catch (err) {
     $app.innerHTML = `<div class="gate"><div class="wordmark">Oath</div><p>${esc(err.message)}</p></div>`;
   }

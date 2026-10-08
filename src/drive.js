@@ -8,16 +8,14 @@ import { battlePlan, reflectionReply } from './coach.js';
 const ts = () => nowUTC().toJSDate();
 
 function findItem(t, kind, id) {
-  const list = kind === 'habit' ? t.items : kind === 'task' ? t.tasks : [];
+  const list = kind === 'habit' ? t.items : kind === 'task' ? [...t.tasks, ...t.anytime, ...t.triage] : [];
   return list.find((x) => x.id === Number(id));
 }
 
-// What still has to happen today: open habits plus open tasks that are due today or overdue.
+// What still has to happen today: open habits (X-a-week ones only when they must be done today)
+// plus open tasks that are due today or overdue.
 export function openDueToday(t) {
-  return [
-    ...t.items.filter((i) => i.status === 'open'),
-    ...t.tasks.filter((k) => k.status === 'open' && k.dueDate && k.dueDate <= t.today),
-  ];
+  return t.openDue;
 }
 
 // ---------- The morning oath ----------
@@ -30,6 +28,8 @@ export async function commitDay({ focusKind, focusId, intention }) {
   const item = findItem(t, focusKind, focusId);
   if (!item || item.status !== 'open') throw new RuleError('Pick one of today\'s open items as your one thing.');
   const text = String(intention || '').trim().slice(0, 300);
+  // An if-then plan with a when and a where roughly doubles follow-through (Gollwitzer & Sheeran).
+  if (text.length < 3) throw new RuleError('Say when and where you will do it.');
   await db()`insert into day_plans (date, focus_kind, focus_id, focus_title, intention, committed_at)
              values (${today}, ${focusKind}, ${item.id}, ${item.title}, ${text}, ${ts()})`;
   await logEvent('day_committed', { date: today, focus: item.title, intention: text });
@@ -62,9 +62,10 @@ export async function finishFocus(id, outcome) {
   let reaction;
   if (result === 'done') {
     try {
-      if (s.kind === 'habit') await completeHabit(s.ref_id);
+      let res = {};
+      if (s.kind === 'habit') res = await completeHabit(s.ref_id);
       else await completeTask(s.ref_id);
-      reaction = await reactionAfterDone(s.kind, s.ref_id);
+      reaction = await reactionAfterDone(s.kind, s.ref_id, { comeback: res.comeback });
     } catch (err) {
       if (!(err instanceof RuleError)) throw err;
       result = 'late';
@@ -115,15 +116,17 @@ export async function defer({ kind, id, reason, moveToTomorrow }) {
 
 // ---------- Closing the day ----------
 
-export async function reflect({ rating, blocker, win }) {
+export async function reflect({ rating, blocker, win, tomorrow }) {
   const { today } = await localNow();
   const r = Number.parseInt(rating, 10);
   if (!(r >= 1 && r <= 5)) throw new RuleError('Rate the day from 1 to 5.');
   const b = String(blocker || '').trim().slice(0, 500);
   const w = String(win || '').trim().slice(0, 500);
-  await db()`insert into reflections (date, rating, blocker, win, at) values (${today}, ${r}, ${b}, ${w}, ${ts()})
-             on conflict (date) do update set rating = excluded.rating, blocker = excluded.blocker, win = excluded.win, at = excluded.at, coach_reply = null`;
-  await logEvent('reflection', { date: today, rating: r, blocker: b, win: w });
+  const tm = String(tomorrow || '').trim().slice(0, 300);
+  await db()`insert into reflections (date, rating, blocker, win, tomorrow, at) values (${today}, ${r}, ${b}, ${w}, ${tm}, ${ts()})
+             on conflict (date) do update set rating = excluded.rating, blocker = excluded.blocker, win = excluded.win,
+             tomorrow = excluded.tomorrow, at = excluded.at, coach_reply = null`;
+  await logEvent('reflection', { date: today, rating: r, blocker: b, win: w, tomorrow: tm });
   const reply = await reflectionReply(today);
   return { ok: true, reply };
 }
@@ -132,12 +135,22 @@ export async function reflect({ rating, blocker, win }) {
 
 const MILESTONES = [3, 7, 14, 21, 30, 50, 75, 100, 150, 200, 365];
 
-export async function reactionAfterDone(kind, id) {
+export async function reactionAfterDone(kind, id, extra = {}) {
   const t = await buildToday();
   const item = findItem(t, kind, id);
   const open = openDueToday(t);
   if (!item) return { text: 'Done.' };
-  const hadWork = t.items.length + t.tasks.filter((k) => k.dueDate && k.dueDate <= t.today).length > 0;
+  if (extra.comeback) {
+    return { text: `Comeback. +${extra.comeback} HP for getting straight back on ${item.title}. Never miss twice.`, big: true };
+  }
+  if (extra.minimum) {
+    return { text: `Minimum kept: ${item.minimum}. HP saved, streak alive. No clean-day bonus today; beat it tomorrow.` };
+  }
+  if (kind === 'habit' && item.flexible) {
+    const left = item.weekTarget - item.weekDone;
+    return { text: left > 0 ? `${item.title}: ${item.weekDone} of ${item.weekTarget} this week. ${left} to go.` : `${item.title}: ${item.weekDone} of ${item.weekTarget}. Week done.`, big: left <= 0 };
+  }
+  const hadWork = t.progress.total > 0;
   if (!open.length && hadWork) {
     return { text: `Clean sweep. Everything due today is done. Keep it clean to midnight for +${t.settings.cleanBonus} HP.`, big: true };
   }

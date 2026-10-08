@@ -1,10 +1,11 @@
 // Runs the engine every 30 seconds and fires the scheduled briefs.
 import { db, migrate } from './db.js';
-import { deadlineAt, nowUTC } from './time.js';
+import { deadlineAt, nowUTC, addDays, weekday } from './time.js';
 import { tick, localNow, ensureGame } from './engine.js';
 import { sendPush, vapidKeys } from './push.js';
 import { generateBrief } from './coach.js';
 import { buildToday } from './state.js';
+import { prepareReview } from './review.js';
 
 const BRIEF_TITLES = { morning: 'Morning brief', midday: 'Midday check', evening: 'Evening check' };
 
@@ -24,6 +25,18 @@ async function scheduledBriefs() {
     if (kind === 'midday' && !openCount) continue;
     const body = text.length > 220 ? `${text.slice(0, 217).trimEnd()}...` : text;
     await sendPush({ title: BRIEF_TITLES[kind], body, fullText: text, tag: `brief-${kind}`, url: '/#/today' });
+  }
+
+  // Monday morning: write last week's review and invite him to it (a fresh-start moment).
+  const morning = deadlineAt(today, s.morningTime, tz);
+  if (weekday(today, tz) === 1 && local >= morning.plus({ minutes: 5 }) && local < morning.plus({ hours: 12 })) {
+    const lastWeek = addDays(today, -7, tz);
+    const [{ n }] = await db()`select count(*)::int as n from days where date >= ${lastWeek} and date < ${today}`;
+    const [done] = await db()`select done_at from weekly_reviews where week_start = ${lastWeek}`;
+    if (n > 0 && !done?.done_at && (await claim(`weekly:${lastWeek}`))) {
+      await prepareReview();
+      await sendPush({ title: 'Weekly review', body: 'Five minutes: keep, adjust or drop each habit, and pick this week\'s focus.', tag: 'weekly', url: '/#/review' });
+    }
   }
 
   // No oath two hours after the morning brief: chase it once.

@@ -56,7 +56,7 @@ test('the morning oath, focus blocks, dodges, reactions and closing the day', as
   setLocal('2026-10-12T08:00');
   const gym = (await call('POST', '/api/habits', { name: 'Gym', deadline: '19:00', non_negotiable: true })).data.habit;
   const read = (await call('POST', '/api/habits', { name: 'Read', deadline: '21:00' })).data.habit;
-  const vat = (await call('POST', '/api/tasks', { title: 'VAT return', due_date: '2026-10-12', deadline: '17:00', hard: true })).data;
+  const vat = (await call('POST', '/api/tasks', { title: 'VAT return', due_date: '2026-10-12', deadline: '17:00', hard: true, first_step: 'Open the VAT portal' })).data;
   const loose = (await call('POST', '/api/tasks', { title: 'Tidy desk' })).data;
 
   let t = (await today()).data;

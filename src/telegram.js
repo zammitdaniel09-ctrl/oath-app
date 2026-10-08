@@ -5,6 +5,7 @@ import { buildToday } from './state.js';
 import { completeHabit, completeTask, RuleError } from './engine.js';
 import { reactionAfterDone, finishFocus, closeFocusFor } from './drive.js';
 import { chat } from './coach.js';
+import { captureTask, doneByText } from './capture.js';
 
 const token = () => process.env.TELEGRAM_BOT_TOKEN;
 export const telegramEnabled = () => Boolean(token());
@@ -58,6 +59,8 @@ export async function initTelegram() {
       { command: 'today', description: 'What is due today, with Done buttons' },
       { command: 'next', description: 'The one thing to do now' },
       { command: 'hp', description: 'HP, season and pardons' },
+      { command: 'add', description: 'Add a task: /add call the bank friday 3pm' },
+      { command: 'done', description: 'Mark something done: /done gym' },
     ],
   });
   console.log(`telegram ready as @${me.username}`);
@@ -95,16 +98,22 @@ export async function sendTelegram(note) {
   if (!telegramEnabled()) return false;
   const s = await tgState();
   if (!s.chatId) return false;
-  const row = [];
-  if (note.item) row.push({ text: 'Done', callback_data: `done:${note.item.kind}:${note.item.id}:${note.focusId || ''}` });
+  const keyboard = [];
+  if (note.item) keyboard.push([{ text: 'Done', callback_data: `done:${note.item.kind}:${note.item.id}:${note.focusId || ''}` }]);
+  for (const it of note.items || []) {
+    keyboard.push([{ text: `Done: ${it.title}`.slice(0, 60), callback_data: `done:${it.kind}:${it.id}:` }]);
+  }
   const open = openButton(note.url);
-  if (open) row.push(open);
+  if (open) {
+    if (keyboard.length === 1 && note.item) keyboard[0].push(open);
+    else keyboard.push([open]);
+  }
   await call('sendMessage', {
     chat_id: s.chatId,
     text: `<b>${esc(note.title)}</b>\n${esc(note.fullText || note.body || '')}`,
     parse_mode: 'HTML',
     disable_web_page_preview: true,
-    reply_markup: row.length ? { inline_keyboard: [row] } : undefined,
+    reply_markup: keyboard.length ? { inline_keyboard: keyboard } : undefined,
   });
   return true;
 }
@@ -116,20 +125,22 @@ function todayMessage(t) {
   const lines = [`<b>${esc(t.today)}. ${g.hp} HP.</b>`, `${t.progress.done} of ${t.progress.total} done, ${t.progress.atStake} HP at stake.`];
   if (!t.plan && t.progress.open) lines.push('You have not taken today\'s oath. Open the app and pick your one thing.');
   if (t.plan) lines.push(`One thing: ${esc(t.plan.focusTitle)}`);
-  const open = [
-    ...t.items.filter((i) => i.status === 'open'),
-    ...t.tasks.filter((k) => k.status === 'open' && k.dueDate && k.dueDate <= t.today),
-  ];
+  const open = t.openDue;
   const kept = t.items.filter((i) => i.status === 'kept').map((i) => i.title);
+  const flexOpen = t.items.filter((i) => i.flexible && i.status === 'open' && !i.mustToday);
   const missed = [...t.items, ...t.tasks].filter((i) => i.status === 'missed').map((i) => i.title);
   if (open.length) {
     lines.push('', '<b>Open</b>');
     for (const i of open) lines.push(`${i.heavy ? '■' : '□'} ${esc(i.title)}, by ${i.deadline || '23:59'}${i.heavy ? ` (${i.penalty} HP)` : ''}`);
   }
+  if (flexOpen.length) {
+    lines.push('', '<b>This week</b>');
+    for (const i of flexOpen) lines.push(`□ ${esc(i.title)}, ${i.weekDone} of ${i.weekTarget}`);
+  }
   if (kept.length) lines.push('', `<b>Kept</b>: ${esc(kept.join(', '))}`);
   if (missed.length) lines.push(`<b>Missed</b>: ${esc(missed.join(', '))}`);
   if (!open.length && !kept.length && !missed.length) lines.push('', 'Nothing scheduled today. Add habits in the app.');
-  const keyboard = open.slice(0, 8).map((i) => [{ text: `Done: ${i.title}`.slice(0, 60), callback_data: `tdone:${i.kind}:${i.id}` }]);
+  const keyboard = [...open, ...flexOpen].slice(0, 8).map((i) => [{ text: `Done: ${i.title}`.slice(0, 60), callback_data: `tdone:${i.kind}:${i.id}` }]);
   const btn = openButton();
   if (btn) keyboard.push([btn]);
   return { text: lines.join('\n'), keyboard };
@@ -169,10 +180,11 @@ async function markDone(kind, id, focusId) {
       if (!(err instanceof RuleError)) throw err;
     }
   }
-  if (kind === 'habit') await completeHabit(Number(id));
+  let res = {};
+  if (kind === 'habit') res = await completeHabit(Number(id));
   else await completeTask(Number(id));
   await closeFocusFor(kind, Number(id));
-  return (await reactionAfterDone(kind, Number(id))).text;
+  return (await reactionAfterDone(kind, Number(id), { comeback: res.comeback })).text;
 }
 
 export async function handleUpdate(u) {
@@ -204,6 +216,24 @@ export async function handleUpdate(u) {
     if (text === '/today' || text === '/start') return sendToday(chatId);
     if (text === '/next') return sendNext(chatId);
     if (text === '/hp') return sendHp(chatId);
+    if (/^\/add(@\w+)?\s+/i.test(text)) {
+      try {
+        const r = await captureTask(text.replace(/^\/add(@\w+)?\s+/i, ''), 'telegram');
+        await call('sendMessage', { chat_id: chatId, text: r.say });
+      } catch (err) {
+        await call('sendMessage', { chat_id: chatId, text: err instanceof RuleError ? err.message : 'That did not work.' });
+      }
+      return;
+    }
+    if (/^\/done(@\w+)?\s+/i.test(text)) {
+      try {
+        const r = await doneByText(text.replace(/^\/done(@\w+)?\s+/i, ''));
+        await call('sendMessage', { chat_id: chatId, text: r.say });
+      } catch (err) {
+        await call('sendMessage', { chat_id: chatId, text: err instanceof RuleError ? err.message : 'That did not work.' });
+      }
+      return;
+    }
     if (!text) {
       await call('sendMessage', { chat_id: chatId, text: 'Text only for now.' });
       return;
