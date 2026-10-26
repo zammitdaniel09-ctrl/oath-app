@@ -1,7 +1,7 @@
 // The Dashboard: Apple Health, business sites, calendars and the way into the weekly review.
 import {
   state, esc, api, act, toast, fmtDay, bar, icon, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago,
-  miniRing, barChart, sparkline, localToday, keyBlock, form2obj, haptic,
+  miniRing, barChart, sparkline, localToday, keyBlock, form2obj, haptic, safeColor,
 } from './ui.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
@@ -67,8 +67,9 @@ function tile(ic, cls, label, value, unit, goal, display) {
   const pct = value === null || value === undefined || !goal ? 0 : (value / goal) * 100;
   return `<div class="dtile ${cls}">
     <div class="dtile-ring">${miniRing(pct, 44)}<span>${icon(ic)}</span></div>
-    <div><span class="dtile-label">${label}</span><span class="dtile-val">${value === null || value === undefined ? '-' : display(value)}<small>${unit}</small></span>
-      <span class="dtile-goal">${goal ? `of ${display(goal)}${unit}` : ''}</span></div>
+    <div><span class="dtile-label">${label}</span>${value === null || value === undefined
+      ? `<span class="dtile-val na">–</span><span class="dtile-goal">No reading yet${goal ? `, goal ${display(goal)}${unit}` : ''}</span>`
+      : `<span class="dtile-val">${display(value)}<small>${unit}</small></span><span class="dtile-goal">${goal ? `of ${display(goal)}${unit}` : ''}</span>`}</div>
   </div>`;
 }
 
@@ -130,7 +131,9 @@ function healthSection(h) {
   const todayRow = days.find((d) => d.date === h.today) || {};
   const lastNight = todayRow.sleep_hours !== null && todayRow.sleep_hours !== undefined ? todayRow : [...days].reverse().find((d) => d.sleep_hours);
   const g = h.goals || {};
-  const labels = days.map((d, i) => (i === days.length - 1 ? 'Today' : shortDay(d.date)));
+  // One letter per day on the axis (today in bold); the full day in tooltips and for screen readers.
+  const labels = days.map((d) => shortDay(d.date));
+  const titles = days.map((d, i) => (i === days.length - 1 ? 'Today' : fmtDay(d.date)));
   const steps = days.map((d) => d.steps);
   const sleep = days.map((d) => d.sleep_hours);
   const withSteps = steps.filter((v) => v !== null && v !== undefined);
@@ -167,12 +170,12 @@ function healthSection(h) {
     </div>
     <div class="card chart-card">
       <div class="cc-head"><span>${icon('steps')}Steps</span><span class="faint small">${avgSteps === null ? '' : `Average ${fmtInt(avgSteps)} a day`}</span></div>
-      ${barChart(steps, { goal: g.steps, labels, cls: 'c-move', unit: ' steps' })}
+      ${barChart(steps, { goal: g.steps, labels, titles, cls: 'c-move', unit: ' steps', label: `Steps, last ${days.length} days` })}
     </div>
     <div class="card chart-card">
       <div class="cc-head"><span>${icon('moon')}Sleep</span><span class="faint small">${avgSleep === null ? '' : `Average ${fmtHours(avgSleep)}`}</span></div>
-      ${barChart(sleep, { goal: g.sleep_hours, labels, cls: 'c-sleep', unit: ' h' })}
-      ${lastNight?.sleep ? `<p class="small faint" style="margin-top:12px">Last night</p>${sleepStages(lastNight.sleep)}` : ''}
+      ${barChart(sleep, { goal: g.sleep_hours, labels, titles, cls: 'c-sleep', label: `Sleep, last ${days.length} nights`, fmt: fmtHours })}
+      ${lastNight?.sleep ? `<p class="stages-label">Last night${lastNight.date ? `, ${fmtDay(lastNight.date)}` : ''}</p>${sleepStages(lastNight.sleep)}` : ''}
     </div>
     ${autos ? `<div class="gh sub"><h3>Habits Health ticks off</h3></div><div class="group">${autos}</div>` : `<p class="note">Link a habit to Health in Plan: open the habit, then "Tick it off from Apple Health".</p>`}
     ${workouts ? `<div class="gh sub"><h3>Workouts</h3></div><div class="group">${workouts}</div>` : ''}
@@ -254,13 +257,13 @@ function eventsByDay(events) {
   }
   return [...byDay.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([d, list]) => `<div class="day-block">
       <p class="day-h">${d === today ? 'Today' : d === addDays(today, 1) ? 'Tomorrow' : fmtDay(d, { weekday: 'long', day: 'numeric', month: 'short' })}</p>
-      ${list.map((e) => `<div class="ev${e.deadline ? ' deadline' : ''}" style="--c:${esc(e.color || '')}"><span class="ev-time">${e.allDay ? 'All day' : e.time}</span><span class="ev-title">${esc(e.title)}${e.location ? `<span class="faint"> ${esc(e.location)}</span>` : ''}</span></div>`).join('')}
+      ${list.map((e) => `<div class="ev${e.deadline ? ' deadline' : ''}"${safeColor(e.color) ? ` style="--c:${safeColor(e.color)}"` : ''}><span class="ev-time">${e.allDay ? 'All day' : e.time}</span><span class="ev-title">${esc(e.title)}${e.location ? `<span class="faint"> ${esc(e.location)}</span>` : ''}</span></div>`).join('')}
     </div>`).join('');
 }
 
 function calendarSection(d) {
-  const feeds = d.feeds.map((f) => `<div class="li li-plain">
-      <span class="li-ic" style="color:${esc(f.color || 'inherit')}">${icon(f.kind === 'deadlines' ? 'bolt' : 'calendar')}</span>
+  const feeds = d.feeds.map((f) => `<div class="li li-plain feed">
+      <span class="li-ic"${safeColor(f.color) ? ` style="color:${safeColor(f.color)}"` : ''}>${icon(f.kind === 'deadlines' ? 'bolt' : 'calendar')}</span>
       <span class="li-body"><span class="li-title">${esc(f.name)}</span>
         <span class="li-sub">${f.kind === 'deadlines' ? 'Deadlines become tasks' : 'Calendar'}, ${esc(f.host)}. ${f.lastError ? `<span class="bad">${esc(f.lastError)}</span>` : `${f.eventCount} events, synced ${ago(f.lastSync)}`}</span></span>
       <button class="btn tinted small" data-action="cal-remove" data-id="${f.id}">Remove</button></div>`).join('');

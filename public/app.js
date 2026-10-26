@@ -2,7 +2,7 @@
 import {
   $app, state, hooks, esc, ApiError, api, toast, react, act, form2obj, fmtClock, fmtDay, left, daysBetween, fmtMin,
   DAY_NAMES, scheduleText, CHECK, isStandalone, isIOS, haptic, bar, strengthChip, localToday, localNowHM,
-  icon, rings, drawRings, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago, miniRing, keyBlock, rememberKey,
+  icon, rings, drawRings, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago, miniRing, keyBlock, rememberKey, safeColor,
 } from './ui.js';
 import { parseCapture } from './parse.js';
 import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
@@ -21,7 +21,9 @@ const WIDE_EXTRA = [['review', 'Review', 'review'], ['settings', 'Settings', 'se
 const ROUTES = ['today', 'plan', 'goals', 'dashboard', 'coach', 'review', 'settings'];
 
 function shell(inner) {
-  const active = state.route === 'review' ? 'dashboard' : state.route;
+  // One selected destination: on the phone Review lives under Dashboard; the sidebar has its own row.
+  const wide = window.matchMedia('(min-width: 900px)').matches;
+  const active = state.route === 'review' && !wide ? 'dashboard' : state.route;
   const link = ([id, label, ic], extra = '') => `<a href="#/${id}" class="tab${extra}"${active === id || (extra && state.route === id) ? ' aria-current="page"' : ''}>${icon(ic)}<span>${label}</span></a>`;
   const nav = TABS.map((t) => link(t)).join('');
   const more = WIDE_EXTRA.map((t) => link(t, ' wide-only')).join('');
@@ -170,9 +172,17 @@ function taskRow(k, t) {
 function hpBars(days, n = 14) {
   const list = days.slice(-n);
   if (!list.length) return '<p class="muted small">Your first day closes at midnight.</p>';
-  const bars = list.map((d) => `<i class="${d.rest ? 'rest' : d.clean ? 'clean' : d.missed > 0 ? 'dirty' : ''}" style="height:${Math.max(4, d.hp_end)}%" title="${fmtDay(d.date)}: ${d.hp_end} HP"></i>`).join('');
-  return `<div class="bars" role="img" aria-label="HP at the end of each of the last ${list.length} days">${bars}</div>
-    <div class="bars-legend"><span>${fmtDay(list[0].date)}</span><span>${fmtDay(list[list.length - 1].date)}</span></div>`;
+  // 0 HP is drawn as a dashed baseline, so a death never looks like a little HP left.
+  const kind = (d) => (d.rest ? 'rest' : d.clean ? 'clean' : d.missed > 0 ? 'dirty' : '');
+  const bars = list.map((d) => `<i class="${kind(d)}${d.hp_end <= 0 ? ' zero' : ''}" style="height:${Math.max(0, Math.min(100, d.hp_end))}%" title="${fmtDay(d.date)}: ${d.hp_end} HP${d.rest ? ', rest day' : d.clean ? ', clean' : ''}"></i>`).join('');
+  const low = list.reduce((a, d) => (d.hp_end < a.hp_end ? d : a), list[0]);
+  const label = `HP at the end of each of the last ${list.length} days, from ${list[0].hp_end} on ${fmtDay(list[0].date)} to ${list[list.length - 1].hp_end} on ${fmtDay(list[list.length - 1].date)}. Lowest ${low.hp_end} on ${fmtDay(low.date)}.`;
+  const seen = new Set(list.map((d) => (d.hp_end <= 0 ? 'zero' : kind(d))));
+  const key = [['clean', 'Clean day'], ['dirty', 'Missed something'], ['rest', 'Rest day'], ['zero', '0 HP']]
+    .filter(([k]) => seen.has(k)).map(([k, l]) => `<span><i class="k-${k}"></i>${l}</span>`).join('');
+  return `<div class="bars" role="img" aria-label="${label}">${bars}</div>
+    <div class="bars-legend" aria-hidden="true"><span>${fmtDay(list[0].date)}</span><span>${fmtDay(list[list.length - 1].date)}</span></div>
+    ${key ? `<div class="bars-key" aria-hidden="true">${key}</div>` : ''}`;
 }
 
 const REASONS = ['Tired', 'No time', 'Don\'t feel like it', 'Waiting on something', 'Scared of it'];
@@ -286,7 +296,7 @@ function nowPanel(t) {
         <label class="field"><span>Or in your own words</span><input class="input" name="own" maxlength="300" autocomplete="off"></label>
         ${isTask && !n.heavy ? '<label class="check"><input type="checkbox" name="move"> Move it to tomorrow</label>' : `<p class="note">${n.kind === 'habit' ? 'Habits cannot be moved.' : 'Hard tasks cannot be moved.'} The deadline stays ${n.deadline || '23:59'}.</p>`}
         <div class="now-actions">
-          <button class="btn danger" type="submit">Log it</button>
+          <button class="btn tinted" type="submit">Log it</button>
           <button class="btn tinted" type="button" data-action="dodge-cancel">Back, I will do it</button>
         </div>
       </form>
@@ -306,7 +316,7 @@ function nowPanel(t) {
     <p class="now-meta">${metaParts.join(', ')}</p>
     ${sub.length ? `<p class="now-cue">${sub.join('<br>')}</p>` : ''}
     <div class="now-actions">
-      <button class="btn primary big" data-action="focus-start" data-kind="${n.kind}" data-id="${n.id}">${icon('timer')}Focus ${state.focusMinutes} min</button>
+      <button class="btn tinted big" data-action="focus-start" data-kind="${n.kind}" data-id="${n.id}">${icon('timer')}Focus ${state.focusMinutes} min</button>
       <button class="btn chrome big" data-action="now-done" data-kind="${n.kind}" data-id="${n.id}">${icon('check')}Done</button>
     </div>
     <div class="now-foot">
@@ -364,13 +374,13 @@ function timeline(t) {
     }
     return `${marker}<div class="tl-row ${r.kind}${r.past ? ' past' : ''}">
       <span class="tl-time">${r.time}</span>
-      <span class="tl-bar"${r.color ? ` style="--c:${esc(r.color)}"` : ''}></span>
+      <span class="tl-bar"${safeColor(r.color) ? ` style="--c:${safeColor(r.color)}"` : ''}></span>
       <span class="tl-body"><span class="tl-title">${esc(r.title)}</span>${r.sub ? `<span class="tl-sub">${esc(r.sub)}</span>` : ''}</span>
     </div>`;
   }).join('') + (nowPlaced ? '' : `<div class="tl-now"><span>${now}</span></div>`);
   return `<section class="section"><div class="gh"><h2>Schedule</h2><a href="#/dashboard" class="gh-link">Calendars</a></div>
     <div class="card timeline">
-      ${allDay.length ? `<div class="tl-allday">${allDay.map((e) => `<span class="tl-chip" style="--c:${esc(e.color || '')}">${esc(e.title)}</span>`).join('')}</div>` : ''}
+      ${allDay.length ? `<div class="tl-allday">${allDay.map((e) => `<span class="tl-chip"${safeColor(e.color) ? ` style="--c:${safeColor(e.color)}"` : ''}>${esc(e.title)}</span>`).join('')}</div>` : ''}
       ${html}
     </div></section>`;
 }
@@ -387,7 +397,10 @@ function healthMini(t) {
   const g = h.goals || {};
   const tile = (ic, label, v, goal, fmt, unit) => {
     const pct = v === null || v === undefined || !goal ? 0 : Math.min(100, Math.round((v / goal) * 100));
-    return `<div class="hm-tile"><span class="hm-label">${icon(ic)}${label}</span><span class="hm-val">${v === null || v === undefined ? '-' : fmt(v)}<small>${unit}</small></span>${bar(pct, 'thin')}</div>`;
+    if (v === null || v === undefined) {
+      return `<div class="hm-tile"><span class="hm-label">${icon(ic)}${label}</span><span class="hm-val na">–<small> no reading</small></span>${bar(null, 'thin')}</div>`;
+    }
+    return `<div class="hm-tile"><span class="hm-label">${icon(ic)}${label}</span><span class="hm-val">${fmt(v)}<small>${unit}</small></span>${bar(pct, 'thin')}</div>`;
   };
   return `<a class="card health-mini" href="#/dashboard">
     <div class="hm-head"><span>${icon('heart')}Health</span><span class="faint small">Synced ${ago(h.lastSync)}${icon('chevron', 'chev')}</span></div>
@@ -465,7 +478,7 @@ function triageCard(t) {
         <button class="btn tinted small" data-action="triage" data-do="today" data-id="${k.id}">Today</button>
         <button class="btn tinted small" data-action="triage" data-do="tomorrow" data-id="${k.id}">Tomorrow</button>
         <button class="btn tinted small" data-action="triage" data-do="week" data-id="${k.id}">Next week</button>
-        <button class="btn tinted small" data-action="triage" data-do="drop" data-id="${k.id}">Drop</button>
+        <button class="btn plain small danger-text" data-action="triage" data-do="drop" data-id="${k.id}">Drop</button>
       </div></div>`).join('');
   return `<section class="section"><div class="gh"><h2>Clear the backlog</h2><span class="gh-count">${t.triage.length} waiting</span></div>
     <div class="card triage">${rows}<p class="note">One decision each. A short list you trust beats a pile you never look at.</p></div></section>`;
@@ -613,7 +626,11 @@ function heatmap(heat, today) {
   first.setUTCDate(first.getUTCDate() - (days.length - 1));
   const offset = (first.getUTCDay() + 6) % 7;
   const cells = [...Array(offset).fill('<i class="h-pad"></i>'), ...days.map((s) => `<i class="h-${s}"></i>`)].join('');
-  return `<div class="heat" role="img" aria-label="Since it started: ${days.filter((s) => s === 'kept' || s === 'min' || s === 'pardoned').length} kept, ${days.filter((s) => s === 'missed').length} missed">${cells}</div>`;
+  // A key for the states this habit actually has.
+  const names = { kept: 'Kept', min: 'Minimum', missed: 'Missed', pardoned: 'Pardoned', rest: 'Rest', open: 'Today', none: 'No record', flex: 'Not done' };
+  const key = Object.entries(names).filter(([s]) => days.includes(s)).map(([s, l]) => `<span><i class="h-${s}"></i>${l}</span>`).join('');
+  return `<div class="heat" role="img" aria-label="Since it started: ${days.filter((s) => s === 'kept' || s === 'min' || s === 'pardoned').length} kept, ${days.filter((s) => s === 'missed').length} missed">${cells}</div>
+    <div class="heat-key" aria-hidden="true">${key}</div>`;
 }
 
 function goalOptions(selected) {
@@ -903,7 +920,7 @@ function viewReview() {
       <div class="triage-actions" role="group" aria-label="Decide">
         <button class="btn tinted small" data-action="triage" data-do="week" data-id="${k.id}">Next week</button>
         <button class="btn tinted small" data-action="triage" data-do="someday" data-id="${k.id}">Someday</button>
-        <button class="btn tinted small" data-action="triage" data-do="drop" data-id="${k.id}">Drop</button>
+        <button class="btn plain small danger-text" data-action="triage" data-do="drop" data-id="${k.id}">Drop</button>
       </div></div>`).join('');
 
   shell(`${pageHead('Review', { over: 'The week, and everything that counted', actions: iconLink('#/settings', 'settings', 'Settings') })}
@@ -924,7 +941,7 @@ function viewReview() {
           <div class="stat"><b>${g.pardonsLeft}</b><span>Pardons left</span></div>
         </div></section>
       <section class="section"><div class="gh"><h2>Days</h2></div>
-        ${dayRows ? `<div class="card flush"><table class="table"><thead><tr><th>Day</th><th class="num">Kept</th><th class="num">Missed</th><th class="num">HP</th></tr></thead><tbody>${dayRows}</tbody></table></div>` : '<div class="card muted">Your first day closes at midnight.</div>'}
+        ${dayRows ? `<div class="card flush table-wrap"><table class="table"><thead><tr><th>Day</th><th class="num">Kept</th><th class="num">Missed</th><th class="num">HP</th></tr></thead><tbody>${dayRows}</tbody></table></div>` : '<div class="card muted">Your first day closes at midnight.</div>'}
       </section>
       <section class="section"><div class="gh"><h2>Misses</h2><span class="gh-count">${r.misses.length}</span></div>
         ${missRows ? `<div class="group">${missRows}</div>` : '<div class="card muted">No misses yet.</div>'}</section>
@@ -1081,7 +1098,7 @@ function renderLogin(session = null) {
       <div class="wordmark">Oath</div>
       <p>${session.locked ? 'Locked. ' : ''}Look at your iPhone to open it, <em class="serif">Daniel</em>.</p>
       <div id="faceid-slot"><button class="btn chrome big wide" type="button" data-action="faceid-login">${icon('faceid')}Open with Face ID</button></div>
-      <p class="note bad" id="gate-error" hidden></p>
+      <p class="note bad" id="gate-error" role="alert" hidden></p>
       <details class="recover"><summary>Lost Face ID?</summary>
         <form data-form="login">
           <label class="field"><span>Password</span><input class="input" type="password" name="password" autocomplete="current-password" required></label>
@@ -1100,7 +1117,7 @@ function renderLogin(session = null) {
     <form data-form="login">
       <label class="field"><span>Password</span><input class="input" type="password" name="password" autocomplete="current-password" required autofocus></label>
       <div class="form-actions"><button class="btn primary big wide" type="submit">Log in</button></div>
-      <p class="note bad" id="gate-error" hidden></p>
+      <p class="note bad" id="gate-error" role="alert" hidden></p>
     </form></div>`;
   if (session.faceId) prepareFaceIdLogin();
 }
@@ -1123,7 +1140,7 @@ function renderSetup(code) {
       <label class="field"><span>Password, at least 10 characters</span><input class="input" type="password" name="password" autocomplete="new-password" minlength="10" required autofocus></label>
       <label class="field"><span>Same password again</span><input class="input" type="password" name="again" autocomplete="new-password" minlength="10" required></label>
       <div class="form-actions"><button class="btn primary big wide" type="submit">Set password</button></div>
-      <p class="note bad" id="gate-error" hidden></p>
+      <p class="note bad" id="gate-error" role="alert" hidden></p>
     </form></div>`;
 }
 
@@ -1901,7 +1918,8 @@ window.addEventListener('hashchange', () => {
   go();
 });
 
-window.matchMedia('(min-width: 900px)').addEventListener('change', () => render());
+// The sidebar arrives at 900px and the two-column layouts at 1240px.
+['(min-width: 900px)', '(min-width: 1240px)'].forEach((q) => window.matchMedia(q).addEventListener('change', () => render()));
 
 // ---------- Boot ----------
 

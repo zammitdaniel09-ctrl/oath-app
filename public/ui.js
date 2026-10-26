@@ -182,10 +182,15 @@ export function haptic() {
   } catch { /* no haptics available */ }
 }
 
+// A progress bar. No measure at all (null) reads differently from a measured 0%.
 export function bar(pct, cls = '') {
-  const p = pct === null || pct === undefined ? 0 : Math.max(0, Math.min(100, pct));
+  if (pct === null || pct === undefined) return `<div class="pbar none ${cls}" role="img" aria-label="Not measured yet"></div>`;
+  const p = Math.max(0, Math.min(100, pct));
   return `<div class="pbar ${cls}" role="img" aria-label="${p}%"><i style="width:${p}%"></i></div>`;
 }
+
+// A colour from a calendar feed, only if it is a plain CSS colour, so it can go in a style attribute.
+export const safeColor = (c) => (/^(#[0-9a-f]{3,8}|[a-z]{3,20}|rgba?\([\d\s.,%]+\))$/i.test(String(c || '').trim()) ? String(c).trim() : '');
 
 // Habit strength as a small ring with the number beside it.
 export function strengthChip(s) {
@@ -291,7 +296,8 @@ export function drawRings() {
 const niceNum = (n) => (n >= 10000 ? `${Math.round(n / 1000)}k` : n >= 1000 ? `${(n / 1000).toFixed(1).replace(/\.0$/, '')}k` : n < 100 && !Number.isInteger(n) ? String(Math.round(n * 10) / 10) : String(Math.round(n)));
 
 // Vertical bars, one per day, with an optional dashed goal line. values may contain nulls.
-export function barChart(values, { goal = null, labels = [], cls = '', height = 96, unit = '' } = {}) {
+// A measured 0 is a flat line on the baseline; a day with no data is a dotted outline.
+export function barChart(values, { goal = null, labels = [], titles = labels, cls = '', height = 96, unit = '', label = 'Chart', fmt = niceNum } = {}) {
   const w = 300;
   const h = height;
   const top = 14;
@@ -299,16 +305,23 @@ export function barChart(values, { goal = null, labels = [], cls = '', height = 
   const max = Math.max(goal || 0, ...values.map((v) => v || 0), 1);
   const slot = w / n;
   const bw = Math.min(26, slot * 0.62);
+  const x = (i) => (i * slot + (slot - bw) / 2).toFixed(1);
   const bars = values.map((v, i) => {
-    if (v === null || v === undefined) return `<rect x="${(i * slot + (slot - bw) / 2).toFixed(1)}" y="${h - 2}" width="${bw.toFixed(1)}" height="2" rx="1" class="bc-empty"/>`;
-    const bh = Math.max(3, ((h - top) * v) / max);
+    const tip = `<title>${esc(titles[i] || '')}: ${v === null || v === undefined ? 'no data' : `${fmt(v)}${esc(unit)}`}</title>`;
+    if (v === null || v === undefined) return `<rect x="${x(i)}" y="${h - 6}" width="${bw.toFixed(1)}" height="6" rx="1.5" class="bc-empty">${tip}</rect>`;
+    if (!v) return `<rect x="${x(i)}" y="${h - 1.5}" width="${bw.toFixed(1)}" height="1.5" class="bc-zero">${tip}</rect>`;
+    const bh = ((h - top) * v) / max;
     const met = goal && v >= goal;
-    return `<rect x="${(i * slot + (slot - bw) / 2).toFixed(1)}" y="${(h - bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${Math.min(5, bw / 2).toFixed(1)}" class="bc-bar${met ? ' met' : ''}"><title>${labels[i] || ''}: ${v}${unit}</title></rect>`;
+    return `<rect x="${x(i)}" y="${(h - bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${Math.min(5, bw / 2).toFixed(1)}" class="bc-bar${met ? ' met' : ''}">${tip}</rect>`;
   }).join('');
-  const gy = goal ? (h - ((h - top) * goal) / max).toFixed(1) : null;
-  const goalLine = goal ? `<line x1="0" x2="${w}" y1="${gy}" y2="${gy}" class="bc-goal"/><text x="${w}" y="${Number(gy) - 4}" text-anchor="end" class="bc-goal-text">${niceNum(goal)}</text>` : '';
-  const axis = labels.length ? `<div class="bc-axis">${labels.map((l, i) => `<span${i === labels.length - 1 ? ' class="last"' : ''}>${esc(l)}</span>`).join('')}</div>` : '';
-  return `<div class="bchart ${cls}"><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="Chart">${goalLine}${bars}</svg>${axis}</div>`;
+  const gy = goal ? h - ((h - top) * goal) / max : null;
+  const goalLine = goal ? `<line x1="0" x2="${w}" y1="${gy.toFixed(1)}" y2="${gy.toFixed(1)}" class="bc-goal"/>` : '';
+  // The goal's number sits in HTML beside the line, so the stretched chart never distorts it.
+  const goalLabel = goal ? `<span class="bc-goal-label" style="bottom:${(((h - gy) / h) * 100).toFixed(1)}%" aria-hidden="true">Goal ${fmt(goal)}</span>` : '';
+  const axis = labels.length ? `<div class="bc-axis" aria-hidden="true">${labels.map((l, i) => `<span${i === labels.length - 1 ? ' class="last"' : ''}>${esc(l)}</span>`).join('')}</div>` : '';
+  const spoken = values.map((v, i) => `${titles[i] || ''} ${v === null || v === undefined ? 'no data' : `${fmt(v)}${unit}`}`).join(', ');
+  const aria = `${label}${goal ? `, goal ${fmt(goal)}${unit}` : ''}. ${spoken}`;
+  return `<div class="bchart ${cls}"><div class="bchart-plot"><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="height:${h}px" role="img" aria-label="${esc(aria)}">${goalLine}${bars}</svg>${goalLabel}</div>${axis}</div>`;
 }
 
 // A line with a soft area under it. series: [{ value }].
@@ -322,10 +335,20 @@ export function sparkline(values, { cls = '', height = 44 } = {}) {
   const max = Math.max(...real);
   const span = max - min || 1;
   const step = w / (pts.length - 1);
-  const coords = pts.map((v, i) => (v === null ? null : [i * step, h - 4 - ((v - min) / span) * (h - 10)])).filter(Boolean);
-  const line = coords.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ');
-  const area = `${line} L${coords[coords.length - 1][0].toFixed(1)} ${h} L${coords[0][0].toFixed(1)} ${h} Z`;
-  return `<svg class="spark ${cls}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><path d="${area}" class="spark-area"/><path d="${line}" class="spark-line"/></svg>`;
+  // A missing day breaks the line instead of being bridged; a lone reading shows as a dot.
+  const runs = [[]];
+  pts.forEach((v, i) => {
+    if (v === null) { if (runs[runs.length - 1].length) runs.push([]); return; }
+    runs[runs.length - 1].push([i * step, h - 4 - ((v - min) / span) * (h - 10)]);
+  });
+  const xy = ([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`;
+  const paths = runs.filter((r) => r.length).map((r) => {
+    if (r.length === 1) return `<path d="M${xy(r[0])} h0.01" class="spark-dot"/>`;
+    const line = r.map((p, i) => `${i ? 'L' : 'M'}${xy(p)}`).join(' ');
+    const area = `${line} L${r[r.length - 1][0].toFixed(1)} ${h} L${r[0][0].toFixed(1)} ${h} Z`;
+    return `<path d="${area}" class="spark-area"/><path d="${line}" class="spark-line"/>`;
+  }).join('');
+  return `<svg class="spark ${cls}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">${paths}</svg>`;
 }
 
 export const fmtInt = (n) => (n === null || n === undefined ? '-' : Math.round(n).toLocaleString('en-GB'));

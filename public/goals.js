@@ -28,9 +28,9 @@ function dueText(g) {
 function goalCard(g) {
   const closed = g.status !== 'active';
   return `<a class="goal-card${closed ? ' closed' : ''}" href="#/goals/${g.id}">
-    <span class="goal-ring">${miniRing(g.pct ?? 0, 52)}<b>${g.pct === null ? '' : `${g.pct}<small>%</small>`}</b></span>
+    <span class="goal-ring">${miniRing(g.pct ?? 0, 52)}${g.pct === null ? '<b class="na">–<span class="sr"> not measured yet</span></b>' : `<b>${g.pct}<small>%</small></b>`}</span>
     <span class="goal-text"><span class="goal-title">${esc(g.title)}</span>
-      <span class="goal-meta">${closed ? (g.status === 'done' ? 'Achieved' : 'Dropped') : esc(g.label)}${dueText(g) && !closed ? `. ${dueText(g)}` : ''}</span></span>
+      <span class="goal-meta">${closed ? `<span class="goal-status${g.status === 'done' ? ' done' : ''}">${g.status === 'done' ? 'Achieved' : 'Dropped'}</span>` : esc(g.label)}${dueText(g) && !closed ? `${String(g.label || '').endsWith('.') ? '' : '.'} ${dueText(g)}` : ''}</span></span>
     ${icon('chevron', 'chev')}
   </a>`;
 }
@@ -209,16 +209,22 @@ function mapSvg(goal, tree) {
   }).join('');
   const boxes = placed.map((p) => {
     const n = p.n;
-    const lines = wrap(n.text);
-    const cls = n.kind === 'root' ? 'root' : `${n.kind}${n.kind === 'task' && n.ref?.done ? ' done' : ''}`;
+    const hasPct = n.kind === 'idea' && n.children?.length && n.pct !== null;
+    // Leave room on the right for a branch's percentage.
+    const lines = wrap(n.text, hasPct ? 18 : 22);
+    const done = n.kind === 'task' && n.ref?.done;
+    const cls = n.kind === 'root' ? 'root' : `${n.kind}${done ? ' done' : ''}`;
     const x = p.x + 8;
     const yTop = p.y + 8;
     const textY = yTop + (lines.length === 1 ? BOX_H / 2 + 5 : BOX_H / 2 - 3);
-    const strength = n.kind === 'habit' && n.ref ? `<rect x="${x}" y="${yTop + BOX_H - 4}" width="${(BOX_W * n.ref.strength) / 100}" height="4" class="map-strength"/>` : '';
-    const pct = n.kind === 'idea' && n.children?.length && n.pct !== null ? `<text x="${x + BOX_W - 8}" y="${yTop + 13}" class="map-pct" text-anchor="end">${n.pct}%</text>` : '';
-    const attrs = n.kind === 'root' ? '' : ` data-action="node-open" data-id="${n.id}" role="button" tabindex="0" aria-label="${esc(n.text)}"`;
+    // Shape says what a branch is as well as colour: tasks are squarer, habits rounder.
+    const rx = { root: 10, task: 4, habit: 14 }[n.kind] ?? 8;
+    const strength = n.kind === 'habit' && n.ref ? `<rect x="${x + 10}" y="${yTop + BOX_H - 5}" width="${((BOX_W - 20) * n.ref.strength) / 100}" height="3" rx="1.5" class="map-strength"/>` : '';
+    const pct = hasPct ? `<text x="${x + BOX_W - 8}" y="${yTop + 15}" class="map-pct" text-anchor="end">${n.pct}%</text>` : '';
+    const spoken = n.kind === 'task' ? `, task${done ? ', done' : ''}` : n.kind === 'habit' ? `, habit${n.ref ? `, ${n.ref.strength}% strength` : ''}` : hasPct ? `, ${n.pct}% done` : '';
+    const attrs = n.kind === 'root' ? '' : ` data-action="node-open" data-id="${n.id}" role="button" tabindex="0" aria-label="${esc(n.text)}${spoken}"`;
     return `<g class="map-node ${cls}"${attrs}>
-      <rect x="${x}" y="${yTop}" width="${BOX_W}" height="${BOX_H}" rx="7"/>
+      <rect x="${x}" y="${yTop}" width="${BOX_W}" height="${BOX_H}" rx="${rx}"/>
       ${strength}${pct}
       <text x="${x + 12}" y="${textY}">${lines.map((l, i) => `<tspan x="${x + 12}" dy="${i ? 15 : 0}">${esc(l)}</tspan>`).join('')}</text>
     </g>`;
@@ -273,6 +279,7 @@ function sheet(tree) {
   return `<div class="sheet-backdrop" data-action="sheet-close"></div>
   <div class="sheet" role="dialog" aria-modal="true" aria-label="Branch">
     <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="sheet-head"><h2>Branch</h2></div>
     <form data-form="node-edit" data-id="${n.id}">
       <label class="field"><span>Branch</span><input class="input" name="text" maxlength="200" required value="${esc(n.text)}"></label>
       <div class="form-actions"><button class="btn primary" type="submit">Save</button><button class="btn tinted" type="button" data-action="sheet-close">Close</button></div>
@@ -349,8 +356,8 @@ export function viewGoal() {
       <div>
         <section class="section"><div class="gh"><h2>Map</h2>${seg}</div>
           <div class="map-panes view-${state.mapView}">
-            <div class="pane-outline">${outline(g, d.tree)}</div>
-            <div class="pane-map">${mapSvg(g, d.tree)}</div>
+            <div class="pane-outline"><h3 class="pane-h only-wide">Outline</h3>${outline(g, d.tree)}</div>
+            <div class="pane-map"><h3 class="pane-h only-wide">Mind map</h3>${mapSvg(g, d.tree)}</div>
           </div>
         </section>
       </div>
