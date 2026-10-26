@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import { db } from './db.js';
+import { verifyPasskeyLogin } from './passkeys.js';
 
 const COOKIE = 'oath_session';
 const MAX_AGE = 60 * 60 * 24 * 400; // 400 days: log in once per device
@@ -78,6 +79,21 @@ export async function login(c, { password }) {
   if (typeof password !== 'string' || !(await verifyPassword(password, rows[0].password_hash))) {
     recordFailure();
     return { error: 'Wrong password.', status: 401 };
+  }
+  failures.count = 0;
+  await startSession(c);
+  return { ok: true };
+}
+
+// Face ID login: a verified passkey opens the same kind of session as the password, under the
+// same lockout.
+export async function passkeyLogin(c, response) {
+  if (loginLocked()) return { error: 'Too many attempts. Try again in 15 minutes.', status: 429 };
+  try {
+    await verifyPasskeyLogin(c, response);
+  } catch (err) {
+    recordFailure();
+    return { error: err.message, status: err.status || 401 };
   }
   failures.count = 0;
   await startSession(c);

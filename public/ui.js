@@ -56,7 +56,7 @@ export async function api(method, path, body) {
   }
   let data = null;
   try { data = await res.json(); } catch { /* empty body */ }
-  if (res.status === 401 && !['/api/login', '/api/setup', '/api/password'].includes(path)) {
+  if (res.status === 401 && !['/api/login', '/api/setup', '/api/password', '/api/passkey/login'].includes(path)) {
     hooks.onUnauthed();
     throw new ApiError('Log in first.', 401);
   }
@@ -233,6 +233,7 @@ const ICONS = {
   bolt: '<path d="M13.2 3L5.5 13.3h5.8L10.6 21l7.9-10.4h-5.9z"/>',
   clock: '<circle cx="12" cy="12" r="8.6"/><path d="M12 7.3V12l3.1 1.9"/>',
   sync: '<path d="M19.5 11A7.6 7.6 0 0 0 5.8 7M4.5 4v3.5H8M4.5 13a7.6 7.6 0 0 0 13.7 4M19.5 20v-3.5H16"/>',
+  faceid: '<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M9 9.5v1M15 9.5v1M12 9.5v3.5h-1M9.5 15.5c1.4 1.2 3.6 1.2 5 0"/>',
   shield: '<path d="M12 3.5l7 2.6v5.3c0 4.4-3 7.9-7 9.1-4-1.2-7-4.7-7-9.1V6.1z"/>',
   key: '<circle cx="8.5" cy="12" r="3.8"/><path d="M12.3 12h8.2M17.5 12v3M20.5 12v2.2"/>',
   link: '<path d="M10.2 13.8a3.6 3.6 0 0 0 5.1 0l3.2-3.2a3.6 3.6 0 0 0-5.1-5.1l-1.1 1.1M13.8 10.2a3.6 3.6 0 0 0-5.1 0l-3.2 3.2a3.6 3.6 0 0 0 5.1 5.1l1.1-1.1"/>',

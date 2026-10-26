@@ -935,6 +935,8 @@ select.input {
 .gh h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
 .li-nav:has(.chk) { grid-template-columns: 30px minmax(0, 1fr) auto; }
 .setup-err { margin: 0; padding: 0 16px 14px 58px; }
+#faceid-slot .btn { margin-top: 20px; }
+#faceid-slot .note { text-align: center; }
 .banner .btn { flex: none; }
 
 /* ---------- iPad and desktop ---------- */

@@ -25,6 +25,8 @@ Variables on the app service:
 
 Push notification keys are generated on first boot and stored in the database.
 
+Face ID login uses passkeys, which belong to the app's address (`PUBLIC_HOST`, else `RAILWAY_PUBLIC_DOMAIN`). If that address changes, log in with the password and turn Face ID on again in Settings.
+
 ## Code
 
 - `src/engine.js`: HP, misses, deaths, pardons, rule changes, the tick

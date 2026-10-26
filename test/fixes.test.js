@@ -219,5 +219,5 @@ test('a Shortcuts key works with or without "Bearer ", and failures show up in t
   assert.equal(health.ok, true, health.detail);
   assert.equal(s.items.find((i) => i.id === 'telegram').detail, 'The bot token is not set on the server.');
   assert.equal(s.items.find((i) => i.id === 'calendars').ok, false);
-  assert.equal(s.total, 5);
+  assert.equal(s.total, 6);
 });

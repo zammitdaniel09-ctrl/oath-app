@@ -4,6 +4,7 @@ import { db, getKV, setKV } from './db.js';
 import { subscriptionCount } from './push.js';
 import { telegramStatus, webhookInfo } from './telegram.js';
 import { nowUTC } from './time.js';
+import { passkeyCount } from './passkeys.js';
 
 const DAY = 24 * 3600 * 1000;
 const iso = (d) => (d ? new Date(d).toISOString() : null);
@@ -15,7 +16,8 @@ export async function noteIngestError(path, status, reason) {
 
 export async function setupStatus() {
   const now = nowUTC().toMillis();
-  const [devices, tg, hook, feeds, tokens, healthSync, healthRows, ingestError] = await Promise.all([
+  const [faceIds, devices, tg, hook, feeds, tokens, healthSync, healthRows, ingestError] = await Promise.all([
+    passkeyCount(),
     subscriptionCount(),
     telegramStatus(),
     webhookInfo(),
@@ -40,6 +42,13 @@ export async function setupStatus() {
   const stuck = Boolean(hook?.lastError && hook.pending > 0);
 
   const items = [
+    {
+      id: 'faceid',
+      title: 'Face ID login',
+      ok: faceIds > 0,
+      detail: faceIds ? `${faceIds} ${faceIds === 1 ? 'device logs' : 'devices log'} in with Face ID.` : 'Log in with your face instead of the password.',
+      href: '#/settings',
+    },
     {
       id: 'reminders',
       title: 'Reminders on this iPhone',

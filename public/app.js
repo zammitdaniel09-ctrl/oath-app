@@ -1024,6 +1024,7 @@ function viewSettings() {
   shell(`${pageHead('Settings', { over: 'Oath' })}
     <div class="split"><div>
       ${connections}
+      ${faceIdCard()}
       ${pushCard()}
       ${alertsCard(s)}
       ${telegramCard()}
@@ -1070,11 +1071,13 @@ function renderLogin() {
   $app.innerHTML = `<div class="gate">
     <div class="wordmark">Oath</div>
     <p>Welcome back, <em class="serif">Daniel</em>. Log in to see today.</p>
+    <div id="faceid-slot"></div>
     <form data-form="login">
       <label class="field"><span>Password</span><input class="input" type="password" name="password" autocomplete="current-password" required autofocus></label>
       <div class="form-actions"><button class="btn primary big wide" type="submit">Log in</button></div>
       <p class="note bad" id="gate-error" hidden></p>
     </form></div>`;
+  prepareFaceIdLogin();
 }
 hooks.onUnauthed = renderLogin;
 
@@ -1158,6 +1161,10 @@ async function load(route) {
   }
   if (route === 'settings') {
     state.setup = await api('GET', '/api/setup-status').catch(() => state.setup);
+    state.passkeys = (await api('GET', '/api/passkeys')).passkeys;
+    if (window.PublicKeyCredential) {
+      state.faceIdRegister = await api('POST', '/api/passkey/register/options', {}).then((options) => ({ options, at: Date.now() })).catch(() => null);
+    }
     state.settings = await api('GET', '/api/settings');
     state.telegram = { ...(state.telegram || {}), ...(await api('GET', '/api/telegram')) };
     state.tokens = await api('GET', '/api/tokens');
@@ -1277,6 +1284,120 @@ async function resyncPush() {
     sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(publicKey) });
     await api('POST', '/api/push/subscribe', sub.toJSON());
   } catch { /* try again next launch */ }
+}
+
+// ---------- Face ID (passkeys) ----------
+
+const bytesToB64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+function createOptions(o) {
+  return {
+    ...o,
+    challenge: b64ToBytes(o.challenge),
+    user: { ...o.user, id: b64ToBytes(o.user.id) },
+    excludeCredentials: (o.excludeCredentials || []).map((x) => ({ ...x, id: b64ToBytes(x.id) })),
+  };
+}
+
+function getOptions(o) {
+  return { ...o, challenge: b64ToBytes(o.challenge), allowCredentials: (o.allowCredentials || []).map((x) => ({ ...x, id: b64ToBytes(x.id) })) };
+}
+
+function credentialJSON(cred) {
+  const r = cred.response;
+  const response = { clientDataJSON: bytesToB64u(r.clientDataJSON) };
+  if (r.attestationObject) {
+    response.attestationObject = bytesToB64u(r.attestationObject);
+    response.transports = r.getTransports?.() || [];
+  } else {
+    response.authenticatorData = bytesToB64u(r.authenticatorData);
+    response.signature = bytesToB64u(r.signature);
+    if (r.userHandle) response.userHandle = bytesToB64u(r.userHandle);
+  }
+  return {
+    id: cred.id,
+    rawId: bytesToB64u(cred.rawId),
+    type: cred.type,
+    authenticatorAttachment: cred.authenticatorAttachment || undefined,
+    clientExtensionResults: cred.getClientExtensionResults?.() || {},
+    response,
+  };
+}
+
+function deviceName() {
+  const ua = navigator.userAgent;
+  if (/iPhone/.test(ua)) return 'iPhone';
+  if (/iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return 'iPad';
+  if (/Mac/.test(ua)) return 'Mac';
+  return 'This device';
+}
+
+// iOS only shows Face ID when the request comes straight from a tap, so the server's challenge is
+// fetched ahead of time and the tap goes straight to Face ID. Challenges last five minutes.
+const fresh = (pre) => pre && Date.now() - pre.at < 4 * 60000;
+
+async function prepareFaceIdLogin() {
+  if (!window.PublicKeyCredential) return;
+  try {
+    const s = await api('GET', '/api/session');
+    if (!s.faceId) return;
+    state.faceIdLogin = { options: await api('POST', '/api/passkey/login/options', {}), at: Date.now() };
+    const slot = document.getElementById('faceid-slot');
+    if (slot) {
+      slot.innerHTML = `<button class="btn chrome big wide" type="button" data-action="faceid-login">${icon('faceid')}Log in with Face ID</button>
+        <p class="note">Or use your password.</p>`;
+    }
+  } catch { /* the password still works */ }
+}
+
+async function faceIdLogin(el) {
+  el.disabled = true;
+  try {
+    const pre = fresh(state.faceIdLogin) ? state.faceIdLogin : { options: await api('POST', '/api/passkey/login/options', {}) };
+    state.faceIdLogin = null;
+    const cred = await navigator.credentials.get({ publicKey: getOptions(pre.options) });
+    await api('POST', '/api/passkey/login', { response: credentialJSON(cred) });
+    await go();
+    resyncPush();
+  } catch (err) {
+    gateError(err.name === 'NotAllowedError' ? 'Face ID was cancelled. Try again, or use your password.' : err.message);
+    el.disabled = false;
+    prepareFaceIdLogin();
+  }
+}
+
+async function faceIdAdd(el) {
+  el.disabled = true;
+  try {
+    const pre = fresh(state.faceIdRegister) ? state.faceIdRegister : { options: await api('POST', '/api/passkey/register/options', {}) };
+    state.faceIdRegister = null;
+    const cred = await navigator.credentials.create({ publicKey: createOptions(pre.options) });
+    await api('POST', '/api/passkey/register', { response: credentialJSON(cred), device: deviceName() });
+    toast('Face ID is on. Next time, log in with your face.');
+    await load('settings');
+    render();
+  } catch (err) {
+    const msg = err.name === 'NotAllowedError' ? 'Face ID setup was cancelled.'
+      : err.name === 'InvalidStateError' ? 'This device already logs in to Oath with Face ID.' : err.message;
+    toast(msg, true);
+    el.disabled = false;
+  }
+}
+
+function faceIdCard() {
+  if (!window.PublicKeyCredential) {
+    return settingsCard('faceid', 'Face ID', '<p class="muted">This browser cannot use Face ID login. Open Oath from the Home Screen on your iPhone.</p>');
+  }
+  const keys = state.passkeys || [];
+  const rows = keys.map((k) => `<div class="li li-plain"><span class="li-body"><span class="li-title">${esc(k.device || 'Device')}</span>
+      <span class="li-sub">Added ${fmtDay(String(k.createdAt).slice(0, 10))}${k.lastUsed ? `, last used ${ago(k.lastUsed)}` : ', not used yet'}</span></span>
+      <button class="btn tinted small" data-action="faceid-remove" data-id="${esc(k.id)}">Remove</button></div>`).join('');
+  const text = keys.length
+    ? 'These devices log in with your face. The password still works everywhere.'
+    : 'Log in with your face instead of typing the password. Your iPhone keeps the key; Oath only stores its public half.';
+  return settingsCard('faceid', 'Face ID', `<p class="muted">${text}</p>
+    ${rows ? `<div class="group flush">${rows}</div>` : ''}
+    <div class="form-actions"><button class="btn primary" data-action="faceid-add">${icon('faceid')}${keys.length ? 'Add this device too' : 'Turn on Face ID'}</button></div>`);
 }
 
 // ---------- Events ----------
@@ -1475,6 +1596,16 @@ $app.addEventListener('click', async (e) => {
     }
   } else if (a === 'retry') {
     location.reload();
+  } else if (a === 'faceid-login') {
+    await faceIdLogin(el);
+  } else if (a === 'faceid-add') {
+    await faceIdAdd(el);
+  } else if (a === 'faceid-remove') {
+    if (!confirm('Remove Face ID login for this device? The password keeps working.')) return;
+    if (await act(() => api('DELETE', `/api/passkeys/${encodeURIComponent(el.dataset.id)}`), 'Face ID removed for that device.')) {
+      await load('settings');
+      render();
+    }
   } else if (a === 'setup-hide') {
     try { localStorage.setItem('oath.setupHidden', el.dataset.done); } catch { /* storage unavailable */ }
     render();

@@ -20,6 +20,7 @@ import { calendarApi } from './calendar.js';
 import { businessApi } from './business.js';
 import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleUpdate, webhookSecret } from './telegram.js';
 import { setupStatus, noteIngestError } from './setup.js';
+import * as passkeys from './passkeys.js';
 
 const v = { validTime, validDate };
 const app = new Hono();
@@ -66,7 +67,15 @@ const idParam = (c) => {
 app.get('/healthz', (c) => c.text('ok'));
 
 // ---------- Session ----------
-app.get('/api/session', async (c) => c.json({ authed: await auth.isAuthed(c), setupDone: await auth.ownerExists() }));
+app.get('/api/session', async (c) => c.json({
+  authed: await auth.isAuthed(c), setupDone: await auth.ownerExists(), faceId: (await passkeys.passkeyCount()) > 0,
+}));
+// Face ID login, before there is a session.
+app.post('/api/passkey/login/options', async (c) => c.json(await passkeys.loginOptions(c)));
+app.post('/api/passkey/login', async (c) => {
+  const r = await auth.passkeyLogin(c, (await body(c)).response);
+  return r.error ? c.json({ error: r.error }, r.status) : c.json({ ok: true });
+});
 app.post('/api/setup', async (c) => {
   const r = await auth.setup(c, await body(c));
   return r.error ? c.json({ error: r.error }, r.status) : c.json({ ok: true });
@@ -119,6 +128,12 @@ api.post('/review/finish', async (c) => c.json(await finishReview(await body(c))
 api.post('/capture', async (c) => c.json(await captureTask((await body(c)).text, 'you')));
 api.get('/tokens', async (c) => c.json({ count: await tokenCount() }));
 api.get('/setup-status', async (c) => c.json(await setupStatus()));
+
+// ---------- Face ID ----------
+api.get('/passkeys', async (c) => c.json({ passkeys: await passkeys.listPasskeys() }));
+api.post('/passkey/register/options', async (c) => c.json(await passkeys.registrationOptions(c)));
+api.post('/passkey/register', async (c) => c.json(await passkeys.registerPasskey(c, await body(c))));
+api.delete('/passkeys/:id', async (c) => c.json(await passkeys.removePasskey(c.req.param('id'))));
 api.post('/tokens', async (c) => c.json(await createToken((await body(c)).label)));
 api.delete('/tokens', async (c) => c.json(await revokeTokens()));
 
