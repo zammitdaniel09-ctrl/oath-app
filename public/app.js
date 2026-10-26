@@ -41,6 +41,12 @@ initData({ shell, render: () => render(), go: () => go() });
 
 // ---------- Today ----------
 
+// The calendar date right now, not the date of the Today being shown (which may be a cached one).
+const realToday = (t) => new Intl.DateTimeFormat('en-CA', { timeZone: t.timezone || 'Europe/Malta' }).format(new Date());
+
+// A 00:00 deadline is the end of the day, so it reads as midnight.
+const dueLabel = (hm) => (!hm ? '23:59' : hm === '00:00' ? 'midnight' : hm);
+
 function streakText(i) {
   if (!i.streak) return '';
   return i.flexible ? `${i.streak} ${i.streak === 1 ? 'week' : 'weeks'} in a row` : `${i.streak} day streak`;
@@ -65,13 +71,17 @@ function habitRow(i, t) {
     const l = left(i.dueAt);
     const when = i.flexible
       ? `${flexLine}${i.mustToday ? ', <span class="soon">must be today</span>' : ''}`
-      : `Due ${i.deadline}, <span class="${l.cls}" data-left="${i.dueAt}">${l.text}</span>${i.heavy ? `, ${i.penalty} HP` : ''}`;
+      : `Due ${dueLabel(i.deadline)}, <span class="${l.cls}" data-left="${i.dueAt}">${l.text}</span>${i.heavy ? `, ${i.penalty} HP` : ''}`;
     const relapse = i.missedLast ? '<span class="tag bad">Missed last time</span>' : '';
+    // The minimum version sits under the row, so it can be kept from the list as well as from Up next.
+    const minimum = i.minimum
+      ? `<div class="li-min"><button class="btn tinted small" data-action="keep-minimum" data-id="${i.id}">Minimum: ${esc(i.minimum)}</button></div>`
+      : '';
     return `<button class="${cls}" data-action="keep" data-id="${i.id}">
       <span class="chk">${CHECK}</span>
       <span class="li-body"><span class="li-title">${relapse}${esc(i.title)}</span>
         <span class="li-sub">${cue}${when}${rulesNote}</span>${autoLine(i, t)}</span>
-      ${side}</button>`;
+      ${side}</button>${minimum}`;
   }
   let meta = '';
   let actions = '';
@@ -83,7 +93,7 @@ function habitRow(i, t) {
     meta = `<span class="good">Week done</span>. ${flexLine}. Log more if you like.`;
     actions = `<button class="btn tinted small" data-action="keep" data-id="${i.id}">Log today</button>`;
   } else if (i.status === 'missed') {
-    meta = `<span class="bad">Missed at ${i.deadline}, minus ${i.penalty} HP${i.missRepeat ? ' (second in a row)' : ''}</span>. Keep it next time for +${t.settings.comebackBonus} HP.`;
+    meta = `<span class="bad">Missed at ${dueLabel(i.deadline)}, minus ${i.missHpLost ?? i.penalty} HP${i.missRepeat ? ' (second in a row)' : ''}</span>. Keep it next time for +${t.settings.comebackBonus} HP.`;
     actions = pardonControls(i.missId, t);
   } else if (i.status === 'pardoned') {
     meta = 'Pardoned. Streak kept, HP restored.';
@@ -175,6 +185,15 @@ function capacityLine(c, settings) {
   return `<div class="capacity${over ? ' over' : ''}">${icon('clock')}<p>Planned task work <b>${fmtMin(c.estimated)}</b>. ${free}: <b>${fmtMin(c.available)}</b>.${over ? ` That is ${fmtMin(c.over)} more than you have. Cut or move something now.` : ''}</p></div>`;
 }
 
+// The daily loss cap in plain words: what today can still cost, and whether that would end the season.
+function stakesLine(t) {
+  const p = t.progress;
+  if (!p.atStake) return '';
+  if (p.lethal) return `<span class="lethal">Missing everything left today ends the season: ${p.atStake} HP at stake, you have ${t.game.hp}.</span><br>`;
+  if (p.fullStake > p.atStake) return `Today can cost at most <b>${p.atStake} HP</b> of the ${p.fullStake} on the line.<br>`;
+  return '';
+}
+
 // The three rings: HP, today's progress, and movement (or habit strength before Health is linked).
 function ringsCard(t) {
   const g = t.game;
@@ -199,29 +218,26 @@ function ringsCard(t) {
       <div class="lg r-day"><span class="lg-label">Today</span><span class="lg-val">${t.progress.done}<small>/${total}</small></span><span class="lg-sub">${total ? (t.progress.atStake ? `${t.progress.atStake} HP still at stake` : 'Nothing left at stake') : 'Nothing due today'}</span></div>
       <div class="lg r-move"><span class="lg-label">${third.label}</span><span class="lg-val">${third.val}<small>${third.of}</small></span><span class="lg-sub">${third.sub}</span></div>
     </div>
-    <p class="rings-foot">${g.pardonsLeft} ${g.pardonsLeft === 1 ? 'pardon' : 'pardons'} left this month, ${g.deaths} ${g.deaths === 1 ? 'death' : 'deaths'}${t.dodgesToday ? `, ${t.dodgesToday} ${t.dodgesToday === 1 ? 'dodge' : 'dodges'} today` : ''}${t.weekFocus ? `<br>This week: <b>${esc(t.weekFocus)}</b>` : ''}</p>
+    <p class="rings-foot">${stakesLine(t)}${g.pardonsLeft} ${g.pardonsLeft === 1 ? 'pardon' : 'pardons'} left this month, ${g.deaths} ${g.deaths === 1 ? 'death' : 'deaths'}${t.dodgesToday ? `, ${t.dodgesToday} ${t.dodgesToday === 1 ? 'dodge' : 'dodges'} today` : ''}${t.weekFocus ? `<br>This week: <b>${esc(t.weekFocus)}</b>` : ''}</p>
   </section>`;
 }
 
+// The morning oath, compact: one choice from a list, when and where, and a tap. The habit list
+// below stays tickable whether or not the oath has been taken.
 function oathView(t) {
   const open = [...t.openDue].sort((a, b) => (a.dueAt || '9').localeCompare(b.dueAt || '9'));
-  const choices = open.map((i) => `<label class="pick-row${i.heavy ? ' heavy' : ''}">
-      <input type="radio" name="focus" value="${i.kind}:${i.id}">
-      <span class="pick-mark" aria-hidden="true"></span>
-      <span><span class="pick-title">${esc(i.title)}</span>
-        <span class="pick-meta">by ${i.deadline || '23:59'}${i.heavy ? `, ${i.penalty} HP at stake` : ''}</span></span>
-    </label>`).join('');
+  const options = open.map((i) => `<option value="${i.kind}:${i.id}">${esc(i.title)}, by ${dueLabel(i.deadline)}${i.heavy ? `, ${i.penalty} HP` : ''}</option>`).join('');
   return `<section class="card oath">
     <p class="eyebrow">${icon('sun')}Morning oath</p>
-    <h2 class="oath-title">Pick the one thing that matters most today.</h2>
-    <p class="oath-sub">${open.length} ${open.length === 1 ? 'thing stands' : 'things stand'} between you and a clean day. ${t.progress.atStake} HP at stake.</p>
+    <h2 class="oath-title">One thing that matters <em class="serif">most</em> today.</h2>
+    <p class="oath-sub">${open.length} ${open.length === 1 ? 'thing stands' : 'things stand'} between you and a clean day.</p>
     ${t.lastNight ? `<p class="last-night">Last night you planned: <b>${esc(t.lastNight)}</b></p>` : ''}
-    ${capacityLine(t.capacity, t.settings)}
-    <form data-form="oath">
-      <fieldset class="pick"><legend class="sr">Your one thing</legend>${choices}</fieldset>
-      <label class="field"><span>When and where will you do it?</span>
+    <form class="oath-form" data-form="oath">
+      <label class="field"><span>Your one thing</span>
+        <select class="input" name="focus" required><option value="">Choose one</option>${options}</select></label>
+      <label class="field"><span>When and where</span>
         <input class="input" name="intention" maxlength="300" autocomplete="off" required value="${esc(t.lastNight || '')}" placeholder="10:00 at my desk, phone in the kitchen"></label>
-      <button type="button" class="hold" data-hold="oath"><span class="hold-fill"></span><span class="hold-label">Hold to take the oath</span></button>
+      <button type="submit" class="btn chrome big">Take the oath</button>
     </form>
   </section>`;
 }
@@ -254,7 +270,7 @@ function nowPanel(t) {
   const l = n.dueAt ? left(n.dueAt) : null;
   const metaParts = [];
   if (n.flexible) metaParts.push(`${n.weekDone} of ${n.weekTarget} this week`);
-  else if (n.dueAt) metaParts.push(`Due ${n.deadline || '23:59'}`);
+  else if (n.dueAt) metaParts.push(`Due ${dueLabel(n.deadline)}`);
   else metaParts.push('No deadline');
   if (n.heavy) metaParts.push(`${n.penalty} HP at stake`);
   const isTask = n.kind === 'task';
@@ -291,13 +307,27 @@ function nowPanel(t) {
     ${sub.length ? `<p class="now-cue">${sub.join('<br>')}</p>` : ''}
     <div class="now-actions">
       <button class="btn primary big" data-action="focus-start" data-kind="${n.kind}" data-id="${n.id}">${icon('timer')}Focus ${state.focusMinutes} min</button>
-      <button class="btn tinted big" data-action="now-done" data-kind="${n.kind}" data-id="${n.id}">${icon('check')}Done</button>
+      <button class="btn chrome big" data-action="now-done" data-kind="${n.kind}" data-id="${n.id}">${icon('check')}Done</button>
     </div>
     <div class="now-foot">
       <div class="seg mini" role="group" aria-label="Focus length in minutes">${durs}</div>
       <button class="btn plain small" data-action="not-now" data-kind="${n.kind}" data-id="${n.id}">Not now</button>
     </div>
   </section>`;
+}
+
+// Every habit due at midnight shares one row on the schedule instead of a stack of identical ones.
+function midnightRow(list) {
+  if (!list.length) return [];
+  const open = list.filter((i) => i.status === 'open');
+  const status = open.length ? 'open' : list.every((i) => i.status === 'kept') ? 'kept' : 'missed';
+  return [{
+    time: '00:00',
+    title: `${list.length} ${list.length === 1 ? 'habit' : 'habits'} due at midnight`,
+    kind: `due ${status}`,
+    sub: open.length ? `${open.length} still open: ${open.map((i) => i.title).join(', ')}` : status === 'kept' ? 'All kept' : 'Closed',
+    past: !open.length,
+  }];
 }
 
 // Today in time order: calendar events with the deadlines that fall between them.
@@ -312,10 +342,11 @@ function timeline(t) {
       sub: [e.endTime && e.endTime !== e.time ? `until ${e.endTime}` : '', e.location, e.feed].filter(Boolean).join(', '),
       past: (e.endTime || e.time) < now,
     })),
-    ...t.items.filter((i) => !i.flexible && i.status !== 'met').map((i) => ({
+    ...t.items.filter((i) => !i.flexible && i.status !== 'met' && i.deadline !== '00:00').map((i) => ({
       time: i.deadline, title: i.title, kind: `due ${i.status}`, sub: i.status === 'open' ? `Habit due${i.heavy ? `, ${i.penalty} HP` : ''}` : i.status === 'kept' ? 'Kept' : i.status,
       past: i.status !== 'open',
     })),
+    ...midnightRow(t.items.filter((i) => !i.flexible && i.status !== 'met' && i.deadline === '00:00')),
     ...t.tasks.filter((k) => k.dueDate === t.today && k.deadline).map((k) => ({
       time: k.deadline, title: k.title, kind: `due ${k.status}`, sub: k.status === 'open' ? `Task due${k.heavy ? `, ${k.penalty} HP` : ''}` : k.status,
       past: k.status !== 'open',
@@ -370,9 +401,32 @@ function healthMini(t) {
   </a>`;
 }
 
+// Reminders only reach the phone from the Home Screen app with notifications allowed, so Today says so.
+function remindersPrompt() {
+  if (isIOS() && !isStandalone()) {
+    return `<div class="banner">${icon('bell')}<span><b>Add Oath to your Home Screen.</b> Tap Share, then Add to Home Screen, and open it from the icon so reminders can reach you.</span></div>`;
+  }
+  const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  if (!supported || Notification.permission !== 'default') return '';
+  return `<div class="banner">${icon('bell')}<span><b>Turn on reminders</b> so last calls reach your lock screen.</span><button class="btn small primary" data-action="push-on">Turn on</button></div>`;
+}
+
+// The battle plan opens by itself before noon, until you close it; then it stays closed for the day.
+function planOpen(t) {
+  try {
+    const saved = localStorage.getItem(`oath.plan.${t.today}`);
+    if (saved !== null) return saved === '1';
+  } catch { /* storage unavailable */ }
+  return t.localHour < 12;
+}
+document.addEventListener('toggle', (e) => {
+  if (!e.target.matches?.('.plan-card') || !state.today) return;
+  try { localStorage.setItem(`oath.plan.${state.today.today}`, e.target.open ? '1' : '0'); } catch { /* storage unavailable */ }
+}, true);
+
 function planCard(t) {
   if (!t.plan?.coachPlan) return '';
-  return `<details class="card plan-card"${t.localHour < 12 ? ' open' : ''}>
+  return `<details class="card plan-card"${planOpen(t) ? ' open' : ''}>
     <summary>${icon('coach')}Battle plan${t.plan.intention ? `: ${esc(t.plan.intention)}` : ''}</summary>
     <div class="plan-text">${esc(t.plan.coachPlan)}</div>
   </details>`;
@@ -438,16 +492,19 @@ function briefCard(t) {
 function viewToday() {
   const t = state.today;
   if (!t) return shell(skeleton('Today'));
-  const head = pageHead('Today', {
+  const part = t.localHour < 12 ? 'Morning' : t.localHour < 18 ? 'Afternoon' : 'Evening';
+  const head = pageHead(`${part}, <em>${esc(t.settings.ownerName || 'Daniel')}</em>`, {
     over: fmtDay(t.today, { weekday: 'long', day: 'numeric', month: 'long' }),
     actions: iconLink('#/settings', 'settings', 'Settings'),
   });
   const banners = [
+    state.offline ? `<div class="banner offline">${icon('clock')}<span><b>Offline.</b> This is ${t.today === realToday(t) ? 'today' : fmtDay(t.today)} as of ${fmtClock(state.offline)}. Ticks need a connection.</span><button class="btn small" data-action="retry">Retry</button></div>` : '',
+    remindersPrompt(),
     t.rest ? `<div class="banner calm">${icon('moon')}<span>Rest day. Fixed habits are excused today. Hard tasks still count.</span></div>` : '',
     t.reviewDue ? `<a class="banner action" href="#/review">${icon('review')}<span><b>Weekly review is ready.</b> Five minutes: keep, adjust or drop each habit and pick this week's focus.</span>${icon('chevron', 'chev')}</a>` : '',
   ].join('');
 
-  // No oath yet and something is due: the oath card goes on top, but the lists stay tickable.
+  // No oath yet and something is due: the oath card sits under Up next, and the lists stay tickable.
   const needsOath = !t.plan && t.progress.open > 0;
 
   if (!t.items.length && !t.tasks.length && !t.anytime.length && !t.triage.length) {
@@ -464,6 +521,8 @@ function viewToday() {
   const normal = fixed.filter((i) => !i.heavy);
   const flex = t.items.filter((i) => i.flexible);
   const keptCount = (list) => list.filter((i) => i.status === 'kept' || i.status === 'pardoned').length;
+  const openHp = (list) => list.filter((i) => i.status === 'open').reduce((n, i) => n + (i.penalty || 0), 0);
+  const heavyCount = `${keptCount(heavy)} of ${heavy.length}${openHp(heavy) ? ` · ${openHp(heavy)} HP open` : ''}`;
   const section = (title, list, rows, count) => (list.length ? `<section class="section">
       <div class="gh"><h2>${title}</h2><span class="gh-count">${count ?? `${keptCount(list)} of ${list.length}`}</span></div>
       <div class="group">${rows}</div></section>` : '');
@@ -488,11 +547,12 @@ function viewToday() {
     <div>
       ${ringsCard(t)}
       ${banners}
-      ${needsOath ? oathView(t) : nowPanel(t)}
+      ${nowPanel(t)}
+      ${needsOath ? oathView(t) : ''}
       ${t.plan ? capacityLine(t.capacity, t.settings) : ''}
       <div class="only-narrow">${planCard(t)}${briefCard(t)}</div>
       ${triageCard(t)}
-      ${section('Non-negotiables', heavy, heavy.map((i) => habitRow(i, t)).join(''))}
+      ${section('Non-negotiables', heavy, heavy.map((i) => habitRow(i, t)).join(''), heavyCount)}
       ${section('Habits', normal, normal.map((i) => habitRow(i, t)).join(''))}
       ${section('This week', flex, flex.map((i) => habitRow(i, t)).join(''), `${flex.filter((i) => i.status === 'met').length} of ${flex.length} met`)}
       ${tasksHtml}
@@ -656,6 +716,15 @@ function restCard(p) {
     </div></section>`;
 }
 
+// What a fully missed day would put on the line against what one day can actually cost.
+function budgetNote(s) {
+  if (!s?.worstDay) return '';
+  const capped = s.worstDay > s.dailyLossCap;
+  return `<div class="capacity${capped ? ' over' : ''}">${icon('shield')}<p>Your worst day puts <b>${s.worstDay} HP</b> on the line. ${capped
+    ? `One day can cost at most <b>${s.dailyLossCap}</b>, so two bad days in a row end the season.`
+    : `That is within the ${s.dailyLossCap} HP a day can cost.`}</p></div>`;
+}
+
 function viewPlan() {
   const p = state.plan;
   if (!p) return shell(skeleton('Plan'));
@@ -679,6 +748,7 @@ function viewPlan() {
     <div class="split plan-split tab-${tab}">
     <div class="pane-habits">
       <section class="section"><div class="gh"><h2>Habits</h2><button class="gh-link" data-action="sheet" data-kind="habit">New habit</button></div>
+        ${budgetNote(p.settings)}
         ${habits || `<div class="card empty"><h3>No habits yet</h3><p class="muted">Start with two or three, each tied to something you already do every day.</p><div class="form-actions"><button class="btn primary" data-action="sheet" data-kind="habit">Add the first habit</button></div></div>`}
       </section>
       ${restCard(p)}
@@ -960,7 +1030,8 @@ function viewSettings() {
         <p>A minimum version, set a day ahead, saves the HP and the streak but not the clean-day bonus.</p>
         <p>Hard tasks cost ${s.taskPenalty} HP if not done by their deadline, need a first step, and cannot be deleted or moved once due.</p>
         <p>A clean day, with nothing missed and no minimums, gives back ${s.cleanBonus} HP.</p>
-        <p>At 0 HP you die. The season ends and streaks reset, but every habit keeps its strength.</p>
+        <p>One day can cost at most ${s.dailyLossCap} HP, however much is missed. A bad day hurts; two in a row can end the season.</p>
+        <p>At 0 HP you die. The season ends and streaks reset, but every habit keeps its strength. Whatever else that day misses costs the new season nothing.</p>
         <p>${s.pardonsPerMonth} pardons a month, within 24 hours, each with what got in the way and an if-then plan. ${s.restDaysPerMonth} rest days a month, booked before the day starts.</p>
         <p>At most ${s.maxNonNegotiables} non-negotiables until each is above 80% strength.</p>
         <p>Every morning you take the oath: the one thing, and when and where. "Not now" needs a reason; every dodge is logged.</p>
@@ -972,7 +1043,7 @@ function viewSettings() {
 function renderLogin() {
   $app.innerHTML = `<div class="gate">
     <div class="wordmark">Oath</div>
-    <p>Log in to see today.</p>
+    <p>Welcome back, <em class="serif">Daniel</em>. Log in to see today.</p>
     <form data-form="login">
       <label class="field"><span>Password</span><input class="input" type="password" name="password" autocomplete="current-password" required autofocus></label>
       <div class="form-actions"><button class="btn primary big wide" type="submit">Log in</button></div>
@@ -1007,11 +1078,35 @@ function setBadge() {
   } catch { /* not supported */ }
 }
 
-async function load(route) {
-  if (route === 'today') {
-    state.today = await api('GET', '/api/today');
-    setBadge();
+// The last Today the server sent is kept on the phone, so a launch without signal still shows the day.
+const TODAY_CACHE = 'oath.today';
+function cacheToday(t) {
+  try { localStorage.setItem(TODAY_CACHE, JSON.stringify({ at: new Date().toISOString(), t })); } catch { /* storage unavailable */ }
+}
+function cachedToday() {
+  try {
+    const c = JSON.parse(localStorage.getItem(TODAY_CACHE) || 'null');
+    return c?.t ? c : null;
+  } catch {
+    return null;
   }
+}
+async function fetchToday() {
+  try {
+    state.today = await api('GET', '/api/today');
+    state.offline = null;
+    cacheToday(state.today);
+  } catch (err) {
+    const c = err.status === 0 ? cachedToday() : null;
+    if (!c) throw err;
+    state.today = c.t;
+    state.offline = c.at;
+  }
+  setBadge();
+}
+
+async function load(route) {
+  if (route === 'today') await fetchToday();
   if (route === 'plan') state.plan = await api('GET', '/api/plan');
   if (route === 'coach') state.coach = await api('GET', '/api/coach');
   if (route === 'review') state.review = await api('GET', '/api/review');
@@ -1030,6 +1125,7 @@ async function load(route) {
 }
 
 function render() {
+  state.dirty = false;
   if (state.route === 'goals') {
     if (state.param === 'new') return viewGoalNew();
     if (state.param) return viewGoal();
@@ -1060,8 +1156,7 @@ async function go() {
 }
 
 async function refreshToday() {
-  state.today = await api('GET', '/api/today');
-  setBadge();
+  await fetchToday();
   if (state.route === 'today') render();
 }
 
@@ -1106,6 +1201,7 @@ async function pushOn() {
   let sub = await reg.pushManager.getSubscription();
   if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(publicKey) });
   await api('POST', '/api/push/subscribe', sub.toJSON());
+  return true;
 }
 
 async function pushOff() {
@@ -1115,6 +1211,7 @@ async function pushOff() {
     await api('POST', '/api/push/unsubscribe', { endpoint: sub.endpoint });
     await sub.unsubscribe();
   }
+  return true;
 }
 
 // iOS never tells the page when a push subscription changes, so re-send it on every launch. If the
@@ -1332,6 +1429,8 @@ $app.addEventListener('click', async (e) => {
       render();
       state.today = null;
     }
+  } else if (a === 'retry') {
+    location.reload();
   } else if (a === 'push-on') {
     if (await act(pushOn, 'Reminders are on for this device.')) { await refreshPushState(); render(); }
   } else if (a === 'push-off') {
@@ -1340,6 +1439,7 @@ $app.addEventListener('click', async (e) => {
     await act(() => api('POST', '/api/push/test', {}), (r) => (r.sent ? 'Test sent. It should arrive in a few seconds.' : 'No device is registered. Turn reminders on again.'));
   } else if (a === 'logout') {
     await act(() => api('POST', '/api/logout', {}));
+    try { localStorage.removeItem(TODAY_CACHE); } catch { /* storage unavailable */ }
     renderLogin();
   }
 });
@@ -1390,7 +1490,6 @@ $app.addEventListener('submit', async (e) => {
         await go();
       } catch (err) { gateError(err.message); }
     } else if (kind === 'oath') {
-      // The hold button submits through takeOath; Enter in the text field lands here.
       await takeOath(form);
     } else if (kind === 'defer') {
       const f = new FormData(form);
@@ -1494,10 +1593,7 @@ $app.addEventListener('input', (e) => {
   e.target.style.height = `${Math.min(140, e.target.scrollHeight)}px`;
 });
 
-// ---------- Hold to take the oath ----------
-
-const HOLD_MS = 1300;
-let holdTimer = null;
+// ---------- The oath ----------
 
 async function takeOath(form) {
   const f = new FormData(form);
@@ -1510,50 +1606,14 @@ async function takeOath(form) {
     toast('Sworn. Now do it.', false, 3500, true);
     await refreshToday();
     window.scrollTo({ top: 0 });
-  } else {
-    form.querySelector('.hold')?.classList.remove('sworn');
   }
 }
 
-function holdStart(e) {
-  const btn = e.target.closest('[data-hold]');
-  if (!btn) return;
-  const form = btn.closest('form');
-  if (!form.querySelector('input[name="focus"]:checked')) {
-    toast('Pick your one thing first.', true);
-    return;
-  }
-  if (String(form.querySelector('[name="intention"]').value || '').trim().length < 3) {
-    toast('Say when and where you will do it.', true);
-    return;
-  }
-  e.preventDefault();
-  btn.classList.add('holding');
-  holdTimer = setTimeout(() => {
-    holdTimer = null;
-    btn.classList.remove('holding');
-    btn.classList.add('sworn');
-    takeOath(form);
-  }, HOLD_MS);
-}
-
-function holdEnd(e) {
-  const btn = e.target.closest('[data-hold]');
-  if (!btn || !holdTimer) return;
-  clearTimeout(holdTimer);
-  holdTimer = null;
-  btn.classList.remove('holding');
-  toast('Hold it until it fills.');
-}
-
-$app.addEventListener('pointerdown', holdStart);
-['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => $app.addEventListener(ev, holdEnd));
-$app.addEventListener('contextmenu', (e) => { if (e.target.closest('[data-hold]')) e.preventDefault(); });
-// Keyboard users press Enter or Space once.
-$app.addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-hold]');
-  if (btn && e.detail === 0) takeOath(btn.closest('form'));
-});
+// Anything typed or picked in a form holds off the automatic refreshes until the next render, so
+// a half-written oath or reflection is never wiped. (A tapped radio button never gets focus on iOS.)
+['input', 'change'].forEach((ev) => $app.addEventListener(ev, (e) => {
+  if (e.target.closest('form')) state.dirty = true;
+}));
 
 // The focus clock ticks every second.
 setInterval(() => {
@@ -1576,13 +1636,13 @@ setInterval(() => {
 }, 15000);
 
 setInterval(() => {
-  if (document.visibilityState === 'visible' && state.route === 'today' && state.today && !state.sheet && !document.activeElement?.matches('input, textarea, select')) refreshToday().catch(() => {});
+  if (document.visibilityState === 'visible' && state.route === 'today' && state.today && !state.sheet && !state.dirty && !document.activeElement?.matches('input, textarea, select')) refreshToday().catch(() => {});
 }, 60000);
 
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible') return;
   navigator.serviceWorker?.getRegistration().then((reg) => reg?.update()).catch(() => {});
-  if (document.querySelector('.tabbar') && !state.sheet && !document.activeElement?.matches('input, textarea, select')) go();
+  if (document.querySelector('.tabbar') && !state.sheet && !state.dirty && !document.activeElement?.matches('input, textarea, select')) go();
 });
 
 window.addEventListener('hashchange', () => {
@@ -1635,7 +1695,17 @@ async function boot() {
     await go();
     resyncPush();
   } catch (err) {
-    $app.innerHTML = `<div class="gate"><div class="wordmark">Oath</div><p>${esc(err.message)}</p></div>`;
+    const c = err.status === 0 ? cachedToday() : null;
+    if (c) {
+      parseHash();
+      state.route = 'today';
+      state.today = c.t;
+      state.offline = c.at;
+      render();
+      return;
+    }
+    $app.innerHTML = `<div class="gate"><div class="wordmark">Oath</div><p>${esc(err.message)}</p>
+      <div class="form-actions"><button class="btn primary" data-action="retry">Retry</button></div></div>`;
   }
 }
 

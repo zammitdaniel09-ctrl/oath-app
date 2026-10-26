@@ -92,6 +92,7 @@ export async function buildToday() {
       canUndo: Boolean(c) && ageMin <= s.undoMinutes && local < due,
       missId: m ? m.id : null,
       missRepeat: Boolean(m?.repeat),
+      missHpLost: m ? m.hp_lost : null,
       streak: streaks.get(h.id) || 0,
       strength: st.strength ?? 0,
       kept14: st.kept14 ?? 0,

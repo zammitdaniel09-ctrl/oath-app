@@ -6,6 +6,7 @@ import { completeHabit, completeTask, RuleError } from './engine.js';
 import { reactionAfterDone, finishFocus, closeFocusFor } from './drive.js';
 import { chat } from './coach.js';
 import { captureTask, doneByText } from './capture.js';
+import { deadlineText } from './time.js';
 
 const token = () => process.env.TELEGRAM_BOT_TOKEN;
 export const telegramEnabled = () => Boolean(token());
@@ -131,7 +132,7 @@ function todayMessage(t) {
   const missed = [...t.items, ...t.tasks].filter((i) => i.status === 'missed').map((i) => i.title);
   if (open.length) {
     lines.push('', '<b>Open</b>');
-    for (const i of open) lines.push(`${i.heavy ? '■' : '□'} ${esc(i.title)}, by ${i.deadline || '23:59'}${i.heavy ? ` (${i.penalty} HP)` : ''}`);
+    for (const i of open) lines.push(`${i.heavy ? '■' : '□'} ${esc(i.title)}, by ${deadlineText(i.deadline)}${i.heavy ? ` (${i.penalty} HP)` : ''}`);
   }
   if (flexOpen.length) {
     lines.push('', '<b>This week</b>');

@@ -1,6 +1,7 @@
 // Service worker: offline shell and push notifications.
-const CACHE = 'oath-v5';
-const SHELL = ['/', '/app.css', '/app.js', '/ui.js', '/parse.js', '/goals.js', '/data.js', '/manifest.webmanifest', '/icons/apple-touch-icon.png', '/icons/icon-192.png', '/icons/badge.png'];
+const CACHE = 'oath-v6';
+const SHELL = ['/', '/app.css', '/app.js', '/ui.js', '/parse.js', '/goals.js', '/data.js', '/manifest.webmanifest', '/icons/apple-touch-icon.png', '/icons/icon-192.png', '/icons/badge.png',
+  '/fonts/satoshi-variable.woff2', '/fonts/gambetta-italic.woff2', '/fonts/geist-mono-variable.woff2'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

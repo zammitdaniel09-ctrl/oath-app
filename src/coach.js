@@ -1,7 +1,7 @@
 // The AI accountability partner, powered by Claude.
 import Anthropic from '@anthropic-ai/sdk';
 import { db } from './db.js';
-import { validTime, validDate } from './time.js';
+import { validTime, validDate, deadlineText } from './time.js';
 import { coachSnapshot, buildToday } from './state.js';
 import { createTask, updateTask, createHabit, localNow, RuleError } from './engine.js';
 import { addNode } from './goals.js';
@@ -277,7 +277,7 @@ function fallbackMorning(t) {
     parts.push(`HP ${t.game.hp}.`);
   }
   parts.push(`${open.length} ${open.length === 1 ? 'thing' : 'things'} due today, ${t.progress.atStake} HP at stake.`);
-  if (open[0]) parts.push(`First deadline: ${open[0].title} at ${open[0].deadline || '23:59'}.`);
+  if (open[0]) parts.push(`First deadline: ${open[0].title} at ${deadlineText(open[0].deadline)}.`);
   parts.push('Open Oath and take today\'s oath.');
   return parts.join(' ');
 }
@@ -286,14 +286,14 @@ function fallbackMidday(t) {
   const open = openDue(t);
   if (!t.progress.total) return 'Nothing is scheduled today yet. Add your habits in Plan so the afternoon counts.';
   if (!open.length) return `Everything due today is done by midday. ${t.game.hp} HP. Do not get lazy now.`;
-  return `${t.progress.done} of ${t.progress.total} done. Next: ${open[0].title} by ${open[0].deadline || '23:59'}. ${t.progress.atStake} HP still at stake.`;
+  return `${t.progress.done} of ${t.progress.total} done. Next: ${open[0].title} by ${deadlineText(open[0].deadline)}. ${t.progress.atStake} HP still at stake.`;
 }
 
 function fallbackEvening(t) {
   const open = openDue(t);
   if (!t.progress.total) return 'Nothing was scheduled today. Add your habits in Plan so tomorrow counts.';
   if (!open.length) return 'Everything is kept. Close the day in Oath and protect tomorrow: sleep on time.';
-  const names = open.map((i) => `${i.title} (${i.deadline || '23:59'})`).join(', ');
+  const names = open.map((i) => `${i.title} (${deadlineText(i.deadline)})`).join(', ');
   return `Still open: ${names}. ${t.progress.atStake} HP at stake. You have ${t.game.hp}.`;
 }
 
@@ -330,7 +330,7 @@ function fallbackPlan(t) {
   if (t.plan) lines.push(`Your one thing: ${t.plan.focusTitle}.${t.plan.intention ? ` You said: "${t.plan.intention}".` : ''}`);
   if (open.length) {
     lines.push('Order of battle:');
-    open.forEach((i, n) => lines.push(`${n + 1}. ${i.title}, by ${i.deadline || '23:59'}`));
+    open.forEach((i, n) => lines.push(`${n + 1}. ${i.title}, by ${deadlineText(i.deadline)}`));
   }
   lines.push('Start the first one now. Not after coffee, not after messages. Now.');
   return lines.join('\n');

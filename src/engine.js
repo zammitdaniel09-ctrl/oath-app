@@ -8,7 +8,7 @@
 // - A minimum version, declared a day ahead, saves the HP but not the clean-day bonus.
 // - Reminders are few, cue-based and fade once a habit is strong (Stawarz et al. 2015).
 import { db, getKV, setKV, logEvent } from './db.js';
-import { nowUTC, isoDate, addDays, weekday, deadlineAt, dueOn } from './time.js';
+import { nowUTC, isoDate, addDays, weekday, deadlineAt, dueOn, deadlineText } from './time.js';
 import { rulesOn, isActive, isFlexible, isScheduled, weekStartOf, weekDates, weekTargetFor, previousOccurrence } from './rules.js';
 import { restSet, habitStats } from './strength.js';
 
@@ -34,6 +34,7 @@ export const DEFAULT_SETTINGS = {
   maxHp: 100,
   dailyLossCap: 50,
   alerts: 'both',
+  ownerName: 'Daniel',
 };
 
 export async function getSettings() {
@@ -329,14 +330,14 @@ async function dueReminders(s, local, today, tz) {
       ? `${it.cue ? `${capitalise(it.cue)}: ` : ''}${it.title}`
       : `${it.title}: ${leftText(minutesLeft(it))} left`;
     const body = type === 'cue'
-      ? `Due ${it.deadline}.${it.ifThen ? ` ${it.ifThen}` : ''}`
-      : `Due ${it.deadline}. Miss it and you lose ${it.penalty} HP (you have ${game.hp}).${extras.length ? ` ${extras.join(' ')}` : ''}`;
+      ? `Due ${deadlineText(it.deadline)}.${it.ifThen ? ` ${it.ifThen}` : ''}`
+      : `Due ${deadlineText(it.deadline)}. Miss it and you lose ${it.penalty} HP (you have ${game.hp}).${extras.length ? ` ${extras.join(' ')}` : ''}`;
     return [{
       title, body, tag: `remind-${it.kind}-${it.id}`, item: { kind: it.kind, id: it.id },
       urgent: type === 'last' && it.heavy, ttl, topic: `${it.kind}-${it.id}`,
     }];
   }
-  const lines = firing.map(({ it }) => `${it.title} by ${it.deadline}`);
+  const lines = firing.map(({ it }) => `${it.title} by ${deadlineText(it.deadline)}`);
   return [{
     title: `${firing.length} things due soon`,
     body: `${lines.join('; ')}. ${firing.reduce((n, { it }) => n + it.penalty, 0)} HP at stake.`,
@@ -405,7 +406,7 @@ export async function completeHabit(id, opts = {}) {
   if (minimum && !r.minimum) throw new RuleError('This habit has no minimum version. Set one in Plan; it applies from tomorrow.');
   const [miss] = await db()`select id from misses where kind = 'habit' and ref_id = ${id} and date = ${today}`;
   if (miss || local >= dueOn(today, r.deadline, tz)) {
-    throw new RuleError(flexible ? `Locked. Log it before ${r.deadline}.` : `Locked. The deadline passed at ${r.deadline}.`, 409);
+    throw new RuleError(flexible ? `Locked. Log it before ${deadlineText(r.deadline)}.` : `Locked. The deadline passed at ${deadlineText(r.deadline)}.`, 409);
   }
   const rows = await db()`insert into completions (habit_id, date, note, minimum, completed_at)
                           values (${id}, ${today}, ${String(note).slice(0, 500)}, ${minimum}, ${ts()})

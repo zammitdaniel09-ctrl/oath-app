@@ -4,7 +4,7 @@
 // "say" field the shortcut can speak or show.
 import crypto from 'node:crypto';
 import { db, logEvent } from './db.js';
-import { nowUTC, validTime, validDate } from './time.js';
+import { nowUTC, validTime, validDate, deadlineText } from './time.js';
 import { parseCapture } from '../public/parse.js';
 import { localNow, createTask, completeHabit, completeTask, RuleError } from './engine.js';
 import { closeFocusFor, reactionAfterDone } from './drive.js';
@@ -104,7 +104,7 @@ export async function nextSay() {
   if (!t.next) return { say: `Nothing open. ${g.hp} HP.` };
   const n = t.next;
   const parts = [`Next: ${n.title}`];
-  if (n.deadline) parts.push(`due ${n.deadline}`);
+  if (n.deadline) parts.push(`due ${deadlineText(n.deadline)}`);
   if (n.heavy) parts.push(`${n.penalty} HP at stake`);
   return { say: `${parts.join(', ')}. ${t.progress.done} of ${t.progress.total} done today.` };
 }

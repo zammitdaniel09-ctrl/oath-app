@@ -34,6 +34,9 @@ export function deadlineAt(dateStr, hhmm, zone) {
   return DateTime.fromISO(dateStr, { zone }).set({ hour: h, minute: m, second: 0, millisecond: 0 });
 }
 
+// A deadline in words: 00:00 is the end of the day, so it reads as midnight.
+export const deadlineText = (hhmm) => (!hhmm ? '23:59' : hhmm === '00:00' ? 'midnight' : hhmm);
+
 // When a habit or task on that date is due. A 00:00 deadline means midnight at the end of the day.
 export function dueOn(dateStr, hhmm, zone) {
   const at = deadlineAt(dateStr, hhmm, zone);

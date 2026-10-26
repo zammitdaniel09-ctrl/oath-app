@@ -1,6 +1,6 @@
 // The daily drive: the morning oath, focus blocks, logged dodges, closing the day, and reactions.
 import { db, logEvent } from './db.js';
-import { nowUTC, addDays, validTime, validDate } from './time.js';
+import { nowUTC, addDays, validTime, validDate, deadlineText } from './time.js';
 import { localNow, RuleError, completeHabit, completeTask, updateTask } from './engine.js';
 import { buildToday } from './state.js';
 import { battlePlan, reflectionReply } from './coach.js';
@@ -110,7 +110,7 @@ export async function defer({ kind, id, reason, moveToTomorrow }) {
   const parts = [];
   parts.push(moved ? `${item.title} moved to tomorrow.` : `Logged: "${why}".`);
   parts.push(`${n} ${n === 1 ? 'dodge' : 'dodges'} this week${same > 1 ? `, ${same} of them "${why}"` : ''}.`);
-  if (!moved && item.dueAt) parts.push(`The deadline does not move: ${item.deadline || '23:59'}.`);
+  if (!moved && item.dueAt) parts.push(`The deadline does not move: ${deadlineText(item.deadline)}.`);
   return { ok: true, reaction: { text: parts.join(' ') } };
 }
 
@@ -159,6 +159,6 @@ export async function reactionAfterDone(kind, id, extra = {}) {
   }
   const parts = [`${item.title} done.`];
   if (open.length) parts.push(`${open.length} left today.`);
-  if (t.next) parts.push(`Next: ${t.next.title}${t.next.deadline ? ` by ${t.next.deadline}` : ''}.`);
+  if (t.next) parts.push(`Next: ${t.next.title}${t.next.deadline ? ` by ${deadlineText(t.next.deadline)}` : ''}.`);
   return { text: parts.join(' ') };
 }

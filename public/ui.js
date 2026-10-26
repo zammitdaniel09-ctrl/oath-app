@@ -64,12 +64,31 @@ export async function api(method, path, body) {
   return data;
 }
 
+// Toasts wait their turn, so quick ticks don't wipe each other's reactions. Errors go straight on
+// screen, and a message already showing or waiting is not queued twice.
 let toastTimer;
-export function toast(msg, bad = false, ms = null, big = false) {
-  $toast.textContent = msg;
-  $toast.className = `toast show${bad ? ' bad' : ''}${big ? ' big' : ''}`;
+let toastShowing = null;
+const toastQueue = [];
+
+function showToast(t) {
+  toastShowing = t;
+  $toast.textContent = t.msg;
+  $toast.className = `toast show${t.bad ? ' bad' : ''}${t.big ? ' big' : ''}`;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { $toast.className = 'toast'; }, ms || (bad ? 4200 : 2600));
+  toastTimer = setTimeout(() => {
+    $toast.className = 'toast';
+    toastShowing = null;
+    const next = toastQueue.shift();
+    if (next) setTimeout(() => showToast(next), 200);
+  }, t.ms);
+}
+
+export function toast(msg, bad = false, ms = null, big = false) {
+  const t = { msg, bad, big, ms: ms || (bad ? 4200 : 2600) };
+  if (toastShowing?.msg === msg || toastQueue.some((q) => q.msg === msg)) return;
+  if (!toastShowing || bad) return showToast(t);
+  toastQueue.push(t);
+  if (toastQueue.length > 3) toastQueue.shift();
 }
 
 export function react(r) {
@@ -134,7 +153,7 @@ export function scheduleText(days, deadline) {
   else if (set.join() === '1,2,3,4,5') when = 'Weekdays';
   else if (set.join() === '6,7') when = 'Weekends';
   else when = set.map((d) => DAY_NAMES[d - 1]).join(', ');
-  return `${when} by ${deadline}`;
+  return `${when} by ${deadline === '00:00' ? 'midnight' : deadline}`;
 }
 
 export const CHECK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
