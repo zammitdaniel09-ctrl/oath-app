@@ -23,7 +23,7 @@ import { DateTime } from 'luxon';
 import { db, getKV, setKV, logEvent } from './db.js';
 import { nowUTC, addDays, dueOn, validDate } from './time.js';
 import {
-  localNow, getGame, withGame, completeHabit, RuleError,
+  localNow, getGame, withGame, completeHabit, RuleError, deathSince,
   rulesOn, isScheduled, isFlexible, isActive, weekStartOf,
 } from './engine.js';
 import { restSet } from './strength.js';
@@ -998,14 +998,6 @@ export async function setHabitAuto(habitId, input = {}) {
 }
 
 const weekEnd = (date, tz) => addDays(weekStartOf(date, tz), 6, tz);
-
-// Did the season end (a death) after this miss was charged? Then there is nothing to give back.
-async function deathSince(tx, m) {
-  const [ev] = await tx`select id from events where type = 'miss' and data->>'kind' = 'habit'
-                        and data->>'refId' = ${String(m.ref_id)} and data->>'date' = ${m.date} order by id limit 1`;
-  if (ev) return (await tx`select 1 from events where type = 'death' and id > ${ev.id} limit 1`).length > 0;
-  return (await tx`select 1 from events where type = 'death' and at > ${m.created_at} limit 1`).length > 0;
-}
 
 async function applyOne(h, date, ctx, out) {
   const { s, local, today, tz, rest } = ctx;

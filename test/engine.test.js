@@ -190,6 +190,9 @@ test('day close, clean-day bonus and catch-up after downtime', async () => {
 
 test('running out of HP kills you and resets the season', async () => {
   setLocal('2026-10-11T09:05');
+  // One 100 HP miss is the quickest way to die, so lift the daily loss cap for this scenario.
+  await dbmod.db()`insert into kv (key, value) values ('settings', ${dbmod.db().json({ dailyLossCap: 1000 })})
+                   on conflict (key) do update set value = kv.value || excluded.value`;
   const before = (await today()).data.game;
   const cap = await call('POST', '/api/habits', { name: 'Cold plunge', deadline: '10:00', non_negotiable: true, penalty: 100 });
   assert.equal(cap.status, 409, 'a fourth non-negotiable is refused while the others are weak');
@@ -204,6 +207,7 @@ test('running out of HP kills you and resets the season', async () => {
   assert.equal(g.seasonStart, '2026-10-11');
   const led = (await call('GET', '/api/ledger')).data;
   assert.equal(led.deaths.length, before.deaths + 1);
+  await dbmod.db()`update kv set value = value - 'dailyLossCap' where key = 'settings'`;
 });
 
 test('pardons refill at the start of a month', async () => {

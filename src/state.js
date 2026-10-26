@@ -2,7 +2,7 @@
 import { db } from './db.js';
 import { nowUTC, addDays, deadlineAt, dueOn, weekday } from './time.js';
 import { localNow, getGame, rulesOn } from './engine.js';
-import { isActive, isScheduled, isFlexible, weekStartOf, weekDates, weekTargetFor } from './rules.js';
+import { isActive, isScheduled, isFlexible, weekStartOf, weekDates, weekTargetFor, weekStakes } from './rules.js';
 import { habitStats, restSet } from './strength.js';
 import { listGoals } from './goals.js';
 import { busyMinutes, calendarForCoach, eventsForDate } from './calendar.js';
@@ -187,10 +187,18 @@ export async function buildToday() {
     + tasks.filter((k) => k.dueDate && k.dueDate <= today && (k.status === 'done' || k.status === 'pardoned')).length;
   const missedToday = items.filter((i) => i.status === 'missed').length
     + tasks.filter((k) => k.status === 'missed' && k.dueDate === today).length;
+  // What today can still cost: the open penalties, but never more than what is left of the daily
+  // loss cap, and nothing once today has already ended a season.
+  const fullStake = openDue.reduce((n, i) => n + (i.penalty || 0), 0);
+  const chargedToday = todaysMisses.filter((m) => !m.pardoned_at).reduce((n, m) => n + m.hp_lost, 0);
+  const [diedToday] = await db()`select 1 from events where type = 'death' and data->>'date' = ${today} limit 1`;
+  const atStake = diedToday ? 0 : Math.min(fullStake, Math.max(0, s.dailyLossCap - chargedToday));
   const progress = {
     done: doneDue,
     total: doneDue + openDue.length + missedToday,
-    atStake: openDue.reduce((n, i) => n + (i.penalty || 0), 0),
+    atStake,
+    fullStake,
+    lethal: atStake > 0 && atStake >= game.hp,
     open: openDue.length,
   };
 
@@ -293,9 +301,16 @@ export async function buildPlan() {
   const goals = await listGoals();
   const restDays = await db()`select date, reason from rest_days where date >= ${today} order by date`;
   const s = (await localNow()).s;
+  const worstDay = Math.max(0, ...weekStakes(habits, weekStartOf(today, tz), tz).map((d) => d.stake));
   return {
     today,
-    settings: { maxNonNegotiables: s.maxNonNegotiables, restDaysPerMonth: s.restDaysPerMonth },
+    settings: {
+      maxNonNegotiables: s.maxNonNegotiables,
+      restDaysPerMonth: s.restDaysPerMonth,
+      maxHp: s.maxHp,
+      dailyLossCap: s.dailyLossCap,
+      worstDay,
+    },
     habits: habits.map((h) => {
       const st = stats.get(h.id) || {};
       return {

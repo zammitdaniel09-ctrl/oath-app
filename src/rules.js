@@ -53,6 +53,14 @@ export function weekTargetFor(habit, weekStart, tz, rest = null) {
   return Math.min(target, Math.round((target * eligible) / 7));
 }
 
+// What missing every fixed habit on each day of a week would put on the line, before the daily cap.
+export function weekStakes(habits, weekStart, tz) {
+  return weekDates(weekStart, tz).map((date) => ({
+    date,
+    stake: habits.filter((h) => isScheduled(h, date, tz)).reduce((n, h) => n + rulesOn(h, date).penalty, 0),
+  }));
+}
+
 // The scheduled day before this one, for "never miss twice".
 export function previousOccurrence(habit, date, tz, rest = null) {
   let d = addDays(date, -1, tz);

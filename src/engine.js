@@ -32,6 +32,7 @@ export const DEFAULT_SETTINGS = {
   maxNonNegotiables: 3,
   undoMinutes: 10,
   maxHp: 100,
+  dailyLossCap: 50,
   alerts: 'both',
 };
 
@@ -94,7 +95,26 @@ export class RuleError extends Error {
 
 // ---------- Misses and deaths ----------
 
-async function applyMiss(tx, game, s, { kind, refId, date, title, hpLost, repeat = false }, notes) {
+// Strict but survivable: one day can cost at most dailyLossCap HP, and once a day has killed you its
+// remaining misses are still recorded (streaks reset, repeats count) but cost the new season nothing.
+async function dayCost(tx, s, date, hpLost) {
+  const died = await tx`select 1 from events where type = 'death' and data->>'date' = ${date} limit 1`;
+  if (died.length) return 0;
+  const [{ charged }] = await tx`select coalesce(sum(hp_lost), 0)::int as charged from misses
+                                 where date = ${date} and pardoned_at is null`;
+  return Math.max(0, Math.min(hpLost, s.dailyLossCap - charged));
+}
+
+// Did the season end (a death) after this miss was charged? Then there is nothing to give back.
+export async function deathSince(tx, m) {
+  const [ev] = await tx`select id from events where type = 'miss' and data->>'kind' = ${m.kind}
+                        and data->>'refId' = ${String(m.ref_id)} and data->>'date' = ${m.date} order by id limit 1`;
+  if (ev) return (await tx`select 1 from events where type = 'death' and id > ${ev.id} limit 1`).length > 0;
+  return (await tx`select 1 from events where type = 'death' and at > ${m.created_at} limit 1`).length > 0;
+}
+
+async function applyMiss(tx, game, s, { kind, refId, date, title, hpLost: fullCost, repeat = false }, notes) {
+  const hpLost = await dayCost(tx, s, date, fullCost);
   const inserted = await tx`
     insert into misses (kind, ref_id, date, title, hp_lost, repeat, created_at)
     values (${kind}, ${refId}, ${date}, ${title}, ${hpLost}, ${repeat}, ${ts()})
@@ -102,7 +122,8 @@ async function applyMiss(tx, game, s, { kind, refId, date, title, hpLost, repeat
     returning id`;
   if (!inserted.length) return null;
   game.hp -= hpLost;
-  await logEvent('miss', { kind, refId, date, title, hpLost, repeat, hpAfter: game.hp }, tx);
+  await logEvent('miss', { kind, refId, date, title, hpLost, fullCost, repeat, hpAfter: game.hp }, tx);
+  const capped = hpLost < fullCost ? ` The day's loss is capped at ${s.dailyLossCap} HP.` : '';
   if (game.hp <= 0) {
     game.deaths += 1;
     game.season += 1;
@@ -122,8 +143,8 @@ async function applyMiss(tx, game, s, { kind, refId, date, title, hpLost, repeat
     notes.push({
       title: repeat ? `Missed twice in a row: ${title}` : `Missed: ${title}`,
       body: repeat
-        ? `Second miss in a row costs ${s.repeatMultiplier}x: minus ${hpLost} HP. You are on ${game.hp}.${comeback}`
-        : `Minus ${hpLost} HP. You are on ${game.hp}.${comeback}`,
+        ? `Second miss in a row costs ${s.repeatMultiplier}x: minus ${hpLost} HP. You are on ${game.hp}.${capped}${comeback}`
+        : `Minus ${hpLost} HP. You are on ${game.hp}.${capped}${comeback}`,
       tag: `miss-${kind}-${refId}-${date}`,
     });
   }
@@ -447,11 +468,14 @@ export async function pardon(missId, input) {
     if (game.pardonsLeft <= 0) throw new RuleError('No pardons left this month.', 409);
     game.pardonsLeft -= 1;
     const s = await getSettings();
-    game.hp = Math.min(s.maxHp, game.hp + m.hp_lost);
+    // A season that has ended since the miss has nothing to give back; the streak is still saved.
+    const before = game.hp;
+    if (!(await deathSince(tx, m))) game.hp = Math.min(s.maxHp, game.hp + m.hp_lost);
+    const hpRestored = game.hp - before;
     await tx`update misses set pardoned_at = ${ts()}, pardon_reason = ${reason.slice(0, 1000)}, pardon_plan = ${plan.slice(0, 500)} where id = ${missId}`;
     await tx`update days set missed = greatest(missed - 1, 0), pardoned = pardoned + 1 where date = ${m.date}`;
-    await logEvent('pardon', { missId, title: m.title, date: m.date, reason, plan, hpRestored: m.hp_lost }, tx);
-    return { ok: true, hp: game.hp, pardonsLeft: game.pardonsLeft };
+    await logEvent('pardon', { missId, title: m.title, date: m.date, reason, plan, hpRestored }, tx);
+    return { ok: true, hp: game.hp, hpRestored, pardonsLeft: game.pardonsLeft };
   });
 }
 

@@ -66,6 +66,9 @@ async function reset(iso) {
   await engine.tick();
 }
 const tick = (iso) => { setLocal(iso); return engine.tick(); };
+// Lifts the daily loss cap for scenarios built on one big miss; reset() puts it back.
+const liftDailyCap = () => sql`insert into kv (key, value) values ('settings', ${sql.json({ dailyLossCap: 1000 })})
+                               on conflict (key) do update set value = kv.value || excluded.value`;
 const newHabit = async (input) => (await engine.createHabit(input, { validTime: time.validTime })).habit;
 const game = () => engine.getGame();
 const hae = (metrics = [], workouts = []) => ({ data: { metrics, workouts } });
@@ -433,14 +436,15 @@ test('6. Apple Health overturns a miss: HP back, miss marked, days row fixed, pa
 
 test('7. an overturn after the season ended gives no HP back', async () => {
   await reset('2026-10-07T08:00');
+  await liftDailyCap();
   const walk = await newHabit({ name: 'Walk', deadline: '10:00', penalty: 100 });
   await newHabit({ name: 'Read', deadline: '11:00' });
   await health.setHabitAuto(walk.id, { metric: 'steps', target: 5000 });
   const notes = await tick('2026-10-07T10:01');
   assert.ok(notes.some((n) => n.tag === 'death'), JSON.stringify(notes));
   assert.equal((await game()).deaths, 1);
-  await tick('2026-10-07T11:01'); // Read missed in the new season
-  assert.equal((await game()).hp, 90);
+  await tick('2026-10-07T11:01'); // Read missed later that day: the day already ended a season, so it costs nothing
+  assert.equal((await game()).hp, 100);
 
   const r = await ingest(hae([{
     name: 'step_count', units: 'count', data: [
@@ -449,7 +453,7 @@ test('7. an overturn after the season ended gives no HP back', async () => {
     ],
   }]));
   assert.deepEqual(r.overturned.map((o) => [o.name, o.hpBack]), [['Walk', 0]]);
-  assert.equal((await game()).hp, 90, 'nothing is refunded across a death');
+  assert.equal((await game()).hp, 100, 'nothing is refunded across a death');
   const [m] = await sql`select * from misses where kind = 'habit' and ref_id = ${walk.id}`;
   assert.equal(m.overturned, true);
   assert.equal(r.notes[0].body, 'Walk on Wed 7 Oct was done after all. Your season has ended since, so no HP comes back.');

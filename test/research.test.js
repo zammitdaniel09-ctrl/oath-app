@@ -83,6 +83,11 @@ async function seedKept(habitId, n) {
   }
 }
 
+// Lifts the daily loss cap for scenarios built on one big miss or many misses in a day; reset()
+// puts it back.
+const liftDailyCap = () => dbmod.db()`insert into kv (key, value) values ('settings', ${dbmod.db().json({ dailyLossCap: 1000 })})
+                                      on conflict (key) do update set value = kv.value || excluded.value`;
+
 const hp = async () => (await today()).data.game.hp;
 const item = async (id) => (await today()).data.items.find((i) => i.kind === 'habit' && i.id === id);
 const planHabit = async (id) => (await call('GET', '/api/plan')).data.habits.find((h) => h.id === id);
@@ -108,6 +113,7 @@ async function bare(method, url, { token, json } = {}) {
 
 test('1. strength: ~80 after 30 kept days, ~96 after 60, one miss costs a few points, survives death while streaks reset', async () => {
   await reset('2026-10-12T08:00');
+  await liftDailyCap();
   const start = clock;
   const read = await newHabit({ name: 'Read', deadline: '21:00' });
   const keepDays = async (from, n) => {
@@ -231,6 +237,7 @@ test('2c. a pardoned miss gives no comeback', async () => {
 
 test('3. a second miss in a row costs 1.5x and is flagged; a miss after a kept day costs the normal penalty', async () => {
   await reset('2026-10-12T08:00');
+  await liftDailyCap();
   const gym = await newHabit({ name: 'Gym', deadline: '19:00', non_negotiable: true });
   const read = await newHabit({ name: 'Read', deadline: '21:00' });
   assert.equal(gym.penalty, 25);
