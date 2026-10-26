@@ -363,7 +363,8 @@ export async function searchFoods(q, { limit = 30, kind = null, liquid = null } 
       when name_norm like ${`${query} %`} then 2
       when exists (select 1 from unnest(alias_norm) a where a like ${`${query}%`}) then 3
       when name_norm like ${`%${query}%`} then 4
-      else 5 end as rank
+      when name_norm like ${`${words[0]} %`} then 5
+      else 6 end as rank
     from food_items
     where hidden = false ${all}
       ${kind ? sql`and kind = ${kind}` : sql``}
