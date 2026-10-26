@@ -129,7 +129,8 @@ function amountFor(item, est) {
   return { qty: round(est.amount, 0), unit: item.basis };
 }
 
-async function matchMealItem(est) {
+// Shared with the coach and the "type what you ate" box: one estimated item matched to a record.
+export async function matchMealItem(est) {
   let found = await searchFoods(est.search, { limit: 6 });
   if (!found.length) found = await searchFoods(est.name, { limit: 6 });
   const match = found[0] || null;
