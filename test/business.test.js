@@ -209,15 +209,17 @@ test('1. BUSINESS_SOURCES: well-formed entries are read in order, malformed ones
   ]);
 });
 
+const SKIPPED = '1 of the 1 sites in BUSINESS_SOURCES are skipped: each needs a name, an https URL and a token.';
+
 test('2. nothing set up: configured false, no fetch, nothing stored, nothing for the coach', async () => {
   await reset();
-  assert.deepEqual(await biz.businessSummary(), { configured: false, sources: [] });
+  assert.deepEqual(await biz.businessSummary(), { configured: false, sources: [], problem: null });
   setSources([{ name: 'Broken entry', url: 'nope', token: 'x' }]);
-  assert.deepEqual(await biz.businessSummary(), { configured: false, sources: [] });
+  assert.deepEqual(await biz.businessSummary(), { configured: false, sources: [], problem: SKIPPED });
   assert.equal(await biz.businessForCoach(), '');
   const r = await get('/api/business');
   assert.equal(r.status, 200);
-  assert.deepEqual(r.data, { configured: false, sources: [] });
+  assert.deepEqual(r.data, { configured: false, sources: [], problem: SKIPPED });
   assert.equal(await dbmod.getKV('business'), null);
   assert.equal(arrivals.length, 0);
 });

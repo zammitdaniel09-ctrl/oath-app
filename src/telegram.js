@@ -65,6 +65,24 @@ export async function initTelegram() {
     ],
   });
   console.log(`telegram ready as @${me.username}`);
+  const w = await webhookInfo();
+  if (w?.lastError) console.warn(`telegram webhook last error (${w.lastErrorAt}): ${w.lastError}`);
+}
+
+// What Telegram says about delivering to Oath: the webhook address and its last delivery error.
+export async function webhookInfo() {
+  if (!telegramEnabled()) return null;
+  try {
+    const w = await call('getWebhookInfo', {});
+    return {
+      url: w.url || '',
+      pending: w.pending_update_count || 0,
+      lastError: w.last_error_message || null,
+      lastErrorAt: w.last_error_date ? new Date(w.last_error_date * 1000).toISOString() : null,
+    };
+  } catch (err) {
+    return { error: err.message };
+  }
 }
 
 export async function telegramStatus() {
@@ -82,7 +100,12 @@ export async function createLink() {
   if (!s.botUsername) throw new RuleError('The bot is not reachable yet. Check the token in Railway.');
   const code = crypto.randomBytes(9).toString('base64url');
   await save({ linkCode: code, linkExpires: Date.now() + 30 * 60 * 1000 });
-  return { url: `https://t.me/${s.botUsername}?start=${code}`, botUsername: s.botUsername };
+  // The tg:// link jumps straight into the Telegram app; the t.me one is the fallback in a browser.
+  return {
+    url: `https://t.me/${s.botUsername}?start=${code}`,
+    appUrl: `tg://resolve?domain=${s.botUsername}&start=${code}`,
+    botUsername: s.botUsername,
+  };
 }
 
 export async function unlink() {
@@ -209,7 +232,10 @@ export async function handleUpdate(u) {
         return;
       }
       if (s.chatId !== chatId) {
-        await call('sendMessage', { chat_id: chatId, text: 'This bot is private.' });
+        await call('sendMessage', {
+          chat_id: chatId,
+          text: 'This bot belongs to an Oath app and is not linked to this chat. To link it, open Oath, go to Settings, Telegram and tap Connect Telegram, then tap Start here. A link works for 30 minutes.',
+        });
         return;
       }
     }

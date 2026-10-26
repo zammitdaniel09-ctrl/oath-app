@@ -59,8 +59,10 @@ export async function tokenCount() {
   return n;
 }
 
+// "Bearer oath_..." as documented, or the bare key: a missing "Bearer " is the easiest mistake to
+// make while typing a header on a phone.
 export async function tokenValid(header) {
-  const m = /^Bearer\s+(\S+)$/i.exec(header || '');
+  const m = /^(?:Bearer\s+)?(oath_\S+)$/i.exec(String(header || '').trim());
   if (!m) return false;
   const rows = await db()`update api_tokens set last_used = ${nowUTC().toJSDate()} where token_hash = ${sha256(m[1])} returning 1`;
   return rows.length > 0;

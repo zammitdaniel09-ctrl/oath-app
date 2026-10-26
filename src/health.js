@@ -653,6 +653,8 @@ function parseFlat(p, ctx, out) {
 
 // ---------- Storage ----------
 
+const RUNNING_TOTALS = Object.values(DEF).filter((d) => d.agg === 'sum').map((d) => d.key);
+
 async function upsertSamples(samples, now) {
   const sql = db();
   const byKey = new Map();
@@ -664,10 +666,16 @@ async function upsertSamples(samples, now) {
   for (let i = 0; i < rows.length; i += 1000) {
     const chunk = rows.slice(i, i + 1000);
     // received_at only moves when the value changes, so "reported before the deadline" stays provable.
+    // The free Shortcut sends running day totals, and a run on a locked phone reads 0, so its totals
+    // only ever go up: a lower reading never replaces a higher one already received.
     await sql`insert into health_samples ${sql(chunk, 'metric', 'at', 'source', 'date', 'value', 'unit', 'extra', 'received_at')}
               on conflict (metric, at, source) do update set
-                date = excluded.date, unit = excluded.unit, extra = excluded.extra, value = excluded.value,
-                received_at = case when health_samples.value is distinct from excluded.value
+                date = excluded.date, unit = excluded.unit, extra = excluded.extra,
+                value = case when health_samples.source = 'shortcut' and health_samples.metric = any(${RUNNING_TOTALS})
+                             then greatest(health_samples.value, excluded.value) else excluded.value end,
+                received_at = case when health_samples.value is distinct from
+                                        (case when health_samples.source = 'shortcut' and health_samples.metric = any(${RUNNING_TOTALS})
+                                              then greatest(health_samples.value, excluded.value) else excluded.value end)
                                    then excluded.received_at else health_samples.received_at end`;
   }
   return rows.length;

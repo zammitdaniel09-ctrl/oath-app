@@ -182,3 +182,42 @@ test('weekly review: no strongest or weakest when habits are tied, and thin habi
   assert.match(text, /Too early to rank/);
   assert.match(text, /Adjust: Study\./);
 });
+
+// Raw request with no cookie, the way Shortcuts and Health Auto Export call Oath.
+async function bare(method, url, { authorization, json, body, type } = {}) {
+  const headers = {};
+  if (authorization !== undefined) headers.authorization = authorization;
+  if (json !== undefined || type) headers['content-type'] = type || 'application/json';
+  const res = await app.request(url, { method, headers, body: json !== undefined ? JSON.stringify(json) : body });
+  return { status: res.status, data: await res.json().catch(() => null) };
+}
+
+test('a Shortcuts key works with or without "Bearer ", and failures show up in the setup list', async () => {
+  const { token } = (await call('POST', '/api/tokens', { label: 'Shortcuts' })).data;
+  assert.equal((await bare('GET', '/api/shortcut/next', { authorization: `Bearer ${token}` })).status, 200);
+  assert.equal((await bare('GET', '/api/shortcut/next', { authorization: token })).status, 200);
+  assert.equal((await bare('GET', '/api/shortcut/next', { authorization: ` ${token} ` })).status, 200, 'stray spaces are fine');
+
+  setLocal('2026-10-14T12:00');
+  assert.equal((await bare('POST', '/api/shortcut/health', { authorization: 'Bearer oath_wrong', json: { steps: 100 } })).status, 401);
+  let s = (await call('GET', '/api/setup-status')).data;
+  assert.equal(s.ingestError.status, 401);
+  assert.equal(s.ingestError.reason, 'The key was not accepted.');
+
+  setLocal('2026-10-14T12:01');
+  const notJson = await bare('POST', '/api/shortcut/health', { authorization: token, body: 'steps=100', type: 'text/plain' });
+  assert.equal(notJson.status, 415);
+  s = (await call('GET', '/api/setup-status')).data;
+  assert.equal(s.ingestError.status, 415);
+
+  // A sync that works clears the warning and turns Health green.
+  setLocal('2026-10-14T12:02');
+  assert.equal((await bare('POST', '/api/shortcut/health', { authorization: token, json: { steps: 4200 } })).status, 200);
+  s = (await call('GET', '/api/setup-status')).data;
+  assert.equal(s.ingestError, null);
+  const health = s.items.find((i) => i.id === 'health');
+  assert.equal(health.ok, true, health.detail);
+  assert.equal(s.items.find((i) => i.id === 'telegram').detail, 'The bot token is not set on the server.');
+  assert.equal(s.items.find((i) => i.id === 'calendars').ok, false);
+  assert.equal(s.total, 5);
+});

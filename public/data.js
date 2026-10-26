@@ -82,8 +82,9 @@ function sleepStages(s) {
 }
 
 function healthSetup(connected) {
-  const tab = state.healthSetup || 'hae';
+  const tab = state.healthSetup || 'shortcut';
   const url = `${location.origin}/api/shortcut/health`;
+  const urlField = `<span class="copy-row"><input class="input mono" id="health-url" readonly value="${esc(url)}"><button class="btn tinted small" data-action="copy" data-target="health-url">Copy</button></span>`;
   const count = state.tokens?.count || 0;
   const keyStep = `<li><b>Make your key.</b> ${count && !state.newToken ? 'You already have one (it was only shown once). If you no longer have it, make a new one; the old one keeps working.' : 'It lets your iPhone send data to Oath and nothing else.'}
       ${keyBlock()}${state.newToken ? '' : `<div class="form-actions"><button class="btn ${count ? 'tinted' : 'primary'} small" data-action="token-new">${icon('key')}${count ? 'Make a new key' : 'Make a key'}</button></div>`}</li>`;
@@ -91,8 +92,8 @@ function healthSetup(connected) {
       ${keyStep}
       <li>Install <b>Health Auto Export - JSON+CSV</b> from the App Store and get Premium (one-time lifetime, about €30, or €1.99 a month). The Basic tier has no automations.</li>
       <li>In the app open <b>Automations</b>, tap <b>New Automation</b>, choose <b>REST API</b> and name it Oath.</li>
-      <li>URL: <code>${esc(url)}</code></li>
-      <li>Under <b>HTTP Headers</b>, add one: key <b>Authorization</b>, value <b>Bearer</b>, a space, then your key.</li>
+      <li>URL: ${urlField}</li>
+      <li>Under <b>HTTP Headers</b>, add one: key <b>Authorization</b>, value your key.</li>
       <li>Data Type <b>Health Metrics</b>. Select Step Count, Active Energy, Apple Exercise Time, Apple Stand Hour, Sleep Analysis, Walking + Running Distance, Resting Heart Rate, Heart Rate Variability, Body Mass and Mindful Minutes.</li>
       <li>Export Format <b>JSON</b>, Version <b>2</b>, Date Range <b>Default</b>, Summarize Data <b>on</b>, Time Grouping <b>Hours</b>. Sync every hour. Save and switch it on.</li>
       <li>Make a second automation exactly the same, with Data Type <b>Workouts</b> (route data off).</li>
@@ -105,16 +106,18 @@ function healthSetup(connected) {
       <li>Add <b>Find Health Samples</b>: Type Steps, Start Date is Today. Then <b>Calculate Statistics</b>: Sum.</li>
       <li>Do the same for <b>Exercise Minutes</b> and <b>Active Energy</b>.</li>
       <li>Add <b>Find Health Samples</b>: Type Sleep Analysis, Start Date is in the last 1 day, Value is not In Bed, Value is not Awake. Then <b>Get Details of Health Samples</b>: Duration, then <b>Calculate Statistics</b>: Sum.</li>
-      <li>Add <b>Get Contents of URL</b>: <code>${esc(url)}</code>. Show More: Method <b>POST</b>, Header <b>Authorization</b> = <b>Bearer</b> and your key, Request Body <b>JSON</b> with fields <b>steps</b>, <b>exercise_min</b>, <b>active_kcal</b> (numbers) and <b>sleep_hours</b> (text), each set to the matching result.</li>
-      <li>In the <b>Automation</b> tab, tap +, <b>Time of Day</b>, every day at 20:30, <b>Run Immediately</b>, and pick this shortcut. Add a second one for 08:00 to send last night's sleep.</li>
+      <li>Add <b>Get Contents of URL</b> with this URL: ${urlField}
+        Tap Show More: Method <b>POST</b>, add a Header <b>Authorization</b> with your key as the value, Request Body <b>JSON</b> with fields <b>steps</b>, <b>exercise_min</b>, <b>active_kcal</b> (numbers) and <b>sleep_hours</b> (text), each set to the matching result.</li>
+      <li>Run it once with the play button. Oath's setup list on Today turns Apple Health green when it lands.</li>
+      <li>In the <b>Automation</b> tab, tap +, <b>Time of Day</b>, <b>Run Immediately</b>, pick this shortcut. Make four: <b>08:00</b> (last night's sleep), <b>12:00</b>, <b>17:00</b> and <b>20:30</b>.</li>
     </ol>
-    <p class="note">Free, but it only sends four numbers and no workouts. The app above sends everything, every hour.</p>`;
+    <p class="note">Running it often is safe: a later run that reads less, for example on a locked phone, never lowers a total Oath already has. It sends these four numbers only, so habits linked to workouts need the paid app on the other tab, and a habit due early in the day only ticks itself off if a run lands before its deadline.</p>`;
   return `<div class="card setup${connected ? ' quiet' : ''}">
     ${connected ? '' : `<div class="setup-hero"><span class="setup-ic">${icon('heart')}</span><div><h3>Connect Apple Health</h3>
       <p class="muted">Apple does not let web apps read Health directly, so your iPhone sends it here. Then habits like "10k steps" or "Gym" tick themselves off, and a miss that Health proves wrong is overturned.</p></div></div>`}
     <div class="seg wide-seg" role="tablist" aria-label="How to connect">
-      <button role="tab" aria-selected="${tab === 'hae'}" data-action="health-setup" data-tab="hae">Automatic, recommended</button>
       <button role="tab" aria-selected="${tab === 'shortcut'}" data-action="health-setup" data-tab="shortcut">Free shortcut</button>
+      <button role="tab" aria-selected="${tab === 'hae'}" data-action="health-setup" data-tab="hae">Paid app, everything</button>
     </div>
     ${tab === 'hae' ? hae : shortcut}
   </div>`;
@@ -229,10 +232,12 @@ function businessSection(b) {
   if (!b || !b.configured) {
     return `<section class="section" id="business"><div class="gh"><h2>Business</h2></div>
       <div class="card setup quiet"><div class="setup-hero"><span class="setup-ic biz-ic">${icon('business')}</span><div><h3>Your sites, on one screen</h3>
-        <p class="muted">Revenue, sales, licences, trials and whether your EAs are online for GoldenStraddler, and members, activity and backups for Exposed FX Journal. Each site needs a small read-only update first; it is ready and waiting for your go-ahead.</p></div></div></div>
+        <p class="muted">Revenue, sales, licences, trials and whether your EAs are online for GoldenStraddler, and members, activity and backups for Exposed FX Journal. Each site needs a small read-only update first; it is ready and waiting for your go-ahead.</p></div></div>
+        ${b?.problem ? `<p class="note bad">${esc(b.problem)}</p>` : ''}</div>
     </section>`;
   }
   return `<section class="section" id="business"><div class="gh"><h2>Business</h2><button class="gh-link" data-action="biz-refresh">${icon('sync')}Refresh</button></div>
+    ${b.problem ? `<p class="note bad">${esc(b.problem)}</p>` : ''}
     ${b.sources.map(bizCard).join('')}
   </section>`;
 }
@@ -304,12 +309,17 @@ export function viewDashboard() {
       <a class="li li-plain li-nav" href="#/review"><span class="li-ic">${icon('review')}</span><span class="li-body"><span class="li-title">Weekly review</span><span class="li-sub">Keep, adjust or drop each habit. Pick the week's focus.</span></span>${icon('chevron', 'chev')}</a>
       <a class="li li-plain li-nav" href="#/review"><span class="li-ic">${icon('trend')}</span><span class="li-body"><span class="li-title">History</span><span class="li-sub">HP, habit strength, misses, pardons and deaths</span></span>${icon('chevron', 'chev')}</a>
     </div></section>`;
+  // Calendars come first: pasting a link is the quickest thing to connect, and on the phone the
+  // second column would otherwise put them under the long Health setup.
   ctx.shell(`${head}
     ${d.errors.length ? `<div class="banner warn">${esc(d.errors[0])}</div>` : ''}
     <div class="split">
-      <div>${healthSection(d.health)}</div>
-      <aside>${businessSection(d.business)}${calendarSection(d)}${review}</aside>
+      <div><div id="sec-calendars">${calendarSection(d)}</div><div id="sec-health">${healthSection(d.health)}</div></div>
+      <aside>${businessSection(d.business)}${review}</aside>
     </div>`);
+  // Links like #/dashboard?section=health land on that section.
+  const section = state.query?.get('section');
+  if (section) document.getElementById(`sec-${section}`)?.scrollIntoView({ block: 'start' });
 }
 
 // ---------- Events ----------

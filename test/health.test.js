@@ -374,12 +374,13 @@ test('5. a linked habit ticks itself off today before the deadline, with source 
   assert.equal(res.data.say, 'Synced 1 day. Gym ticked off from Apple Health.');
   assert.equal((await game()).hp, 90);
 
-  // Data going down never removes a completion.
+  // A lower reading from the Shortcut (a run on a locked phone) never lowers the day's total, and
+  // never removes a completion.
   await ingest({ steps: 10 });
   assert.equal((await sql`select count(*)::int as n from completions where habit_id = ${walk.id}`)[0].n, 1);
   const s = await summary(1);
   assert.deepEqual(s.autoHabits.map((h) => [h.name, h.metric, h.target, h.filter, h.todayValue, h.met]), [
-    ['Walk', 'steps', 8000, '', 10, false],
+    ['Walk', 'steps', 8000, '', 9000, true],
     ['Gym', 'workout', 30, 'strength', 35, true],
   ]);
 });

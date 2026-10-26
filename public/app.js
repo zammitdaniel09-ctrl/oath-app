@@ -2,7 +2,7 @@
 import {
   $app, state, hooks, esc, ApiError, api, toast, react, act, form2obj, fmtClock, fmtDay, left, daysBetween, fmtMin,
   DAY_NAMES, scheduleText, CHECK, isStandalone, isIOS, haptic, bar, strengthChip, localToday, localNowHM,
-  icon, rings, drawRings, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago, miniRing, keyBlock,
+  icon, rings, drawRings, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago, miniRing, keyBlock, rememberKey,
 } from './ui.js';
 import { parseCapture } from './parse.js';
 import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
@@ -379,7 +379,7 @@ function healthMini(t) {
   const h = t.health;
   if (!h) return '';
   if (!h.connected) {
-    return `<a class="card connect-card" href="#/dashboard">
+    return `<a class="card connect-card" href="#/dashboard?section=health">
       <span class="connect-ic">${icon('heart')}</span>
       <span><b>Connect Apple Health</b><span class="li-sub">Steps, workouts and sleep flow in, and habits like "Gym" tick themselves off.</span></span>
       ${icon('chevron', 'chev')}</a>`;
@@ -409,6 +409,30 @@ function remindersPrompt() {
   const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
   if (!supported || Notification.permission !== 'default') return '';
   return `<div class="banner">${icon('bell')}<span><b>Turn on reminders</b> so last calls reach your lock screen.</span><button class="btn small primary" data-action="push-on">Turn on</button></div>`;
+}
+
+// One row per connection: green once it works, otherwise what is missing, linking to where to fix it.
+function setupRows(s) {
+  const rows = s.items.map((i) => `<a class="li li-nav${i.ok ? ' done' : ''}" href="${i.href}">
+      <span class="chk">${CHECK}</span>
+      <span class="li-body"><span class="li-title">${esc(i.title)}</span><span class="li-sub">${esc(i.detail)}${i.id === 'health' && s.health.lastSync ? ` Synced ${ago(s.health.lastSync)}.` : ''}</span></span>
+      ${icon('chevron', 'chev')}</a>`).join('');
+  const err = s.ingestError
+    ? `<p class="note bad setup-err">The last request from Shortcuts or Health Auto Export failed ${ago(s.ingestError.at)}: ${esc(s.ingestError.reason)}</p>`
+    : '';
+  return rows + err;
+}
+
+// Until every connection works, Today carries the list. Hidden by hand, it only comes back when
+// something that worked stops working.
+function setupCard(s) {
+  if (!s || s.done === s.total) return '';
+  let hiddenAt = null;
+  try { hiddenAt = localStorage.getItem('oath.setupHidden'); } catch { /* storage unavailable */ }
+  if (hiddenAt !== null && s.done >= Number(hiddenAt)) return '';
+  return `<section class="section"><div class="gh"><h2>Set up <em>Oath</em></h2><span class="gh-count">${s.done} of ${s.total} connected</span></div>
+    <div class="group">${setupRows(s)}</div>
+    <div class="form-actions"><button class="btn plain small" data-action="setup-hide" data-done="${s.done}">Hide for now</button></div></section>`;
 }
 
 // The battle plan opens by itself before noon, until you close it; then it stays closed for the day.
@@ -556,6 +580,7 @@ function viewToday() {
       ${section('Habits', normal, normal.map((i) => habitRow(i, t)).join(''))}
       ${section('This week', flex, flex.map((i) => habitRow(i, t)).join(''), `${flex.filter((i) => i.status === 'met').length} of ${flex.length} met`)}
       ${tasksHtml}
+      ${setupCard(state.setup)}
       <div class="only-narrow">${timeline(t)}${healthMini(t)}</div>
       ${closeDayCard(t)}
     </div>
@@ -990,8 +1015,9 @@ function viewSettings() {
   if (!s) return shell(skeleton('Settings'));
   const connections = settingsCard('link', 'Your data', `
     <div class="group flush">
-      <a class="li li-plain li-nav" href="#/dashboard"><span class="li-ic">${icon('heart')}</span><span class="li-body"><span class="li-title">Apple Health</span><span class="li-sub">Steps, workouts, sleep, heart</span></span>${icon('chevron', 'chev')}</a>
-      <a class="li li-plain li-nav" href="#/dashboard"><span class="li-ic">${icon('calendar')}</span><span class="li-body"><span class="li-title">Calendars and VLE deadlines</span><span class="li-sub">Google, iCloud, Outlook, UM VLE</span></span>${icon('chevron', 'chev')}</a>
+      ${state.setup ? setupRows(state.setup) : `
+      <a class="li li-plain li-nav" href="#/dashboard?section=health"><span class="li-ic">${icon('heart')}</span><span class="li-body"><span class="li-title">Apple Health</span><span class="li-sub">Steps, workouts, sleep, heart</span></span>${icon('chevron', 'chev')}</a>
+      <a class="li li-plain li-nav" href="#/dashboard?section=calendars"><span class="li-ic">${icon('calendar')}</span><span class="li-body"><span class="li-title">Calendars and VLE deadlines</span><span class="li-sub">Google, iCloud, Outlook, UM VLE</span></span>${icon('chevron', 'chev')}</a>`}
       <a class="li li-plain li-nav" href="#/dashboard"><span class="li-ic">${icon('business')}</span><span class="li-body"><span class="li-title">Business sites</span><span class="li-sub">GoldenStraddler, Exposed FX Journal</span></span>${icon('chevron', 'chev')}</a>
     </div>
     <div class="form-actions"><a class="btn tinted" href="/api/export" download>${icon('download')}Download all my data</a></div>`);
@@ -1105,8 +1131,22 @@ async function fetchToday() {
   setBadge();
 }
 
+// The setup list is fetched in the background for Today, at most every few minutes; Telegram's
+// status comes from Telegram itself, so it should not hold up the day.
+function loadSetup() {
+  if (state.setupAt && Date.now() - state.setupAt < 5 * 60000) return;
+  state.setupAt = Date.now();
+  api('GET', '/api/setup-status').then((s) => {
+    state.setup = s;
+    if (state.route === 'today' && !state.dirty && !state.sheet) render();
+  }).catch(() => { state.setupAt = 0; });
+}
+
 async function load(route) {
-  if (route === 'today') await fetchToday();
+  if (route === 'today') {
+    await fetchToday();
+    if (!state.offline) loadSetup();
+  }
   if (route === 'plan') state.plan = await api('GET', '/api/plan');
   if (route === 'coach') state.coach = await api('GET', '/api/coach');
   if (route === 'review') state.review = await api('GET', '/api/review');
@@ -1117,6 +1157,7 @@ async function load(route) {
     else await loadGoals();
   }
   if (route === 'settings') {
+    state.setup = await api('GET', '/api/setup-status').catch(() => state.setup);
     state.settings = await api('GET', '/api/settings');
     state.telegram = { ...(state.telegram || {}), ...(await api('GET', '/api/telegram')) };
     state.tokens = await api('GET', '/api/tokens');
@@ -1383,7 +1424,7 @@ $app.addEventListener('click', async (e) => {
     if (r) {
       state.telegram = { ...state.telegram, linkUrl: r.url };
       render();
-      window.location.href = r.url;
+      window.location.href = r.appUrl || r.url;
     }
   } else if (a === 'tg-test') {
     await act(() => api('POST', '/api/telegram/test', {}), (r) => (r.sent ? 'Sent. Check Telegram.' : 'Not linked yet.'));
@@ -1392,10 +1433,13 @@ $app.addEventListener('click', async (e) => {
     if (await act(() => api('POST', '/api/telegram/unlink', {}), 'Telegram disconnected.')) { await load('settings'); render(); }
   } else if (a === 'token-new') {
     const r = await act(() => api('POST', '/api/tokens', { label: 'Shortcuts' }));
-    if (r) { state.newToken = r.token; state.tokens = { count: (state.tokens?.count || 0) + 1 }; render(); }
+    if (r) { rememberKey(r.token); state.tokens = { count: (state.tokens?.count || 0) + 1 }; render(); }
+  } else if (a === 'key-hide') {
+    rememberKey(null);
+    render();
   } else if (a === 'token-revoke') {
     if (!confirm('Turn off every key? Your shortcuts and Apple Health sync stop until you make a new key.')) return;
-    if (await act(() => api('DELETE', '/api/tokens'), 'All keys turned off.')) { state.newToken = null; await load(state.route); render(); }
+    if (await act(() => api('DELETE', '/api/tokens'), 'All keys turned off.')) { rememberKey(null); await load(state.route); render(); }
   } else if (a === 'copy') {
     const input = document.getElementById(el.dataset.target);
     try {
@@ -1431,6 +1475,9 @@ $app.addEventListener('click', async (e) => {
     }
   } else if (a === 'retry') {
     location.reload();
+  } else if (a === 'setup-hide') {
+    try { localStorage.setItem('oath.setupHidden', el.dataset.done); } catch { /* storage unavailable */ }
+    render();
   } else if (a === 'push-on') {
     if (await act(pushOn, 'Reminders are on for this device.')) { await refreshPushState(); render(); }
   } else if (a === 'push-off') {

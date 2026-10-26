@@ -74,6 +74,25 @@ export function businessSources() {
   return out;
 }
 
+// Why BUSINESS_SOURCES yields fewer sites than it lists, in words the dashboard can show. Null when
+// it is unset or every entry is usable.
+export function businessSourcesProblem() {
+  const raw = (process.env.BUSINESS_SOURCES || '').trim();
+  if (!raw) return null;
+  let list;
+  try {
+    list = JSON.parse(raw);
+  } catch {
+    return 'BUSINESS_SOURCES in Railway is not valid JSON, so no business sites are read.';
+  }
+  if (!Array.isArray(list)) return 'BUSINESS_SOURCES in Railway must be a JSON list of sites.';
+  const usable = businessSources().length;
+  if (usable < Math.min(list.length, MAX_SOURCES)) {
+    return `${list.length - usable} of the ${list.length} sites in BUSINESS_SOURCES are skipped: each needs a name, an https URL and a token.`;
+  }
+  return null;
+}
+
 // ---------- Fetching ----------
 
 const str = (v, n = 200) => (typeof v === 'string' ? v.trim().slice(0, n) : '');
@@ -200,13 +219,13 @@ const minutesSince = (iso) => nowUTC().diff(DateTime.fromISO(iso, { zone: 'utc' 
 
 export async function businessSummary({ maxAgeMin = 10 } = {}) {
   const sources = businessSources();
-  if (!sources.length) return { configured: false, sources: [] };
+  if (!sources.length) return { configured: false, sources: [], problem: businessSourcesProblem() };
   let cache = await getKV(KV_KEY, null);
   const sameSources = cache && Array.isArray(cache.sources) && cache.sources.map((s) => s.name).join('\n') === sources.map((s) => s.name).join('\n');
   const age = Number(maxAgeMin);
   const tooOld = !cache?.fetchedAt || !(minutesSince(cache.fetchedAt) < (Number.isFinite(age) ? age : 10));
   if (!sameSources || tooOld) cache = await refreshBusiness();
-  return { configured: true, fetchedAt: cache.fetchedAt, sources: cache.sources };
+  return { configured: true, fetchedAt: cache.fetchedAt, sources: cache.sources, problem: businessSourcesProblem() };
 }
 
 // ---------- Coach ----------

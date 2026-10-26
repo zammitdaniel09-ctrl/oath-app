@@ -932,6 +932,9 @@ select.input {
 .oath-form .btn { margin-top: 12px; }
 .oath-done { display: flex; align-items: center; gap: 8px; }
 .banner.offline { box-shadow: inset 0 0 0 1px rgba(232, 145, 45, 0.45), var(--shadow); }
+.gh h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+.li-nav:has(.chk) { grid-template-columns: 30px minmax(0, 1fr) auto; }
+.setup-err { margin: 0; padding: 0 16px 14px 58px; }
 .banner .btn { flex: none; }
 
 /* ---------- iPad and desktop ---------- */

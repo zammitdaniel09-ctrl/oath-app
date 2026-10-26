@@ -19,6 +19,7 @@ import { healthApi, healthShortcut } from './health.js';
 import { calendarApi } from './calendar.js';
 import { businessApi } from './business.js';
 import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleUpdate, webhookSecret } from './telegram.js';
+import { setupStatus, noteIngestError } from './setup.js';
 
 const v = { validTime, validDate };
 const app = new Hono();
@@ -34,6 +35,7 @@ app.use('*', async (c, next) => {
 // Mutating API calls must be JSON, which a cross-site form cannot send without a preflight.
 app.use('/api/*', async (c, next) => {
   if (c.req.method !== 'GET' && !(c.req.header('content-type') || '').includes('application/json')) {
+    if (c.req.path.startsWith('/api/shortcut')) await noteIngestError(c.req.path, 415, 'The request body was not sent as JSON.').catch(() => {});
     return c.json({ error: 'Send JSON.' }, 415);
   }
   await next();
@@ -82,11 +84,14 @@ app.post('/api/logout', async (c) => {
 const shortcut = new Hono();
 shortcut.use('*', async (c, next) => {
   if (!(await tokenValid(c.req.header('authorization'))) && !(await auth.isAuthed(c))) {
+    const reason = c.req.header('authorization') ? 'The key was not accepted.' : 'No key was sent in the Authorization header.';
+    await noteIngestError(c.req.path, 401, reason).catch(() => {});
     return c.json({ error: 'Bad token.', say: 'Oath did not accept the token. Make a new one in Oath settings.' }, 401);
   }
   await next();
 });
-shortcut.onError((err, c) => {
+shortcut.onError(async (err, c) => {
+  await noteIngestError(c.req.path, err.status || 500, err instanceof engine.RuleError ? err.message : 'Server error').catch(() => {});
   if (err instanceof engine.RuleError) return c.json({ error: err.message, say: err.message }, err.status);
   console.error(err);
   return c.json({ error: 'Server error', say: 'Oath hit an error. Try again in the app.' }, 500);
@@ -113,6 +118,7 @@ api.post('/review/finish', async (c) => c.json(await finishReview(await body(c))
 // ---------- Capture ----------
 api.post('/capture', async (c) => c.json(await captureTask((await body(c)).text, 'you')));
 api.get('/tokens', async (c) => c.json({ count: await tokenCount() }));
+api.get('/setup-status', async (c) => c.json(await setupStatus()));
 api.post('/tokens', async (c) => c.json(await createToken((await body(c)).label)));
 api.delete('/tokens', async (c) => c.json(await revokeTokens()));
 

@@ -23,7 +23,7 @@ export const state = {
   dodging: null,
   telegram: null,
   tokens: null,
-  newToken: null,
+  newToken: (() => { try { return sessionStorage.getItem('oath.newToken'); } catch { return null; } })(),
   mapView: 'outline',
   mapParent: null,
   mapZoom: null,
@@ -359,8 +359,18 @@ export function iconLink(href, name, label) {
 }
 
 // The personal key for Shortcuts and Apple Health, shown once right after it is made.
+// It stays on screen (for this tab) until dismissed, so switching to Shortcuts mid-setup does not lose it.
 export function keyBlock() {
   if (!state.newToken) return '';
-  return `<label class="field"><span>Your key. Copy it now; it is only shown once.</span>
-    <span class="copy-row"><input class="input mono" id="siri-key" readonly value="${esc(state.newToken)}"><button class="btn tinted small" data-action="copy" data-target="siri-key">Copy</button></span></label>`;
+  return `<label class="field"><span>Your key. The server keeps no copy, so save it before you hide it.</span>
+    <span class="copy-row"><input class="input mono" id="siri-key" readonly value="${esc(state.newToken)}"><button class="btn tinted small" data-action="copy" data-target="siri-key">Copy</button></span></label>
+    <p class="note">Paste it as the value of the <b>Authorization</b> header, on its own or after "Bearer ". <button class="linkish" data-action="key-hide">Hide the key</button></p>`;
+}
+
+export function rememberKey(token) {
+  state.newToken = token;
+  try {
+    if (token) sessionStorage.setItem('oath.newToken', token);
+    else sessionStorage.removeItem('oath.newToken');
+  } catch { /* storage unavailable */ }
 }
