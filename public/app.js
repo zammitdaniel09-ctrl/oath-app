@@ -320,11 +320,14 @@ function timeline(t) {
       time: k.deadline, title: k.title, kind: `due ${k.status}`, sub: k.status === 'open' ? `Task due${k.heavy ? `, ${k.penalty} HP` : ''}` : k.status,
       past: k.status !== 'open',
     })),
-  ].sort((a, b) => a.time.localeCompare(b.time));
+  ];
+  // Deadlines at 00:00 fall at the end of the day, after everything else.
+  const at = (r) => (r.kind !== 'event' && r.kind !== 'deadline' && r.time === '00:00' ? '24:00' : r.time);
+  rows.sort((a, b) => at(a).localeCompare(at(b)));
   let nowPlaced = false;
   const html = rows.map((r) => {
     let marker = '';
-    if (!nowPlaced && r.time >= now) {
+    if (!nowPlaced && at(r) >= now) {
       nowPlaced = true;
       marker = `<div class="tl-now"><span>${now}</span></div>`;
     }
@@ -444,12 +447,8 @@ function viewToday() {
     t.reviewDue ? `<a class="banner action" href="#/review">${icon('review')}<span><b>Weekly review is ready.</b> Five minutes: keep, adjust or drop each habit and pick this week's focus.</span>${icon('chevron', 'chev')}</a>` : '',
   ].join('');
 
-  // No oath yet and something is due: the oath comes first.
-  if (!t.plan && t.progress.open > 0) {
-    shell(`${head}<div class="split"><div>${ringsCard(t)}${banners}${oathView(t)}</div>
-      <aside>${timeline(t)}${healthMini(t)}${briefCard(t)}</aside></div>`);
-    return;
-  }
+  // No oath yet and something is due: the oath card goes on top, but the lists stay tickable.
+  const needsOath = !t.plan && t.progress.open > 0;
 
   if (!t.items.length && !t.tasks.length && !t.anytime.length && !t.triage.length) {
     shell(`${head}${ringsCard(t)}${banners}
@@ -489,7 +488,7 @@ function viewToday() {
     <div>
       ${ringsCard(t)}
       ${banners}
-      ${nowPanel(t)}
+      ${needsOath ? oathView(t) : nowPanel(t)}
       ${t.plan ? capacityLine(t.capacity, t.settings) : ''}
       <div class="only-narrow">${planCard(t)}${briefCard(t)}</div>
       ${triageCard(t)}

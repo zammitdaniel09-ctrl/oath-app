@@ -34,6 +34,12 @@ export function deadlineAt(dateStr, hhmm, zone) {
   return DateTime.fromISO(dateStr, { zone }).set({ hour: h, minute: m, second: 0, millisecond: 0 });
 }
 
+// When a habit or task on that date is due. A 00:00 deadline means midnight at the end of the day.
+export function dueOn(dateStr, hhmm, zone) {
+  const at = deadlineAt(dateStr, hhmm, zone);
+  return hhmm === '00:00' ? at.plus({ days: 1 }) : at;
+}
+
 export function validTime(s) {
   return typeof s === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(s);
 }

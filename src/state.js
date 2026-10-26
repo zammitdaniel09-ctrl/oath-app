@@ -1,6 +1,6 @@
 // Read models for the UI and the coach.
 import { db } from './db.js';
-import { nowUTC, addDays, deadlineAt, weekday } from './time.js';
+import { nowUTC, addDays, deadlineAt, dueOn, weekday } from './time.js';
 import { localNow, getGame, rulesOn } from './engine.js';
 import { isActive, isScheduled, isFlexible, weekStartOf, weekDates, weekTargetFor } from './rules.js';
 import { habitStats, restSet } from './strength.js';
@@ -68,7 +68,7 @@ export async function buildToday() {
 
   const habitItem = (h) => {
     const r = rulesOn(h, today);
-    const due = deadlineAt(today, r.deadline, tz);
+    const due = dueOn(today, r.deadline, tz);
     const c = comps.get(h.id);
     const m = missByRef.get(`habit:${h.id}`);
     const st = stats.get(h.id) || {};
@@ -126,7 +126,7 @@ export async function buildToday() {
     order by t.hard desc, t.due_date nulls last, t.deadline nulls last, t.id`;
   const taskItem = (t) => {
     const m = missByRef.get(`task:${t.id}`);
-    const due = t.due_date ? deadlineAt(t.due_date, t.deadline || '23:59', tz) : null;
+    const due = t.due_date ? dueOn(t.due_date, t.deadline || '23:59', tz) : null;
     const ageMin = t.done_at ? (nowUTC().toMillis() - new Date(t.done_at).getTime()) / 60000 : Infinity;
     return {
       kind: 'task',

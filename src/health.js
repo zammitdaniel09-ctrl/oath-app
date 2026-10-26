@@ -21,7 +21,7 @@ import crypto from 'node:crypto';
 import { Hono } from 'hono';
 import { DateTime } from 'luxon';
 import { db, getKV, setKV, logEvent } from './db.js';
-import { nowUTC, addDays, deadlineAt, validDate } from './time.js';
+import { nowUTC, addDays, dueOn, validDate } from './time.js';
 import {
   localNow, getGame, withGame, completeHabit, RuleError,
   rulesOn, isScheduled, isFlexible, isActive, weekStartOf,
@@ -1016,7 +1016,7 @@ async function applyOne(h, date, ctx, out) {
   if (!target) return;
   const [done] = await db()`select 1 from completions where habit_id = ${h.id} and date = ${date}`;
   if (done) return;
-  const due = deadlineAt(date, rulesOn(h, date).deadline, tz);
+  const due = dueOn(date, rulesOn(h, date).deadline, tz);
 
   // Today, before the deadline: the normal keep, comeback bonus included.
   if (date === today && local < due) {

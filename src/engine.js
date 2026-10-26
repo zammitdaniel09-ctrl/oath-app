@@ -8,7 +8,7 @@
 // - A minimum version, declared a day ahead, saves the HP but not the clean-day bonus.
 // - Reminders are few, cue-based and fade once a habit is strong (Stawarz et al. 2015).
 import { db, getKV, setKV, logEvent } from './db.js';
-import { nowUTC, isoDate, addDays, weekday, deadlineAt } from './time.js';
+import { nowUTC, isoDate, addDays, weekday, deadlineAt, dueOn } from './time.js';
 import { rulesOn, isActive, isFlexible, isScheduled, weekStartOf, weekDates, weekTargetFor, previousOccurrence } from './rules.js';
 import { restSet, habitStats } from './strength.js';
 
@@ -150,7 +150,7 @@ async function checkHardTasks(tx, game, s, local, tz, notes) {
     where t.hard and t.done_at is null and t.deleted_at is null and t.due_date is not null and t.due_date <= ${today}
       and not exists (select 1 from misses m where m.kind = 'task' and m.ref_id = t.id and m.date = t.due_date)`;
   for (const t of tasks) {
-    const due = deadlineAt(t.due_date, t.deadline || '23:59', tz);
+    const due = dueOn(t.due_date, t.deadline || '23:59', tz);
     if (t.due_date < today || local >= due) {
       await applyMiss(tx, game, s, { kind: 'task', refId: t.id, date: t.due_date, title: t.title, hpLost: s.taskPenalty }, notes);
     }
@@ -244,7 +244,7 @@ export async function tick() {
     for (const h of habits) {
       if (!isScheduled(h, today, tz, rest) || done.has(h.id)) continue;
       const r = rulesOn(h, today);
-      if (local >= deadlineAt(today, r.deadline, tz)) {
+      if (local >= dueOn(today, r.deadline, tz)) {
         const cost = await habitMissCost(tx, s, h, today, tz, rest);
         await applyMiss(tx, game, s, { kind: 'habit', refId: h.id, date: today, title: h.name, ...cost }, notes);
       }
@@ -341,7 +341,7 @@ export async function openItemsToday(today, tz) {
     const r = rulesOn(h, today);
     const st = stats.get(h.id) || {};
     const base = {
-      kind: 'habit', id: h.id, title: h.name, deadline: r.deadline, due: deadlineAt(today, r.deadline, tz),
+      kind: 'habit', id: h.id, title: h.name, deadline: r.deadline, due: dueOn(today, r.deadline, tz),
       heavy: r.non_negotiable, penalty: r.penalty, cue: h.cue, ifThen: h.if_then, remindAt: h.remind_at,
       minimum: r.minimum, strength: st.strength ?? 0, lastPlan: st.lastPlan,
     };
@@ -361,7 +361,7 @@ export async function openItemsToday(today, tz) {
     if (missedTasks.has(t.id)) continue;
     items.push({
       kind: 'task', id: t.id, title: t.title, deadline: t.deadline || '23:59',
-      due: deadlineAt(today, t.deadline || '23:59', tz), heavy: true, penalty: s.taskPenalty, firstStep: t.first_step,
+      due: dueOn(today, t.deadline || '23:59', tz), heavy: true, penalty: s.taskPenalty, firstStep: t.first_step,
     });
   }
   return items.sort((a, b) => a.due - b.due);
@@ -383,7 +383,7 @@ export async function completeHabit(id, opts = {}) {
   const r = rulesOn(h, today);
   if (minimum && !r.minimum) throw new RuleError('This habit has no minimum version. Set one in Plan; it applies from tomorrow.');
   const [miss] = await db()`select id from misses where kind = 'habit' and ref_id = ${id} and date = ${today}`;
-  if (miss || local >= deadlineAt(today, r.deadline, tz)) {
+  if (miss || local >= dueOn(today, r.deadline, tz)) {
     throw new RuleError(flexible ? `Locked. Log it before ${r.deadline}.` : `Locked. The deadline passed at ${r.deadline}.`, 409);
   }
   const rows = await db()`insert into completions (habit_id, date, note, minimum, completed_at)
@@ -413,7 +413,7 @@ export async function undoHabit(id) {
   const [c] = await db()`select * from completions where habit_id = ${id} and date = ${today}`;
   if (!c) throw new RuleError('Nothing to undo.');
   const r = rulesOn(h, today);
-  if (local >= deadlineAt(today, r.deadline, tz)) throw new RuleError('Locked. The deadline has passed.', 409);
+  if (local >= dueOn(today, r.deadline, tz)) throw new RuleError('Locked. The deadline has passed.', 409);
   const ageMin = (nowUTC().toMillis() - new Date(c.completed_at).getTime()) / 60000;
   if (ageMin > s.undoMinutes) throw new RuleError(`Undo is only possible within ${s.undoMinutes} minutes.`, 409);
   await db()`delete from completions where id = ${c.id}`;
@@ -541,7 +541,7 @@ export async function createHabit(input, { validTime }) {
   const days = weekly ? [1, 2, 3, 4, 5, 6, 7] : cleanDays(input.days ?? [1, 2, 3, 4, 5, 6, 7]);
   const goalId = await validGoalId(input.goal_id);
   const remindAt = validTime(input.remind_at) ? input.remind_at : null;
-  const startsToday = local.plus({ minutes: 1 }) < deadlineAt(today, deadline, tz);
+  const startsToday = local.plus({ minutes: 1 }) < dueOn(today, deadline, tz);
   const start = startsToday ? today : addDays(today, 1, tz);
   const [{ max }] = await db()`select coalesce(max(sort), 0) as max from habits`;
   const [h] = await db()`
