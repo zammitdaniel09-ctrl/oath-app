@@ -15,7 +15,7 @@ const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'oath-drive-pg-'));
 fs.chmodSync(dir, 0o777);
 const pg = new EmbeddedPostgres({
   databaseDir: path.join(dir, 'data'), user: 'postgres', password: 'test', port: 54331,
-  persistent: false, createPostgresUser: process.platform !== 'win32', initdbFlags: ['--encoding=UTF8', '--locale=C'], onLog: () => {}, onError: () => {},
+  persistent: false, createPostgresUser: process.platform !== 'win32', initdbFlags: ['--encoding=UTF8', '--locale=C'], postgresFlags: ['-c', 'io_method=sync'], onLog: () => {}, onError: () => {},
 });
 
 let app; let runOnce; let cookie = ''; let dbmod;
