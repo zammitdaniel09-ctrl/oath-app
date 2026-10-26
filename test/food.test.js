@@ -260,6 +260,21 @@ test('the Malta import saves products once, resumes where it stopped, and never 
   assert.equal(kinnie.pack.size, 330);
 });
 
+test('products sold in Malta come first, and a record whose energy does not fit its macros is flagged', async () => {
+  offProduct('5000000000080', 'Kinnie', 'Kinnie', '330 ml', { 'energy-kcal_100g': 40, carbohydrates_100g: 10, sugars_100g: 10, proteins_100g: 0, fat_100g: 0 }, ['en:germany']);
+  offProduct('5000000000097', 'Kinnie', 'Kinnie', '250 ml', { 'energy-kcal_100g': 100, carbohydrates_100g: 10.5, sugars_100g: 10.5, proteins_100g: 0, fat_100g: 0 });
+  await get('/api/food/off-search?q=kinnie');
+  const list = (await search('kinnie')).filter((x) => x.source === 'off');
+  // Among equally good name matches, the ones sold in Malta come first.
+  const exact = list.filter((x) => x.name === 'Kinnie');
+  const firstAbroad = exact.findIndex((x) => x.market !== 'Malta');
+  assert.ok(firstAbroad > 0 && exact.slice(firstAbroad).every((x) => x.market !== 'Malta'), exact.map((x) => x.market).join(','));
+  const odd = list.find((x) => x.barcode === '5000000000097');
+  assert.match(odd.check, /doesn't match/);
+  assert.equal(list.find((x) => x.barcode === '5000000000011').check, null);
+  assert.equal((await search('vinegar'))[0].check, null, 'USDA records are not second-guessed');
+});
+
 test('9: an unknown imported drink is added from its label and found by barcode next time', async () => {
   assert.equal((await get('/api/food/barcode/4999999999999')).item, null);
   const saved = await post('/api/food/label', {

@@ -351,7 +351,7 @@ function resultRow(it) {
   const per = it.nutrients?.kcal === null || it.nutrients?.kcal === undefined ? 'energy unknown' : `${round(it.nutrients.kcal, 0)} kcal per 100 ${it.liquid && it.density ? 'g' : it.basis}`;
   return `<button class="li li-plain fr" data-action="food-pick" data-key="${esc(it.key)}">
     <span class="li-body"><span class="li-title">${esc(it.name)}${it.brand ? ` <small class="faint">${esc(it.brand)}</small>` : ''}</span>
-    <span class="li-sub">${it.state ? `${esc(it.state.replace(/-/g, ' '))} · ` : ''}${per} ${kindTag(it)}</span></span>${icon('chevron', 'chev')}</button>`;
+    <span class="li-sub">${it.pack ? `${esc(amountText(1, 'pack', it))} · ` : ''}${it.state ? `${esc(it.state.replace(/-/g, ' '))} · ` : ''}${per} ${kindTag(it)}${it.check ? ' <span class="tag ftag-est">Check label</span>' : ''}</span></span>${icon('chevron', 'chev')}</button>`;
 }
 
 function resultsHtml(s) {
@@ -377,7 +377,7 @@ function searchBody(s) {
 function foodBody(s) {
   const it = s.item;
   const pickText = s.pick ? (s.pick.purpose === 'recipe-swap' ? 'Swap in' : 'Add') : 'Log it';
-  return `<div class="food-head"><p class="li-sub">${it.brand ? `${esc(it.brand)} · ` : ''}${it.state ? `${esc(it.state.replace(/-/g, ' '))} · ` : ''}${kindTag(it)}</p></div>
+  return `<div class="food-head"><p class="li-sub">${it.brand ? `${esc(it.brand)} · ` : ''}${it.state ? `${esc(it.state.replace(/-/g, ' '))} · ` : ''}${kindTag(it)}</p>${it.check ? `<p class="note bad">${esc(it.check)}</p>` : ''}${it.status === 'needs-label' ? '<p class="note">No source has values for this yet. Add your pack\'s label to log it with real numbers.</p>' : ''}</div>
     <form data-form="food-log" class="food-amount">
       <div class="amount-row"><input class="input" name="qty" inputmode="decimal" value="${esc(s.qty)}" data-food-amount aria-label="Amount">
         <select class="input" name="unit" data-food-amount aria-label="Unit">${unitOptions(it, s.unit)}</select></div>

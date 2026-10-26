@@ -239,6 +239,17 @@ const sizeOf = (x) => {
   return out;
 };
 
+// A record whose energy doesn't fit its protein, carbs and fat (EU factors 4/4/9, fibre 2, alcohol 7)
+// is probably mistyped at the source. It is shown as it is, with a note to check the label.
+export function energyCheck(nut) {
+  const v = (k) => (typeof nut?.[k] === 'number' ? nut[k] : null);
+  const [kcal, p, c, f] = [v('kcal'), v('protein'), v('carbs'), v('fat')];
+  if ([kcal, p, c, f].some((x) => x === null)) return null;
+  const est = 4 * p + 4 * c + 9 * f + 2 * (v('fibre') || 0) + 7 * (v('alcohol') || 0);
+  if (Math.abs(est - kcal) <= Math.max(15, kcal * 0.25)) return null;
+  return `The energy on this record (${Math.round(kcal)} kcal) doesn't match its protein, carbs and fat (about ${Math.round(est)} kcal). Check it against the label.`;
+}
+
 // What the maths and the screens need from a row.
 export function shapeItem(r) {
   if (!r) return null;
@@ -274,6 +285,8 @@ export function shapeItem(r) {
     uses: r.uses,
     last: r.last_unit ? { qty: r.last_qty, unit: r.last_unit } : null,
     units: unitsFor(r),
+    // Only crowd-sourced and typed-in values are checked; USDA uses food-specific energy factors.
+    check: ['off', 'label', 'you'].includes(r.source) ? energyCheck(r.nutrients) : null,
   };
 }
 
@@ -369,7 +382,7 @@ export async function searchFoods(q, { limit = 30, kind = null, liquid = null } 
     where hidden = false ${all}
       ${kind ? sql`and kind = ${kind}` : sql``}
       ${liquid === null ? sql`` : sql`and liquid = ${liquid}`}
-    order by rank, (kind = 'generic') desc, uses desc, length(name), name
+    order by rank, (kind = 'generic') desc, (market = 'Malta') desc, uses desc, length(name), name
     limit ${Math.min(Number(limit) || 30, 80)}`;
   return rows.map(shapeItem);
 }
