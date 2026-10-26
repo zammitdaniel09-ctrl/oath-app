@@ -188,6 +188,11 @@ create table if not exists food_requirements (
   updated_at timestamptz not null default now(),
   primary key (list, key)
 );
+-- v6: grades and processing level as given by the source (Open Food Facts), and which values of a
+-- diary line were filled with an estimate because the record had none.
+alter table food_items add column if not exists nutriscore text;
+alter table food_items add column if not exists nova int;
+alter table food_log add column if not exists filled text[] not null default '{}';
 `;
 
 export async function migrateFood() {
@@ -218,7 +223,9 @@ export function cleanNutrients(input = {}, { basisMax = 100 } = {}) {
     if (raw === null || raw === undefined || raw === '') { out[k] = null; continue; }
     const v = Number(raw);
     if (!Number.isFinite(v) || v < 0) throw new RuleError(`${k} must be a number of zero or more, or left blank.`);
-    const cap = k === 'kcal' ? 950 : k === 'caffeine' ? 6000 : k === 'salt' ? 100 : basisMax;
+    // Per 100 g or ml: energy tops out near pure fat, grams at the basis, mg and µg far higher.
+    const unit = NUTRIENT[k].unit;
+    const cap = k === 'kcal' ? 950 : k === 'caffeine' ? 6000 : unit === 'g' ? basisMax : unit === 'mg' ? 100000 : 1000000;
     if (v > cap) throw new RuleError(`${k} of ${v} per 100 is not believable.`);
     out[k] = v;
   }

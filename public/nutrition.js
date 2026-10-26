@@ -4,17 +4,43 @@
 // Unknown is never zero. A value nobody has sourced stays null, and every total carries `missing`:
 // how many of its lines had no value for that nutrient. A total with missing > 0 is a floor, not a fact.
 
+// `ri` is the EU reference intake for an adult (Regulation 1169/2011, Annex XIII), used to show
+// "% of reference intake" the way EU labels do. It is a population reference, not a personal target.
+// Groups: macro (the label's big seven), fat, carb, other, mineral, vitamin.
 export const NUTRIENTS = [
-  { key: 'kcal', label: 'Energy', unit: 'kcal', dec: 0, core: true },
-  { key: 'protein', label: 'Protein', unit: 'g', dec: 1, core: true },
-  { key: 'carbs', label: 'Carbs', unit: 'g', dec: 1, core: true },
-  { key: 'sugars', label: 'Sugars', unit: 'g', dec: 1, core: true },
-  { key: 'fat', label: 'Fat', unit: 'g', dec: 1, core: true },
-  { key: 'satfat', label: 'Saturates', unit: 'g', dec: 1 },
-  { key: 'fibre', label: 'Fibre', unit: 'g', dec: 1, core: true },
-  { key: 'salt', label: 'Salt', unit: 'g', dec: 2, core: true },
-  { key: 'caffeine', label: 'Caffeine', unit: 'mg', dec: 0 },
-  { key: 'alcohol', label: 'Alcohol', unit: 'g', dec: 1 },
+  { key: 'kcal', label: 'Energy', unit: 'kcal', dec: 0, core: true, group: 'macro', ri: 2000 },
+  { key: 'protein', label: 'Protein', unit: 'g', dec: 1, core: true, group: 'macro', ri: 50 },
+  { key: 'carbs', label: 'Carbs', unit: 'g', dec: 1, core: true, group: 'macro', ri: 260 },
+  { key: 'sugars', label: 'Sugars', unit: 'g', dec: 1, core: true, group: 'macro', ri: 90 },
+  { key: 'fat', label: 'Fat', unit: 'g', dec: 1, core: true, group: 'macro', ri: 70 },
+  { key: 'satfat', label: 'Saturates', unit: 'g', dec: 1, group: 'macro', ri: 20 },
+  { key: 'fibre', label: 'Fibre', unit: 'g', dec: 1, core: true, group: 'macro' },
+  { key: 'salt', label: 'Salt', unit: 'g', dec: 2, core: true, group: 'macro', ri: 6 },
+  { key: 'caffeine', label: 'Caffeine', unit: 'mg', dec: 0, group: 'other' },
+  { key: 'alcohol', label: 'Alcohol', unit: 'g', dec: 1, group: 'other' },
+  { key: 'addsugars', label: 'Added sugars', unit: 'g', dec: 1, group: 'carb' },
+  { key: 'mufa', label: 'Monounsaturated fat', unit: 'g', dec: 1, group: 'fat' },
+  { key: 'pufa', label: 'Polyunsaturated fat', unit: 'g', dec: 1, group: 'fat' },
+  { key: 'transfat', label: 'Trans fat', unit: 'g', dec: 2, group: 'fat' },
+  { key: 'chol', label: 'Cholesterol', unit: 'mg', dec: 0, group: 'fat' },
+  { key: 'potassium', label: 'Potassium', unit: 'mg', dec: 0, group: 'mineral', ri: 2000 },
+  { key: 'calcium', label: 'Calcium', unit: 'mg', dec: 0, group: 'mineral', ri: 800 },
+  { key: 'iron', label: 'Iron', unit: 'mg', dec: 1, group: 'mineral', ri: 14 },
+  { key: 'magnesium', label: 'Magnesium', unit: 'mg', dec: 0, group: 'mineral', ri: 375 },
+  { key: 'zinc', label: 'Zinc', unit: 'mg', dec: 1, group: 'mineral', ri: 10 },
+  { key: 'phosphorus', label: 'Phosphorus', unit: 'mg', dec: 0, group: 'mineral', ri: 700 },
+  { key: 'selenium', label: 'Selenium', unit: 'µg', dec: 0, group: 'mineral', ri: 55 },
+  { key: 'vita', label: 'Vitamin A', unit: 'µg', dec: 0, group: 'vitamin', ri: 800 },
+  { key: 'vitc', label: 'Vitamin C', unit: 'mg', dec: 0, group: 'vitamin', ri: 80 },
+  { key: 'vitd', label: 'Vitamin D', unit: 'µg', dec: 1, group: 'vitamin', ri: 5 },
+  { key: 'vite', label: 'Vitamin E', unit: 'mg', dec: 1, group: 'vitamin', ri: 12 },
+  { key: 'vitk', label: 'Vitamin K', unit: 'µg', dec: 0, group: 'vitamin', ri: 75 },
+  { key: 'b1', label: 'Thiamin (B1)', unit: 'mg', dec: 2, group: 'vitamin', ri: 1.1 },
+  { key: 'b2', label: 'Riboflavin (B2)', unit: 'mg', dec: 2, group: 'vitamin', ri: 1.4 },
+  { key: 'b3', label: 'Niacin (B3)', unit: 'mg', dec: 1, group: 'vitamin', ri: 16 },
+  { key: 'b6', label: 'Vitamin B6', unit: 'mg', dec: 2, group: 'vitamin', ri: 1.4 },
+  { key: 'folate', label: 'Folate', unit: 'µg', dec: 0, group: 'vitamin', ri: 200 },
+  { key: 'b12', label: 'Vitamin B12', unit: 'µg', dec: 1, group: 'vitamin', ri: 2.5 },
 ];
 export const KEYS = NUTRIENTS.map((n) => n.key);
 export const NUTRIENT = Object.fromEntries(NUTRIENTS.map((n) => [n.key, n]));
