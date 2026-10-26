@@ -17,6 +17,11 @@ function anthropic() {
 
 export const aiEnabled = () => Boolean(process.env.ANTHROPIC_API_KEY);
 
+// Lets tests stand in for the API with a scripted client.
+export function setCoachClient(c) {
+  client = c;
+}
+
 // Run once at boot: confirms the key works and the model name exists, without spending tokens.
 export async function checkCoach() {
   const c = anthropic();
@@ -164,16 +169,43 @@ async function runTool(name, input) {
   }
 }
 
-async function complete({ system, messages, maxTokens = 900, tools = TOOLS }) {
+// Thinking counts toward max_tokens, so budgets leave room for it as well as the reply.
+const CHAT_TOKENS = 16000;
+const WRITING_TOKENS = 4000;
+
+// Server-side fallback reruns a request the model declines on another model, inside the same call.
+const ask = (c, params) => c.beta.messages.create({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' });
+
+// Runs the tool loop and returns { text, refused }. Text is gathered from every round, because the
+// model may speak before a tool call. A reply cut off by the token limit is never returned: briefs
+// fall back to plain numbers instead of sending half a sentence.
+async function complete({ system, messages, maxTokens = CHAT_TOKENS, effort = 'medium', tools = TOOLS }) {
   const c = anthropic();
-  let convo = [...messages];
+  const convo = [...messages];
+  const said = [];
+  let budget = maxTokens;
+  let retried = false;
   for (let i = 0; i < 6; i += 1) {
-    const params = { model: MODEL(), max_tokens: maxTokens, system, messages: convo };
+    const params = { model: MODEL(), max_tokens: budget, system, messages: convo, output_config: { effort } };
     if (tools.length) params.tools = tools;
-    const res = await c.messages.create(params);
+    const res = await ask(c, params);
+    if (res.stop_reason === 'refusal') {
+      console.warn('coach declined', res.stop_details?.category || 'no category');
+      return { text: said.join('\n\n'), refused: true };
+    }
     const text = res.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim();
     const calls = res.content.filter((b) => b.type === 'tool_use');
-    if (res.stop_reason !== 'tool_use' || !calls.length) return text;
+    if (res.stop_reason === 'max_tokens' || (res.stop_reason === 'end_turn' && !text && !calls.length)) {
+      console.warn('coach reply incomplete', res.stop_reason, `max_tokens=${budget}`);
+      if (retried) return { text: said.join('\n\n'), refused: false };
+      // One more try: more room after a cut-off, a fresh attempt after an empty reply.
+      retried = true;
+      if (res.stop_reason === 'max_tokens') budget *= 2;
+      i -= 1;
+      continue;
+    }
+    if (text) said.push(text);
+    if (res.stop_reason !== 'tool_use' || !calls.length) return { text: said.join('\n\n'), refused: false };
     convo.push({ role: 'assistant', content: res.content });
     const results = [];
     for (const call of calls) {
@@ -181,11 +213,17 @@ async function complete({ system, messages, maxTokens = 900, tools = TOOLS }) {
     }
     convo.push({ role: 'user', content: results });
   }
-  return 'I ran out of steps on that one. Ask again more specifically.';
+  return { text: said.join('\n\n') || 'I ran out of steps on that one. Ask again more specifically.', refused: false };
+}
+
+// Short scheduled writing (briefs, plans, replies): low effort, plain text, no tools.
+async function write(system, prompt) {
+  const r = await complete({ system, messages: [{ role: 'user', content: prompt }], maxTokens: WRITING_TOKENS, effort: 'low', tools: [] });
+  return r.text;
 }
 
 export async function coachHistory(limit = 60) {
-  const rows = await db()`select id, role, text, at from coach_messages order by id desc limit ${limit}`;
+  const rows = await db()`select id, role, text, failed, at from coach_messages order by id desc limit ${limit}`;
   return rows.reverse();
 }
 
@@ -194,21 +232,28 @@ export async function chat(userText) {
   if (!text) throw new RuleError('Write something first.');
   await db()`insert into coach_messages (role, text) values ('user', ${text})`;
   let reply;
+  let failed = false;
   if (!aiEnabled()) {
     reply = 'The coach is offline. Add ANTHROPIC_API_KEY to the app\'s variables on Railway and it comes alive.';
+    failed = true;
   } else {
     try {
-      const history = (await coachHistory(20)).map((m) => ({ role: m.role, content: m.text }));
-      // The API needs alternating turns starting with the user.
+      // Failed replies stay visible in the chat but are never fed back to the model as its own words.
+      const history = (await coachHistory(20)).filter((m) => !m.failed).map((m) => ({ role: m.role, content: m.text }));
+      // The API needs the conversation to start with the user.
       while (history.length && history[0].role !== 'user') history.shift();
       const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
-      reply = (await complete({ system, messages: history })) || 'No answer came back. Try again.';
+      const r = await complete({ system, messages: history });
+      reply = r.text || (r.refused ? 'I can\'t help with that one. Ask it another way.' : 'No answer came back. Try again.');
+      failed = !r.text;
     } catch (err) {
       console.error('coach error', err.status || '', err.message);
       reply = `The coach could not answer (${err.status ? `API error ${err.status}` : 'connection problem'}). Check the API key and credit on your Anthropic account.`;
+      failed = true;
     }
   }
-  const [row] = await db()`insert into coach_messages (role, text) values ('assistant', ${reply}) returning id, role, text, at`;
+  const [row] = await db()`insert into coach_messages (role, text, failed) values ('assistant', ${reply}, ${failed})
+                           returning id, role, text, failed, at`;
   return row;
 }
 
@@ -265,7 +310,7 @@ export async function generateBrief(kind) {
   if (aiEnabled()) {
     try {
       const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
-      text = await complete({ system, messages: [{ role: 'user', content: BRIEF_ASKS[kind] }], maxTokens: 400, tools: [] });
+      text = await write(system, BRIEF_ASKS[kind]);
     } catch (err) {
       console.error('brief error', err.status || '', err.message);
     }
@@ -297,7 +342,7 @@ async function writePlan(today) {
     try {
       const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
       const ask = 'He just took today\'s oath. Write his battle plan for the rest of today: a numbered order of attack with a start time for each open item, built around his one thing and the deadlines. Then one blunt line holding him to his own words. Under 110 words. No headings.';
-      text = await complete({ system, messages: [{ role: 'user', content: ask }], maxTokens: 450, tools: [] });
+      text = await write(system, ask);
     } catch (err) {
       console.error('plan error', err.status || '', err.message);
     }
@@ -333,7 +378,7 @@ export async function reflectionReply(today) {
     try {
       const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
       const ask = `He just closed the day. Rating ${r.rating}/5. What got in the way: "${r.blocker || 'nothing given'}". Win: "${r.win || 'nothing given'}". Reply in under 70 words: an honest verdict on today using the numbers, the pattern you see across recent days if there is one, and exactly one change for tomorrow.`;
-      text = await complete({ system, messages: [{ role: 'user', content: ask }], maxTokens: 300, tools: [] });
+      text = await write(system, ask);
     } catch (err) {
       console.error('reflection error', err.status || '', err.message);
     }
@@ -351,14 +396,18 @@ function fallbackWeekly(w) {
   if (w.hpStart !== null && w.hpEnd !== null) parts.push(`HP ${w.hpStart} to ${w.hpEnd}.`);
   if (w.misses.length) parts.push(`${w.misses.length} ${w.misses.length === 1 ? 'miss' : 'misses'}${w.misses.some((m) => m.repeat) ? ', including a second miss in a row' : ''}.`);
   const sorted = [...w.habits].sort((a, b) => b.strength - a.strength);
-  if (sorted.length) {
+  const weak = sorted[sorted.length - 1];
+  // Name a strongest and weakest habit only when the numbers actually separate them.
+  if (sorted.length > 1 && sorted[0].strength > weak.strength) {
     parts.push(`Strongest: ${sorted[0].name} at ${sorted[0].strength}%.`);
-    const weak = sorted[sorted.length - 1];
-    if (sorted.length > 1) parts.push(`Weakest: ${weak.name} at ${weak.strength}% (${weak.trend >= 0 ? '+' : ''}${weak.trend} this week).`);
+    parts.push(`Weakest: ${weak.name} at ${weak.strength}% (${weak.trend >= 0 ? '+' : ''}${weak.trend} this week).`);
+  } else if (sorted.length > 1) {
+    parts.push('Too early to rank the habits against each other.');
   }
   if (w.dodges.length) parts.push(`Most common reason for "Not now": "${w.dodges[0].reason}" (${w.dodges[0].n}).`);
   if (w.focusMin) parts.push(`Focus time: ${Math.floor(w.focusMin / 60)} h ${w.focusMin % 60} min.`);
-  const adjust = w.habits.filter((h) => h.target && h.done / h.target < 0.5).map((h) => h.name);
+  // A habit needs at least 3 chances in the week before it is judged.
+  const adjust = w.habits.filter((h) => h.target >= 3 && h.done / h.target < 0.5).map((h) => h.name);
   parts.push(adjust.length ? `Adjust: ${adjust.join(', ')}. Make it smaller or move its deadline, then keep it.` : 'Keep every habit as it is.');
   parts.push('Pick one or two things that matter most this week.');
   return parts.join(' ');
@@ -370,7 +419,7 @@ export async function writeWeeklyReview(weekStart, summary) {
     try {
       const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
       const ask = `Write his weekly review for the week starting ${weekStart}. Here is the week as JSON: ${JSON.stringify(summary)}. Follow the weekly review protocol. Use the numbers. For each habit give keep, adjust or drop in one short line. Name the dodge pattern if there is one. End by asking for one or two focus items for this week. Under 170 words. No headings.`;
-      text = await complete({ system, messages: [{ role: 'user', content: ask }], maxTokens: 600, tools: [] });
+      text = await write(system, ask);
     } catch (err) {
       console.error('weekly review error', err.status || '', err.message);
     }

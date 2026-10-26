@@ -32,18 +32,18 @@ export const DEFAULT_SETTINGS = {
   maxNonNegotiables: 3,
   undoMinutes: 10,
   maxHp: 100,
-  alerts: 'smart',
+  alerts: 'both',
 };
 
 export async function getSettings() {
   return { ...DEFAULT_SETTINGS, ...(await getKV('settings', {})) };
 }
 
+// Only the owner's own choices are stored, so a changed default in code still reaches them.
 export async function saveSettings(patch) {
-  const current = await getSettings();
-  const next = { ...current, ...patch };
+  const next = { ...(await getKV('settings', {})), ...patch };
   await setKV('settings', next);
-  return next;
+  return { ...DEFAULT_SETTINGS, ...next };
 }
 
 export async function localNow() {

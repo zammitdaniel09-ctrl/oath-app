@@ -850,7 +850,8 @@ function pushCard() {
   } else if (p.permission === 'denied') {
     status = 'Notifications are blocked. Turn them on in iOS Settings, Notifications, Oath.';
   } else if (p.subscribed) {
-    status = 'Reminders are on for this device. The app icon shows how many things can still cost HP today.';
+    const devices = p.devices == null ? '' : ` The server is sending to ${p.devices} ${p.devices === 1 ? 'device' : 'devices'}.`;
+    status = `Reminders are on for this device.${devices} The app icon shows how many things can still cost HP today.`;
     action = '<button class="btn tinted" data-action="push-test">Send a test</button><button class="btn tinted" data-action="push-off">Turn off on this device</button>';
   } else {
     status = 'Reminders are off on this device. Turn them on so last calls and briefs reach your lock screen.';
@@ -864,7 +865,7 @@ function settingsCard(ic, title, body, id = '') {
 }
 
 function alertsCard(s) {
-  const opt = (v, label, hint) => `<label class="radio-row"><input type="radio" name="alerts" value="${v}"${(s.alerts || 'smart') === v ? ' checked' : ''}><span><b>${label}</b><br><span class="muted small">${hint}</span></span></label>`;
+  const opt = (v, label, hint) => `<label class="radio-row"><input type="radio" name="alerts" value="${v}"${(s.alerts || 'both') === v ? ' checked' : ''}><span><b>${label}</b><br><span class="muted small">${hint}</span></span></label>`;
   return settingsCard('phone', 'Where alerts go', `<form data-form="alerts">
       ${opt('smart', 'One channel per alert', 'Telegram gets reminders with Done buttons, misses and briefs. The lock screen gets last calls and deaths. Fewer, sharper alerts.')}
       ${opt('both', 'Everything, everywhere', 'Every alert on both the lock screen and Telegram.')}
@@ -1080,11 +1081,21 @@ function b64ToBytes(base64) {
 
 async function refreshPushState() {
   const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
-  state.push = { supported, permission: supported ? Notification.permission : 'default', subscribed: false };
+  state.push = { supported, permission: supported ? Notification.permission : 'default', subscribed: false, devices: null };
+  state.push.devices = await api('GET', '/api/push/key').then((k) => k.devices).catch(() => null);
   if (!supported) return;
   const reg = await navigator.serviceWorker.getRegistration();
   const sub = reg ? await reg.pushManager.getSubscription() : null;
   state.push.subscribed = Boolean(sub);
+}
+
+// The server's key changes if its database is rebuilt; a subscription made with the old key is dead.
+function sameKey(sub, publicKey) {
+  const key = sub.options?.applicationServerKey;
+  if (!key) return true;
+  const mine = new Uint8Array(key);
+  const theirs = b64ToBytes(publicKey);
+  return mine.length === theirs.length && mine.every((b, i) => b === theirs[i]);
 }
 
 async function pushOn() {
@@ -1106,13 +1117,27 @@ async function pushOff() {
   }
 }
 
-// iOS never tells the page when a push subscription changes, so re-send it on every launch.
+// iOS never tells the page when a push subscription changes, so re-send it on every launch. If the
+// server had dropped it (the push service refused it) or it was made with an old key, replace it.
 async function resyncPush() {
   try {
     if (!('serviceWorker' in navigator) || !('Notification' in window) || Notification.permission !== 'granted') return;
     const reg = await navigator.serviceWorker.getRegistration();
-    const sub = reg ? await reg.pushManager.getSubscription() : null;
-    if (sub) await api('POST', '/api/push/subscribe', sub.toJSON());
+    if (!reg) return;
+    const { publicKey } = await api('GET', '/api/push/key');
+    let sub = await reg.pushManager.getSubscription();
+    if (sub && !sameKey(sub, publicKey)) {
+      await sub.unsubscribe();
+      sub = null;
+    }
+    if (sub) {
+      const r = await api('POST', '/api/push/subscribe', sub.toJSON());
+      if (!r.fresh) return;
+      await api('POST', '/api/push/unsubscribe', { endpoint: sub.endpoint });
+      await sub.unsubscribe();
+    }
+    sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(publicKey) });
+    await api('POST', '/api/push/subscribe', sub.toJSON());
   } catch { /* try again next launch */ }
 }
 

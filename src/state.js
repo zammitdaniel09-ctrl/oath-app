@@ -124,8 +124,12 @@ export async function buildToday() {
     select t.*, g.title as goal_title from tasks t left join goals g on g.id = t.goal_id
     where t.deleted_at is null and (t.done_at is null or (t.done_at at time zone ${tz})::date = ${today}::date)
     order by t.hard desc, t.due_date nulls last, t.deadline nulls last, t.id`;
+  // A hard task's miss is dated on its due date, not today, so a slipped task is found by that date.
+  const taskMisses = await db()`
+    select m.* from misses m join tasks t on t.id = m.ref_id and m.date = t.due_date where m.kind = 'task'`;
+  const taskMissById = new Map(taskMisses.map((m) => [m.ref_id, m]));
   const taskItem = (t) => {
-    const m = missByRef.get(`task:${t.id}`);
+    const m = taskMissById.get(t.id);
     const due = t.due_date ? dueOn(t.due_date, t.deadline || '23:59', tz) : null;
     const ageMin = t.done_at ? (nowUTC().toMillis() - new Date(t.done_at).getTime()) / 60000 : Infinity;
     return {
@@ -177,11 +181,12 @@ export async function buildToday() {
 
   const openDue = [
     ...items.filter((i) => i.status === 'open' && (!i.flexible || i.mustToday)),
-    ...tasks.filter((k) => k.status === 'open' && k.dueDate && k.dueDate <= today),
+    ...tasks.filter((k) => k.status === 'open' && k.dueDate === today),
   ];
   const doneDue = items.filter((i) => i.status === 'kept' || i.status === 'pardoned').length
     + tasks.filter((k) => k.dueDate && k.dueDate <= today && (k.status === 'done' || k.status === 'pardoned')).length;
-  const missedToday = items.filter((i) => i.status === 'missed').length + tasks.filter((k) => k.status === 'missed').length;
+  const missedToday = items.filter((i) => i.status === 'missed').length
+    + tasks.filter((k) => k.status === 'missed' && k.dueDate === today).length;
   const progress = {
     done: doneDue,
     total: doneDue + openDue.length + missedToday,
@@ -230,7 +235,8 @@ export async function buildToday() {
   // Weekly review: last week's, available Monday to Sunday until done, prompted on Monday and Tuesday.
   const lastWeek = addDays(weekStartOf(today, tz), -7, tz);
   const [review] = await db()`select focus, done_at from weekly_reviews where week_start = ${lastWeek}`;
-  const [{ hadLastWeek }] = await db()`select count(*)::int as "hadLastWeek" from days where date >= ${lastWeek} and date < ${weekStartOf(today, tz)}`;
+  const [{ hadLastWeek }] = await db()`select count(*)::int as "hadLastWeek" from days where date >= ${lastWeek} and date < ${weekStartOf(today, tz)}
+                                     and not rest and kept + missed + pardoned > 0`;
   const goals = (await listGoals()).slice(0, 3);
 
   return {
@@ -269,7 +275,7 @@ export async function buildToday() {
     next,
     goals,
     weekFocus: review?.done_at ? review.focus : null,
-    reviewDue: !review?.done_at && hadLastWeek > 0 && weekday(today, tz) <= 2,
+    reviewDue: !review?.done_at && hadLastWeek >= 4 && weekday(today, tz) <= 2,
     localHour: local.hour,
   };
 }
@@ -378,7 +384,8 @@ async function weekSummary(weekStart, today, tz, habits) {
     hpEnd: days.length ? days[days.length - 1].hp_end : null,
     cleanDays: days.filter((d) => d.clean).length,
     restDays: days.filter((d) => d.rest).length,
-    judgedDays: days.length,
+    // Only days that had something to do can be clean, so only those count.
+    judgedDays: days.filter((d) => !d.rest && d.kept + d.missed + d.pardoned > 0).length,
     misses: misses.filter((m) => !m.pardoned_at).map((m) => ({ title: m.title, date: m.date, hpLost: m.hp_lost, repeat: m.repeat })),
     pardons: misses.filter((m) => m.pardoned_at).map((m) => ({ title: m.title, reason: m.pardon_reason, plan: m.pardon_plan })),
     habits: habitRows,

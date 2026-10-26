@@ -212,8 +212,8 @@ api.post('/misses/:id/pardon', async (c) => {
 // ---------- Push ----------
 api.get('/push/key', async (c) => c.json({ publicKey: (await vapidKeys()).publicKey, devices: await subscriptionCount() }));
 api.post('/push/subscribe', async (c) => {
-  await saveSubscription(await body(c));
-  return c.json({ ok: true, devices: await subscriptionCount() });
+  const fresh = await saveSubscription(await body(c));
+  return c.json({ ok: true, fresh, devices: await subscriptionCount() });
 });
 api.post('/push/unsubscribe', async (c) => {
   const { endpoint } = await body(c);

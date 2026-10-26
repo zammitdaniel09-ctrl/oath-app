@@ -22,8 +22,17 @@ async function scheduledBriefs() {
   for (const kind of ['morning', 'midday', 'evening']) {
     const at = deadlineAt(today, times[kind], tz);
     if (local < at || local >= at.plus({ hours: 3 })) continue;
-    if (!(await claim(`brief:${kind}:${today}`))) continue;
-    const { text, openCount } = await generateBrief(kind);
+    const key = `brief:${kind}:${today}`;
+    if (!(await claim(key))) continue;
+    let brief;
+    try {
+      brief = await generateBrief(kind);
+    } catch (err) {
+      // Free the slot so a later tick inside the window tries again.
+      await db()`delete from reminders_sent where key = ${key}`;
+      throw err;
+    }
+    const { text, openCount } = brief;
     if (kind === 'midday' && !openCount) continue;
     const body = text.length > 220 ? `${text.slice(0, 217).trimEnd()}...` : text;
     await sendPush({ title: BRIEF_TITLES[kind], body, fullText: text, tag: `brief-${kind}`, url: '/#/today' });
@@ -33,9 +42,11 @@ async function scheduledBriefs() {
   const morning = deadlineAt(today, s.morningTime, tz);
   if (weekday(today, tz) === 1 && local >= morning.plus({ minutes: 5 }) && local < morning.plus({ hours: 12 })) {
     const lastWeek = addDays(today, -7, tz);
-    const [{ n }] = await db()`select count(*)::int as n from days where date >= ${lastWeek} and date < ${today}`;
+    // A week with fewer than 4 days of real work has too little to review.
+    const [{ n }] = await db()`select count(*)::int as n from days where date >= ${lastWeek} and date < ${today}
+                               and not rest and kept + missed + pardoned > 0`;
     const [done] = await db()`select done_at from weekly_reviews where week_start = ${lastWeek}`;
-    if (n > 0 && !done?.done_at && (await claim(`weekly:${lastWeek}`))) {
+    if (n >= 4 && !done?.done_at && (await claim(`weekly:${lastWeek}`))) {
       await prepareReview();
       await sendPush({ title: 'Weekly review', body: 'Five minutes: keep, adjust or drop each habit, and pick this week\'s focus.', tag: 'weekly', url: '/#/review' });
     }

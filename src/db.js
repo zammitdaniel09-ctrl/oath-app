@@ -182,6 +182,7 @@ alter table completions add column if not exists minimum boolean not null defaul
 alter table completions add column if not exists comeback boolean not null default false;
 alter table tasks add column if not exists goal_id int;
 alter table tasks add column if not exists node_id int;
+alter table coach_messages add column if not exists failed boolean not null default false;
 alter table tasks add column if not exists first_step text not null default '';
 alter table tasks add column if not exists estimate_min int;
 alter table misses add column if not exists pardon_plan text;
