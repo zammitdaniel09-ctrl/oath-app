@@ -4,7 +4,7 @@ import { db, getKV, setKV, logEvent } from './db.js';
 import { buildToday } from './state.js';
 import { completeHabit, completeTask, RuleError } from './engine.js';
 import { reactionAfterDone, finishFocus, closeFocusFor } from './drive.js';
-import { chat } from './coach.js';
+import { chat, resolvePending } from './coach.js';
 import { captureTask, doneByText } from './capture.js';
 import { deadlineText } from './time.js';
 
@@ -267,7 +267,16 @@ export async function handleUpdate(u) {
     }
     await call('sendChatAction', { chat_id: chatId, action: 'typing' }).catch(() => {});
     const reply = await chat(text);
-    await call('sendMessage', { chat_id: chatId, text: reply.text });
+    // What the coach did shows under its words; actions waiting for a yes get buttons.
+    const done = (reply.actions || []).map((a) => `${a.ok ? '✓' : '✗'} ${a.text}`).join('\n');
+    const keyboard = (reply.pending || []).map((p) => [
+      { text: `Confirm: ${p.summary}`.slice(0, 60), callback_data: `cy:${p.id}` },
+      { text: 'Cancel', callback_data: `cn:${p.id}` },
+    ]);
+    await call('sendMessage', {
+      chat_id: chatId, text: done ? `${reply.text}\n\n${done}` : reply.text,
+      reply_markup: keyboard.length ? { inline_keyboard: keyboard } : undefined,
+    });
     return;
   }
 
@@ -279,6 +288,18 @@ export async function handleUpdate(u) {
       return;
     }
     const [action, kind, id, focusId] = String(q.data || '').split(':');
+    if (action === 'cy' || action === 'cn') {
+      let answer;
+      try {
+        answer = (await resolvePending(Number(kind), action === 'cy')).message.text;
+      } catch (err) {
+        answer = err instanceof RuleError ? err.message : 'That did not work. Try it in the app.';
+      }
+      await call('answerCallbackQuery', { callback_query_id: q.id, text: answer.slice(0, 190) });
+      await call('editMessageReplyMarkup', { chat_id: chatId, message_id: q.message.message_id, reply_markup: { inline_keyboard: [] } }).catch(() => {});
+      await call('sendMessage', { chat_id: chatId, text: answer });
+      return;
+    }
     if (action !== 'done' && action !== 'tdone') return;
     let text;
     try {

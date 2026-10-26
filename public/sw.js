@@ -1,5 +1,5 @@
 // Service worker: offline shell and push notifications.
-const CACHE = 'oath-v7';
+const CACHE = 'oath-v8';
 const SHELL = ['/', '/app.css', '/app.js', '/ui.js', '/parse.js', '/goals.js', '/data.js', '/manifest.webmanifest', '/icons/apple-touch-icon.png', '/icons/icon-192.png', '/icons/badge.png',
   '/fonts/satoshi-variable.woff2', '/fonts/gambetta-italic.woff2', '/fonts/geist-mono-variable.woff2'];
 

@@ -70,8 +70,20 @@ function computeProgress(g, ctx) {
   return { pct, label: progressLabel(g, pct, { done: Math.round(done * 10) / 10, total }) };
 }
 
+// Pace: where the goal should be by now if progress were even from the day it was set to its date.
+function goalPace(g, pct, today) {
+  if (g.status !== 'active' || !g.target_date || pct === null) return null;
+  const set = new Date(g.created_at).toISOString().slice(0, 10);
+  const total = daysBetween(set, g.target_date);
+  if (total <= 0) return null;
+  const expected = Math.max(0, Math.min(100, Math.round((daysBetween(set, today) / total) * 100)));
+  const diff = pct - expected;
+  return { expected, diff, state: diff >= 5 ? 'ahead' : diff <= -5 ? 'behind' : 'on' };
+}
+
 function shapeGoal(g, ctx, today) {
   const p = computeProgress(g, ctx);
+  const next = ctx.tasks.find((t) => t.goal_id === g.id && !t.done_at);
   return {
     id: g.id,
     title: g.title,
@@ -90,6 +102,9 @@ function shapeGoal(g, ctx, today) {
     label: p.label,
     taskCount: ctx.tasks.filter((t) => t.goal_id === g.id).length,
     habitCount: ctx.habits.filter((h) => h.goal_id === g.id).length,
+    createdAt: g.created_at,
+    pace: goalPace(g, p.pct, today),
+    nextStep: next ? { id: next.id, title: next.title, dueDate: next.due_date, deadline: next.deadline, hard: next.hard } : null,
   };
 }
 

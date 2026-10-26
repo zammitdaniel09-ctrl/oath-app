@@ -254,6 +254,19 @@ create table if not exists weekly_reviews (
   done_at timestamptz,
   created_at timestamptz not null default now()
 );
+-- The coach's actions: what each reply did, and the destructive ones waiting for a tap.
+alter table coach_messages add column if not exists actions jsonb;
+create table if not exists coach_pending (
+  id serial primary key,
+  tool text not null,
+  input jsonb not null,
+  summary text not null,
+  message_id bigint,
+  status text not null default 'open',
+  outcome text,
+  created_at timestamptz not null default now(),
+  resolved_at timestamptz
+);
 create index if not exists nodes_goal_idx on nodes (goal_id);
 create index if not exists tasks_goal_idx on tasks (goal_id);
 create index if not exists misses_date_idx on misses (date);

@@ -3,6 +3,7 @@ import {
   $app, state, hooks, esc, ApiError, api, toast, react, act, form2obj, fmtClock, fmtDay, left, daysBetween, fmtMin,
   DAY_NAMES, scheduleText, CHECK, isStandalone, isIOS, haptic, bar, strengthChip, localToday, localNowHM,
   icon, rings, drawRings, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago, miniRing, keyBlock, rememberKey, safeColor,
+  urgency, URGENCY, brandMark,
 } from './ui.js';
 import { parseCapture } from './parse.js';
 import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
@@ -24,11 +25,14 @@ function shell(inner) {
   // One selected destination: on the phone Review lives under Dashboard; the sidebar has its own row.
   const wide = window.matchMedia('(min-width: 900px)').matches;
   const active = state.route === 'review' && !wide ? 'dashboard' : state.route;
-  const link = ([id, label, ic], extra = '') => `<a href="#/${id}" class="tab${extra}"${active === id || (extra && state.route === id) ? ' aria-current="page"' : ''}>${icon(ic)}<span>${label}</span></a>`;
+  // The Today tab carries a count of what is still open, so the next tick is never out of mind.
+  const open = state.today?.progress?.open || 0;
+  const badge = (id) => (id === 'today' && open ? `<b class="tab-badge"><span class="sr">, </span>${open}<span class="sr"> open</span></b>` : '');
+  const link = ([id, label, ic], extra = '') => `<a href="#/${id}" class="tab${extra}"${active === id || (extra && state.route === id) ? ' aria-current="page"' : ''}><span class="tab-ic">${icon(ic)}${badge(id)}</span><span>${label}</span></a>`;
   const nav = TABS.map((t) => link(t)).join('');
   const more = WIDE_EXTRA.map((t) => link(t, ' wide-only')).join('');
   $app.innerHTML = `<main class="page page-${state.route}">${inner}</main>
-    <nav class="tabbar" aria-label="Sections"><div class="tabbar-brand wide-only">Oath</div>${nav}${more}</nav>
+    <nav class="tabbar" aria-label="Sections"><div class="tabbar-brand wide-only">${brandMark(30)}<span>Oath</span></div>${nav}${more}</nav>
     ${sheetHtml()}`;
   document.body.classList.toggle('sheet-open', Boolean(state.sheet || state.sheetNode));
   drawRings();
@@ -73,13 +77,15 @@ function habitRow(i, t) {
     const l = left(i.dueAt);
     const when = i.flexible
       ? `${flexLine}${i.mustToday ? ', <span class="soon">must be today</span>' : ''}`
-      : `Due ${dueLabel(i.deadline)}, <span class="${l.cls}" data-left="${i.dueAt}">${l.text}</span>${i.heavy ? `, ${i.penalty} HP` : ''}`;
+      : `Due ${dueLabel(i.deadline)}, <span class="${l.cls}" data-left="${i.dueAt}">${l.text}</span>${i.heavy ? ` <span class="hp-chip">${i.penalty} HP</span>` : ''}`;
     const relapse = i.missedLast ? '<span class="tag bad">Missed last time</span>' : '';
     // The minimum version sits under the row, so it can be kept from the list as well as from Up next.
     const minimum = i.minimum
       ? `<div class="li-min"><button class="btn tinted small" data-action="keep-minimum" data-id="${i.id}">Minimum: ${esc(i.minimum)}</button></div>`
       : '';
-    return `<button class="${cls}" data-action="keep" data-id="${i.id}">
+    // A fixed habit's row warms up as its deadline nears.
+    const heat = i.flexible ? '' : ` u-${urgency(i.dueAt)}" data-due="${i.dueAt}`;
+    return `<button class="${cls}${heat}" data-action="keep" data-id="${i.id}">
       <span class="chk">${CHECK}</span>
       <span class="li-body"><span class="li-title">${relapse}${esc(i.title)}</span>
         <span class="li-sub">${cue}${when}${rulesNote}</span>${autoLine(i, t)}</span>
@@ -142,7 +148,8 @@ function taskRow(k, t) {
   const tag = k.createdBy === 'vle' ? '<span class="tag uni">VLE</span>' : '';
   if (k.status === 'open') {
     const l = k.heavy && k.dueAt && k.dueDate === t.today ? left(k.dueAt) : null;
-    return `<button class="${cls}" data-action="task-done" data-id="${k.id}">
+    const heat = k.dueAt && k.dueDate === t.today ? ` u-${urgency(k.dueAt)}" data-due="${k.dueAt}` : '';
+    return `<button class="${cls}${heat}" data-action="task-done" data-id="${k.id}">
       <span class="chk">${CHECK}</span>
       <span class="li-body"><span class="li-title">${tag}${esc(k.title)}</span>
         <span class="li-sub">${due}${l ? `, <span class="${l.cls}" data-left="${k.dueAt}">${l.text}</span>` : ''}${extras ? `, ${extras}` : ''}</span>
@@ -221,8 +228,14 @@ function ringsCard(t) {
   }
   const seasonDay = daysBetween(g.seasonStart, t.today) + 1;
   const lowHp = g.hp <= 30;
-  return `<section class="card rings-card">
-    ${rings([{ pct: hpPct, cls: 'r-hp' }, { pct: dayPct, cls: 'r-day' }, { pct: third.pct, cls: 'r-move' }], 132)}
+  // The Today ring pulses once after a tick lands.
+  const ticked = state.justTicked;
+  state.justTicked = false;
+  return `<section class="card rings-card${lowHp ? ' low' : ''}${ticked ? ' ticked' : ''}">
+    <div class="rings-hero">
+      ${rings([{ pct: hpPct, cls: 'r-hp' }, { pct: dayPct, cls: 'r-day' }, { pct: third.pct, cls: 'r-move' }], 200)}
+      <div class="rings-center" aria-hidden="true"><b>${g.hp}</b><span>HP</span></div>
+    </div>
     <div class="legend">
       <div class="lg r-hp${lowHp ? ' low' : ''}"><span class="lg-label">HP</span><span class="lg-val">${g.hp}<small>/${g.maxHp}</small></span><span class="lg-sub">Season ${g.season}, day ${seasonDay}</span></div>
       <div class="lg r-day"><span class="lg-label">Today</span><span class="lg-val">${t.progress.done}<small>/${total}</small></span><span class="lg-sub">${total ? (t.progress.atStake ? `${t.progress.atStake} HP still at stake` : 'Nothing left at stake') : 'Nothing due today'}</span></div>
@@ -310,11 +323,19 @@ function nowPanel(t) {
   if (n.cue) sub.push(`After ${esc(n.cue)}`);
   if (n.firstStep) sub.push(`First step: ${esc(n.firstStep)}`);
   if (n.lastPlan) sub.push(`Your plan: ${esc(n.lastPlan)}`);
-  return `<section class="card now${n.isFocus ? ' is-focus' : ''}${n.missedLast ? ' relapse' : ''}">
+  // The card takes the colour of its countdown, and says how much of the day is left to win.
+  const p = t.progress;
+  const heat = n.dueAt ? ` u-${urgency(n.dueAt)}" data-due="${n.dueAt}` : ' u-calm';
+  const toGo = p.total - p.done;
+  return `<section class="card now${n.isFocus ? ' is-focus' : ''}${n.missedLast ? ' relapse' : ''}${heat}">
     <div class="now-top"><p class="eyebrow">${icon(n.isFocus ? 'focus' : 'bolt')}${label}</p>${l ? `<span class="now-left ${l.cls}" data-left="${n.dueAt}">${l.text}</span>` : ''}</div>
     <h2 class="now-title">${esc(n.title)}</h2>
     <p class="now-meta">${metaParts.join(', ')}</p>
     ${sub.length ? `<p class="now-cue">${sub.join('<br>')}</p>` : ''}
+    <div class="now-progress">
+      <div class="np-bar" aria-hidden="true"><i style="width:${p.total ? Math.round((p.done / p.total) * 100) : 0}%"></i></div>
+      <span><b>${p.done} of ${p.total}</b> done · ${toGo} to go${p.atStake ? ` · <b class="np-hp">${p.atStake} HP</b> at stake` : ''}</span>
+    </div>
     <div class="now-actions">
       <button class="btn tinted big" data-action="focus-start" data-kind="${n.kind}" data-id="${n.id}">${icon('timer')}Focus ${state.focusMinutes} min</button>
       <button class="btn chrome big" data-action="now-done" data-kind="${n.kind}" data-id="${n.id}">${icon('check')}Done</button>
@@ -518,6 +539,40 @@ function quickAdd(id = 'quick-task') {
   </form>`;
 }
 
+// One line to the coach from anywhere in the day: "move the dentist to Friday", "I did the gym".
+function askCoach(where) {
+  return `<form class="ask-coach" data-form="ask-coach">
+    <span class="ask-ic" aria-hidden="true">${brandMark(22)}</span>
+    <label class="sr" for="ask-${where}">Tell the coach</label>
+    <input id="ask-${where}" class="ask-input" name="text" maxlength="1000" autocomplete="off" required
+      placeholder="Tell the coach: move the dentist to Friday">
+    <button class="btn chrome small ask-send" type="submit" aria-label="Send to the coach">${icon('send')}</button>
+  </form>`;
+}
+
+// When Up next scrolls out of sight, a dock above the tabs keeps the next tick one tap away.
+function nextDock(t) {
+  const n = t.next;
+  if (!n || t.focus) return '';
+  const l = n.dueAt ? left(n.dueAt) : null;
+  return `<div class="next-dock u-${urgency(n.dueAt)}"${n.dueAt ? ` data-due="${n.dueAt}"` : ''} id="next-dock" role="region" aria-label="Up next" hidden>
+    <span class="dock-text"><span class="dock-label">Up next</span><b>${esc(n.title)}</b>${l ? `<span class="dock-left ${l.cls}" data-left="${n.dueAt}">${l.text}</span>` : ''}</span>
+    <button class="btn chrome small" data-action="now-done" data-kind="${n.kind}" data-id="${n.id}">${icon('check')}Done</button>
+  </div>`;
+}
+
+let nowWatcher = null;
+function watchNow() {
+  nowWatcher?.disconnect();
+  nowWatcher = null;
+  const card = document.querySelector('.page-today .now');
+  const dock = document.getElementById('next-dock');
+  if (!card || !dock || !('IntersectionObserver' in window)) return;
+  // Shown only once the card has scrolled up and away, never while it is still below the fold.
+  nowWatcher = new IntersectionObserver(([e]) => { dock.hidden = e.isIntersecting || e.boundingClientRect.top > 0; });
+  nowWatcher.observe(card);
+}
+
 function briefCard(t) {
   // A brief is only shown for four hours; after that the day has moved on.
   const brief = t.briefs.find((x) => Date.now() - new Date(x.at).getTime() < 4 * 3600 * 1000);
@@ -585,6 +640,7 @@ function viewToday() {
       ${ringsCard(t)}
       ${banners}
       ${nowPanel(t)}
+      ${askCoach('today')}
       ${needsOath ? oathView(t) : ''}
       ${t.plan ? capacityLine(t.capacity, t.settings) : ''}
       <div class="only-narrow">${planCard(t)}${briefCard(t)}</div>
@@ -604,7 +660,8 @@ function viewToday() {
         <div class="card">${hpBars(t.recentDays)}</div></section>
       ${upcoming}
     </aside>
-  </div>`);
+  </div>${nextDock(t)}`);
+  watchNow();
 }
 
 function clockText(endsAt) {
@@ -787,6 +844,7 @@ function viewPlan() {
 
   shell(`${pageHead('Plan', { over: `${p.habits.length} habits, ${p.tasks.length} open tasks`, actions: add })}
     ${seg}
+    ${askCoach('plan')}
     <div class="split plan-split tab-${tab}">
     <div class="pane-habits">
       <section class="section"><div class="gh"><h2>Habits</h2><button class="gh-link" data-action="sheet" data-kind="habit">New habit</button></div>
@@ -811,7 +869,12 @@ function sheetHtml() {
   let title = '';
   let body = '';
   if (s.id && !state.plan) return '';
-  if (s.kind === 'habit') {
+  if (s.kind === 'coach') {
+    title = 'Coach';
+    const said = `<div class="msg user"><span class="msg-text">${esc(s.text)}</span></div>`;
+    body = `<div class="chat coach-sheet">${said}${s.reply ? coachMessage(s.reply) : '<div class="msg assistant typing" aria-label="The coach is writing"><i></i><i></i><i></i></div>'}</div>
+      <div class="form-actions"><a class="btn tinted" href="#/coach">${icon('coach')}Open the chat</a><button class="btn plain" type="button" data-action="sheet-dismiss">Close</button></div>`;
+  } else if (s.kind === 'habit') {
     const h = s.id ? state.plan?.habits.find((x) => x.id === s.id) : null;
     title = h ? 'Edit habit' : 'New habit';
     body = habitForm(h);
@@ -832,10 +895,22 @@ function sheetHtml() {
 
 // ---------- Coach ----------
 
+// One message: its words, what it did (receipts), and anything waiting for a Confirm tap.
+const PENDING_DONE = { done: 'Confirmed', cancelled: 'Cancelled', expired: 'Expired. Ask again if you still want it.', failed: 'Did not go through' };
+function coachMessage(m) {
+  const receipts = m.actions?.length
+    ? `<ul class="receipts">${m.actions.map((a) => `<li class="${a.ok ? 'ok' : 'no'}">${icon(a.ok ? 'check' : 'close')}<span>${esc(a.text)}</span></li>`).join('')}</ul>`
+    : '';
+  const pending = (m.pending || []).map((p) => (p.status === 'open'
+    ? `<div class="confirm-row"><span>${esc(p.summary)}?</span><span class="confirm-btns"><button class="btn chrome small" data-action="coach-confirm" data-id="${p.id}" data-yes="1">Confirm</button><button class="btn tinted small" data-action="coach-confirm" data-id="${p.id}" data-yes="0">Cancel</button></span></div>`
+    : `<p class="confirm-done ${p.status}">${esc(p.summary)}: ${PENDING_DONE[p.status] || p.status}${p.status === 'failed' && p.outcome ? `, ${esc(p.outcome)}` : ''}</p>`)).join('');
+  return `<div class="msg ${m.role}"><span class="msg-text">${esc(m.text)}</span>${receipts}${pending}${m.at ? `<time>${fmtClock(m.at)}</time>` : ''}</div>`;
+}
+
 function viewCoach() {
   const c = state.coach;
   if (!c) return shell(skeleton('Coach'));
-  const msgs = c.messages.map((m) => `<div class="msg ${m.role}">${esc(m.text)}${m.at ? `<time>${fmtClock(m.at)}</time>` : ''}</div>`).join('');
+  const msgs = c.messages.map(coachMessage).join('');
   const ask = state.query.get('ask') || '';
   shell(`${pageHead('Coach', { over: c.aiEnabled ? 'Claude, with your whole day in view' : 'Offline', actions: iconLink('#/settings', 'settings', 'Settings') })}
       ${c.aiEnabled ? '' : '<div class="banner warn">The coach is offline. It needs an Anthropic API key in the app\'s Railway variables. Briefs still arrive with plain numbers until then.</div>'}
@@ -1027,6 +1102,29 @@ function siriCard() {
     </details>`);
 }
 
+// The game's numbers, editable. Ranges match the server's (src/settings.js), which checks them again.
+const RULE_FIELDS = [
+  ['maxHp', 'Max HP', 50, 500, 1],
+  ['dailyLossCap', 'Most HP one day can cost', 10, 500, 1],
+  ['taskPenalty', 'HP a hard task costs', 1, 100, 1],
+  ['repeatMultiplier', 'Second miss in a row costs ×', 1, 3, 0.25],
+  ['comebackBonus', 'Comeback bonus, HP', 0, 50, 1],
+  ['cleanBonus', 'Clean-day bonus, HP', 0, 50, 1],
+  ['pardonsPerMonth', 'Pardons a month', 0, 10, 1],
+  ['restDaysPerMonth', 'Rest days a month', 0, 10, 1],
+  ['maxNonNegotiables', 'Non-negotiables allowed', 1, 10, 1],
+  ['undoMinutes', 'Minutes to undo a tick', 1, 120, 1],
+];
+function rulesForm(s) {
+  const fields = RULE_FIELDS.map(([k, label, min, max, step]) => `<label class="field"><span>${label}</span>
+      <input class="input" type="number" name="${k}" min="${min}" max="${max}" step="${step}" inputmode="decimal" value="${esc(s[k])}" required></label>`).join('');
+  return `<form class="card rules-form" data-form="rules">
+    <div class="grid2">${fields}</div>
+    <div class="form-actions"><button class="btn primary" type="submit">Save rules</button></div>
+    <p class="note">Changes apply from now on and never re-charge a day already judged. You can also tell the coach, which asks you to confirm.</p>
+  </form>`;
+}
+
 function viewSettings() {
   const s = state.settings;
   if (!s) return shell(skeleton('Settings'));
@@ -1064,8 +1162,9 @@ function viewSettings() {
           <div class="form-actions"><button class="btn primary" type="submit">Change password</button><button class="btn tinted" type="button" data-action="logout">Log out</button></div>
         </form>`)}
     </div>
-    <aside><section class="section"><div class="gh"><h2>The rules</h2></div>
-      <div class="card prose">
+    <aside><section class="section"><div class="gh"><h2>Game rules</h2><span class="gh-count">Yours to set</span></div>
+      ${rulesForm(s)}
+      <div class="card prose rules-prose">
         <p>You have ${s.maxHp} HP. Miss a habit's deadline and you lose its HP. Miss the same habit twice in a row and the second costs ${s.repeatMultiplier}x.</p>
         <p>Keep a habit right after missing it and you earn ${s.comebackBonus} HP back. One miss is an accident; the second is the start of a new habit.</p>
         <p>Strength is the real measure: it grows with every repetition and a miss costs a few points, never everything. Streaks reset on a miss.</p>
@@ -1084,6 +1183,11 @@ function viewSettings() {
 
 // ---------- Gate ----------
 
+// The face of Oath: the mark, the chrome wordmark and the promise.
+function brandLockup() {
+  return `<div class="brand-lockup">${brandMark(76, 'gate-mark')}<div class="wordmark">Oath</div><p class="tagline">Keep your word.</p></div>`;
+}
+
 // The way in. With Face ID only, it is a lock screen that starts Face ID by itself, with the
 // password and recovery code tucked away for the day Face ID is lost. Otherwise it is the password,
 // with Face ID offered once a passkey exists.
@@ -1095,7 +1199,7 @@ function renderLogin(session = null) {
   rememberLockMode(session.faceIdOnly);
   if (session.faceIdOnly) {
     $app.innerHTML = `<div class="gate">
-      <div class="wordmark">Oath</div>
+      ${brandLockup()}
       <p>${session.locked ? 'Locked. ' : ''}Look at your iPhone to open it, <em class="serif">Daniel</em>.</p>
       <div id="faceid-slot"><button class="btn chrome big wide" type="button" data-action="faceid-login">${icon('faceid')}Open with Face ID</button></div>
       <p class="note bad" id="gate-error" role="alert" hidden></p>
@@ -1111,7 +1215,7 @@ function renderLogin(session = null) {
     return;
   }
   $app.innerHTML = `<div class="gate">
-    <div class="wordmark">Oath</div>
+    ${brandLockup()}
     <p>Welcome back, <em class="serif">Daniel</em>. Log in to see today.</p>
     <div id="faceid-slot"></div>
     <form data-form="login">
@@ -1134,7 +1238,7 @@ hooks.onUnauthed = renderLogin;
 
 function renderSetup(code) {
   $app.innerHTML = `<div class="gate">
-    <div class="wordmark">Oath</div>
+    ${brandLockup()}
     <p>Choose the password you will use to open Oath on your iPhone and iPad.</p>
     <form data-form="setup" data-code="${esc(code)}">
       <label class="field"><span>Password, at least 10 characters</span><input class="input" type="password" name="password" autocomplete="new-password" minlength="10" required autofocus></label>
@@ -1519,13 +1623,32 @@ async function keepHabit(el, id, minimum = false) {
   el.disabled = true;
   const ok = await act(() => api('POST', `/api/habits/${id}/keep`, { minimum }));
   if (ok) {
-    react(ok.reaction);
     state.dodging = null;
-    await refreshToday();
+    await afterTick(ok.reaction);
   } else {
     if (row) row.classList.remove('kept', 'pending');
     el.disabled = false;
   }
+}
+
+// The coach may have changed tasks, habits or settings: reload what it touched, in the background.
+async function coachChangedThings(reply) {
+  if (!reply?.actions?.some((x) => x.ok)) return;
+  state.plan = null;
+  state.goals = null;
+  state.dash = null;
+  await fetchToday().catch(() => { state.today = null; });
+  if (!['today', 'coach'].includes(state.route)) await load(state.route).catch(() => {});
+}
+
+// After a tick: the Today ring pulses, the day is reloaded, and the reaction says how much is left.
+async function afterTick(reaction, current = false) {
+  state.justTicked = true;
+  if (current) await refreshCurrent(); else await refreshToday();
+  const open = state.today?.progress?.open;
+  const tail = open === 0 ? ' Everything due today is done.' : open ? ` ${open} to go.` : '';
+  if (reaction?.text) react({ ...reaction, text: `${reaction.text}${tail}` });
+  else if (tail) toast(tail.trim());
 }
 
 async function openSheet(kind, id) {
@@ -1558,7 +1681,7 @@ $app.addEventListener('click', async (e) => {
     const row = el.closest('.li');
     if (row) row.classList.add('done', 'pending');
     const ok = await act(() => api('POST', `/api/tasks/${id}/done`, {}));
-    if (ok) { react(ok.reaction); await refreshCurrent(); } else if (row) row.classList.remove('done', 'pending');
+    if (ok) await afterTick(ok.reaction, true); else if (row) row.classList.remove('done', 'pending');
   } else if (a === 'task-undo') {
     if (await act(() => api('POST', `/api/tasks/${id}/undo`, {}), 'Undone.')) await refreshToday();
   } else if (a === 'triage') {
@@ -1582,7 +1705,7 @@ $app.addEventListener('click', async (e) => {
     haptic();
     const path = el.dataset.kind === 'habit' ? `/api/habits/${id}/keep` : `/api/tasks/${id}/done`;
     const r = await act(() => api('POST', path, {}));
-    if (r) { react(r.reaction); await refreshToday(); } else el.disabled = false;
+    if (r) await afterTick(r.reaction); else el.disabled = false;
   } else if (a === 'not-now') {
     state.dodging = { kind: el.dataset.kind, id };
     render();
@@ -1657,6 +1780,18 @@ $app.addEventListener('click', async (e) => {
       render();
       state.today = null;
     }
+  } else if (a === 'coach-confirm') {
+    // Daniel's tap on something the coach asked to do: run it or cancel it, then show the outcome.
+    el.disabled = true;
+    const r = await act(() => api('POST', `/api/coach/pending/${id}`, { confirm: el.dataset.yes === '1' }));
+    if (!r) { el.disabled = false; return; }
+    toast(r.status === 'done' ? r.text : r.status === 'cancelled' ? 'Cancelled.' : r.text, r.status === 'failed');
+    const settle = (m) => (m?.pending || []).forEach((p) => { if (p.id === id) { p.status = r.status; p.outcome = r.text; } });
+    if (state.sheet?.kind === 'coach') settle(state.sheet.reply);
+    state.coach?.messages.forEach(settle);
+    if (state.coach && r.message) state.coach.messages.push(r.message);
+    await coachChangedThings({ actions: [{ ok: r.status === 'done' }] });
+    render();
   } else if (a === 'retry') {
     location.reload();
   } else if (a === 'faceid-login') {
@@ -1807,7 +1942,27 @@ $app.addEventListener('submit', async (e) => {
       state.sending = false;
       if (r) state.coach.messages.push(r.reply);
       render();
-      state.today = null;
+      await coachChangedThings(r?.reply);
+    } else if (kind === 'ask-coach') {
+      // The quick line on Today and Plan: the answer, and what the coach did, open in a sheet.
+      const text = form2obj(form).text.trim();
+      if (!text) return;
+      form.reset();
+      state.sheet = { kind: 'coach', text };
+      render();
+      const r = await act(() => api('POST', '/api/coach', { text }));
+      if (!r) { state.sheet = null; render(); return; }
+      state.sheet = { kind: 'coach', text, reply: r.reply };
+      state.coach = null;
+      await coachChangedThings(r.reply);
+      render();
+    } else if (kind === 'rules') {
+      const f = form2obj(form);
+      const patch = Object.fromEntries(Object.entries(f).filter(([k, x]) => x !== '' && Number(x) !== Number(state.settings?.[k])).map(([k, x]) => [k, Number(x)]));
+      if (!Object.keys(patch).length) { toast('Nothing changed.'); return; }
+      if (patch.maxHp !== undefined && patch.maxHp < (state.settings?.maxHp ?? 0)
+        && !confirm(`Lower max HP to ${patch.maxHp}? If you have more HP than that now, it comes down with it.`)) return;
+      if (await act(() => api('PATCH', '/api/settings', patch), 'Rules saved. They apply from now on.')) await go();
     } else if (kind === 'settings') {
       if (await act(() => api('PATCH', '/api/settings', form2obj(form)), 'Schedule saved.')) await go();
     } else if (kind === 'alerts') {
@@ -1885,6 +2040,13 @@ setInterval(() => {
     el.classList.remove('soon', 'gone');
     if (l.cls) el.classList.add(l.cls);
   });
+  // Rows, Up next and the dock warm through Honey, Blaze and Ember as their deadlines near.
+  document.querySelectorAll('[data-due]').forEach((el) => {
+    const u = `u-${urgency(el.dataset.due)}`;
+    if (el.classList.contains(u)) return;
+    URGENCY.forEach((x) => el.classList.remove(`u-${x}`));
+    el.classList.add(u);
+  });
 }, 15000);
 
 setInterval(() => {
@@ -1950,7 +2112,7 @@ async function boot() {
     const s = await api('GET', '/api/session');
     if (!s.authed) {
       if (!s.setupDone) {
-        $app.innerHTML = '<div class="gate"><div class="wordmark">Oath</div><p>Open the setup link you were given to choose your password.</p></div>';
+        $app.innerHTML = `<div class="gate">${brandLockup()}<p>Open the setup link you were given to choose your password.</p></div>`;
         return;
       }
       return renderLogin(s);
@@ -1965,7 +2127,7 @@ async function boot() {
     resyncPush();
   } catch (err) {
     if (err.status === 0 && lockModeRemembered()) {
-      $app.innerHTML = `<div class="gate"><div class="wordmark">Oath</div><p>Offline. Oath needs a connection to check Face ID.</p>
+      $app.innerHTML = `<div class="gate">${brandLockup()}<p>Offline. Oath needs a connection to check Face ID.</p>
         <div class="form-actions"><button class="btn primary" data-action="retry">Retry</button></div></div>`;
       return;
     }
@@ -1978,7 +2140,7 @@ async function boot() {
       render();
       return;
     }
-    $app.innerHTML = `<div class="gate"><div class="wordmark">Oath</div><p>${esc(err.message)}</p>
+    $app.innerHTML = `<div class="gate">${brandLockup()}<p>${esc(err.message)}</p>
       <div class="form-actions"><button class="btn primary" data-action="retry">Retry</button></div></div>`;
   }
 }

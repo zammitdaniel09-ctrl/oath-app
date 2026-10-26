@@ -138,6 +138,19 @@ export function left(iso) {
   return { text, cls: min <= 60 ? 'soon' : '' };
 }
 
+// How hot a deadline is: calm, then Honey within 3 hours, Blaze within 1, Ember within 30 minutes,
+// Merlot once it has passed.
+export function urgency(iso) {
+  if (!iso) return 'calm';
+  const min = (new Date(iso).getTime() - Date.now()) / 60000;
+  if (min <= 0) return 'over';
+  if (min <= 30) return 'ember';
+  if (min <= 60) return 'blaze';
+  if (min <= 180) return 'honey';
+  return 'calm';
+}
+export const URGENCY = ['calm', 'honey', 'blaze', 'ember', 'over'];
+
 export function daysBetween(a, b) {
   return Math.round((new Date(`${b}T12:00:00Z`) - new Date(`${a}T12:00:00Z`)) / 86400000);
 }
@@ -252,20 +265,49 @@ const ICONS = {
   focus: '<circle cx="12" cy="12" r="8.6"/><path d="M12 3.4V6M12 18v2.6M3.4 12H6M18 12h2.6"/><circle cx="12" cy="12" r="2"/>',
   map: '<path d="M4 6.5l5-2 6 2 5-2v13l-5 2-6-2-5 2z"/><path d="M9 4.5v13M15 6.5v13"/>',
   trend: '<path d="M4 16.5l5-5 3.5 3.5L20 7.5M15 7.5h5v5"/>',
+  send: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+  spark: '<path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z"/>',
+  season: '<path d="M12 3.5c4.7 0 8.5 3.8 8.5 8.5s-3.8 8.5-8.5 8.5"/><path d="M12 20.5c-4.7 0-8.5-3.8-8.5-8.5" stroke-dasharray="2 3"/><path d="M12 8v4l2.5 1.5"/>',
+  uni: '<path d="M3 9.5L12 5l9 4.5-9 4.5z"/><path d="M7 11.5v4c1.4 1.3 3 2 5 2s3.6-.7 5-2v-4M21 9.5v5"/>',
 };
+
+// The Oath mark: a chrome ring with a Merlot arc, an HP ring three quarters full.
+let markCount = 0;
+export function brandMark(size = 32, cls = '') {
+  markCount += 1;
+  const g = `bm${markCount}`;
+  const r = 22;
+  const c = 2 * Math.PI * r;
+  return `<svg class="mark${cls ? ` ${cls}` : ''}" width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true">
+    <defs><linearGradient id="${g}c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#ffffff"/><stop offset="0.5" style="stop-color:#c9ced6"/><stop offset="1" style="stop-color:#7d838f"/></linearGradient>
+    <linearGradient id="${g}m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:#ff2a17"/><stop offset="1" style="stop-color:#b30500"/></linearGradient></defs>
+    <circle cx="32" cy="32" r="${r}" fill="none" stroke="url(#${g}c)" stroke-width="10"/>
+    <circle cx="32" cy="32" r="${r}" fill="none" stroke="url(#${g}m)" stroke-width="10" stroke-linecap="round"
+      stroke-dasharray="${(c * 0.72).toFixed(2)} ${c.toFixed(2)}" transform="rotate(-90 32 32)"/>
+  </svg>`;
+}
 
 export function icon(name, cls = '') {
   return `<svg class="ic${cls ? ` ${cls}` : ''}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ''}</svg>`;
 }
 
 // ---------- Rings: the day at a glance ----------
-// list: [{ pct, cls }] outside in. Each ring is a track plus an arc. Animated once per session.
+// list: [{ pct, cls }] outside in. Each ring is a track plus a gradient arc. Animated once per session.
+const RING_STOPS = {
+  'r-hp': ['var(--merlot-hi)', 'var(--merlot)', '#a30400'],
+  'r-day': ['#8dffdc', 'var(--menthol)', '#1fbf8e'],
+  'r-move': ['var(--honey)', 'var(--blaze)', 'var(--ember)'],
+  'r-sleep': ['#ff7d97', 'var(--cherry)', '#c4103a'],
+};
 let ringsDrawn = false;
 export function rings(list, size = 128) {
-  const sw = Math.round(size * 0.105);
+  // Big rings get relatively thinner strokes, leaving room for the number in the middle.
+  const sw = Math.round(size * (size >= 160 ? 0.086 : 0.105));
   const gap = Math.max(2, Math.round(size * 0.02));
   const animate = !ringsDrawn;
   ringsDrawn = true;
+  const defs = list.map(({ cls }) => RING_STOPS[cls] && `<linearGradient id="rg-${cls}" x1="0" y1="0" x2="1" y2="1">${RING_STOPS[cls]
+    .map((c, i) => `<stop offset="${i / 2}" style="stop-color:${c}"/>`).join('')}</linearGradient>`).filter(Boolean).join('');
   const circles = list.map((ring, i) => {
     const r = size / 2 - sw / 2 - i * (sw + gap);
     const c = 2 * Math.PI * r;
@@ -278,7 +320,7 @@ export function rings(list, size = 128) {
         transform="rotate(-90 ${size / 2} ${size / 2})"${p ? '' : ' opacity="0"'}/>
     </g>`;
   }).join('');
-  return `<svg class="rings${animate ? ' drawing' : ''}" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">${circles}</svg>`;
+  return `<svg class="rings${animate ? ' drawing' : ''}" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><defs>${defs}</defs>${circles}</svg>`;
 }
 
 // After a render, sweep any rings that start empty to their value.

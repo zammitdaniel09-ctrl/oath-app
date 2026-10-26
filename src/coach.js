@@ -1,10 +1,10 @@
 // The AI accountability partner, powered by Claude.
 import Anthropic from '@anthropic-ai/sdk';
 import { db } from './db.js';
-import { validTime, validDate, deadlineText } from './time.js';
+import { deadlineText } from './time.js';
 import { coachSnapshot, buildToday } from './state.js';
-import { createTask, updateTask, createHabit, localNow, RuleError } from './engine.js';
-import { addNode } from './goals.js';
+import { localNow, RuleError } from './engine.js';
+import { TOOL_DEFS, runTool, resolvePendingAction } from './coach-tools.js';
 
 const MODEL = () => process.env.COACH_MODEL || 'claude-sonnet-5-5';
 
@@ -61,114 +61,17 @@ Protocols:
 
 Never claim (no evidence): habits take 21 days (the median is about 66 days, anywhere from 2 weeks to 8 months), willpower is a battery that runs out, decision fatigue, leaving tasks unfinished helps you remember them, or "95% success with an accountability partner".
 
-What you can do:
-- Add tasks, add habits, add steps under a goal and reschedule normal tasks with your tools when he asks or when it clearly helps.
-- You cannot mark anything as done, cannot pardon misses, and cannot move hard tasks or deadlines. Never pretend you did.
+What you can do (your tools run the app for him):
+- Tasks: add, edit, move, finish, reopen, triage. Habits: add, edit, tick off (or the minimum), untick, link to Apple Health. The day: take the oath, start and stop focus blocks, log a "Not now" with its reason, close the day, pardon a miss, book or cancel rest days. Goals: create, edit, log progress, build out the map, turn steps into tasks or habits, tick steps. Settings: brief times, day end, alerts, time zone, Health targets, the game rules. The weekly review.
+- Act when he tells you to, then say what you did in one short line per action and get back to coaching. When it is unclear which item or which day he means, use find_items or ask one short question.
+- Tick something done only when he says he did it. A pardon needs his own words for what got in the way and his if-then plan; never invent them.
+- Deleting a task, archiving a habit, dropping a goal, deleting a goal step, changing the game rules, or dropping habits in a review wait for him to tap Confirm under your reply. Say what will happen and that it needs his tap. Never say it is done.
+- Every tool follows the app's rules. If one refuses (a locked deadline, the undo window, no pardons left, the non-negotiable limit), tell him why in one line. Do not try to get around it.
+- Ids are per kind: task #12, habit #3, goal #2, step #40, miss #7. The current data below shows most of them; find_items finds the rest.
 
 Limits:
 - The app punishes with HP, streak resets and seasons. Never suggest real self-punishment, sleep deprivation, skipping meals or anything harmful.
 - If he says he is genuinely ill, injured, grieving or in a crisis, drop the drill-sergeant tone, tell him to use a pardon or rest, and if it sounds serious, tell him to talk to someone he trusts or a professional.`;
-
-const TOOLS = [
-  {
-    name: 'add_task',
-    description: 'Add a task. Use hard=true only if Daniel wants it enforced with an HP penalty; hard tasks need a due_date and a first_step (the first physical action).',
-    input_schema: {
-      type: 'object',
-      properties: {
-        title: { type: 'string' },
-        due_date: { type: 'string', description: 'YYYY-MM-DD, optional' },
-        deadline: { type: 'string', description: 'HH:MM 24h local time, optional' },
-        hard: { type: 'boolean' },
-        first_step: { type: 'string' },
-        estimate_min: { type: 'integer', description: 'Estimated minutes, optional' },
-        goal: { type: 'string', description: 'Title of the goal this task serves, optional' },
-        notes: { type: 'string' },
-      },
-      required: ['title'],
-    },
-  },
-  {
-    name: 'reschedule_task',
-    description: 'Move a normal (not hard) task to another date or time.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        task_id: { type: 'integer' },
-        due_date: { type: 'string', description: 'YYYY-MM-DD or empty to clear' },
-        deadline: { type: 'string', description: 'HH:MM or empty to clear' },
-      },
-      required: ['task_id'],
-    },
-  },
-  {
-    name: 'add_habit',
-    description: 'Create a habit. Either fixed days (ISO weekdays 1=Mon ... 7=Sun) with a deadline, or weekly_target for "X times a week".',
-    input_schema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string' },
-        deadline: { type: 'string', description: 'HH:MM 24h local time' },
-        days: { type: 'array', items: { type: 'integer' } },
-        weekly_target: { type: 'integer', description: '1 to 7, for X-times-a-week habits' },
-        cue: { type: 'string', description: 'The existing routine it follows, e.g. "after I pour coffee"' },
-        minimum: { type: 'string', description: 'The smallest version that still counts on a bad day' },
-        non_negotiable: { type: 'boolean' },
-        penalty: { type: 'integer', description: 'HP lost on a miss, 1 to 100' },
-        goal: { type: 'string', description: 'Title of the goal this habit serves, optional' },
-      },
-      required: ['name'],
-    },
-  },
-  {
-    name: 'add_goal_step',
-    description: 'Add a step (a branch in the goal\'s mind map) under one of his goals.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        goal: { type: 'string', description: 'Title of the goal' },
-        text: { type: 'string' },
-      },
-      required: ['goal', 'text'],
-    },
-  },
-];
-
-async function goalByTitle(title) {
-  if (!title) return null;
-  const goals = await db()`select id, title from goals where status = 'active'`;
-  const t = String(title).toLowerCase();
-  return goals.find((g) => g.title.toLowerCase() === t) || goals.find((g) => g.title.toLowerCase().includes(t) || t.includes(g.title.toLowerCase())) || null;
-}
-
-async function runTool(name, input) {
-  const v = { validTime, validDate };
-  try {
-    if (name === 'add_task') {
-      const goal = await goalByTitle(input.goal);
-      const t = await createTask({ ...input, goal_id: goal?.id }, v, 'coach');
-      return `Added task #${t.id} "${t.title}"${t.due_date ? ` due ${t.due_date} ${t.deadline || ''}` : ''}${t.hard ? ' (hard)' : ''}${goal ? ` under "${goal.title}"` : ''}.`;
-    }
-    if (name === 'reschedule_task') {
-      await updateTask(input.task_id, { due_date: input.due_date ?? undefined, deadline: input.deadline ?? undefined }, v, 'coach');
-      return `Task #${input.task_id} rescheduled.`;
-    }
-    if (name === 'add_habit') {
-      const goal = await goalByTitle(input.goal);
-      const { habit, startsToday } = await createHabit({ ...input, goal_id: goal?.id }, v);
-      return `Created habit "${habit.name}"${habit.weekly_target ? ` ${habit.weekly_target} times a week` : ` due ${habit.deadline}`}, starting ${startsToday ? 'today' : 'tomorrow'}.`;
-    }
-    if (name === 'add_goal_step') {
-      const goal = await goalByTitle(input.goal);
-      if (!goal) return 'Failed: no active goal with that title.';
-      await addNode(goal.id, { text: input.text });
-      return `Added "${input.text}" under "${goal.title}".`;
-    }
-    return `Unknown tool ${name}.`;
-  } catch (err) {
-    return `Failed: ${err instanceof RuleError ? err.message : 'unexpected error'}`;
-  }
-}
 
 // Thinking counts toward max_tokens, so budgets leave room for it as well as the reply.
 const CHAT_TOKENS = 16000;
@@ -180,13 +83,13 @@ const ask = (c, params) => c.beta.messages.create({ ...params, betas: ['server-s
 // Runs the tool loop and returns { text, refused }. Text is gathered from every round, because the
 // model may speak before a tool call. A reply cut off by the token limit is never returned: briefs
 // fall back to plain numbers instead of sending half a sentence.
-async function complete({ system, messages, maxTokens = CHAT_TOKENS, effort = 'medium', tools = TOOLS }) {
+async function complete({ system, messages, maxTokens = CHAT_TOKENS, effort = 'medium', tools = TOOL_DEFS, ctx = { actions: [], pending: [] } }) {
   const c = anthropic();
   const convo = [...messages];
   const said = [];
   let budget = maxTokens;
   let retried = false;
-  for (let i = 0; i < 6; i += 1) {
+  for (let i = 0; i < 12; i += 1) {
     const params = { model: MODEL(), max_tokens: budget, system, messages: convo, output_config: { effort } };
     if (tools.length) params.tools = tools;
     const res = await ask(c, params);
@@ -208,9 +111,11 @@ async function complete({ system, messages, maxTokens = CHAT_TOKENS, effort = 'm
     if (text) said.push(text);
     if (res.stop_reason !== 'tool_use' || !calls.length) return { text: said.join('\n\n'), refused: false };
     convo.push({ role: 'assistant', content: res.content });
+    // Every result of a round goes back in one message; a failed tool is reported, never dropped.
     const results = [];
     for (const call of calls) {
-      results.push({ type: 'tool_result', tool_use_id: call.id, content: await runTool(call.name, call.input || {}) });
+      const r = await runTool(call.name, call.input || {}, ctx);
+      results.push({ type: 'tool_result', tool_use_id: call.id, content: r.content, ...(r.isError ? { is_error: true } : {}) });
     }
     convo.push({ role: 'user', content: results });
   }
@@ -224,9 +129,18 @@ async function write(system, prompt) {
 }
 
 export async function coachHistory(limit = 60) {
-  const rows = await db()`select id, role, text, failed, at from coach_messages order by id desc limit ${limit}`;
+  const rows = await db()`
+    select m.id, m.role, m.text, m.failed, m.at, m.actions,
+      (select json_agg(json_build_object('id', p.id, 'summary', p.summary, 'outcome', p.outcome,
+                                         'status', case when p.status = 'open' and p.created_at < now() - interval '30 minutes' then 'expired' else p.status end)
+                       order by p.id)
+         from coach_pending p where p.message_id = m.id) as pending
+    from coach_messages m order by m.id desc limit ${limit}`;
   return rows.reverse();
 }
+
+// What a reply did is part of what it said, so the coach remembers its own actions.
+const spoken = (m) => (m.actions?.length ? `${m.text}\n[${m.actions.map((a) => (a.ok ? a.text : `failed: ${a.text}`)).join('; ')}]` : m.text);
 
 export async function chat(userText) {
   const text = String(userText || '').trim().slice(0, 4000);
@@ -234,28 +148,43 @@ export async function chat(userText) {
   await db()`insert into coach_messages (role, text) values ('user', ${text})`;
   let reply;
   let failed = false;
+  const ctx = { actions: [], pending: [] };
   if (!aiEnabled()) {
     reply = 'The coach is offline. Add ANTHROPIC_API_KEY to the app\'s variables on Railway and it comes alive.';
     failed = true;
   } else {
     try {
       // Failed replies stay visible in the chat but are never fed back to the model as its own words.
-      const history = (await coachHistory(20)).filter((m) => !m.failed).map((m) => ({ role: m.role, content: m.text }));
+      const history = (await coachHistory(20)).filter((m) => !m.failed).map((m) => ({ role: m.role, content: spoken(m) }));
       // The API needs the conversation to start with the user.
       while (history.length && history[0].role !== 'user') history.shift();
       const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
-      const r = await complete({ system, messages: history });
-      reply = r.text || (r.refused ? 'I can\'t help with that one. Ask it another way.' : 'No answer came back. Try again.');
-      failed = !r.text;
+      const r = await complete({ system, messages: history, ctx });
+      // Actions taken count as an answer even if no words came back with them.
+      reply = r.text || (r.refused ? 'I can\'t help with that one. Ask it another way.' : ctx.actions.length || ctx.pending.length ? 'Done.' : 'No answer came back. Try again.');
+      failed = !r.text && !ctx.actions.length && !ctx.pending.length;
     } catch (err) {
       console.error('coach error', err.status || '', err.message);
       reply = `The coach could not answer (${err.status ? `API error ${err.status}` : 'connection problem'}). Check the API key and credit on your Anthropic account.`;
       failed = true;
     }
   }
-  const [row] = await db()`insert into coach_messages (role, text, failed) values ('assistant', ${reply}, ${failed})
-                           returning id, role, text, failed, at`;
-  return row;
+  const actions = ctx.actions.length ? db().json(ctx.actions) : null;
+  const [row] = await db()`insert into coach_messages (role, text, failed, actions) values ('assistant', ${reply}, ${failed}, ${actions})
+                           returning id, role, text, failed, at, actions`;
+  if (ctx.pending.length) await db()`update coach_pending set message_id = ${row.id} where id in ${db()(ctx.pending.map((p) => p.id))}`;
+  return { ...row, pending: ctx.pending.map((p) => ({ ...p, status: 'open' })) };
+}
+
+// Daniel tapped Confirm or Cancel under a reply. The outcome joins the conversation, so the coach
+// knows next time what happened.
+export async function resolvePending(id, confirm) {
+  const r = await resolvePendingAction(id, confirm);
+  const text = r.status === 'done' ? `Done: ${r.text}.` : r.status === 'failed' ? `That did not go through: ${r.text}` : r.text;
+  const actions = r.status === 'cancelled' ? null : db().json([{ ok: r.status === 'done', text: r.text }]);
+  const [row] = await db()`insert into coach_messages (role, text, failed, actions) values ('assistant', ${text}, false, ${actions})
+                           returning id, role, text, failed, at, actions`;
+  return { ...r, message: row };
 }
 
 // ---------- Scheduled briefs ----------

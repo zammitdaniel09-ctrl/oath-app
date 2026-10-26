@@ -1,18 +1,18 @@
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
-import { IANAZone } from 'luxon';
 import { connect, migrate, close as closeDb } from './db.js';
 import { validTime, validDate } from './time.js';
 import * as auth from './auth.js';
 import * as engine from './engine.js';
-import { buildToday, buildPlan, buildLedger, buildReview } from './state.js';
+import { buildToday, buildPlan, buildLedger, buildReview, buildSeason } from './state.js';
 import * as goals from './goals.js';
 import { captureTask, createToken, revokeTokens, tokenCount, tokenValid, refusedKeyReason, doneByText, nextSay } from './capture.js';
 import { prepareReview, finishReview } from './review.js';
 import { db } from './db.js';
 import { vapidKeys, saveSubscription, removeSubscription, sendPush, subscriptionCount } from './push.js';
-import { chat, coachHistory, generateBrief, aiEnabled, checkCoach } from './coach.js';
+import { chat, coachHistory, generateBrief, aiEnabled, checkCoach, resolvePending } from './coach.js';
+import { applySettings } from './settings.js';
 import { startLoop, runOnce, healIfEmpty } from './loop.js';
 import * as drive from './drive.js';
 import { healthApi, healthShortcut } from './health.js';
@@ -133,6 +133,7 @@ api.use('*', auth.requireAuth());
 api.get('/today', async (c) => c.json(await buildToday()));
 api.get('/plan', async (c) => c.json(await buildPlan()));
 api.get('/ledger', async (c) => c.json(await buildLedger()));
+api.get('/season', async (c) => c.json(await buildSeason()));
 api.get('/review', async (c) => c.json(await buildReview()));
 api.post('/review/write', async (c) => c.json(await prepareReview()));
 api.post('/review/finish', async (c) => c.json(await finishReview(await body(c))));
@@ -266,6 +267,8 @@ api.post('/push/test', async (c) => {
 // ---------- Coach ----------
 api.get('/coach', async (c) => c.json({ messages: await coachHistory(), aiEnabled: aiEnabled() }));
 api.post('/coach', async (c) => c.json({ reply: await chat((await body(c)).text) }));
+// The coach's destructive actions wait here until Daniel confirms or cancels them.
+api.post('/coach/pending/:id', async (c) => c.json(await resolvePending(idParam(c), Boolean((await body(c)).confirm))));
 api.post('/briefs/:kind', async (c) => {
   const kind = c.req.param('kind');
   if (!['morning', 'midday', 'evening'].includes(kind)) throw new engine.RuleError('Unknown brief.');
@@ -274,39 +277,7 @@ api.post('/briefs/:kind', async (c) => {
 
 // ---------- Settings ----------
 api.get('/settings', async (c) => c.json(await engine.getSettings()));
-api.patch('/settings', async (c) => {
-  const b = await body(c);
-  const patch = {};
-  if (b.morningTime !== undefined) {
-    if (!validTime(b.morningTime)) throw new engine.RuleError('Morning time must be HH:MM.');
-    patch.morningTime = b.morningTime;
-  }
-  if (b.dayEnd !== undefined) {
-    if (!validTime(b.dayEnd)) throw new engine.RuleError('Day end must be HH:MM.');
-    patch.dayEnd = b.dayEnd;
-  }
-  if (b.alerts !== undefined) {
-    if (!['smart', 'both', 'push'].includes(b.alerts)) throw new engine.RuleError('Unknown alert setting.');
-    patch.alerts = b.alerts;
-  }
-  if (b.middayTime !== undefined) {
-    if (!validTime(b.middayTime)) throw new engine.RuleError('Midday time must be HH:MM.');
-    patch.middayTime = b.middayTime;
-  }
-  if (b.eveningTime !== undefined) {
-    if (!validTime(b.eveningTime)) throw new engine.RuleError('Evening time must be HH:MM.');
-    patch.eveningTime = b.eveningTime;
-  }
-  if (b.timezone !== undefined) {
-    if (!IANAZone.isValidZone(b.timezone)) throw new engine.RuleError('Unknown time zone.');
-    patch.timezone = b.timezone;
-  }
-  if (b.faceIdLock !== undefined) {
-    if (typeof b.faceIdLock !== 'boolean') throw new engine.RuleError('Face ID lock is on or off.');
-    patch.faceIdLock = b.faceIdLock;
-  }
-  return c.json(await engine.saveSettings(patch));
-});
+api.patch('/settings', async (c) => c.json(await applySettings(await body(c))));
 api.post('/password', async (c) => {
   const b = await body(c);
   const r = await auth.changePassword(b.current, b.next);

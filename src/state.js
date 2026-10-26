@@ -450,6 +450,33 @@ export async function buildReview() {
 }
 
 // Kept for the old Ledger endpoint.
+// The season at a glance for the Dashboard: HP over 30 days, this week so far, the longest
+// streaks, and whether last week's review is waiting.
+export async function buildSeason() {
+  const { s, today, tz } = await localNow();
+  const game = await getGame();
+  const rest = await restSet();
+  const habits = (await db()`select * from habits order by sort, id`).filter((h) => isActive(h, today));
+  const streaks = await streaksFor(habits, today, tz, game.seasonStart, rest);
+  const thisWeek = weekStartOf(today, tz);
+  const lastWeek = addDays(thisWeek, -7, tz);
+  const days = await db()`select date, hp_end, clean, missed, rest from days where date >= ${addDays(today, -29, tz)} order by date`;
+  const [review] = await db()`select done_at from weekly_reviews where week_start = ${lastWeek}`;
+  const [{ hadLastWeek }] = await db()`select count(*)::int as "hadLastWeek" from days where date >= ${lastWeek} and date < ${thisWeek}
+                                     and not rest and kept + missed + pardoned > 0`;
+  const week = await weekSummary(thisWeek, today, tz, habits);
+  return {
+    today,
+    game: { ...game, maxHp: s.maxHp },
+    seasonDay: Math.round((new Date(`${today}T12:00:00Z`) - new Date(`${game.seasonStart}T12:00:00Z`)) / 86400000) + 1,
+    days,
+    week: { cleanDays: week.cleanDays, judgedDays: week.judgedDays, hpStart: week.hpStart, hpEnd: week.hpEnd, focusMin: week.focusMin, tasksDone: week.tasksDone },
+    streaks: habits.map((h) => ({ id: h.id, name: h.name, streak: streaks.get(h.id) || 0, weekly: Boolean(h.weekly_target) }))
+      .filter((x) => x.streak > 0).sort((a, b) => b.streak - a.streak).slice(0, 3),
+    reviewDue: !review?.done_at && hadLastWeek >= 4,
+  };
+}
+
 export async function buildLedger() {
   const r = await buildReview();
   return { game: r.game, days: r.days, misses: r.misses, deaths: r.deaths, habitStats: r.habitStrength };
@@ -469,18 +496,18 @@ export async function coachSnapshot() {
   if (!t.items.length) lines.push('  none scheduled');
   for (const i of t.items) {
     const flex = i.flexible ? ` | ${i.weekDone} of ${i.weekTarget} this week${i.mustToday ? ', MUST be done today' : ''}` : ` | due ${i.deadline}`;
-    lines.push(`  [${i.status}${i.keptMinimum ? ', minimum version' : ''}] ${i.title}${flex} | ${i.heavy ? 'NON-NEGOTIABLE' : 'normal'} | penalty ${i.penalty} HP | strength ${i.strength}% | streak ${i.streak}${i.cue ? ` | cue: "${i.cue}"` : ''}${i.minimum ? ` | minimum: "${i.minimum}"` : ''}${i.missedLast ? ' | MISSED LAST TIME' : ''}${i.lastPlan ? ` | his if-then plan: "${i.lastPlan}"` : ''}`);
+    lines.push(`  [${i.status}${i.keptMinimum ? ', minimum version' : ''}] habit #${i.id} ${i.title}${flex} | ${i.heavy ? 'NON-NEGOTIABLE' : 'normal'} | penalty ${i.penalty} HP | strength ${i.strength}% | streak ${i.streak}${i.cue ? ` | cue: "${i.cue}"` : ''}${i.minimum ? ` | minimum: "${i.minimum}"` : ''}${i.missedLast ? ' | MISSED LAST TIME' : ''}${i.lastPlan ? ` | his if-then plan: "${i.lastPlan}"` : ''}`);
   }
   lines.push('Today, tasks:');
   if (!t.tasks.length) lines.push('  none due');
   for (const k of t.tasks) {
-    lines.push(`  [${k.status}${k.overdue ? ', OVERDUE' : ''}] #${k.id} ${k.title}${k.dueDate ? ` | due ${k.dueDate} ${k.deadline || ''}` : ''}${k.heavy ? ' | HARD' : ''}${k.firstStep ? ` | first step: "${k.firstStep}"` : ''}${k.estimate ? ` | est ${k.estimate} min` : ''}${k.goalTitle ? ` | goal: ${k.goalTitle}` : ''}`);
+    lines.push(`  [${k.status}${k.overdue ? ', OVERDUE' : ''}] task #${k.id} ${k.title}${k.dueDate ? ` | due ${k.dueDate} ${k.deadline || ''}` : ''}${k.heavy ? ' | HARD' : ''}${k.firstStep ? ` | first step: "${k.firstStep}"` : ''}${k.estimate ? ` | est ${k.estimate} min` : ''}${k.goalTitle ? ` | goal: ${k.goalTitle}` : ''}`);
   }
-  if (t.anytime.length) lines.push(`Undated tasks: ${t.anytime.map((k) => `#${k.id} ${k.title}`).join('; ')}`);
-  if (t.triage.length) lines.push(`Backlog needing a decision (overdue or stale): ${t.triage.map((k) => `#${k.id} ${k.title}`).join('; ')}`);
+  if (t.anytime.length) lines.push(`Undated tasks: ${t.anytime.map((k) => `task #${k.id} ${k.title}`).join('; ')}`);
+  if (t.triage.length) lines.push(`Backlog needing a decision (overdue or stale): ${t.triage.map((k) => `task #${k.id} ${k.title}`).join('; ')}`);
   if (t.upcoming.length) {
     lines.push('Upcoming tasks:');
-    for (const k of t.upcoming.slice(0, 15)) lines.push(`  #${k.id} ${k.title} | due ${k.dueDate} ${k.deadline || ''}${k.heavy ? ' | HARD' : ''}`);
+    for (const k of t.upcoming.slice(0, 15)) lines.push(`  task #${k.id} ${k.title} | due ${k.dueDate} ${k.deadline || ''}${k.heavy ? ' | HARD' : ''}`);
   }
   if (t.capacity) {
     lines.push(`Capacity: ${t.capacity.estimated} min of estimated task work today, ${t.capacity.available} min of free time left before the day ends${t.capacity.busy ? ` (${t.capacity.busy} min more are booked in his calendar)` : ''}.`);
@@ -491,7 +518,7 @@ export async function coachSnapshot() {
   if (goals.length) {
     lines.push('Active goals (WOOP):');
     for (const goal of goals) {
-      lines.push(`  "${goal.title}" | progress ${goal.pct === null ? 'no steps yet' : `${goal.pct}%`} (${goal.label})${goal.targetDate ? ` | by ${goal.targetDate} (${goal.daysLeft} days)` : ''}${goal.why ? ` | why: "${goal.why}"` : ''}${goal.obstacle ? ` | obstacle: "${goal.obstacle}"` : ''}${goal.plan ? ` | plan: "${goal.plan}"` : ''} | ${goal.habitCount} habits, ${goal.taskCount} tasks`);
+      lines.push(`  goal #${goal.id} "${goal.title}" | progress ${goal.pct === null ? 'no steps yet' : `${goal.pct}%`} (${goal.label})${goal.targetDate ? ` | by ${goal.targetDate} (${goal.daysLeft} days)` : ''}${goal.why ? ` | why: "${goal.why}"` : ''}${goal.obstacle ? ` | obstacle: "${goal.obstacle}"` : ''}${goal.plan ? ` | plan: "${goal.plan}"` : ''} | ${goal.habitCount} habits, ${goal.taskCount} tasks`);
     }
   }
   const days = await db()`select * from days order by date desc limit 14`;
@@ -502,7 +529,7 @@ export async function coachSnapshot() {
   const misses = await db()`select * from misses order by created_at desc limit 15`;
   if (misses.length) {
     lines.push('Recent misses:');
-    for (const m of misses) lines.push(`  ${m.date} ${m.title} -${m.hp_lost} HP${m.repeat ? ' (second miss in a row)' : ''}${m.pardoned_at ? ` | PARDONED, what got in the way: "${m.pardon_reason}", plan: "${m.pardon_plan || ''}"` : ''}`);
+    for (const m of misses) lines.push(`  miss #${m.id} ${m.date} ${m.title} -${m.hp_lost} HP${m.repeat ? ' (second miss in a row)' : ''}${m.pardoned_at ? ` | PARDONED, what got in the way: "${m.pardon_reason}", plan: "${m.pardon_plan || ''}"` : ''}`);
   }
   if (t.plan) {
     lines.push(`Today's oath: his one thing is "${t.plan.focusTitle}".${t.plan.intention ? ` When and where, in his words: "${t.plan.intention}".` : ''}`);

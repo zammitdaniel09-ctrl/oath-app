@@ -688,7 +688,6 @@ export async function updateTask(id, input, { validTime, validDate }, actor = 'y
       && (input.hard === undefined || Boolean(input.hard) === t.hard);
     if (!same) {
       if (locked) throw new RuleError('Hard tasks are locked once they are due. Do it or take the hit.', 409);
-      if (actor === 'coach' && t.hard) throw new RuleError('The coach cannot move hard tasks.', 409);
     }
     if (input.due_date !== undefined) {
       due = input.due_date === null || input.due_date === '' ? null : validDate(input.due_date) ? input.due_date : t.due_date;

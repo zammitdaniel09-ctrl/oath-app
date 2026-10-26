@@ -25,12 +25,22 @@ function dueText(g) {
   return `By ${fmtDay(g.targetDate)}, ${g.daysLeft} ${g.daysLeft === 1 ? 'day' : 'days'} left`;
 }
 
+// On pace, ahead or behind: where the goal is against where an even pace would have it by today.
+function paceChip(g) {
+  const p = g.pace;
+  if (!p) return '';
+  const text = p.state === 'on' ? 'On pace' : p.state === 'ahead' ? `Ahead by ${p.diff}%` : `Behind by ${-p.diff}%`;
+  return `<span class="pace pace-${p.state}" title="An even pace would be at ${p.expected}% today">${text}</span>`;
+}
+
 function goalCard(g) {
   const closed = g.status !== 'active';
-  return `<a class="goal-card${closed ? ' closed' : ''}" href="#/goals/${g.id}">
+  const next = !closed && g.nextStep ? `<span class="goal-next">${icon('bolt')}Next: ${esc(g.nextStep.title)}</span>` : '';
+  return `<a class="goal-card${closed ? ' closed' : ''}${g.pace ? ` pace-${g.pace.state}` : ''}" href="#/goals/${g.id}">
     <span class="goal-ring">${miniRing(g.pct ?? 0, 52)}${g.pct === null ? '<b class="na">–<span class="sr"> not measured yet</span></b>' : `<b>${g.pct}<small>%</small></b>`}</span>
     <span class="goal-text"><span class="goal-title">${esc(g.title)}</span>
-      <span class="goal-meta">${closed ? `<span class="goal-status${g.status === 'done' ? ' done' : ''}">${g.status === 'done' ? 'Achieved' : 'Dropped'}</span>` : esc(g.label)}${dueText(g) && !closed ? `${String(g.label || '').endsWith('.') ? '' : '.'} ${dueText(g)}` : ''}</span></span>
+      <span class="goal-meta">${closed ? `<span class="goal-status${g.status === 'done' ? ' done' : ''}">${g.status === 'done' ? 'Achieved' : 'Dropped'}</span>` : `${paceChip(g)}${esc(g.label)}`}${dueText(g) && !closed ? `${String(g.label || '').endsWith('.') ? '' : '.'} ${dueText(g)}` : ''}</span>
+      ${next}</span>
     ${icon('chevron', 'chev')}
   </a>`;
 }
@@ -40,7 +50,8 @@ export function viewGoals() {
   if (!goals) return ctx.shell('<p class="muted">Loading</p>');
   const active = goals.filter((g) => g.status === 'active');
   const closed = goals.filter((g) => g.status !== 'active');
-  ctx.shell(`${pageHead('Goals', { over: `${active.length} active`, actions: `<a class="icon-btn accent" href="#/goals/new" aria-label="New goal">${icon('plus')}</a>` })}
+  const behind = active.filter((g) => g.pace?.state === 'behind').length;
+  ctx.shell(`${pageHead('Goals', { over: `${active.length} active${behind ? `, ${behind} behind pace` : ''}`, actions: `<a class="icon-btn accent" href="#/goals/new" aria-label="New goal">${icon('plus')}</a>` })}
     <div class="split"><div>
     <section class="section">
       ${active.length ? `<div class="goal-list">${active.map(goalCard).join('')}</div>`
@@ -313,9 +324,17 @@ export function viewGoal() {
     <h1 class="goal-h">${esc(g.title)}</h1>
     <div class="goal-progress">
       <span class="goal-big">${g.pct === null ? '' : `${g.pct}<small>%</small>`}</span>
-      <span class="goal-sub">${closed ? (g.status === 'done' ? 'Achieved' : 'Dropped') : esc(g.label)}${g.targetDate ? `<br>${dueText(g)}` : ''}</span>
+      <span class="goal-sub">${closed ? (g.status === 'done' ? 'Achieved' : 'Dropped') : esc(g.label)}${g.targetDate ? `<br>${!closed && g.daysLeft >= 0 ? `By ${fmtDay(g.targetDate)}` : dueText(g)}` : ''}</span>
+      ${!closed && g.targetDate && g.daysLeft >= 0 ? `<span class="goal-countdown"><b>${g.daysLeft}</b><span>${g.daysLeft === 1 ? 'day' : 'days'} left</span></span>` : ''}
     </div>
-    ${bar(g.pct, 'big')}
+    <div class="goal-bar${g.pace ? ` pace-${g.pace.state}` : ''}">${bar(g.pct, 'big')}${g.pace ? `<i class="pace-mark" style="left:${g.pace.expected}%" title="Even pace: ${g.pace.expected}%"></i>` : ''}</div>
+    ${g.pace ? `<p class="pace-line">${paceChip(g)}<span>An even pace would be at ${g.pace.expected}% today.</span></p>` : ''}
+    ${!closed && g.nextStep ? `<div class="card next-step">
+      <p class="eyebrow">${icon('bolt')}Next step</p>
+      <p class="next-step-title">${esc(g.nextStep.title)}</p>
+      ${g.nextStep.dueDate ? `<p class="small muted">Due ${fmtDay(g.nextStep.dueDate)}${g.nextStep.deadline ? ` ${esc(g.nextStep.deadline)}` : ''}${g.nextStep.hard ? ', hard' : ''}</p>` : ''}
+      <div class="form-actions"><button class="btn chrome" data-action="task-done" data-id="${g.nextStep.id}">${icon('check')}Done</button></div>
+    </div>` : ''}
     ${g.measure === 'number' && !closed ? `<form class="inline-form log-form" data-form="goal-log" data-id="${g.id}">
       <label class="sr" for="goal-log">New value</label>
       <input id="goal-log" class="input" name="value" inputmode="decimal" autocomplete="off" placeholder="New total, or +${g.unit ? `N ${esc(g.unit)}` : 'N'}" required>
