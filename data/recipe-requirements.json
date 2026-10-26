@@ -1,0 +1,2991 @@
+{
+ "source": "Oath food and recipe content blueprint, 26 Oct 2026",
+ "count": 373,
+ "families": 20,
+ "items": [
+  {
+   "key": "breakfast-fruit-oats/banana-porridge",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "banana porridge",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/apple-cinnamon-porridge",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "apple-cinnamon porridge",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/berry-porridge",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "berry porridge",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/overnight-oats",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "overnight oats",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/baked-oats",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "baked oats",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/chia-pudding",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "chia pudding",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/bircher-muesli",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "bircher muesli",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/yogurt-and-granola-bowl",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "yogurt and granola bowl",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/greek-yogurt-fruit-bowl",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "Greek yogurt fruit bowl",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/skyr-and-fruit-bowl",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "skyr and fruit bowl",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/cottage-cheese-fruit-bowl",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "cottage-cheese fruit bowl",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/rice-pudding-breakfast-bowl",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "rice pudding breakfast bowl",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/fruit-salad",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "fruit salad",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/citrus-fruit-bowl",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "citrus fruit bowl",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/tropical-fruit-bowl",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "tropical fruit bowl",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/yogurt-parfait",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "yogurt parfait",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/cereal-with-milk-and-fruit",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "cereal with milk and fruit",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-fruit-oats/breakfast-couscous",
+   "family": "breakfast-fruit-oats",
+   "familyLabel": "Fruit, oats and yogurt breakfasts",
+   "name": "breakfast couscous",
+   "type": "recipe",
+   "rule": "Simple fruit combinations are saved meals; flavour substitutions link to their base."
+  },
+  {
+   "key": "breakfast-eggs/scrambled-eggs-on-toast",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "scrambled eggs on toast",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/mushroom-omelette",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "mushroom omelette",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/cheese-omelette",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "cheese omelette",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/spinach-omelette",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "spinach omelette",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/spanish-tortilla",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "Spanish tortilla",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/frittata",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "frittata",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/shakshuka",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "shakshuka",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/poached-eggs-on-toast",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "poached eggs on toast",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/egg-and-avocado-toast",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "egg and avocado toast",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/breakfast-egg-wrap",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "breakfast egg wrap",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/breakfast-egg-sandwich",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "breakfast egg sandwich",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/french-toast",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "French toast",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/pancakes",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "pancakes",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/banana-oat-pancakes",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "banana oat pancakes",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/waffles",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "waffles",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/breakfast-hash",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "breakfast hash",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/baked-eggs-with-tomatoes",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "baked eggs with tomatoes",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "breakfast-eggs/savoury-egg-muffins",
+   "family": "breakfast-eggs",
+   "familyLabel": "Egg and hot breakfasts",
+   "name": "savoury egg muffins",
+   "type": "recipe",
+   "rule": "Plain egg preparation guides are counted separately from complete recipes."
+  },
+  {
+   "key": "sandwiches/ham-and-cheese-sandwich",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "ham and cheese sandwich",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/tuna-mayonnaise-sandwich",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "tuna mayonnaise sandwich",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/tuna-and-sweetcorn-sandwich",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "tuna and sweetcorn sandwich",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/egg-mayonnaise-sandwich",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "egg mayonnaise sandwich",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/chicken-salad-sandwich",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "chicken salad sandwich",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/roast-vegetable-sandwich",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "roast vegetable sandwich",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/cheese-and-tomato-toastie",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "cheese and tomato toastie",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/peanut-butter-and-banana-toast",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "peanut butter and banana toast",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/hummus-and-vegetable-wrap",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "hummus and vegetable wrap",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/chicken-fajita-wrap",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "chicken fajita wrap",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/tuna-wrap",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "tuna wrap",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/chicken-caesar-wrap",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "chicken Caesar wrap",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/halloumi-wrap",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "halloumi wrap",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/falafel-wrap",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "falafel wrap",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/breakfast-burrito",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "breakfast burrito",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/bean-and-rice-burrito",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "bean and rice burrito",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/quesadilla",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "quesadilla",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/club-sandwich",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "club sandwich",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/smoked-salmon-bagel",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "smoked salmon bagel",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "sandwiches/grilled-cheese-sandwich",
+   "family": "sandwiches",
+   "familyLabel": "Sandwiches, toasties and wraps",
+   "name": "grilled cheese sandwich",
+   "type": "recipe",
+   "rule": "Bread, fillings, spread and quantities stay editable; standard substitutions create linked variants."
+  },
+  {
+   "key": "lunches/tuna-pasta-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "tuna pasta salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/chicken-pasta-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "chicken pasta salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/pesto-pasta-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "pesto pasta salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/mediterranean-pasta-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "Mediterranean pasta salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/couscous-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "couscous salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/bulgur-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "bulgur salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/quinoa-chickpea-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "quinoa chickpea salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/rice-and-bean-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "rice and bean salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/greek-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "Greek salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/chicken-caesar-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "chicken Caesar salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/tuna-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "tuna salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/potato-and-egg-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "potato and egg salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/lentil-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "lentil salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/chickpea-cucumber-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "chickpea cucumber salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/halloumi-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "halloumi salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "lunches/caprese-salad",
+   "family": "lunches",
+   "familyLabel": "Cold pasta, grain and packed lunches",
+   "name": "caprese salad",
+   "type": "recipe",
+   "rule": "Dressing, cheese, olives and oil are explicit."
+  },
+  {
+   "key": "pasta/pasta-with-tomato-sauce",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "pasta with tomato sauce",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/pasta-with-tuna-and-tomato",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "pasta with tuna and tomato",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/pasta-with-pesto",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "pasta with pesto",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/pasta-with-garlic-and-olive-oil",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "pasta with garlic and olive oil",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/pasta-with-butter-and-parmesan",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "pasta with butter and Parmesan",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/spaghetti-bolognese",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "spaghetti bolognese",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/lentil-bolognese",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "lentil bolognese",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/mushroom-pasta",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "mushroom pasta",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/spinach-and-ricotta-pasta",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "spinach and ricotta pasta",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/chicken-and-tomato-pasta",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "chicken and tomato pasta",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/chicken-and-cream-pasta",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "chicken and cream pasta",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/salmon-pasta",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "salmon pasta",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/prawn-pasta",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "prawn pasta",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/pasta-puttanesca",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "pasta puttanesca",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/pasta-arrabbiata",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "pasta arrabbiata",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/pasta-with-peas-and-ham",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "pasta with peas and ham",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/pasta-with-roasted-vegetables",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "pasta with roasted vegetables",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/spaghetti-carbonara",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "spaghetti carbonara",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/pasta-with-beans",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "pasta with beans",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "pasta/gnocchi-with-tomato-sauce",
+   "family": "pasta",
+   "familyLabel": "Pasta: everyday sauces and bowls",
+   "name": "gnocchi with tomato sauce",
+   "type": "recipe",
+   "rule": "Named styles stay distinct without claiming authenticity. Dry versus cooked pasta is explicit."
+  },
+  {
+   "key": "bakes/beef-lasagne",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "beef lasagne",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/vegetable-lasagne",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "vegetable lasagne",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/spinach-and-ricotta-cannelloni",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "spinach and ricotta cannelloni",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/macaroni-cheese",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "macaroni cheese",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/tuna-pasta-bake",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "tuna pasta bake",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/chicken-pasta-bake",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "chicken pasta bake",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/vegetable-pasta-bake",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "vegetable pasta bake",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/aubergine-pasta-bake",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "aubergine pasta bake",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/baked-gnocchi",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "baked gnocchi",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/stuffed-pasta-shells",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "stuffed pasta shells",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/baked-rice-with-mince",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "baked rice with mince",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/chicken-and-rice-casserole",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "chicken and rice casserole",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/stuffed-peppers",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "stuffed peppers",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/cottage-pie",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "cottage pie",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/shepherd-s-pie",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "shepherd's pie",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "bakes/moussaka",
+   "family": "bakes",
+   "familyLabel": "Pasta, rice and family bakes",
+   "name": "moussaka",
+   "type": "recipe",
+   "rule": "Whole-tray yield, final measured mass and remaining portions are supported."
+  },
+  {
+   "key": "rice/plain-chicken-rice-bowl",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "plain chicken rice bowl",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/chicken-fried-rice",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "chicken fried rice",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/egg-fried-rice",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "egg fried rice",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/vegetable-fried-rice",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "vegetable fried rice",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/tofu-fried-rice",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "tofu fried rice",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/prawn-fried-rice",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "prawn fried rice",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/chicken-risotto",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "chicken risotto",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/mushroom-risotto",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "mushroom risotto",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/pea-risotto",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "pea risotto",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/tomato-risotto",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "tomato risotto",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/rice-and-beans",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "rice and beans",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/lentils-and-rice",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "lentils and rice",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/chicken-pilaf",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "chicken pilaf",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/vegetable-pilaf",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "vegetable pilaf",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/chicken-biryani-style-rice",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "chicken biryani-style rice",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/vegetable-biryani-style-rice",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "vegetable biryani-style rice",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/burrito-bowl",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "burrito bowl",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/salmon-rice-bowl",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "salmon rice bowl",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/couscous-vegetable-bowl",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "couscous vegetable bowl",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "rice/quinoa-roast-vegetable-bowl",
+   "family": "rice",
+   "familyLabel": "Rice, grains and bowls",
+   "name": "quinoa roast vegetable bowl",
+   "type": "recipe",
+   "rule": "Substantive sauces/proteins can be variants; rice shapes and portions are not recipes."
+  },
+  {
+   "key": "noodles/chicken-noodle-stir-fry",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "chicken noodle stir-fry",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/beef-noodle-stir-fry",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "beef noodle stir-fry",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/prawn-noodle-stir-fry",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "prawn noodle stir-fry",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/tofu-noodle-stir-fry",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "tofu noodle stir-fry",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/vegetable-noodle-stir-fry",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "vegetable noodle stir-fry",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/egg-noodle-stir-fry",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "egg noodle stir-fry",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/peanut-noodles",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "peanut noodles",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/sesame-noodles",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "sesame noodles",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/noodle-soup-with-chicken",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "noodle soup with chicken",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/vegetable-noodle-soup",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "vegetable noodle soup",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/rice-noodle-salad",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "rice noodle salad",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/teriyaki-chicken-bowl",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "teriyaki chicken bowl",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/sweet-chilli-tofu-noodles",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "sweet chilli tofu noodles",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/instant-noodles-with-egg-and-vegetables",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "instant noodles with egg and vegetables",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/ramen-style-broth-bowl",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "ramen-style broth bowl",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "noodles/coconut-curry-noodle-soup",
+   "family": "noodles",
+   "familyLabel": "Noodles and stir-fries",
+   "name": "coconut curry noodle soup",
+   "type": "recipe",
+   "rule": "Seasoning/oil sachets, sauces and broth stay separate and trackable."
+  },
+  {
+   "key": "sides/mashed-potatoes",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "mashed potatoes",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/roast-potatoes",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "roast potatoes",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/oven-chips",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "oven chips",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/air-fryer-potato-wedges",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "air-fryer potato wedges",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/baked-potato-with-beans",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "baked potato with beans",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/baked-potato-with-tuna",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "baked potato with tuna",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/baked-potato-with-cheese",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "baked potato with cheese",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/potato-salad",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "potato salad",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/sweet-potato-mash",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "sweet potato mash",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/sweet-potato-wedges",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "sweet potato wedges",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/coleslaw",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "coleslaw",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/roasted-vegetables",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "roasted vegetables",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/steamed-vegetables-with-butter",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "steamed vegetables with butter",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/garlic-mushrooms",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "garlic mushrooms",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/sauteed-spinach",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "sautéed spinach",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/cauliflower-cheese",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "cauliflower cheese",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/corn-with-butter",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "corn with butter",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "sides/green-beans-with-garlic",
+   "family": "sides",
+   "familyLabel": "Potato and vegetable sides",
+   "name": "green beans with garlic",
+   "type": "recipe",
+   "rule": "Plain cooked states and minimal preparations are reported separately."
+  },
+  {
+   "key": "chicken/lemon-herb-chicken",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "lemon herb chicken",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/garlic-chicken",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "garlic chicken",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-traybake",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken traybake",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/roast-chicken-dinner",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "roast chicken dinner",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-and-vegetable-skewers",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken and vegetable skewers",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-fajitas",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken fajitas",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-schnitzel",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken schnitzel",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-curry",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken curry",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-tikka-style-curry",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken tikka-style curry",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-coconut-curry",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken coconut curry",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-and-chickpea-stew",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken and chickpea stew",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-chilli",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken chilli",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/turkey-chilli",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "turkey chilli",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/turkey-meatballs",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "turkey meatballs",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-meatballs",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken meatballs",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-burger",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken burger",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-in-tomato-sauce",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken in tomato sauce",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/barbecue-chicken",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "barbecue chicken",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-and-mushroom-sauce",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken and mushroom sauce",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "chicken/chicken-with-mustard-sauce",
+   "family": "chicken",
+   "familyLabel": "Chicken and turkey mains",
+   "name": "chicken with mustard sauce",
+   "type": "recipe",
+   "rule": "The protein method is separate from optional rice/bread/sides."
+  },
+  {
+   "key": "meat/beef-chilli",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "beef chilli",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/beef-and-bean-stew",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "beef and bean stew",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/beef-meatballs-in-tomato-sauce",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "beef meatballs in tomato sauce",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/beef-burger",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "beef burger",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/steak-with-potatoes",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "steak with potatoes",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/beef-stir-fry",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "beef stir-fry",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/pork-stir-fry",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "pork stir-fry",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/pork-chops-with-apple-sauce",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "pork chops with apple sauce",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/sausage-and-bean-casserole",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "sausage and bean casserole",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/sausage-traybake",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "sausage traybake",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/pork-meatballs",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "pork meatballs",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/lamb-kofta",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "lamb kofta",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/lamb-and-chickpea-stew",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "lamb and chickpea stew",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/lamb-chops-with-vegetables",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "lamb chops with vegetables",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/slow-cooked-beef-ragu",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "slow-cooked beef ragu",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "meat/rabbit-stew",
+   "family": "meat",
+   "familyLabel": "Beef, pork, lamb and other meat mains",
+   "name": "rabbit stew",
+   "type": "recipe",
+   "rule": "Cut/fat percentage, cooked yield and sauces are explicit."
+  },
+  {
+   "key": "fish/baked-salmon",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "baked salmon",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/lemon-cod",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "lemon cod",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/garlic-prawns",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "garlic prawns",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/fish-tacos",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "fish tacos",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/tuna-patties",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "tuna patties",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/salmon-patties",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "salmon patties",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/fish-pie",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "fish pie",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/seafood-pasta",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "seafood pasta",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/seafood-rice",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "seafood rice",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/fish-and-chips",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "fish and chips",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/sardines-on-toast",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "sardines on toast",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/mackerel-potato-salad",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "mackerel potato salad",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/grilled-sea-bass",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "grilled sea bass",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/fish-stew",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "fish stew",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/prawn-curry",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "prawn curry",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/calamari-style-squid",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "calamari-style squid",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/baked-fish-with-tomato-and-olives",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "baked fish with tomato and olives",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "fish/smoked-salmon-potato-bowl",
+   "family": "fish",
+   "familyLabel": "Fish and seafood mains",
+   "name": "smoked salmon potato bowl",
+   "type": "recipe",
+   "rule": "Raw versus cooked fish, drained canned fish, shell/bone exclusions and breading/frying are clear."
+  },
+  {
+   "key": "vegetarian/lentil-dhal",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "lentil dhal",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/chickpea-curry",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "chickpea curry",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/bean-chilli",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "bean chilli",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/lentil-soup",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "lentil soup",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/chickpea-stew",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "chickpea stew",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/white-bean-tomato-stew",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "white bean tomato stew",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/lentil-shepherd-s-pie",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "lentil shepherd's pie",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/falafel",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "falafel",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/tofu-scramble",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "tofu scramble",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/tofu-curry",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "tofu curry",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/tofu-and-vegetable-traybake",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "tofu and vegetable traybake",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/tempeh-stir-fry",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "tempeh stir-fry",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/baked-beans-on-toast",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "baked beans on toast",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/stuffed-aubergine",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "stuffed aubergine",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/stuffed-courgette",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "stuffed courgette",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/vegetable-tagine",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "vegetable tagine",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/halloumi-and-vegetable-skewers",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "halloumi and vegetable skewers",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "vegetarian/black-bean-burger",
+   "family": "vegetarian",
+   "familyLabel": "Beans, lentils, tofu and vegetarian mains",
+   "name": "black bean burger",
+   "type": "recipe",
+   "rule": "Legume dry/cooked quantities and retained liquids are explicit."
+  },
+  {
+   "key": "soups/tomato-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "tomato soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/vegetable-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "vegetable soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/minestrone",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "minestrone",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/chicken-vegetable-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "chicken vegetable soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/chicken-noodle-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "chicken noodle soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/pumpkin-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "pumpkin soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/carrot-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "carrot soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/leek-and-potato-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "leek and potato soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/mushroom-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "mushroom soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/broccoli-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "broccoli soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/lentil-and-tomato-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "lentil and tomato soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/bean-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "bean soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/pea-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "pea soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/fish-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "fish soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/beef-vegetable-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "beef vegetable soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/vegetable-and-barley-stew",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "vegetable and barley stew",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/chickpea-spinach-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "chickpea spinach soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "soups/sweetcorn-soup",
+   "family": "soups",
+   "familyLabel": "Soups and stews",
+   "name": "sweetcorn soup",
+   "type": "recipe",
+   "rule": "Broth, cream, oil and bread sides are explicit."
+  },
+  {
+   "key": "pizza-pies/margherita-pizza",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "Margherita pizza",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/vegetable-pizza",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "vegetable pizza",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/chicken-pizza",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "chicken pizza",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/tuna-pizza",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "tuna pizza",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/pepperoni-pizza",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "pepperoni pizza",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/pita-pizza",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "pita pizza",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/tortilla-pizza",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "tortilla pizza",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/homemade-calzone",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "homemade calzone",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/cheese-and-onion-quiche",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "cheese and onion quiche",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/spinach-quiche",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "spinach quiche",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/chicken-pie",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "chicken pie",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/fish-pie-with-pastry",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "fish pie with pastry",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/vegetable-pie",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "vegetable pie",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/ricotta-savoury-tart",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "ricotta savoury tart",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/sausage-roll",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "sausage roll",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "pizza-pies/cheese-pastry-turnover",
+   "family": "pizza-pies",
+   "familyLabel": "Pizza, savoury pies and baked meals",
+   "name": "cheese pastry turnover",
+   "type": "recipe",
+   "rule": "Dough/pastry and toppings are separate editable components."
+  },
+  {
+   "key": "sweets/banana-bread",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "banana bread",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/blueberry-muffins",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "blueberry muffins",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/chocolate-muffins",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "chocolate muffins",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/oat-cookies",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "oat cookies",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/chocolate-chip-cookies",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "chocolate chip cookies",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/flapjacks",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "flapjacks",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/brownies",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "brownies",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/vanilla-sponge-cake",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "vanilla sponge cake",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/chocolate-cake",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "chocolate cake",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/baked-cheesecake",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "baked cheesecake",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/no-bake-cheesecake",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "no-bake cheesecake",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/rice-pudding",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "rice pudding",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/semolina-pudding",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "semolina pudding",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/fruit-crumble",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "fruit crumble",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/baked-apples",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "baked apples",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/yogurt-ice-pops",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "yogurt ice pops",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/smoothie-ice-pops",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "smoothie ice pops",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/homemade-granola-bars",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "homemade granola bars",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/peanut-butter-oat-bites",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "peanut butter oat bites",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "sweets/chocolate-yogurt-bowl",
+   "family": "sweets",
+   "familyLabel": "Sweet snacks, baking and desserts",
+   "name": "chocolate yogurt bowl",
+   "type": "recipe",
+   "rule": "Ordinary treats without health halos."
+  },
+  {
+   "key": "maltese/hobz-biz-zejt",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "ħobż biż-żejt",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/tuna-filled-ftira",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "tuna-filled ftira",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/gozitan-baked-ftira",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "Gozitan baked ftira",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/ricotta-pastizzi",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "ricotta pastizzi",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/pea-pastizzi",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "pea pastizzi",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/ricotta-qassatat",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "ricotta qassatat",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/pea-qassatat",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "pea qassatat",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/spinach-qassatat",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "spinach qassatat",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/timpana",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "timpana",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/imqarrun-il-forn",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "imqarrun il-forn",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/ross-il-forn",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "ross il-forn",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/bigilla",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "bigilla",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/minestra",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "minestra",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/aljotta",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "aljotta",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/kusksu",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "kusksu",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/soppa-tal-armla",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "soppa tal-armla",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/stuffed-qarabaghli",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "stuffed qarabagħli",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/patata-l-forn",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "patata l-forn",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/rabbit-stew-stuffat-tal-fenek",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "rabbit stew / stuffat tal-fenek",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/ricotta-ravjul",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "ricotta ravjul",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/imqaret",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "imqaret",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/lampuki-pie",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "lampuki pie",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "maltese/qaghaq-tal-ghasel",
+   "family": "maltese",
+   "familyLabel": "Maltese dishes and bakery recipes",
+   "name": "qagħaq tal-għasel",
+   "type": "recipe",
+   "rule": "Verify names and composition with local sources; label adaptations; generic bakery estimates are not verified recipes."
+  },
+  {
+   "key": "shakes/banana-milkshake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "banana milkshake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/strawberry-milkshake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "strawberry milkshake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/chocolate-milkshake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "chocolate milkshake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/vanilla-milkshake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "vanilla milkshake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/banana-whey-shake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "banana whey shake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/chocolate-whey-shake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "chocolate whey shake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/vanilla-whey-shake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "vanilla whey shake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/berry-plant-protein-shake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "berry plant-protein shake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/banana-oat-shake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "banana oat shake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/peanut-butter-banana-shake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "peanut butter banana shake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/strawberry-yogurt-smoothie",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "strawberry yogurt smoothie",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/mixed-berry-smoothie",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "mixed berry smoothie",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/mango-yogurt-smoothie",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "mango yogurt smoothie",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/pineapple-coconut-smoothie",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "pineapple coconut smoothie",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/banana-coffee-shake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "banana coffee shake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/chocolate-oat-shake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "chocolate oat shake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/date-milk-shake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "date milk shake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/avocado-cocoa-smoothie",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "avocado cocoa smoothie",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/peach-yogurt-smoothie",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "peach yogurt smoothie",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/kiwi-apple-smoothie",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "kiwi apple smoothie",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/orange-mango-smoothie",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "orange mango smoothie",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/strawberry-banana-smoothie",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "strawberry banana smoothie",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/apple-cinnamon-oat-shake",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "apple cinnamon oat shake",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/protein-shake-with-water",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "protein shake with water",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/protein-shake-with-milk",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "protein shake with milk",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "shakes/ready-made-shake-plus-personal-additions",
+   "family": "shakes",
+   "familyLabel": "Shakes, smoothies and blended drinks",
+   "name": "ready-made shake plus personal additions",
+   "type": "shake-preset",
+   "rule": "Configurable starting points in the shake builder; flavour and liquid swaps are linked variants."
+  },
+  {
+   "key": "components/tomato-pasta-sauce",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "tomato pasta sauce",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/bolognese-sauce",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "bolognese sauce",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/lentil-tomato-sauce",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "lentil tomato sauce",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/basil-pesto",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "basil pesto",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/hummus",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "hummus",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/yogurt-garlic-sauce",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "yogurt garlic sauce",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/tzatziki",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "tzatziki",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/vinaigrette",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "vinaigrette",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/honey-mustard-dressing",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "honey mustard dressing",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/cheese-sauce",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "cheese sauce",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/gravy",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "gravy",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/curry-sauce",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "curry sauce",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/peanut-sauce",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "peanut sauce",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/guacamole",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "guacamole",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/salsa",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "salsa",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "components/olive-tapenade",
+   "family": "components",
+   "familyLabel": "Sauces, dips and reusable components",
+   "name": "olive tapenade",
+   "type": "component",
+   "rule": "Nested components with cycle prevention; logged once in the final meal."
+  },
+  {
+   "key": "saved-meals/toast-with-butter",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "toast with butter",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/toast-with-jam",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "toast with jam",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/bread-with-cheese",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "bread with cheese",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/cereal-with-milk",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "cereal with milk",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/yogurt-with-fruit",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "yogurt with fruit",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/banana-with-peanut-butter",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "banana with peanut butter",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/apple-with-peanut-butter",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "apple with peanut butter",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/fruit-with-nuts",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "fruit with nuts",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/crackers-with-cheese",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "crackers with cheese",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/rice-with-chicken-and-broccoli",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "rice with chicken and broccoli",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/rice-with-beans-and-salsa",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "rice with beans and salsa",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/pasta-with-prepared-pesto",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "pasta with prepared pesto",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/soup-with-bread",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "soup with bread",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/baked-potato-with-tuna-and-mayonnaise",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "baked potato with tuna and mayonnaise",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/sandwich-with-crisps-and-a-drink",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "sandwich with crisps and a drink",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/pastizz-with-a-canned-drink",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "pastizz with a canned drink",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/protein-bar-with-coffee",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "protein bar with coffee",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/fruit-bowl-with-yogurt",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "fruit bowl with yogurt",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/leftover-pasta-portion-with-salad",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "leftover pasta portion with salad",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  },
+  {
+   "key": "saved-meals/homemade-shake-with-a-snack",
+   "family": "saved-meals",
+   "familyLabel": "Simple saved meal combinations",
+   "name": "homemade shake with a snack",
+   "type": "saved-meal",
+   "rule": "Saved editable assemblies, reported separately from authored recipes."
+  }
+ ]
+}

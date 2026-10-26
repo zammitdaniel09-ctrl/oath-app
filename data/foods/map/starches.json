@@ -1,0 +1,384 @@
+[
+  {
+    "req": "starches/white-potato",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "potato-white-raw",
+        "fdc_id": 170028,
+        "name": "White potato, raw",
+        "state": "raw",
+        "aliases": [
+          "potato",
+          "potatoes",
+          "patata"
+        ]
+      },
+      {
+        "key": "potato-white-boiled",
+        "fdc_id": 170440,
+        "name": "White potato, boiled",
+        "state": "boiled",
+        "aliases": [
+          "boiled potatoes",
+          "peeled boiled potato"
+        ]
+      },
+      {
+        "key": "potato-white-baked",
+        "fdc_id": 170434,
+        "name": "White potato, baked",
+        "state": "baked",
+        "aliases": [
+          "baked potato",
+          "jacket potato"
+        ]
+      }
+    ],
+    "note": "Raw and baked are flesh with skin; boiled is peeled flesh, no salt. Chips, roast and mash use prepared records or measured additions."
+  },
+  {
+    "req": "starches/new-potato",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "potato-new-raw",
+        "fdc_id": 170029,
+        "name": "New potatoes, raw",
+        "state": "raw",
+        "aliases": [
+          "new potato",
+          "baby potatoes",
+          "salad potatoes"
+        ]
+      },
+      {
+        "key": "potato-new-boiled",
+        "fdc_id": 170438,
+        "name": "New potatoes, boiled in skin",
+        "state": "boiled",
+        "aliases": [
+          "boiled new potatoes"
+        ]
+      }
+    ],
+    "note": "No new-potato record. Red potato (flesh and skin) used for raw; boiled uses the potato boiled-in-skin flesh record, which excludes the skin."
+  },
+  {
+    "req": "starches/sweet-potato",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sweet-potato-raw",
+        "fdc_id": 168482,
+        "name": "Sweet potato, raw",
+        "state": "raw",
+        "aliases": [
+          "sweet potato",
+          "sweet potatoes",
+          "patata ħelwa"
+        ]
+      },
+      {
+        "key": "sweet-potato-baked",
+        "fdc_id": 168483,
+        "name": "Sweet potato, baked",
+        "state": "baked",
+        "aliases": [
+          "baked sweet potato"
+        ]
+      },
+      {
+        "key": "sweet-potato-boiled",
+        "fdc_id": 168484,
+        "name": "Sweet potato, boiled",
+        "state": "boiled",
+        "aliases": [
+          "boiled sweet potato"
+        ]
+      }
+    ],
+    "note": "Baked is flesh only (baked in skin); boiled is peeled."
+  },
+  {
+    "req": "starches/yam",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "yam-raw",
+        "fdc_id": 170071,
+        "name": "Yam, raw",
+        "state": "raw",
+        "aliases": [
+          "yams"
+        ]
+      },
+      {
+        "key": "yam-cooked",
+        "fdc_id": 170072,
+        "name": "Yam, boiled or baked",
+        "state": "boiled",
+        "aliases": [
+          "cooked yam"
+        ]
+      }
+    ],
+    "note": "True yam, not US \"yam\" sweet potatoes."
+  },
+  {
+    "req": "starches/cassava",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cassava-raw",
+        "fdc_id": 169985,
+        "name": "Cassava, raw",
+        "state": "raw",
+        "aliases": [
+          "cassava",
+          "manioc",
+          "yuca"
+        ]
+      }
+    ],
+    "note": "Raw only; no boiled or cooked cassava record."
+  },
+  {
+    "req": "starches/sweetcorn-kernels",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sweetcorn-tinned-drained",
+        "fdc_id": 169214,
+        "name": "Sweetcorn, tinned, drained",
+        "state": "canned-drained",
+        "aliases": [
+          "sweetcorn",
+          "corn",
+          "tinned sweetcorn",
+          "canned corn"
+        ]
+      },
+      {
+        "key": "sweetcorn-frozen",
+        "fdc_id": 168398,
+        "name": "Sweetcorn, frozen",
+        "state": "frozen",
+        "aliases": [
+          "frozen sweetcorn"
+        ]
+      },
+      {
+        "key": "sweetcorn-frozen-boiled",
+        "fdc_id": 168399,
+        "name": "Sweetcorn, frozen, boiled",
+        "state": "boiled"
+      }
+    ],
+    "note": "Yellow whole kernels."
+  },
+  {
+    "req": "starches/corn-on-the-cob",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "corn-on-the-cob-raw",
+        "fdc_id": 169998,
+        "name": "Corn on the cob, raw",
+        "state": "raw",
+        "aliases": [
+          "corn on the cob",
+          "sweetcorn cob",
+          "ear of corn"
+        ]
+      },
+      {
+        "key": "corn-on-the-cob-boiled",
+        "fdc_id": 169999,
+        "name": "Corn on the cob, boiled",
+        "state": "boiled",
+        "aliases": [
+          "boiled corn on the cob"
+        ]
+      }
+    ],
+    "note": "Kernel weight; cob excluded (USDA ear portions are kernel yields). Butter is separate."
+  },
+  {
+    "req": "starches/green-peas",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "peas-raw",
+        "fdc_id": 170419,
+        "name": "Peas, raw",
+        "state": "raw",
+        "aliases": [
+          "peas",
+          "garden peas",
+          "piżelli"
+        ]
+      },
+      {
+        "key": "peas-frozen",
+        "fdc_id": 170016,
+        "name": "Peas, frozen",
+        "state": "frozen",
+        "aliases": [
+          "frozen peas",
+          "petits pois"
+        ]
+      },
+      {
+        "key": "peas-frozen-boiled",
+        "fdc_id": 170017,
+        "name": "Peas, frozen, boiled",
+        "state": "boiled",
+        "aliases": [
+          "boiled peas"
+        ]
+      },
+      {
+        "key": "peas-tinned-drained",
+        "fdc_id": 170013,
+        "name": "Peas, tinned, drained",
+        "state": "canned-drained",
+        "aliases": [
+          "tinned peas",
+          "canned peas"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "starches/chestnuts",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chestnuts-raw",
+        "fdc_id": 170575,
+        "name": "Chestnuts, raw, peeled",
+        "state": "raw",
+        "aliases": [
+          "chestnut",
+          "chestnuts",
+          "sweet chestnuts",
+          "qastan"
+        ]
+      },
+      {
+        "key": "chestnuts-roasted",
+        "fdc_id": 170190,
+        "name": "Chestnuts, roasted",
+        "state": "roasted",
+        "aliases": [
+          "roast chestnuts",
+          "roasted chestnuts"
+        ]
+      },
+      {
+        "key": "chestnuts-boiled",
+        "fdc_id": 170168,
+        "name": "Chestnuts, boiled",
+        "state": "boiled",
+        "aliases": [
+          "boiled chestnuts"
+        ]
+      }
+    ],
+    "note": "European chestnuts, shelled."
+  },
+  {
+    "req": "starches/frozen-oven-chips",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oven-chips-frozen",
+        "fdc_id": 170523,
+        "name": "Oven chips, frozen",
+        "state": "frozen",
+        "aliases": [
+          "oven chips",
+          "frozen chips",
+          "frozen fries"
+        ]
+      },
+      {
+        "key": "oven-chips-oven-heated",
+        "fdc_id": 170118,
+        "name": "Oven chips, oven-baked",
+        "state": "baked",
+        "aliases": [
+          "baked oven chips",
+          "oven fries"
+        ]
+      }
+    ],
+    "note": "USDA frozen french fries, all cuts, no salt added in processing."
+  },
+  {
+    "req": "starches/frozen-hash-browns",
+    "status": "product",
+    "records": [],
+    "note": "UK hash browns are pre-fried formed potato. USDA frozen plain hash browns (170043) are unfried shredded potato and the fast-food patty (173273) is fully fried, so neither fits; use the pack label."
+  },
+  {
+    "req": "starches/potato-croquettes",
+    "status": "product",
+    "records": [],
+    "note": "No USDA potato croquette record; use the pack label (or a recipe if homemade)."
+  },
+  {
+    "req": "starches/instant-mash-powder",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "instant-mash-flakes-dry",
+        "fdc_id": 170445,
+        "name": "Instant mashed potato flakes, dry",
+        "state": "dry",
+        "aliases": [
+          "instant mash",
+          "instant mashed potato",
+          "mash powder",
+          "potato flakes"
+        ]
+      },
+      {
+        "key": "instant-mash-granules-dry",
+        "fdc_id": 170039,
+        "name": "Instant mashed potato granules, dry",
+        "state": "dry",
+        "aliases": [
+          "potato granules"
+        ]
+      }
+    ],
+    "note": "Dry, without milk. Water, milk and butter are measured additions."
+  },
+  {
+    "req": "starches/ready-made-mashed-potato",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mashed-potato-ready-made",
+        "fdc_id": 169768,
+        "name": "Mashed potato, ready-made",
+        "state": "as-sold",
+        "aliases": [
+          "ready mash",
+          "chilled mash",
+          "ready-made mash"
+        ]
+      }
+    ],
+    "note": "Generic ready-to-eat mash; brand recipes vary in butter and cream."
+  },
+  {
+    "req": "starches/potato-waffle",
+    "status": "product",
+    "records": [],
+    "note": "No USDA record for frozen formed potato waffles; use the pack label."
+  }
+]

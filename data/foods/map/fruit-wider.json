@@ -1,0 +1,397 @@
+[
+  {
+    "req": "fruit-wider/pomegranate",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pomegranate-raw",
+        "fdc_id": 169134,
+        "name": "Pomegranate",
+        "state": "raw",
+        "aliases": [
+          "pomegranates",
+          "pomegranate seeds",
+          "pomegranate arils",
+          "rummien"
+        ]
+      }
+    ],
+    "note": "Arils (seeds and juice sacs)."
+  },
+  {
+    "req": "fruit-wider/fig",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "fig-raw",
+        "fdc_id": 173021,
+        "name": "Fig",
+        "state": "raw",
+        "aliases": [
+          "figs",
+          "fresh figs",
+          "tin"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fruit-wider/fresh-date",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "dates-medjool",
+        "fdc_id": 168191,
+        "name": "Medjool dates",
+        "state": "as-sold",
+        "aliases": [
+          "medjool",
+          "medjool date",
+          "fresh dates"
+        ]
+      }
+    ],
+    "note": "USDA has no fresh (khalal or rutab) date. Medjool is the soft date usually sold as fresh, but the USDA record is cured (21% water), so it overstates energy for truly fresh dates."
+  },
+  {
+    "req": "fruit-wider/persimmon",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "persimmon-raw",
+        "fdc_id": 169941,
+        "name": "Persimmon",
+        "state": "raw",
+        "aliases": [
+          "persimmons",
+          "sharon fruit",
+          "kaki"
+        ]
+      }
+    ],
+    "note": "Japanese (kaki) persimmon."
+  },
+  {
+    "req": "fruit-wider/papaya",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "papaya-raw",
+        "fdc_id": 169926,
+        "name": "Papaya",
+        "state": "raw",
+        "aliases": [
+          "papayas"
+        ]
+      }
+    ],
+    "note": "Peeled, seeded flesh."
+  },
+  {
+    "req": "fruit-wider/passion-fruit",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "passion-fruit-raw",
+        "fdc_id": 169108,
+        "name": "Passion fruit",
+        "state": "raw",
+        "aliases": [
+          "passionfruit",
+          "granadilla"
+        ]
+      }
+    ],
+    "note": "Purple passion fruit, pulp and seeds."
+  },
+  {
+    "req": "fruit-wider/guava",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "guava-raw",
+        "fdc_id": 173044,
+        "name": "Guava",
+        "state": "raw",
+        "aliases": [
+          "guavas"
+        ]
+      }
+    ],
+    "note": "Common guava."
+  },
+  {
+    "req": "fruit-wider/lychee",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "lychee-raw",
+        "fdc_id": 169086,
+        "name": "Lychee",
+        "state": "raw",
+        "aliases": [
+          "lychees",
+          "litchi",
+          "litchis"
+        ]
+      }
+    ],
+    "note": "Peeled, stone excluded."
+  },
+  {
+    "req": "fruit-wider/dragon-fruit",
+    "status": "gap",
+    "records": [],
+    "note": "No SR Legacy or Foundation record for dragon fruit (pitaya)."
+  },
+  {
+    "req": "fruit-wider/prickly-pear",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "prickly-pear-raw",
+        "fdc_id": 167750,
+        "name": "Prickly pear",
+        "state": "raw",
+        "aliases": [
+          "prickly pears",
+          "cactus pear",
+          "bajtra",
+          "bajtar tax-xewk"
+        ]
+      }
+    ],
+    "note": "Peeled fruit."
+  },
+  {
+    "req": "fruit-wider/blackcurrant",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "blackcurrants-raw",
+        "fdc_id": 173963,
+        "name": "Blackcurrants",
+        "state": "raw",
+        "aliases": [
+          "blackcurrant",
+          "black currants"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fruit-wider/redcurrant",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "redcurrants-raw",
+        "fdc_id": 173964,
+        "name": "Redcurrants",
+        "state": "raw",
+        "aliases": [
+          "redcurrant",
+          "red currants",
+          "white currants"
+        ]
+      }
+    ],
+    "note": "USDA red and white currants."
+  },
+  {
+    "req": "fruit-wider/gooseberry",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "gooseberries-raw",
+        "fdc_id": 173030,
+        "name": "Gooseberries",
+        "state": "raw",
+        "aliases": [
+          "gooseberry"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fruit-wider/cranberry",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cranberries-raw",
+        "fdc_id": 171722,
+        "name": "Cranberries",
+        "state": "raw",
+        "aliases": [
+          "cranberry",
+          "fresh cranberries"
+        ]
+      }
+    ],
+    "note": "Fresh only; dried sweetened cranberries are under fruit-preserved."
+  },
+  {
+    "req": "fruit-wider/mulberry",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mulberries-raw",
+        "fdc_id": 169913,
+        "name": "Mulberries",
+        "state": "raw",
+        "aliases": [
+          "mulberry",
+          "tut"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fruit-wider/coconut-flesh",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "coconut-flesh-raw",
+        "fdc_id": 170169,
+        "name": "Coconut flesh, fresh",
+        "state": "raw",
+        "aliases": [
+          "coconut meat",
+          "fresh coconut"
+        ]
+      },
+      {
+        "key": "coconut-desiccated-unsweetened",
+        "fdc_id": 170170,
+        "name": "Desiccated coconut, unsweetened",
+        "state": "dried",
+        "aliases": [
+          "desiccated coconut",
+          "dried coconut"
+        ]
+      },
+      {
+        "key": "coconut-desiccated-sweetened",
+        "fdc_id": 168586,
+        "name": "Desiccated coconut, sweetened",
+        "state": "dried",
+        "aliases": [
+          "sweetened coconut",
+          "sweetened shredded coconut"
+        ]
+      }
+    ],
+    "note": "Flesh only. Coconut milk, cream and water are separate foods and are not equated here."
+  },
+  {
+    "req": "fruit-wider/plantain",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "plantain-ripe-raw",
+        "fdc_id": 169130,
+        "name": "Plantain, ripe",
+        "state": "raw",
+        "aliases": [
+          "plantain",
+          "plantains",
+          "yellow plantain"
+        ]
+      },
+      {
+        "key": "plantain-green-boiled",
+        "fdc_id": 168216,
+        "name": "Plantain, green, boiled",
+        "state": "boiled",
+        "aliases": [
+          "boiled plantain"
+        ]
+      },
+      {
+        "key": "plantain-ripe-baked",
+        "fdc_id": 169131,
+        "name": "Plantain, ripe, baked",
+        "state": "baked",
+        "aliases": [
+          "baked plantain"
+        ]
+      }
+    ],
+    "note": "Peeled. Fried plantain adds oil; log oil separately."
+  },
+  {
+    "req": "fruit-wider/cooking-apple",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "cooking-apple-raw",
+        "fdc_id": 171689,
+        "name": "Cooking apple, peeled",
+        "state": "raw",
+        "aliases": [
+          "bramley",
+          "bramley apple",
+          "cooking apples"
+        ]
+      },
+      {
+        "key": "cooking-apple-boiled",
+        "fdc_id": 173928,
+        "name": "Cooking apple, peeled, stewed",
+        "state": "boiled",
+        "aliases": [
+          "stewed apple",
+          "stewed bramley"
+        ]
+      }
+    ],
+    "note": "No USDA Bramley or cooking-apple record; peeled dessert apple (raw and boiled) used as proxy. Bramleys are more acidic and a little lower in sugar. Sugar added when stewing must be logged separately."
+  },
+  {
+    "req": "fruit-wider/sour-cherry",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sour-cherries-raw",
+        "fdc_id": 173954,
+        "name": "Sour cherries",
+        "state": "raw",
+        "aliases": [
+          "sour cherry",
+          "morello cherries",
+          "morello"
+        ]
+      },
+      {
+        "key": "sour-cherries-frozen",
+        "fdc_id": 171718,
+        "name": "Sour cherries, frozen, unsweetened",
+        "state": "frozen",
+        "aliases": [
+          "frozen sour cherries"
+        ]
+      }
+    ],
+    "note": "Pitted weight."
+  },
+  {
+    "req": "fruit-wider/pomelo",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pomelo-raw",
+        "fdc_id": 167754,
+        "name": "Pomelo",
+        "state": "raw",
+        "aliases": [
+          "pummelo",
+          "pomelos"
+        ]
+      }
+    ],
+    "note": "Peeled sections."
+  }
+]

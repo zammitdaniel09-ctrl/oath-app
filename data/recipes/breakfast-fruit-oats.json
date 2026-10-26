@@ -1,0 +1,1379 @@
+[
+  {
+    "key": "banana-porridge",
+    "name": "Banana porridge",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/banana-porridge"
+    ],
+    "summary": "Rolled oats simmered in semi-skimmed milk with a pinch of salt, topped with sliced banana.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 6,
+    "equipment": [
+      "saucepan"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 50,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 250,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put the oats, milk and salt in a small saucepan over a medium heat.",
+      "Bring to a gentle simmer and cook for 4 to 5 minutes, stirring often, until thick and creamy.",
+      "Pour into a bowl, slice the banana over the top and drizzle with honey if you like."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "apple-cinnamon-porridge",
+    "name": "Apple and cinnamon porridge",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "variant",
+    "parent_key": "banana-porridge",
+    "req": [
+      "breakfast-fruit-oats/apple-cinnamon-porridge"
+    ],
+    "summary": "Porridge cooked with diced apple and cinnamon, with more fresh apple on top.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 6,
+    "equipment": [
+      "saucepan"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 50,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 250,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "apple-raw-with-skin",
+        "qty": 100,
+        "unit": "g",
+        "label": "apple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Core and dice the apple, leaving the skin on.",
+      "Put the oats, milk, salt, cinnamon and half the apple in a small saucepan and simmer for 4 to 5 minutes, stirring, until thick.",
+      "Spoon into a bowl, top with the rest of the apple and drizzle with honey if you like."
+    ],
+    "notes": "Variant of banana porridge: apple and cinnamon replace the banana."
+  },
+  {
+    "key": "berry-porridge",
+    "name": "Berry porridge",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "variant",
+    "parent_key": "banana-porridge",
+    "req": [
+      "breakfast-fruit-oats/berry-porridge"
+    ],
+    "summary": "Porridge with frozen raspberries and blueberries stirred through and scattered on top.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 6,
+    "equipment": [
+      "saucepan"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 50,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 250,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "raspberries-frozen",
+        "qty": 50,
+        "unit": "g",
+        "label": "raspberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "blueberries-frozen",
+        "qty": 50,
+        "unit": "g",
+        "label": "blueberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put the oats, milk and salt in a small saucepan and simmer for 4 to 5 minutes, stirring, until thick.",
+      "In the last minute stir in half the raspberries and blueberries straight from frozen so they warm through and streak the porridge.",
+      "Spoon into a bowl, scatter over the rest of the berries and add honey if you like."
+    ],
+    "notes": "Variant of banana porridge: frozen berries replace the banana."
+  },
+  {
+    "key": "overnight-oats",
+    "name": "Overnight oats",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/overnight-oats"
+    ],
+    "summary": "Oats soaked overnight in milk and Greek yogurt with chia seeds, topped with blueberries.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "jar or lidded tub"
+    ],
+    "tags": [
+      "breakfast",
+      "no-cook",
+      "packed-lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 45,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 120,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 60,
+        "unit": "g",
+        "label": "Greek yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chia-seeds",
+        "qty": 5,
+        "unit": "g",
+        "label": "chia seeds"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey"
+      },
+      {
+        "ref": "item",
+        "ref_key": "blueberries-raw",
+        "qty": 70,
+        "unit": "g",
+        "label": "blueberries"
+      }
+    ],
+    "method": [
+      "In a jar or lidded tub, stir together the oats, milk, Greek yogurt, chia seeds and honey.",
+      "Cover and refrigerate overnight, or for at least 4 hours.",
+      "In the morning stir well and top with the blueberries."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "bircher-muesli",
+    "name": "Bircher muesli",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "variant",
+    "parent_key": "overnight-oats",
+    "req": [
+      "breakfast-fruit-oats/bircher-muesli"
+    ],
+    "summary": "Oats soaked overnight in apple juice and yogurt, finished with grated apple, lemon and hazelnuts.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "jar or lidded tub",
+      "grater"
+    ],
+    "tags": [
+      "breakfast",
+      "no-cook",
+      "packed-lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 45,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "juice-apple",
+        "qty": 80,
+        "unit": "ml",
+        "label": "apple juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-low-fat",
+        "qty": 80,
+        "unit": "g",
+        "label": "yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "apple-raw-with-skin",
+        "qty": 80,
+        "unit": "g",
+        "label": "apple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 5,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "hazelnuts",
+        "qty": 10,
+        "unit": "g",
+        "label": "hazelnuts"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sultanas",
+        "qty": 10,
+        "unit": "g",
+        "label": "sultanas",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Stir the oats, apple juice and yogurt together in a jar or bowl, cover and refrigerate overnight.",
+      "In the morning, coarsely grate the apple, skin and all, and toss it with the lemon juice so it does not brown.",
+      "Stir the apple into the oats, then roughly chop the hazelnuts and scatter them over, with the sultanas if using."
+    ],
+    "notes": "Variant of overnight oats: apple juice, plain yogurt and grated apple replace the milk, chia seeds and berries."
+  },
+  {
+    "key": "baked-oats",
+    "name": "Baked oats",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/baked-oats"
+    ],
+    "summary": "Oats blended with banana, egg and milk, baked with blueberries until risen like a soft cake.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 22,
+    "equipment": [
+      "oven",
+      "blender",
+      "small ovenproof dish"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 3,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 50,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 80,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "baking-powder-as-sold",
+        "qty": 1,
+        "unit": "p:0.5 tsp",
+        "label": "baking powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "blueberries-raw",
+        "qty": 40,
+        "unit": "g",
+        "label": "blueberries"
+      }
+    ],
+    "method": [
+      "Heat the oven to 180°C (160°C fan) and grease a small ovenproof dish with the butter.",
+      "Blend the oats, banana, egg, milk, baking powder and vanilla until smooth.",
+      "Pour into the dish, press the blueberries into the top and bake for 20 to 25 minutes until risen and set in the middle.",
+      "Leave to cool for a few minutes before eating."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "chia-pudding",
+    "name": "Chia pudding with mango",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/chia-pudding"
+    ],
+    "summary": "Chia seeds set overnight in milk with honey and vanilla, topped with fresh mango.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "jar or bowl",
+      "whisk"
+    ],
+    "tags": [
+      "breakfast",
+      "no-cook",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chia-seeds",
+        "qty": 25,
+        "unit": "g",
+        "label": "chia seeds"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 150,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mango-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "mango"
+      }
+    ],
+    "method": [
+      "Whisk the chia seeds, milk, honey and vanilla together in a jar or bowl.",
+      "Leave for 10 minutes, whisk again to break up any clumps, then cover and refrigerate overnight.",
+      "Cut the mango into small cubes and spoon it over just before eating."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "breakfast-rice-pudding-bowl",
+    "name": "Rice pudding breakfast bowl",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/rice-pudding-breakfast-bowl"
+    ],
+    "summary": "Pudding rice simmered slowly in milk with cinnamon and vanilla, topped with raspberries and almonds.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 35,
+    "equipment": [
+      "heavy saucepan"
+    ],
+    "tags": [
+      "breakfast",
+      "batch-friendly",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "rice-pudding-short-grain-dry",
+        "qty": 60,
+        "unit": "g",
+        "label": "pudding rice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 550,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 15,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "raspberries-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "raspberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "almonds-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "almonds"
+      }
+    ],
+    "method": [
+      "Rinse the pudding rice, then put it in a heavy saucepan with the milk, sugar, cinnamon and vanilla.",
+      "Bring slowly to a simmer and cook gently for 30 to 35 minutes, stirring often so it does not catch, until the rice is soft and creamy.",
+      "Roughly chop the almonds. Divide the rice between two bowls and top each with half the raspberries and almonds.",
+      "Keep the second portion covered in the fridge for up to 2 days and reheat it gently, stirring, until piping hot."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "breakfast-couscous",
+    "name": "Breakfast couscous",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/breakfast-couscous"
+    ],
+    "summary": "Couscous soaked in hot milk with honey and cinnamon, with dried apricots, orange and pistachios.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 3,
+    "equipment": [
+      "small saucepan",
+      "bowl"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 150,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "couscous-dry",
+        "qty": 50,
+        "unit": "g",
+        "label": "couscous"
+      },
+      {
+        "ref": "item",
+        "ref_key": "apricots-dried",
+        "qty": 20,
+        "unit": "g",
+        "label": "dried apricots"
+      },
+      {
+        "ref": "item",
+        "ref_key": "orange-raw",
+        "qty": 70,
+        "unit": "g",
+        "label": "orange"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pistachios-raw",
+        "qty": 10,
+        "unit": "g",
+        "label": "pistachios"
+      }
+    ],
+    "method": [
+      "Heat the milk with the honey and cinnamon in a small pan until steaming but not boiling.",
+      "Pour it over the couscous in a bowl, cover with a plate and leave for 5 minutes.",
+      "Meanwhile chop the dried apricots and pistachios, and peel and segment the orange.",
+      "Fluff the couscous with a fork, stir in the apricots and top with the orange and pistachios."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "homemade-oat-granola",
+    "name": "Homemade oat granola",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "Oats, almonds and pumpkin seeds baked with honey and rapeseed oil, finished with raisins.",
+    "servings": 8,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 25,
+    "equipment": [
+      "oven",
+      "large baking tray",
+      "baking paper"
+    ],
+    "tags": [
+      "breakfast",
+      "snack",
+      "batch-friendly",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 200,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "almonds-raw",
+        "qty": 50,
+        "unit": "g",
+        "label": "almonds"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pumpkin-seeds",
+        "qty": 30,
+        "unit": "g",
+        "label": "pumpkin seeds"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 60,
+        "unit": "g",
+        "label": "honey"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-rapeseed",
+        "qty": 30,
+        "unit": "ml",
+        "label": "rapeseed oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "raisins-seedless",
+        "qty": 40,
+        "unit": "g",
+        "label": "raisins"
+      }
+    ],
+    "method": [
+      "Heat the oven to 160°C (140°C fan) and line a large baking tray with baking paper.",
+      "Roughly chop the almonds and mix them in a bowl with the oats, pumpkin seeds, cinnamon and salt.",
+      "Warm the honey and rapeseed oil together until runny, pour over the dry mix and stir until everything is coated.",
+      "Spread thinly on the tray and bake for 20 to 25 minutes, stirring halfway, until golden.",
+      "Leave to cool on the tray so it crisps up, then stir in the raisins and store in an airtight jar for up to 2 weeks."
+    ],
+    "notes": "Makes about 400 g, so a serving is roughly 50 g. Eat it with milk or yogurt and fruit."
+  },
+  {
+    "key": "yogurt-granola-bowl",
+    "name": "Yogurt and granola bowl",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/yogurt-and-granola-bowl"
+    ],
+    "summary": "Plain yogurt topped with granola and sliced strawberries.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 0,
+    "equipment": [
+      "bowl"
+    ],
+    "tags": [
+      "breakfast",
+      "no-cook",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-low-fat",
+        "qty": 150,
+        "unit": "g",
+        "label": "yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "granola-dry",
+        "qty": 40,
+        "unit": "g",
+        "label": "granola"
+      },
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Spoon the yogurt into a bowl and top with the granola, sliced strawberries and a little honey if you like."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "greek-yogurt-fruit-bowl",
+    "name": "Greek yogurt fruit bowl",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/greek-yogurt-fruit-bowl"
+    ],
+    "summary": "Thick Greek yogurt with blueberries, kiwi and walnuts.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 0,
+    "equipment": [
+      "bowl"
+    ],
+    "tags": [
+      "breakfast",
+      "snack",
+      "no-cook",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 170,
+        "unit": "g",
+        "label": "Greek yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "blueberries-raw",
+        "qty": 50,
+        "unit": "g",
+        "label": "blueberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "kiwi-raw",
+        "qty": 70,
+        "unit": "g",
+        "label": "kiwi"
+      },
+      {
+        "ref": "item",
+        "ref_key": "walnuts",
+        "qty": 10,
+        "unit": "g",
+        "label": "walnuts"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Spoon the Greek yogurt into a bowl and top with the blueberries, sliced kiwi, broken walnuts and honey if you like."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "skyr-fruit-bowl",
+    "name": "Skyr and fruit bowl",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/skyr-and-fruit-bowl"
+    ],
+    "summary": "Plain skyr with raspberries, banana and pumpkin seeds.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 0,
+    "equipment": [
+      "bowl"
+    ],
+    "tags": [
+      "breakfast",
+      "snack",
+      "no-cook",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "skyr-plain-proxy",
+        "qty": 150,
+        "unit": "g",
+        "label": "skyr"
+      },
+      {
+        "ref": "item",
+        "ref_key": "raspberries-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "raspberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pumpkin-seeds",
+        "qty": 10,
+        "unit": "g",
+        "label": "pumpkin seeds"
+      }
+    ],
+    "method": [
+      "Spoon the skyr into a bowl and top with the raspberries, sliced banana and pumpkin seeds."
+    ],
+    "notes": "The skyr record is an estimate based on fat-free Greek yogurt; your pot's label will be closer."
+  },
+  {
+    "key": "cottage-cheese-fruit-bowl",
+    "name": "Cottage cheese fruit bowl",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/cottage-cheese-fruit-bowl"
+    ],
+    "summary": "Cottage cheese with sliced peach, a pinch of cinnamon and almonds.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 0,
+    "equipment": [
+      "bowl"
+    ],
+    "tags": [
+      "breakfast",
+      "snack",
+      "no-cook",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "cottage-cheese-low-fat",
+        "qty": 150,
+        "unit": "g",
+        "label": "cottage cheese"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peach-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "peach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "almonds-raw",
+        "qty": 10,
+        "unit": "g",
+        "label": "almonds"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Spoon the cottage cheese into a bowl, top with the sliced peach and chopped almonds, and finish with the cinnamon and honey if you like."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "mixed-fruit-salad",
+    "name": "Fruit salad",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/fruit-salad"
+    ],
+    "summary": "Apple, orange, grapes, strawberries and kiwi tossed in orange juice.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 8,
+    "cook_min": 0,
+    "equipment": [
+      "knife",
+      "bowl"
+    ],
+    "tags": [
+      "breakfast",
+      "snack",
+      "dessert",
+      "no-cook",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "apple-raw-with-skin",
+        "qty": 80,
+        "unit": "g",
+        "label": "apple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "orange-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "orange"
+      },
+      {
+        "ref": "item",
+        "ref_key": "grapes-red-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "grapes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "kiwi-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "kiwi"
+      },
+      {
+        "ref": "item",
+        "ref_key": "juice-orange",
+        "qty": 30,
+        "unit": "ml",
+        "label": "orange juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mint-fresh",
+        "qty": 1,
+        "unit": "g",
+        "label": "mint",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Cut the apple, orange, strawberries and kiwi into bite-sized pieces, halve the grapes, and toss everything with the orange juice and a little torn mint if using."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "citrus-fruit-bowl",
+    "name": "Citrus fruit bowl",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/citrus-fruit-bowl"
+    ],
+    "summary": "Segments of orange, grapefruit and clementine with fresh mint.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 8,
+    "cook_min": 0,
+    "equipment": [
+      "knife",
+      "bowl"
+    ],
+    "tags": [
+      "breakfast",
+      "snack",
+      "no-cook",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "orange-raw",
+        "qty": 130,
+        "unit": "g",
+        "label": "orange"
+      },
+      {
+        "ref": "item",
+        "ref_key": "grapefruit-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "grapefruit"
+      },
+      {
+        "ref": "item",
+        "ref_key": "clementine-raw",
+        "qty": 70,
+        "unit": "g",
+        "label": "clementine"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mint-fresh",
+        "qty": 1,
+        "unit": "g",
+        "label": "mint",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Peel and segment the orange, grapefruit and clementine over a bowl to catch the juice, then add torn mint and a drizzle of honey if you like."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "tropical-fruit-bowl",
+    "name": "Tropical fruit bowl",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/tropical-fruit-bowl"
+    ],
+    "summary": "Mango, pineapple and papaya with passion fruit and a squeeze of lime.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 8,
+    "cook_min": 0,
+    "equipment": [
+      "knife",
+      "bowl"
+    ],
+    "tags": [
+      "breakfast",
+      "snack",
+      "dessert",
+      "no-cook",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "mango-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "mango"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pineapple-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "pineapple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "papaya-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "papaya"
+      },
+      {
+        "ref": "item",
+        "ref_key": "passion-fruit-raw",
+        "qty": 1,
+        "unit": "p:1 fruit without refuse",
+        "label": "passion fruit"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lime-juice-fresh",
+        "qty": 5,
+        "unit": "ml",
+        "label": "lime juice"
+      }
+    ],
+    "method": [
+      "Cube the mango, pineapple and papaya, spoon over the passion fruit pulp and squeeze over the lime juice."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "berry-yogurt-parfait",
+    "name": "Yogurt parfait",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/yogurt-parfait"
+    ],
+    "summary": "Greek yogurt layered in a glass with raspberries, blueberries and granola.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 4,
+    "cook_min": 0,
+    "equipment": [
+      "glass or jar"
+    ],
+    "tags": [
+      "breakfast",
+      "snack",
+      "no-cook",
+      "packed-lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 150,
+        "unit": "g",
+        "label": "Greek yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "raspberries-raw",
+        "qty": 50,
+        "unit": "g",
+        "label": "raspberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "blueberries-raw",
+        "qty": 50,
+        "unit": "g",
+        "label": "blueberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "granola-dry",
+        "qty": 30,
+        "unit": "g",
+        "label": "granola"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey"
+      }
+    ],
+    "method": [
+      "In a glass, layer the Greek yogurt, raspberries, blueberries and granola twice over and finish with the honey; add the granola just before eating if you pack it."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "cereal-milk-and-fruit",
+    "name": "Cereal with milk and fruit",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "breakfast-fruit-oats/cereal-with-milk-and-fruit"
+    ],
+    "summary": "A bowl of cereal with cold semi-skimmed milk and sliced banana.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 0,
+    "equipment": [
+      "bowl"
+    ],
+    "tags": [
+      "breakfast",
+      "no-cook",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "cereal-puffed-rice-dry",
+        "qty": 30,
+        "unit": "g",
+        "label": "cereal"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 200,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "banana"
+      }
+    ],
+    "method": [
+      "Pour the cereal into a bowl, add the milk and top with the sliced banana."
+    ],
+    "notes": "Puffed rice is a placeholder: corn flakes, bran flakes and wheat biscuits only have branded US records in USDA. Swap in your own cereal from its pack label."
+  }
+]

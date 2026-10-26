@@ -1,0 +1,2142 @@
+[
+  {
+    "key": "banana-bread",
+    "name": "Banana bread",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/banana-bread"
+    ],
+    "summary": "A moist loaf of mashed ripe banana, brown sugar and melted butter. Cuts into 10 slices.",
+    "servings": 10,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 60,
+    "equipment": [
+      "mixing bowl",
+      "900 g loaf tin",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "cake",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "ripe bananas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 100,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-brown-soft-as-sold",
+        "qty": 120,
+        "unit": "g",
+        "label": "brown sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 225,
+        "unit": "g",
+        "label": "plain flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bicarbonate-of-soda-as-sold",
+        "qty": 4,
+        "unit": "g",
+        "label": "bicarbonate of soda"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "g",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cinnamon",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "walnuts",
+        "qty": 50,
+        "unit": "g",
+        "label": "walnuts",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the oven to 180 °C and line a 900 g loaf tin.",
+      "Mash the ripe bananas, then beat in the melted butter, brown sugar, eggs and vanilla.",
+      "Fold in the plain flour, bicarbonate of soda and salt, plus the cinnamon and chopped walnuts if using.",
+      "Bake for 55 to 60 minutes until a skewer comes out clean; cool and cut into 10 slices."
+    ],
+    "notes": "The banana line is peeled weight: about 3 large ripe bananas."
+  },
+  {
+    "key": "banana-bread-chocolate-chip",
+    "name": "Chocolate chip banana bread",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "variant",
+    "parent_key": "banana-bread",
+    "req": [],
+    "summary": "Banana bread with dark chocolate chips folded through instead of walnuts. Cuts into 10 slices.",
+    "servings": 10,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 60,
+    "equipment": [
+      "mixing bowl",
+      "900 g loaf tin",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "cake",
+      "treat",
+      "chocolate"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "ripe bananas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 100,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-brown-soft-as-sold",
+        "qty": 120,
+        "unit": "g",
+        "label": "brown sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 225,
+        "unit": "g",
+        "label": "plain flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bicarbonate-of-soda-as-sold",
+        "qty": 4,
+        "unit": "g",
+        "label": "bicarbonate of soda"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "g",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chocolate-dark-45-59",
+        "qty": 100,
+        "unit": "g",
+        "label": "chocolate chips"
+      }
+    ],
+    "method": [
+      "Heat the oven to 180 °C and line a 900 g loaf tin.",
+      "Mash the ripe bananas, then beat in the melted butter, brown sugar, eggs and vanilla.",
+      "Fold in the plain flour, bicarbonate of soda and salt, then the chocolate chips.",
+      "Bake for 55 to 60 minutes until a skewer comes out clean; cool and cut into 10 slices."
+    ],
+    "notes": "Chocolate chips are logged as 45-59% dark chocolate; swap for milk chocolate if that is what you use."
+  },
+  {
+    "key": "muffins-blueberry",
+    "name": "Blueberry muffins",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/blueberry-muffins"
+    ],
+    "summary": "Soft, oil-based muffins studded with fresh blueberries. Makes 12.",
+    "servings": 12,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 22,
+    "equipment": [
+      "mixing bowl",
+      "jug",
+      "12-hole muffin tin",
+      "paper cases",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "muffins",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 300,
+        "unit": "g",
+        "label": "plain flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 150,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "baking-powder-as-sold",
+        "qty": 12,
+        "unit": "g",
+        "label": "baking powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "g",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 240,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sunflower",
+        "qty": 90,
+        "unit": "g",
+        "label": "sunflower oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "blueberries-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "blueberries"
+      }
+    ],
+    "method": [
+      "Heat the oven to 200 °C and line a 12-hole muffin tin with paper cases.",
+      "Mix the plain flour, sugar, baking powder and salt in a bowl; whisk the eggs, milk, sunflower oil and vanilla in a jug.",
+      "Stir the wet mixture into the dry until only just combined, then fold in the blueberries.",
+      "Divide between the cases and bake for 20 to 22 minutes until risen and golden."
+    ],
+    "notes": "Frozen blueberries work too; add them straight from the freezer."
+  },
+  {
+    "key": "muffins-chocolate",
+    "name": "Chocolate muffins",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "variant",
+    "parent_key": "muffins-blueberry",
+    "req": [
+      "sweets/chocolate-muffins"
+    ],
+    "summary": "Cocoa muffins with chunks of dark chocolate in place of the blueberries. Makes 12.",
+    "servings": 12,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 20,
+    "equipment": [
+      "mixing bowl",
+      "jug",
+      "12-hole muffin tin",
+      "paper cases",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "muffins",
+      "treat",
+      "chocolate"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 260,
+        "unit": "g",
+        "label": "plain flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cocoa-powder-as-sold",
+        "qty": 40,
+        "unit": "g",
+        "label": "cocoa"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 170,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "baking-powder-as-sold",
+        "qty": 12,
+        "unit": "g",
+        "label": "baking powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "g",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 250,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sunflower",
+        "qty": 90,
+        "unit": "g",
+        "label": "sunflower oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chocolate-dark-45-59",
+        "qty": 100,
+        "unit": "g",
+        "label": "chocolate chunks"
+      }
+    ],
+    "method": [
+      "Heat the oven to 200 °C and line a 12-hole muffin tin with paper cases.",
+      "Mix the plain flour, cocoa, sugar, baking powder and salt; whisk the eggs, milk, sunflower oil and vanilla in a jug.",
+      "Stir the wet mixture into the dry until just combined and fold in the chocolate chunks.",
+      "Divide between the cases and bake for 18 to 20 minutes until risen and springy."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "cookies-oat",
+    "name": "Oat cookies",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/oat-cookies"
+    ],
+    "summary": "Chewy oat cookies with butter, brown sugar and a little cinnamon. Makes 16.",
+    "servings": 16,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 14,
+    "equipment": [
+      "mixing bowl",
+      "two baking trays",
+      "baking paper",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "biscuits",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 125,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-brown-soft-as-sold",
+        "qty": 125,
+        "unit": "g",
+        "label": "brown sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 50,
+        "unit": "g",
+        "label": "white sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 125,
+        "unit": "g",
+        "label": "plain flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 150,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bicarbonate-of-soda-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "bicarbonate of soda"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "g",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "raisins-seedless",
+        "qty": 80,
+        "unit": "g",
+        "label": "raisins",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the oven to 180 °C and line two trays.",
+      "Cream the soft butter with the brown sugar and white sugar, then beat in the egg and vanilla.",
+      "Mix in the plain flour, oats, bicarbonate of soda, salt, cinnamon and the raisins if using.",
+      "Roll into 16 balls, flatten slightly on the trays and bake for 12 to 14 minutes until golden at the edges."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "cookies-chocolate-chip",
+    "name": "Chocolate chip cookies",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/chocolate-chip-cookies"
+    ],
+    "summary": "Classic butter cookies with crisp edges, soft middles and plenty of chocolate chips. Makes 16.",
+    "servings": 16,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 12,
+    "equipment": [
+      "mixing bowl",
+      "two baking trays",
+      "baking paper",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "biscuits",
+      "treat",
+      "chocolate"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 115,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-brown-soft-as-sold",
+        "qty": 100,
+        "unit": "g",
+        "label": "brown sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 80,
+        "unit": "g",
+        "label": "white sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 200,
+        "unit": "g",
+        "label": "plain flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bicarbonate-of-soda-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "bicarbonate of soda"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "g",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chocolate-dark-45-59",
+        "qty": 150,
+        "unit": "g",
+        "label": "chocolate chips"
+      }
+    ],
+    "method": [
+      "Heat the oven to 180 °C and line two trays.",
+      "Cream the soft butter with the brown sugar and white sugar, then beat in the egg and vanilla.",
+      "Mix in the plain flour, bicarbonate of soda and salt, then the chocolate chips.",
+      "Roll into 16 balls, space well apart on the trays and bake for 10 to 12 minutes until golden at the edges but still soft in the middle."
+    ],
+    "notes": "Chocolate chips are logged as 45-59% dark chocolate; swap for milk chocolate if used."
+  },
+  {
+    "key": "flapjacks",
+    "name": "Flapjacks",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/flapjacks"
+    ],
+    "summary": "Chewy oat bars baked in butter, honey and brown sugar. Cuts into 16.",
+    "servings": 16,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 25,
+    "equipment": [
+      "saucepan",
+      "20 cm square tin",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "traybake",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 150,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 120,
+        "unit": "g",
+        "label": "honey"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-brown-soft-as-sold",
+        "qty": 100,
+        "unit": "g",
+        "label": "brown sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 300,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "g",
+        "label": "salt"
+      }
+    ],
+    "method": [
+      "Heat the oven to 180 °C and line a 20 cm square tin.",
+      "Melt the butter, honey and brown sugar together, then stir in the oats and salt.",
+      "Press into the tin and bake for 20 to 25 minutes until golden at the edges.",
+      "Mark into 16 squares while warm and cut when cold."
+    ],
+    "notes": "British flapjacks usually use golden syrup, which has no catalogue record; this recipe uses honey instead, so the totals are for a honey flapjack."
+  },
+  {
+    "key": "brownies",
+    "name": "Chocolate brownies",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/brownies"
+    ],
+    "summary": "Dense, fudgy brownies made with melted dark chocolate and butter. Cuts into 16.",
+    "servings": 16,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 25,
+    "equipment": [
+      "heatproof bowl",
+      "saucepan",
+      "20 cm square tin",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "traybake",
+      "treat",
+      "chocolate"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chocolate-dark-45-59",
+        "qty": 200,
+        "unit": "g",
+        "label": "dark chocolate"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 175,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 250,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 3,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 100,
+        "unit": "g",
+        "label": "plain flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cocoa-powder-as-sold",
+        "qty": 30,
+        "unit": "g",
+        "label": "cocoa"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "g",
+        "label": "salt"
+      }
+    ],
+    "method": [
+      "Heat the oven to 180 °C and line a 20 cm square tin.",
+      "Melt the dark chocolate and butter together over a pan of simmering water, then cool slightly.",
+      "Whisk the sugar, eggs and vanilla until thick, fold in the chocolate, then sift in the plain flour, cocoa and salt and fold until smooth.",
+      "Pour into the tin and bake for 22 to 25 minutes until just set with a slight wobble; cool and cut into 16."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "vanilla-sponge-cake",
+    "name": "Vanilla sponge cake with jam",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/vanilla-sponge-cake"
+    ],
+    "summary": "A two-layer butter sponge sandwiched with jam and dusted with icing sugar. Cuts into 10.",
+    "servings": 10,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 25,
+    "equipment": [
+      "mixing bowl",
+      "electric whisk",
+      "two 20 cm sandwich tins",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "cake",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 200,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 200,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 4,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-self-raising-as-sold",
+        "qty": 200,
+        "unit": "g",
+        "label": "self-raising flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "baking-powder-as-sold",
+        "qty": 4,
+        "unit": "g",
+        "label": "baking powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 30,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "jam-as-sold",
+        "qty": 100,
+        "unit": "g",
+        "label": "jam"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-icing-as-sold",
+        "qty": 10,
+        "unit": "g",
+        "label": "icing sugar"
+      }
+    ],
+    "method": [
+      "Heat the oven to 180 °C and grease and line two 20 cm sandwich tins.",
+      "Beat the soft butter and sugar until pale, then beat in the eggs one at a time with the vanilla.",
+      "Fold in the self-raising flour and baking powder, then the milk, and divide between the tins.",
+      "Bake for 20 to 25 minutes until springy; cool, sandwich with the jam and dust with the icing sugar."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "chocolate-cake",
+    "name": "Chocolate cake with ganache",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/chocolate-cake"
+    ],
+    "summary": "A butter and cocoa sponge covered in a dark chocolate and cream ganache. Cuts into 12.",
+    "servings": 12,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 35,
+    "equipment": [
+      "mixing bowl",
+      "electric whisk",
+      "23 cm round tin",
+      "saucepan",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "cake",
+      "treat",
+      "chocolate"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 200,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 250,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 4,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-self-raising-as-sold",
+        "qty": 200,
+        "unit": "g",
+        "label": "self-raising flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cocoa-powder-as-sold",
+        "qty": 50,
+        "unit": "g",
+        "label": "cocoa"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 120,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cream-double",
+        "qty": 150,
+        "unit": "ml",
+        "label": "double cream"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chocolate-dark-45-59",
+        "qty": 150,
+        "unit": "g",
+        "label": "dark chocolate"
+      }
+    ],
+    "method": [
+      "Heat the oven to 180 °C and grease and line a 23 cm round tin.",
+      "Beat the soft butter and sugar until pale, then beat in the eggs one at a time with the vanilla.",
+      "Fold in the self-raising flour and cocoa, alternating with the milk, then spoon into the tin and bake for 30 to 35 minutes; cool.",
+      "For the ganache, heat the double cream until steaming, pour it over the chopped dark chocolate, stir until smooth and spread over the cooled cake."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "cheesecake-baked",
+    "name": "Baked vanilla cheesecake",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/baked-cheesecake"
+    ],
+    "summary": "A creamy baked cheesecake on a buttery digestive base, with lemon and vanilla. Cuts into 12.",
+    "servings": 12,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 60,
+    "equipment": [
+      "23 cm springform tin",
+      "mixing bowl",
+      "electric whisk",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "dessert",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "biscuits-digestive-proxy",
+        "qty": 200,
+        "unit": "g",
+        "label": "digestive biscuits"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 80,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cream-cheese-full-fat",
+        "qty": 600,
+        "unit": "g",
+        "label": "cream cheese"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 150,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cornflour-cornstarch-as-sold",
+        "qty": 15,
+        "unit": "g",
+        "label": "cornflour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 3,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sour-cream",
+        "qty": 150,
+        "unit": "g",
+        "label": "soured cream"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-peel-raw",
+        "qty": 4,
+        "unit": "g",
+        "label": "lemon zest"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lemon juice"
+      }
+    ],
+    "method": [
+      "Heat the oven to 160 °C. Crush the digestive biscuits, mix with the melted butter and press into the tin; bake for 10 minutes.",
+      "Beat the cream cheese, sugar and cornflour until smooth, then beat in the eggs one at a time, followed by the soured cream, vanilla, lemon zest and lemon juice.",
+      "Pour over the base and bake for 50 to 55 minutes until set at the edges with a slight wobble in the middle.",
+      "Turn off the oven and leave the cheesecake inside with the door ajar for 1 hour, then chill overnight before cutting into 12."
+    ],
+    "notes": "Digestive biscuits are estimated from the catalogue digestive record, which is a US graham-cracker proxy and a little leaner than typical digestives."
+  },
+  {
+    "key": "cheesecake-no-bake",
+    "name": "No-bake strawberry cheesecake",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/no-bake-cheesecake"
+    ],
+    "summary": "A set cream cheese and whipped cream filling on a digestive base, topped with fresh strawberries. Cuts into 10.",
+    "servings": 10,
+    "final_weight": null,
+    "prep_min": 30,
+    "cook_min": 0,
+    "equipment": [
+      "20 cm springform tin",
+      "mixing bowl",
+      "electric whisk"
+    ],
+    "tags": [
+      "dessert",
+      "no-bake",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "biscuits-digestive-proxy",
+        "qty": 200,
+        "unit": "g",
+        "label": "digestive biscuits"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 80,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cream-cheese-full-fat",
+        "qty": 400,
+        "unit": "g",
+        "label": "cream cheese"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-icing-as-sold",
+        "qty": 100,
+        "unit": "g",
+        "label": "icing sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cream-double",
+        "qty": 200,
+        "unit": "ml",
+        "label": "double cream"
+      },
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "strawberries"
+      }
+    ],
+    "method": [
+      "Crush the digestive biscuits, mix with the melted butter and press into the tin; chill.",
+      "Beat the cream cheese with the icing sugar, vanilla and lemon juice until smooth, then whip the double cream to soft peaks and fold it in.",
+      "Spread over the base and chill for at least 4 hours or overnight until set.",
+      "Top with the halved strawberries and cut into 10."
+    ],
+    "notes": "Digestive biscuits are estimated from the catalogue digestive record, a US graham-cracker proxy."
+  },
+  {
+    "key": "rice-pudding-homemade",
+    "name": "Creamy rice pudding",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/rice-pudding"
+    ],
+    "summary": "Pudding rice simmered slowly in whole milk with sugar, butter and vanilla, finished with nutmeg.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 35,
+    "equipment": [
+      "heavy saucepan",
+      "wooden spoon"
+    ],
+    "tags": [
+      "dessert",
+      "pudding",
+      "hot",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "rice-pudding-short-grain-dry",
+        "qty": 100,
+        "unit": "g",
+        "label": "pudding rice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-whole",
+        "qty": 900,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 60,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 15,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "nutmeg-ground-as-sold",
+        "qty": 0.5,
+        "unit": "g",
+        "label": "nutmeg"
+      }
+    ],
+    "method": [
+      "Rinse the pudding rice and put it in a heavy saucepan with the milk, sugar and butter.",
+      "Bring to a gentle simmer and cook, stirring often, for 30 to 35 minutes until thick and creamy.",
+      "Stir in the vanilla and serve warm or cold with a little grated nutmeg."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "semolina-pudding",
+    "name": "Semolina pudding with jam",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/semolina-pudding"
+    ],
+    "summary": "Semolina cooked in milk with sugar and vanilla until smooth and thick, served with a spoonful of jam.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 12,
+    "equipment": [
+      "saucepan",
+      "whisk"
+    ],
+    "tags": [
+      "dessert",
+      "pudding",
+      "hot",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-whole",
+        "qty": 600,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "semolina-dry",
+        "qty": 60,
+        "unit": "g",
+        "label": "semolina"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 40,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "jam-as-sold",
+        "qty": 40,
+        "unit": "g",
+        "label": "jam",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Warm the milk in a saucepan, then whisk in the semolina and sugar in a thin stream.",
+      "Simmer, stirring, for 8 to 10 minutes until thick and smooth, then stir in the vanilla.",
+      "Serve warm with a spoonful of jam on top if you like."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "crumble-apple-blackberry",
+    "name": "Apple and blackberry crumble",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/fruit-crumble"
+    ],
+    "summary": "Sweetened cooking apples and blackberries under a buttery oat and demerara crumble.",
+    "servings": 6,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 40,
+    "equipment": [
+      "mixing bowl",
+      "ovenproof dish",
+      "oven"
+    ],
+    "tags": [
+      "dessert",
+      "baked",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "cooking-apple-raw",
+        "qty": 600,
+        "unit": "g",
+        "label": "cooking apples"
+      },
+      {
+        "ref": "item",
+        "ref_key": "blackberries-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "blackberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 40,
+        "unit": "g",
+        "label": "caster sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 150,
+        "unit": "g",
+        "label": "plain flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 100,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-demerara-as-sold",
+        "qty": 80,
+        "unit": "g",
+        "label": "demerara sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 30,
+        "unit": "g",
+        "label": "oats"
+      }
+    ],
+    "method": [
+      "Heat the oven to 190 °C. Peel, core and slice the cooking apples and toss them in the dish with the blackberries, caster sugar and cinnamon.",
+      "Rub the cold butter into the plain flour until it looks like breadcrumbs, then stir in the demerara sugar and oats.",
+      "Scatter the crumble over the fruit and bake for 35 to 40 minutes until golden and bubbling."
+    ],
+    "notes": "The apple line is peeled and cored weight."
+  },
+  {
+    "key": "crumble-plum",
+    "name": "Plum crumble",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "variant",
+    "parent_key": "crumble-apple-blackberry",
+    "req": [],
+    "summary": "Halved plums with a little sugar and cinnamon under a buttery oat and demerara crumble.",
+    "servings": 6,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 40,
+    "equipment": [
+      "mixing bowl",
+      "ovenproof dish",
+      "oven"
+    ],
+    "tags": [
+      "dessert",
+      "baked",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "plum-raw",
+        "qty": 750,
+        "unit": "g",
+        "label": "plums"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 50,
+        "unit": "g",
+        "label": "caster sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 150,
+        "unit": "g",
+        "label": "plain flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 100,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-demerara-as-sold",
+        "qty": 80,
+        "unit": "g",
+        "label": "demerara sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 30,
+        "unit": "g",
+        "label": "oats"
+      }
+    ],
+    "method": [
+      "Heat the oven to 190 °C. Halve and stone the plums and toss them in the dish with the caster sugar and cinnamon.",
+      "Rub the cold butter into the plain flour until it looks like breadcrumbs, then stir in the demerara sugar and oats.",
+      "Scatter the crumble over the fruit and bake for 35 to 40 minutes until golden and bubbling."
+    ],
+    "notes": "The plum line is stoned weight."
+  },
+  {
+    "key": "baked-apples",
+    "name": "Baked apples with sultanas",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/baked-apples"
+    ],
+    "summary": "Whole cored apples stuffed with sultanas, brown sugar, butter and cinnamon and baked until soft.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 40,
+    "equipment": [
+      "apple corer",
+      "ovenproof dish",
+      "oven"
+    ],
+    "tags": [
+      "dessert",
+      "baked",
+      "fruit",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "apple-raw-with-skin",
+        "qty": 800,
+        "unit": "whole",
+        "label": "apples"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sultanas",
+        "qty": 60,
+        "unit": "g",
+        "label": "sultanas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-brown-soft-as-sold",
+        "qty": 40,
+        "unit": "g",
+        "label": "brown sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 20,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 60,
+        "unit": "ml",
+        "label": "water"
+      }
+    ],
+    "method": [
+      "Heat the oven to 180 °C. Core the apples and score a line around the middle of each so the skin does not burst.",
+      "Mix the sultanas, brown sugar and cinnamon, pack into the apples and top each with a piece of the butter.",
+      "Stand in a dish with the water and bake for 35 to 40 minutes until soft."
+    ],
+    "notes": "The apple line is the weight of 4 whole apples before coring (about 200 g each); the app counts only the edible part."
+  },
+  {
+    "key": "ice-pops-yogurt-strawberry",
+    "name": "Strawberry yogurt ice pops",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/yogurt-ice-pops"
+    ],
+    "summary": "Greek yogurt blended with strawberries and honey and frozen in moulds. Makes 6.",
+    "servings": 6,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "six ice pop moulds",
+      "freezer"
+    ],
+    "tags": [
+      "frozen",
+      "no-cook",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-whole",
+        "qty": 300,
+        "unit": "g",
+        "label": "Greek yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 40,
+        "unit": "g",
+        "label": "honey"
+      }
+    ],
+    "method": [
+      "Blend the strawberries with the honey, then stir or ripple through the Greek yogurt.",
+      "Spoon into six moulds, add sticks and freeze for at least 6 hours."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "ice-pops-smoothie",
+    "name": "Mango and banana smoothie ice pops",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/smoothie-ice-pops"
+    ],
+    "summary": "A mango, banana and orange juice smoothie frozen in moulds. Makes 6.",
+    "servings": 6,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "six ice pop moulds",
+      "freezer"
+    ],
+    "tags": [
+      "frozen",
+      "no-cook",
+      "fruit",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "mango-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "mango"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "juice-orange",
+        "qty": 200,
+        "unit": "ml",
+        "label": "orange juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-whole",
+        "qty": 100,
+        "unit": "g",
+        "label": "yogurt",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Blend the mango, banana and orange juice until smooth, adding the yogurt if you want a creamier pop.",
+      "Pour into six moulds, add sticks and freeze for at least 6 hours."
+    ],
+    "notes": "Fruit lines are peeled, stoned weight."
+  },
+  {
+    "key": "granola-bars-homemade",
+    "name": "Homemade granola bars",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/homemade-granola-bars"
+    ],
+    "summary": "Baked oat bars with almonds, sunflower seeds and raisins, bound with honey, butter and brown sugar. Cuts into 12.",
+    "servings": 12,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 25,
+    "equipment": [
+      "saucepan",
+      "mixing bowl",
+      "20 cm square tin",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "traybake",
+      "snack",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 250,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "almonds-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "almonds"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sunflower-seeds",
+        "qty": 30,
+        "unit": "g",
+        "label": "sunflower seeds"
+      },
+      {
+        "ref": "item",
+        "ref_key": "raisins-seedless",
+        "qty": 60,
+        "unit": "g",
+        "label": "raisins"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "g",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 100,
+        "unit": "g",
+        "label": "honey"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 60,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-brown-soft-as-sold",
+        "qty": 50,
+        "unit": "g",
+        "label": "brown sugar"
+      }
+    ],
+    "method": [
+      "Heat the oven to 170 °C and line a 20 cm square tin.",
+      "Mix the oats, chopped almonds, sunflower seeds, raisins, cinnamon and salt in a bowl.",
+      "Melt the honey, butter and brown sugar together, pour over the dry mixture and stir until coated.",
+      "Press firmly into the tin and bake for 22 to 25 minutes until golden; cool completely before cutting into 12."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "peanut-butter-oat-bites",
+    "name": "Peanut butter oat bites",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/peanut-butter-oat-bites"
+    ],
+    "summary": "No-bake bites of oats, peanut butter, honey and chocolate chips. Makes 16.",
+    "servings": 16,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 0,
+    "equipment": [
+      "mixing bowl",
+      "tray",
+      "fridge"
+    ],
+    "tags": [
+      "no-bake",
+      "snack",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 150,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peanut-butter-smooth",
+        "qty": 120,
+        "unit": "g",
+        "label": "peanut butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 80,
+        "unit": "g",
+        "label": "honey"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chocolate-dark-45-59",
+        "qty": 50,
+        "unit": "g",
+        "label": "chocolate chips"
+      }
+    ],
+    "method": [
+      "Mix the oats, peanut butter, honey and vanilla until the mixture holds together.",
+      "Stir in the chocolate chips, roll into 16 balls and chill for 30 minutes to firm up."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "chocolate-yogurt-bowl",
+    "name": "Chocolate yogurt bowl",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "sweets/chocolate-yogurt-bowl"
+    ],
+    "summary": "Greek yogurt stirred with cocoa and honey, topped with strawberries and grated dark chocolate.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "bowl"
+    ],
+    "tags": [
+      "dessert",
+      "no-cook",
+      "chocolate"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-whole",
+        "qty": 170,
+        "unit": "g",
+        "label": "Greek yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cocoa-powder-as-sold",
+        "qty": 8,
+        "unit": "g",
+        "label": "cocoa"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 10,
+        "unit": "g",
+        "label": "honey"
+      },
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chocolate-dark-70-85",
+        "qty": 10,
+        "unit": "g",
+        "label": "dark chocolate"
+      }
+    ],
+    "method": [
+      "Stir the cocoa and honey into the Greek yogurt until smooth.",
+      "Top with the sliced strawberries and grate over the dark chocolate."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "carrot-cake",
+    "name": "Carrot cake with cream cheese icing",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "A spiced oil-based carrot cake with walnuts and sultanas, topped with cream cheese icing. Cuts into 12.",
+    "servings": 12,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 45,
+    "equipment": [
+      "mixing bowls",
+      "grater",
+      "23 cm round tin",
+      "electric whisk",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "cake",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "flour-self-raising-as-sold",
+        "qty": 225,
+        "unit": "g",
+        "label": "self-raising flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bicarbonate-of-soda-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "bicarbonate of soda"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 4,
+        "unit": "g",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-brown-soft-as-sold",
+        "qty": 200,
+        "unit": "g",
+        "label": "brown sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sunflower",
+        "qty": 150,
+        "unit": "g",
+        "label": "sunflower oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 3,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "carrot-raw",
+        "qty": 250,
+        "unit": "g",
+        "label": "carrots"
+      },
+      {
+        "ref": "item",
+        "ref_key": "walnuts",
+        "qty": 60,
+        "unit": "g",
+        "label": "walnuts"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sultanas",
+        "qty": 60,
+        "unit": "g",
+        "label": "sultanas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cream-cheese-full-fat",
+        "qty": 200,
+        "unit": "g",
+        "label": "cream cheese"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 50,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-icing-as-sold",
+        "qty": 150,
+        "unit": "g",
+        "label": "icing sugar"
+      }
+    ],
+    "method": [
+      "Heat the oven to 180 °C and line a 23 cm round tin.",
+      "Mix the self-raising flour, bicarbonate of soda, cinnamon and brown sugar; whisk the sunflower oil with the eggs and stir them in.",
+      "Fold in the grated carrots, chopped walnuts and sultanas, spoon into the tin and bake for 40 to 45 minutes; cool completely.",
+      "Beat the cream cheese, soft butter and icing sugar until smooth and spread over the top before cutting into 12."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "lemon-drizzle-cake",
+    "name": "Lemon drizzle cake",
+    "name_mt": null,
+    "family": "sweets",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "A lemon-zested butter loaf soaked with a crunchy lemon and sugar drizzle. Cuts into 10.",
+    "servings": 10,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 45,
+    "equipment": [
+      "mixing bowl",
+      "electric whisk",
+      "900 g loaf tin",
+      "oven"
+    ],
+    "tags": [
+      "baking",
+      "cake",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 175,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 175,
+        "unit": "g",
+        "label": "caster sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 3,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-peel-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "lemon zest"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-self-raising-as-sold",
+        "qty": 175,
+        "unit": "g",
+        "label": "self-raising flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 30,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 45,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 100,
+        "unit": "g",
+        "label": "drizzle sugar"
+      }
+    ],
+    "method": [
+      "Heat the oven to 180 °C and line a 900 g loaf tin.",
+      "Beat the soft butter and caster sugar until pale, then beat in the eggs and lemon zest.",
+      "Fold in the self-raising flour and milk, spoon into the tin and bake for 40 to 45 minutes.",
+      "Mix the lemon juice with the drizzle sugar, prick the hot cake all over and spoon the drizzle over; cool in the tin before cutting into 10."
+    ],
+    "notes": ""
+  }
+]

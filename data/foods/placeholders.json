@@ -1,0 +1,36 @@
+{
+ "source": "Oath placeholders: foods with no generic source. Every value is unknown until Daniel adds a pack label.",
+ "items": [
+  {
+   "key": "halloumi-needs-label",
+   "kind": "product",
+   "name": "Halloumi",
+   "aliases": ["hellim", "grilling cheese"],
+   "category": "cheese",
+   "state": "as-sold",
+   "basis": "g",
+   "liquid": false,
+   "nutrients": {},
+   "portions": [],
+   "source": "oath",
+   "status": "needs-label",
+   "notes": "No generic source has halloumi, and brands differ. Add your pack's label (a photo or by hand) to log it with real values; until then recipes that use it show an incomplete total."
+  },
+  {
+   "key": "gbejna-needs-label",
+   "kind": "product",
+   "name": "Ġbejna (Maltese cheeselet), fresh",
+   "name_mt": "Ġbejna",
+   "aliases": ["gbejna", "gbejniet", "ġbejniet", "maltese cheeselet", "sheep cheeselet"],
+   "category": "maltese",
+   "state": "as-sold",
+   "basis": "g",
+   "liquid": false,
+   "nutrients": {},
+   "portions": [],
+   "source": "oath",
+   "status": "needs-label",
+   "notes": "No generic source has ġbejna, and fresh, dried and peppered ones differ a lot. Add the label of the ones you buy to log them with real values; until then recipes that use them show an incomplete total."
+  }
+ ]
+}

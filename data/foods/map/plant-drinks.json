@@ -1,0 +1,200 @@
+[
+  {
+    "req": "plant-drinks/unsweetened-soy-drink",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "soy-drink-unsweetened",
+        "fdc_id": 1999630,
+        "name": "Soya drink, unsweetened",
+        "state": "as-sold",
+        "aliases": [
+          "unsweetened soy milk",
+          "soya milk",
+          "soy milk"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Foundation (highest of duplicates 1750337/1999630); no gram portions. SR unsweetened soy milk is branded only."
+  },
+  {
+    "req": "plant-drinks/sweetened-soy-drink",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "soy-drink-sweetened",
+        "fdc_id": 172456,
+        "name": "Soya drink, sweetened, fortified",
+        "state": "as-sold",
+        "aliases": [
+          "soy milk original",
+          "soya milk original"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "USDA \"Soymilk, original and vanilla, with added calcium, vitamins A and D\". Unfortified version: 172446."
+  },
+  {
+    "req": "plant-drinks/unsweetened-oat-drink",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oat-drink-unsweetened",
+        "fdc_id": 2257046,
+        "name": "Oat drink, unsweetened",
+        "state": "as-sold",
+        "aliases": [
+          "oat milk"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Foundation, refrigerated; no gram portions."
+  },
+  {
+    "req": "plant-drinks/sweetened-oat-drink",
+    "status": "product",
+    "records": [],
+    "note": "USDA only has unsweetened oat milk. Sweetened or flavoured oat drinks need the exact product."
+  },
+  {
+    "req": "plant-drinks/unsweetened-almond-drink",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "almond-drink-unsweetened",
+        "fdc_id": 174832,
+        "name": "Almond drink, unsweetened",
+        "state": "as-sold",
+        "aliases": [
+          "almond milk"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "SR shelf-stable. Foundation versions: 1999631 shelf-stable, 2257045 refrigerated."
+  },
+  {
+    "req": "plant-drinks/sweetened-almond-drink",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "almond-drink-sweetened",
+        "fdc_id": 168751,
+        "name": "Almond drink, sweetened (vanilla)",
+        "state": "as-sold",
+        "aliases": [
+          "sweetened almond milk"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Only a sweetened vanilla almond drink exists in USDA; plain sweetened (\"original\") drinks usually have less sugar. Prefer the label."
+  },
+  {
+    "req": "plant-drinks/coconut-drinking-beverage",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "coconut-drink-sweetened",
+        "fdc_id": 174116,
+        "name": "Coconut drink, sweetened, fortified",
+        "state": "as-sold",
+        "aliases": [
+          "coconut milk drink",
+          "coconut milk (carton)"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Carton drinking coconut beverage, not tinned coconut milk. Unsweetened coconut drink is not in USDA."
+  },
+  {
+    "req": "plant-drinks/tinned-coconut-milk",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "coconut-milk-tinned",
+        "fdc_id": 170173,
+        "name": "Coconut milk, tinned",
+        "state": "as-sold",
+        "aliases": [
+          "canned coconut milk"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Full-fat tinned coconut milk. Light/reduced-fat tinned coconut milk is not in USDA."
+  },
+  {
+    "req": "plant-drinks/coconut-cream",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "coconut-cream-proxy",
+        "fdc_id": 170580,
+        "name": "Coconut cream (proxy: freshly pressed)",
+        "state": "as-sold",
+        "aliases": [
+          "tinned coconut cream"
+        ]
+      }
+    ],
+    "note": "No canned culinary coconut cream in USDA; freshly pressed coconut cream used as proxy. Do not use 170171, which is sweetened cream of coconut (cocktail mixer)."
+  },
+  {
+    "req": "plant-drinks/rice-drink",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "rice-drink",
+        "fdc_id": 171942,
+        "name": "Rice drink, unsweetened",
+        "state": "as-sold",
+        "aliases": [
+          "rice milk"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "plant-drinks/pea-protein-drink",
+    "status": "product",
+    "records": [],
+    "note": "Needs the exact packaged product; no USDA record."
+  },
+  {
+    "req": "plant-drinks/barista-oat-drink",
+    "status": "product",
+    "records": [],
+    "note": "Barista oat drinks have added oil and vary by brand; needs the exact product."
+  },
+  {
+    "req": "plant-drinks/soy-yogurt",
+    "status": "product",
+    "records": [],
+    "note": "USDA soy yogurt records are all branded (Silk); use the exact product."
+  },
+  {
+    "req": "plant-drinks/coconut-yogurt",
+    "status": "product",
+    "records": [],
+    "note": "No generic coconut yogurt in USDA; needs the exact product."
+  },
+  {
+    "req": "plant-drinks/plant-cream",
+    "status": "product",
+    "records": [],
+    "note": "Plant cooking/pouring creams (soya, oat, coconut) vary by brand; no generic USDA record (USDA cream substitutes are coffee creamers)."
+  },
+  {
+    "req": "plant-drinks/plant-cheese",
+    "status": "product",
+    "records": [],
+    "note": "Needs the exact product. USDA \"Cheese substitute, mozzarella\" (172198) is not necessarily dairy-free and is not a fair proxy."
+  }
+]

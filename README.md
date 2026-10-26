@@ -12,6 +12,23 @@ Personal habit tracker and daily accountability app for one person. It runs as a
 - Rule changes to a habit that is still open today only take effect tomorrow.
 - The server is the judge. It checks deadlines every 30 seconds and catches up on any days it missed while offline.
 
+## Food
+
+A food and drink diary in its own tab. It never touches HP and sets no targets.
+
+- Log by search, a photo of anything (barcode, packet, nutrition label or plate), quick add, the drinks tray, or the shake, fruit bowl and plate builders. The coach can log too.
+- Honest numbers: values nobody has sourced stay unknown, and a total that is missing some shows `+`. Photo readings of plates only estimate amounts; nutrition always comes from a catalogue record.
+- Recipes (Oath's library and your own), cooked batches with their real weight, saved meals, plans that only count once eaten, and a coverage report against the content blueprint.
+- Diary entries keep a copy of what was logged, so editing a food or recipe later never changes past days.
+
+### Data and credits
+
+- Generic foods: [USDA FoodData Central](https://fdc.nal.usda.gov/) (SR Legacy, April 2018, and Foundation Foods, April 2026), public domain (CC0). Refuse shares from USDA SR28. Built into `data/foods/usda-foods.json` by `scripts/build-usda.mjs` from the requirement maps in `data/foods/map`.
+- Products: [Open Food Facts](https://world.openfoodfacts.org/), © Open Food Facts contributors, under the [Open Database License](https://opendatacommons.org/licenses/odbl/1-0/). Looked up by barcode or name when needed and cached in the database (never committed to the repo), within their rate limits.
+- Recipes in `data/recipes` are original to Oath, AI-written and not kitchen-tested; their nutrition is worked out from the ingredient records. Check them with `node scripts/check-recipes.mjs`.
+- The catalogue, requirement lists and recipes are seeded at boot when the data files change. Re-running the seed updates rows in place and never overwrites your own edits.
+- `node scripts/import-off.mjs` imports products sold in Malta and the priority brands from Open Food Facts, slowly and resumably.
+
 ## Running on Railway
 
 Variables on the app service:
@@ -32,6 +49,8 @@ Face ID login uses passkeys, which belong to the app's address (`PUBLIC_HOST`, e
 - `src/engine.js`: HP, misses, deaths, pardons, rule changes, the tick
 - `src/state.js`: read models for the screens and the coach's snapshot
 - `src/coach.js`: Claude chat with tools, morning brief and evening check
+- `src/food.js`, `src/food-seed.js`, `src/food-photo.js`, `src/off.js`: the food diary, catalogue seeding, photo reading and Open Food Facts
+- `public/nutrition.js`: the food maths, shared by the app and the server
 - `src/loop.js`: the 30-second loop, reminders and scheduled briefs
 - `src/push.js`: Web Push
 - `public/`: the web app (no build step)

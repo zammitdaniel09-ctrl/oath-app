@@ -14,6 +14,7 @@ const drive = () => import('./drive.js');
 const review = () => import('./review.js');
 const health = () => import('./health.js');
 const settings = () => import('./settings.js');
+const food = () => import('./food.js');
 
 export const PENDING_MINUTES = 30;
 
@@ -458,6 +459,88 @@ const TOOLS = {
     async run({ focus, obstacle_plan: plan, decisions = {} }) {
       await (await review()).finishReview({ focus, obstaclePlan: plan || '', decisions });
       return `Weekly review done. Focus: ${focus}`;
+    },
+  },
+
+  // ---------- Food: logging only, never targets, never HP ----------
+  search_food: {
+    read: true,
+    description: 'Find foods, drinks, saved meals and recipes in Oath\'s catalogue before logging. Returns keys, names, state (raw, cooked, dry, drained) and the units each accepts. Pick the record whose state matches what he ate (cooked rice, not dry, if he ate it cooked).',
+    properties: { query: S('A few words, e.g. "banana", "monster zero", "white rice"'), drinks: B('Only drinks') },
+    required: ['query'],
+    async run({ query, drinks = false }) {
+      const f = await food();
+      const items = await f.searchFoods(query, { limit: 10, liquid: drinks ? true : null });
+      const meals = (await f.listMeals()).filter((m) => m.name.toLowerCase().includes(String(query).toLowerCase())).slice(0, 5);
+      const recipes = await f.listRecipes({ q: query, limit: 5 });
+      const out = items.map((i) => `food ${i.key} | ${i.name}${i.brand ? ` (${i.brand}${i.market ? `, ${i.market}` : ''})` : ''} | ${i.state || ''} | ${i.kind} | ${i.nutrients.kcal ?? '?'} kcal per 100 ${i.basis} | units: ${i.units.map((u) => u.unit).join(', ')}`);
+      for (const m of meals) out.push(`saved meal #${m.id} "${m.name}" (${m.kind})`);
+      for (const r of recipes) out.push(`recipe ${r.key} "${r.name}" | serves ${r.servings}`);
+      return out.length ? out.join('\n') : 'Nothing found. Ask him for the label (a photo in the Food tab) or quick add the calories he gives you.';
+    },
+  },
+  log_food: {
+    description: 'Log an amount of one catalogue food or drink. unit is "g", "ml", "serving", "pack", "each" (one of a multipack), "whole" (weighed with peel), or "p:<portion label>" exactly as search_food lists it. Only log what he says he ate or drank.',
+    properties: {
+      key: S('From search_food'), qty: N('How many of the unit'), unit: S(), slot: E(['breakfast', 'lunch', 'dinner', 'snacks', 'drinks']),
+      date: DATE, time: TIME,
+    },
+    required: ['key', 'qty', 'unit'],
+    async run(input) {
+      const { entry } = await (await food()).logFood(input, 'coach');
+      return `Logged ${entry.name}, ${entry.amountText} (${entry.nutrients.kcal === null ? 'energy unknown' : `${Math.round(entry.nutrients.kcal)} kcal`})`;
+    },
+  },
+  quick_add_food: {
+    description: 'Log calories (and any macros he gives) without a catalogue record, when he only knows the numbers. Kept in the diary only.',
+    properties: {
+      name: S(), kcal: N(), protein: N('g'), carbs: N('g'), sugars: N('g'), fat: N('g'), caffeine: N('mg'),
+      slot: E(['breakfast', 'lunch', 'dinner', 'snacks', 'drinks']), date: DATE, time: TIME,
+    },
+    required: ['name', 'kcal'],
+    async run(input) {
+      const { entry } = await (await food()).quickAdd(input, 'coach');
+      return `Quick add: ${entry.name}, ${Math.round(entry.nutrients.kcal)} kcal`;
+    },
+  },
+  log_saved_meal: {
+    description: 'Log one of his saved meals (shake, fruit bowl, plate) by its id from search_food. share 0.5 logs half of it.',
+    properties: { meal_id: I(), share: N('1 = all of it'), slot: E(['breakfast', 'lunch', 'dinner', 'snacks', 'drinks']), date: DATE, time: TIME },
+    required: ['meal_id'],
+    async run({ meal_id: id, share = 1, ...rest }) {
+      const { entry } = await (await food()).logMeal({ meal_id: id, factor: share, ...rest }, 'coach');
+      return `Logged ${entry.name}${share !== 1 ? ` (${share} of it)` : ''}, ${Math.round(entry.nutrients.kcal ?? 0)} kcal`;
+    },
+  },
+  log_recipe: {
+    description: 'Log servings of a recipe by its key from search_food (or grams, if the recipe has a finished weight).',
+    properties: { key: S(), qty: N('Servings, or grams with unit g'), unit: E(['serving', 'g']), slot: E(['breakfast', 'lunch', 'dinner', 'snacks', 'drinks']), date: DATE, time: TIME },
+    required: ['key'],
+    async run({ qty = 1, unit = 'serving', ...rest }) {
+      const { entry } = await (await food()).logRecipe({ qty, unit, ...rest }, 'coach');
+      return `Logged ${entry.name}, ${entry.amountText} (${Math.round(entry.nutrients.kcal ?? 0)} kcal)`;
+    },
+  },
+  remove_food_entry: {
+    description: 'Remove a diary entry by its id (shown in the food section of the data). Needs Daniel\'s confirmation in the app.',
+    properties: { entry_id: S() },
+    required: ['entry_id'],
+    async confirm({ entry_id: id }) {
+      const [e] = await db()`select name, amount_text, date from food_log where id = ${String(id)} and deleted_at is null`;
+      if (!e) throw new RuleError('No diary entry with that id.');
+      return `Remove ${e.name}${e.amount_text ? ` (${e.amount_text})` : ''} from ${e.date}`;
+    },
+    async run({ entry_id: id }) {
+      const r = await (await food()).deleteEntry(String(id));
+      return `Removed ${r.entry?.name || 'the entry'} from the diary`;
+    },
+  },
+  food_day: {
+    read: true,
+    description: 'What he logged on a day, with totals. Totals marked "+" are missing some values; never present them as complete.',
+    properties: { date: DATE },
+    async run({ date }) {
+      return (await food()).foodForCoach(date);
     },
   },
 };

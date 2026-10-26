@@ -1,0 +1,2571 @@
+[
+  {
+    "key": "lentil-dhal",
+    "name": "Lentil dhal",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/lentil-dhal"
+    ],
+    "summary": "Red lentils simmered with turmeric until creamy, finished with a fried onion, garlic, ginger and cumin tarka, tomatoes and spinach.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 35,
+    "equipment": [
+      "large saucepan",
+      "frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "meat-free",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "red-lentils-dry",
+        "qty": 250,
+        "unit": "g",
+        "label": "red lentils"
+      },
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 900,
+        "unit": "ml",
+        "label": "water"
+      },
+      {
+        "ref": "item",
+        "ref_key": "turmeric-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "turmeric"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 20,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-red-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "red chilli"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 200,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-basmati-dry",
+        "qty": 300,
+        "unit": "g",
+        "label": "basmati rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Rinse the red lentils in a sieve until the water runs clear, then soak them in fresh water for 20 minutes while you prepare everything else. Drain.",
+      "Put the lentils in a large saucepan with the measured water and the turmeric, bring to the boil, skim off any froth and simmer for 20 to 25 minutes, stirring now and then, until soft and creamy.",
+      "Meanwhile heat the vegetable oil in a frying pan and fry the cumin for 30 seconds, then add the sliced onion and cook for 10 minutes until golden. Add the grated garlic and ginger and the chopped red chilli for 1 minute, then the chopped tomatoes, and cook for 5 minutes.",
+      "Stir the onion mixture into the lentils with the salt and spinach and cook for 2 minutes until the spinach wilts. Finish with the lemon juice and coriander.",
+      "If serving with basmati rice, rinse it and cook in plenty of boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Red lentils are weighed dry; most of the water is absorbed and stays in the dhal. Rice is an optional line."
+  },
+  {
+    "key": "chickpea-curry",
+    "name": "Chickpea curry",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/chickpea-curry"
+    ],
+    "summary": "Chickpeas simmered in a spiced onion and tomato sauce with spinach, finished with lemon and coriander.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 35,
+    "equipment": [
+      "large saucepan"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "meat-free",
+      "one-pan",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 20,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-red-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "red chilli"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "ground coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "curry-powder-as-sold",
+        "qty": 1,
+        "unit": "p:1 tbsp",
+        "label": "curry powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "turmeric-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "turmeric"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 150,
+        "unit": "ml",
+        "label": "water"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chickpeas-canned-drained",
+        "qty": 480,
+        "unit": "g",
+        "label": "chickpeas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-basmati-dry",
+        "qty": 300,
+        "unit": "g",
+        "label": "basmati rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the vegetable oil in a large pan and cook the finely chopped onion for 10 minutes until golden.",
+      "Add the grated garlic and ginger and the chopped red chilli and cook for 1 minute, then stir in the cumin, ground coriander, curry powder and turmeric for 30 seconds.",
+      "Add the chopped tomatoes, water, salt and the drained chickpeas. Simmer for 20 minutes, crushing a few chickpeas against the side of the pan to thicken the sauce.",
+      "Stir in the spinach until wilted, then add the lemon juice and scatter with the coriander.",
+      "If serving with basmati rice, rinse it and cook in plenty of boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Chickpeas are tinned, weighed drained (two 400 g tins give about 480 g). Rice is an optional line."
+  },
+  {
+    "key": "bean-chilli",
+    "name": "Bean chilli",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "variant",
+    "parent_key": "beef-chilli",
+    "req": [
+      "vegetarian/bean-chilli"
+    ],
+    "summary": "The beef chilli made without meat: kidney beans, black beans and sweet potato replace the mince and vegetable stock replaces the beef stock.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 45,
+    "equipment": [
+      "large saucepan or casserole"
+    ],
+    "tags": [
+      "dinner",
+      "meat-free",
+      "one-pan",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 15,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-powder-as-sold",
+        "qty": 2,
+        "unit": "p:1 tsp",
+        "label": "chilli powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sweet-potato-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "sweet potato"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-paste",
+        "qty": 30,
+        "unit": "g",
+        "label": "tomato purée"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-vegetable-ready",
+        "qty": 300,
+        "unit": "g",
+        "label": "vegetable stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cocoa-powder-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "cocoa powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "kidney-beans-canned-drained",
+        "qty": 240,
+        "unit": "g",
+        "label": "kidney beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-beans-canned-drained",
+        "qty": 240,
+        "unit": "g",
+        "label": "black beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-white-long-grain-dry",
+        "qty": 280,
+        "unit": "g",
+        "label": "rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the olive oil in a large pan over a medium heat and cook the chopped onion and red pepper for 8 minutes until soft.",
+      "Stir in the crushed garlic, chilli powder, cumin, paprika, oregano and cinnamon and cook for 1 minute.",
+      "Add the sweet potato, peeled and cut into 2 cm cubes, with the chopped tomatoes, tomato purée, vegetable stock, cocoa powder, salt and black pepper. Bring to a simmer, cover and cook for 20 minutes.",
+      "Stir in the drained kidney beans and black beans and simmer uncovered for 15 minutes until the sweet potato is tender and the chilli is thick.",
+      "If serving with rice, cook it in plenty of boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Beans are tinned, weighed drained. Rice is an optional line."
+  },
+  {
+    "key": "lentil-soup",
+    "name": "Lentil soup",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/lentil-soup"
+    ],
+    "summary": "A thick brown lentil and vegetable soup with cumin, tomatoes and a squeeze of lemon.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 40,
+    "cook_min": 45,
+    "equipment": [
+      "large saucepan"
+    ],
+    "tags": [
+      "lunch",
+      "dinner",
+      "meat-free",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "lentils-dry",
+        "qty": 200,
+        "unit": "g",
+        "label": "brown lentils"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "carrot-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "carrots"
+      },
+      {
+        "ref": "item",
+        "ref_key": "celery-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "celery"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-vegetable-ready",
+        "qty": 1200,
+        "unit": "g",
+        "label": "vegetable stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Rinse the brown lentils, cover with cold water and soak for 30 minutes, then drain.",
+      "Heat the olive oil in a large saucepan and cook the chopped onion, carrots and celery for 10 minutes until soft. Add the crushed garlic, cumin and paprika for 1 minute.",
+      "Add the lentils, chopped tomatoes and vegetable stock. Bring to the boil, boil for 5 minutes, then cover and simmer for 30 to 35 minutes until the lentils are soft.",
+      "Blend about a third of the soup and stir it back in to thicken. Season with the black pepper (the stock brings the salt), add the lemon juice and scatter with the parsley."
+    ],
+    "notes": "Lentils are weighed dry. Bread on the side is left to the diary."
+  },
+  {
+    "key": "chickpea-stew",
+    "name": "Chickpea and spinach stew",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/chickpea-stew"
+    ],
+    "summary": "Chickpeas cooked from dry and stewed with smoked paprika, cumin, tomato and plenty of spinach.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 120,
+    "equipment": [
+      "large saucepan",
+      "large deep frying pan or casserole"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "meat-free",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chickpeas-dry",
+        "qty": 250,
+        "unit": "g",
+        "label": "chickpeas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 25,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 12,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 2,
+        "unit": "p:1 tsp",
+        "label": "smoked paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-vegetable-ready",
+        "qty": 300,
+        "unit": "g",
+        "label": "vegetable stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 250,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vinegar-red-wine",
+        "qty": 10,
+        "unit": "ml",
+        "label": "red wine vinegar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "The night before, cover the chickpeas with plenty of cold water and soak for 8 to 12 hours.",
+      "Drain, cover with fresh water in a large saucepan, boil hard for 10 minutes, then simmer for 1 to 1½ hours until tender. Drain.",
+      "Heat the olive oil in a large deep pan and cook the chopped onion for 8 minutes, then add the sliced garlic, cumin and smoked paprika for 1 minute.",
+      "Add the chopped tomatoes, vegetable stock, cooked chickpeas, salt and black pepper and simmer for 15 minutes until thick.",
+      "Stir in the spinach a handful at a time until wilted, then add the red wine vinegar."
+    ],
+    "notes": "Chickpeas are weighed dry; 250 g dry gives about 575 g cooked. Bread on the side is left to the diary."
+  },
+  {
+    "key": "white-bean-tomato-stew",
+    "name": "White bean and tomato stew",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/white-bean-tomato-stew"
+    ],
+    "summary": "Cannellini beans simmered with tomatoes, rosemary, garlic and kale, Tuscan-style.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 35,
+    "equipment": [
+      "large saucepan or casserole"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "meat-free",
+      "one-pan",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 25,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "carrot-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "carrot"
+      },
+      {
+        "ref": "item",
+        "ref_key": "celery-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "celery"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 12,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rosemary-fresh",
+        "qty": 3,
+        "unit": "g",
+        "label": "rosemary"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-flakes-as-sold",
+        "qty": 1,
+        "unit": "g",
+        "label": "chilli flakes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-paste",
+        "qty": 15,
+        "unit": "g",
+        "label": "tomato purée"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-vegetable-ready",
+        "qty": 300,
+        "unit": "g",
+        "label": "vegetable stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cannellini-beans-canned-drained",
+        "qty": 480,
+        "unit": "g",
+        "label": "cannellini beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "kale-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "kale"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parmesan-grated",
+        "qty": 20,
+        "unit": "g",
+        "label": "Parmesan",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the olive oil in a large pan and cook the chopped onion, carrot and celery for 10 minutes until soft.",
+      "Add the sliced garlic, chopped rosemary and chilli flakes for 1 minute, then the chopped tomatoes, tomato purée, vegetable stock, salt and black pepper. Simmer for 10 minutes.",
+      "Add the drained cannellini beans and simmer for 10 minutes, crushing a few against the side of the pan to thicken.",
+      "Stir in the kale, stalks removed and leaves shredded, and cook for 5 minutes until tender. Grate over the Parmesan if you like."
+    ],
+    "notes": "Cannellini beans are tinned, weighed drained (two 400 g tins give about 480 g). The Parmesan is optional."
+  },
+  {
+    "key": "lentil-shepherds-pie",
+    "name": "Lentil shepherd's pie",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/lentil-shepherd-s-pie"
+    ],
+    "summary": "Green lentils and mushrooms in a rich tomato and thyme gravy, under a cheesy mashed potato top.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 40,
+    "cook_min": 60,
+    "equipment": [
+      "2 saucepans",
+      "large frying pan",
+      "ovenproof dish (about 2 litres)"
+    ],
+    "tags": [
+      "dinner",
+      "meat-free",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "green-lentils-dry",
+        "qty": 200,
+        "unit": "g",
+        "label": "green lentils"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 15,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "carrot-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "carrots"
+      },
+      {
+        "ref": "item",
+        "ref_key": "celery-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "celery"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mushroom-chestnut-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "mushrooms"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-paste",
+        "qty": 30,
+        "unit": "g",
+        "label": "tomato purée"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-vegetable-ready",
+        "qty": 300,
+        "unit": "g",
+        "label": "vegetable stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "thyme-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "dried thyme"
+      },
+      {
+        "ref": "item",
+        "ref_key": "soy-sauce-shoyu",
+        "qty": 15,
+        "unit": "ml",
+        "label": "soy sauce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peas-frozen",
+        "qty": 100,
+        "unit": "g",
+        "label": "peas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "potato-white-raw",
+        "qty": 900,
+        "unit": "g",
+        "label": "potatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 80,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 25,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cheddar",
+        "qty": 40,
+        "unit": "g",
+        "label": "cheddar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Rinse the green lentils and soak in cold water for 30 minutes. Drain, cover with fresh water, bring to the boil and simmer for 20 minutes until just tender, then drain.",
+      "Meanwhile heat the olive oil in a large frying pan and cook the chopped onion, carrots and celery for 10 minutes. Add the chopped mushrooms and crushed garlic and cook for 5 minutes more.",
+      "Stir in the tomato purée, then add the chopped tomatoes, vegetable stock, dried thyme, soy sauce and the lentils. Simmer for 15 minutes until thick, then stir in the peas and season with half the salt and the black pepper.",
+      "Peel the potatoes, cut into chunks and boil for 15 to 20 minutes until tender. Drain and mash with the milk, butter and the rest of the salt.",
+      "Heat the oven to 200°C (180°C fan). Spoon the lentil mixture into an ovenproof dish, top with the mash, scatter with the grated cheddar and bake for 25 to 30 minutes until golden."
+    ],
+    "notes": "Lentils are weighed dry. The mash is the pie topping, so it is part of the recipe. Soy sauce adds the savoury depth that Worcestershire sauce, which is made with anchovies, would usually give."
+  },
+  {
+    "key": "falafel",
+    "name": "Falafel",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/falafel"
+    ],
+    "summary": "Chickpea patties with parsley, coriander and cumin, shallow-fried, with a lemony tahini sauce and pitta if you like.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 15,
+    "equipment": [
+      "food processor",
+      "large frying pan",
+      "small bowl"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "meat-free",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chickpeas-canned-drained",
+        "qty": 480,
+        "unit": "g",
+        "label": "chickpeas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "red onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 20,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 15,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 4,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "ground coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-flakes-as-sold",
+        "qty": 1,
+        "unit": "g",
+        "label": "chilli flakes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-chickpea-as-sold",
+        "qty": 40,
+        "unit": "g",
+        "label": "chickpea flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "baking-powder-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "baking powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sunflower",
+        "qty": 30,
+        "unit": "g",
+        "label": "sunflower oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tahini",
+        "qty": 30,
+        "unit": "g",
+        "label": "tahini",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 30,
+        "unit": "ml",
+        "label": "water",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-pitta-white-as-sold",
+        "qty": 240,
+        "unit": "g",
+        "label": "pitta",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Pat the drained chickpeas very dry on kitchen paper.",
+      "Pulse them in a food processor with the red onion, garlic, parsley, coriander, cumin, ground coriander, chilli flakes and salt until finely chopped but not a paste.",
+      "Stir in the chickpea flour and baking powder, then shape into about 16 small flat patties. Chill for 20 minutes so they hold together.",
+      "Heat the sunflower oil about 5 mm deep in a large frying pan and fry the falafel in batches for 2 to 3 minutes a side until deep golden. Drain on kitchen paper.",
+      "If you like, whisk the tahini with the lemon juice and enough water to make a pourable sauce, and serve with warm pitta."
+    ],
+    "notes": "Made with tinned chickpeas, weighed drained, so the mixture needs chickpea flour to bind. Shallow-fried: the 30 g of sunflower oil is what the falafel take up, not the oil left in the pan. The tahini sauce and pitta are optional lines."
+  },
+  {
+    "key": "tofu-scramble",
+    "name": "Tofu scramble",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/tofu-scramble"
+    ],
+    "summary": "Crumbled firm tofu fried with turmeric, paprika, spring onion, cherry tomatoes and spinach.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 10,
+    "equipment": [
+      "frying pan"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "meat-free",
+      "quick",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "tofu-firm-calcium",
+        "qty": 300,
+        "unit": "g",
+        "label": "tofu"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 30,
+        "unit": "g",
+        "label": "spring onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 3,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "turmeric-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "turmeric"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-cherry-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "cherry tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "soy-sauce-shoyu",
+        "qty": 5,
+        "unit": "ml",
+        "label": "soy sauce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-sourdough-as-sold",
+        "qty": 80,
+        "unit": "g",
+        "label": "sourdough",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Drain the tofu and press between kitchen paper to remove excess water.",
+      "Heat the olive oil in a frying pan and cook the sliced spring onions and crushed garlic for 1 minute. Add the halved cherry tomatoes and cook for 2 minutes.",
+      "Crumble in the tofu, add the turmeric, paprika, soy sauce, salt and black pepper and cook for 4 to 5 minutes, stirring, until hot and lightly golden.",
+      "Stir in the spinach until it wilts. Serve on toasted sourdough if you like."
+    ],
+    "notes": "Firm tofu set with calcium sulphate, weighed after draining. The toast is optional."
+  },
+  {
+    "key": "tofu-curry",
+    "name": "Tofu coconut curry",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "variant",
+    "parent_key": "chicken-coconut-curry",
+    "req": [
+      "vegetarian/tofu-curry"
+    ],
+    "summary": "The coconut curry made with pan-fried firm tofu in place of chicken and vegetable stock in place of chicken stock.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 30,
+    "equipment": [
+      "large frying pan",
+      "large saucepan or wok"
+    ],
+    "tags": [
+      "dinner",
+      "meat-free",
+      "batch-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "tofu-firm-calcium",
+        "qty": 400,
+        "unit": "g",
+        "label": "tofu"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 30,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 12,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-red-fresh",
+        "qty": 15,
+        "unit": "g",
+        "label": "red chilli"
+      },
+      {
+        "ref": "item",
+        "ref_key": "curry-powder-as-sold",
+        "qty": 1,
+        "unit": "p:1 tbsp",
+        "label": "curry powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "turmeric-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "turmeric"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "ground coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coconut-milk-tinned",
+        "qty": 400,
+        "unit": "ml",
+        "label": "coconut milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-vegetable-ready",
+        "qty": 150,
+        "unit": "g",
+        "label": "vegetable stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lime-juice-fresh",
+        "qty": 20,
+        "unit": "ml",
+        "label": "lime juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-basmati-dry",
+        "qty": 300,
+        "unit": "g",
+        "label": "basmati rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Drain and press the tofu, then cut into 2 cm cubes. Fry in a third of the vegetable oil in a large frying pan over a medium-high heat for 8 to 10 minutes, turning, until golden on all sides. Set aside.",
+      "Heat the rest of the vegetable oil in a large pan and cook the sliced onion for 8 minutes until soft. Add the grated garlic and ginger and the chopped red chilli for 1 minute, then stir in the curry powder, turmeric and ground coriander for 30 seconds.",
+      "Pour in the coconut milk and vegetable stock, add the salt and simmer uncovered for 10 minutes to thicken.",
+      "Add the tofu and simmer for 5 minutes, then stir in the spinach until it wilts. Finish with the lime juice and fresh coriander.",
+      "If serving with basmati rice, rinse it and cook in plenty of boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Firm tofu set with calcium sulphate, weighed after draining. Made with one 400 ml tin of full-fat coconut milk. Rice is an optional line."
+  },
+  {
+    "key": "tofu-and-vegetable-traybake",
+    "name": "Tofu and vegetable traybake",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/tofu-and-vegetable-traybake"
+    ],
+    "summary": "Cornflour-dusted tofu roasted on one tray with sweet potato, broccoli, pepper and red onion, glazed with soy, maple and ginger.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 40,
+    "equipment": [
+      "2 roasting tins or 1 very large tray",
+      "small bowl"
+    ],
+    "tags": [
+      "dinner",
+      "meat-free",
+      "traybake"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "tofu-firm-calcium",
+        "qty": 400,
+        "unit": "g",
+        "label": "tofu"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cornflour-cornstarch-as-sold",
+        "qty": 15,
+        "unit": "g",
+        "label": "cornflour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sweet-potato-raw",
+        "qty": 400,
+        "unit": "g",
+        "label": "sweet potato"
+      },
+      {
+        "ref": "item",
+        "ref_key": "broccoli-raw",
+        "qty": 250,
+        "unit": "g",
+        "label": "broccoli"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "red onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 20,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "soy-sauce-shoyu",
+        "qty": 30,
+        "unit": "ml",
+        "label": "soy sauce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "maple-syrup-as-sold",
+        "qty": 15,
+        "unit": "g",
+        "label": "maple syrup"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sesame",
+        "qty": 10,
+        "unit": "g",
+        "label": "sesame oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 10,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sesame-seeds",
+        "qty": 8,
+        "unit": "g",
+        "label": "sesame seeds"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 20,
+        "unit": "g",
+        "label": "spring onions"
+      }
+    ],
+    "method": [
+      "Heat the oven to 210°C (190°C fan). Press the tofu dry, cut into 2 cm cubes and toss with the cornflour and half the vegetable oil.",
+      "Peel the sweet potato and cut into 2 cm cubes, cut the red pepper into chunks and the red onion into wedges. Toss with the rest of the vegetable oil and spread over the trays with the tofu. Roast for 20 minutes.",
+      "Add the broccoli, cut into florets, turn everything and roast for 15 minutes more until the tofu is crisp and the sweet potato tender.",
+      "Mix the soy sauce, maple syrup, sesame oil, grated garlic and ginger, pour over the tray and toss. Roast for 3 to 5 minutes until sticky, then scatter with the sesame seeds and sliced spring onions."
+    ],
+    "notes": "Firm tofu set with calcium sulphate, weighed after draining."
+  },
+  {
+    "key": "tempeh-stir-fry",
+    "name": "Tempeh stir-fry",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/tempeh-stir-fry"
+    ],
+    "summary": "Golden tempeh stir-fried with broccoli, pepper and carrot in a peanut, soy, lime and ginger sauce.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 12,
+    "equipment": [
+      "wok or large frying pan",
+      "small bowl"
+    ],
+    "tags": [
+      "dinner",
+      "meat-free",
+      "quick",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "tempeh",
+        "qty": 200,
+        "unit": "g",
+        "label": "tempeh"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 15,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "broccoli-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "broccoli"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "carrot-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "carrot"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 20,
+        "unit": "g",
+        "label": "spring onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 10,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peanut-butter-smooth",
+        "qty": 20,
+        "unit": "g",
+        "label": "peanut butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "soy-sauce-shoyu",
+        "qty": 25,
+        "unit": "ml",
+        "label": "soy sauce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lime-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lime juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 10,
+        "unit": "g",
+        "label": "honey"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-flakes-as-sold",
+        "qty": 1,
+        "unit": "g",
+        "label": "chilli flakes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 50,
+        "unit": "ml",
+        "label": "water"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-jasmine-dry",
+        "qty": 150,
+        "unit": "g",
+        "label": "jasmine rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Whisk the peanut butter, soy sauce, lime juice, honey, chilli flakes and water in a small bowl until smooth.",
+      "Cut the tempeh into thin slices. Heat half the vegetable oil in a wok over a medium-high heat and fry the tempeh for 4 to 5 minutes, turning, until golden. Lift out.",
+      "Add the rest of the vegetable oil and stir-fry the broccoli florets, sliced red pepper and carrot matchsticks for 4 minutes with a splash of water. Add the sliced garlic, ginger and spring onions for 1 minute.",
+      "Return the tempeh, pour in the sauce and toss for 1 to 2 minutes until glossy. If serving with jasmine rice, cook it in boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Rice is an optional line."
+  },
+  {
+    "key": "baked-beans-on-toast",
+    "name": "Baked beans on toast",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/baked-beans-on-toast"
+    ],
+    "summary": "Quick homemade baked beans, haricot beans simmered in a smoky, tangy tomato sauce, on wholemeal toast.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 20,
+    "equipment": [
+      "saucepan",
+      "toaster"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "meat-free",
+      "quick"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 5,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 3,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "smoked paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-passata",
+        "qty": 200,
+        "unit": "g",
+        "label": "passata"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-brown-soft-as-sold",
+        "qty": 8,
+        "unit": "g",
+        "label": "brown sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vinegar-cider",
+        "qty": 5,
+        "unit": "ml",
+        "label": "cider vinegar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mustard-yellow",
+        "qty": 0.5,
+        "unit": "p:1 tsp or 1 packet",
+        "label": "mustard"
+      },
+      {
+        "ref": "item",
+        "ref_key": "haricot-beans-canned-drained",
+        "qty": 240,
+        "unit": "g",
+        "label": "haricot beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-wholemeal-sliced-as-sold",
+        "qty": 4,
+        "unit": "p:1 slice",
+        "label": "wholemeal bread"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 10,
+        "unit": "g",
+        "label": "butter",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the olive oil in a saucepan and cook the finely chopped onion for 6 minutes until soft. Add the crushed garlic and smoked paprika for 1 minute.",
+      "Add the passata, brown sugar, cider vinegar, mustard, salt, black pepper and the drained haricot beans. Simmer gently for 10 to 12 minutes, stirring, until the sauce is thick and coats the beans.",
+      "Toast the wholemeal bread, spread with the butter if you like, and spoon the beans over."
+    ],
+    "notes": "Haricot beans are tinned, weighed drained. For ready-made tinned baked beans, log the tin directly instead. The butter is optional."
+  },
+  {
+    "key": "stuffed-aubergine",
+    "name": "Stuffed aubergine",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/stuffed-aubergine"
+    ],
+    "summary": "Roasted aubergine halves filled with spiced green lentils, tomato and the scooped-out flesh, topped with feta.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 40,
+    "cook_min": 50,
+    "equipment": [
+      "saucepan",
+      "baking tray",
+      "frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "green-lentils-dry",
+        "qty": 80,
+        "unit": "g",
+        "label": "green lentils"
+      },
+      {
+        "ref": "item",
+        "ref_key": "aubergine-raw",
+        "qty": 550,
+        "unit": "g",
+        "label": "aubergines"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 200,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-paste",
+        "qty": 15,
+        "unit": "g",
+        "label": "tomato purée"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mint-fresh",
+        "qty": 3,
+        "unit": "g",
+        "label": "mint"
+      },
+      {
+        "ref": "item",
+        "ref_key": "feta",
+        "qty": 60,
+        "unit": "g",
+        "label": "feta"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Rinse the green lentils and soak in cold water for 30 minutes. Drain, cover with fresh water, bring to the boil and simmer for 20 to 25 minutes until tender, then drain.",
+      "Heat the oven to 200°C (180°C fan). Halve the aubergines lengthways, score the flesh in a criss-cross, brush with half the olive oil and roast cut side up for 25 minutes until soft.",
+      "Scoop out most of the flesh, leaving a 1 cm shell, and chop it. Heat the rest of the olive oil in a frying pan and cook the chopped onion for 6 minutes, then add the crushed garlic, cumin and cinnamon for 1 minute.",
+      "Add the chopped aubergine flesh, chopped tomatoes, tomato purée, lentils, salt and black pepper and simmer for 8 minutes until thick. Stir in most of the parsley and the mint.",
+      "Pile the filling into the aubergine shells, crumble over the feta and bake for 15 minutes until golden. Scatter with the rest of the parsley."
+    ],
+    "notes": "Aubergines are weighed trimmed of their stalks, skin on (two medium). Lentils are weighed dry."
+  },
+  {
+    "key": "stuffed-courgette",
+    "name": "Stuffed courgettes",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/stuffed-courgette"
+    ],
+    "summary": "Courgette halves filled with ricotta, peas, Parmesan, mint and lemon, topped with breadcrumbs and baked.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 30,
+    "equipment": [
+      "baking dish",
+      "mixing bowl"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "courgette-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "courgettes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ricotta-part-skim",
+        "qty": 150,
+        "unit": "g",
+        "label": "ricotta"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peas-frozen",
+        "qty": 80,
+        "unit": "g",
+        "label": "peas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parmesan-grated",
+        "qty": 25,
+        "unit": "g",
+        "label": "Parmesan"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 3,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mint-fresh",
+        "qty": 4,
+        "unit": "g",
+        "label": "mint"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-peel-raw",
+        "qty": 1,
+        "unit": "g",
+        "label": "lemon zest"
+      },
+      {
+        "ref": "item",
+        "ref_key": "breadcrumbs-dried-plain-as-sold",
+        "qty": 20,
+        "unit": "g",
+        "label": "breadcrumbs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Halve the courgettes lengthways, scoop out the seedy middle with a teaspoon and chop it. Brush the shells with half the olive oil and bake cut side up for 10 minutes.",
+      "Mix the ricotta with the defrosted peas, the chopped courgette middles, most of the Parmesan, the beaten egg, crushed garlic, chopped mint, lemon zest, salt and black pepper.",
+      "Fill the courgette shells, mix the breadcrumbs with the rest of the Parmesan and scatter over, then drizzle with the rest of the olive oil.",
+      "Bake for 18 to 20 minutes until the filling is set and the tops are golden."
+    ],
+    "notes": "Courgettes are weighed trimmed. The Maltese stuffed qarabagħli with mince are in the Maltese recipes."
+  },
+  {
+    "key": "vegetable-tagine",
+    "name": "Vegetable tagine",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/vegetable-tagine"
+    ],
+    "summary": "Butternut squash, carrots, courgette and chickpeas slow-simmered with warm spices and dried apricots.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 45,
+    "equipment": [
+      "large casserole or tagine"
+    ],
+    "tags": [
+      "dinner",
+      "meat-free",
+      "one-pan",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 10,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "ground coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "turmeric-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "turmeric"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butternut-squash-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "butternut squash"
+      },
+      {
+        "ref": "item",
+        "ref_key": "carrot-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "carrots"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-vegetable-ready",
+        "qty": 400,
+        "unit": "g",
+        "label": "vegetable stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chickpeas-canned-drained",
+        "qty": 240,
+        "unit": "g",
+        "label": "chickpeas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "apricots-dried",
+        "qty": 60,
+        "unit": "g",
+        "label": "dried apricots"
+      },
+      {
+        "ref": "item",
+        "ref_key": "courgette-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "courgette"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "couscous-dry",
+        "qty": 240,
+        "unit": "g",
+        "label": "couscous",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the olive oil in a large casserole and cook the chopped onion for 8 minutes. Add the grated garlic and ginger, cumin, ground coriander, cinnamon, paprika and turmeric and cook for 1 minute.",
+      "Add the butternut squash, peeled and cut into 3 cm chunks, the carrots in thick slices and the red pepper in chunks. Stir to coat in the spices.",
+      "Pour in the chopped tomatoes and vegetable stock, add the drained chickpeas, halved dried apricots, salt and black pepper. Cover and simmer for 20 minutes.",
+      "Add the courgette in chunks and simmer uncovered for 10 to 15 minutes until all the vegetables are tender. Scatter with the coriander.",
+      "If serving with couscous, pour the same volume of boiling water over it, cover for 5 minutes and fluff with a fork."
+    ],
+    "notes": "Chickpeas are tinned, weighed drained. Squash is weighed peeled and deseeded. Couscous is an optional line."
+  },
+  {
+    "key": "halloumi-and-vegetable-skewers",
+    "name": "Halloumi and vegetable skewers",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/halloumi-and-vegetable-skewers"
+    ],
+    "summary": "Cubes of halloumi grilled on skewers with courgette, peppers, red onion and cherry tomatoes, dressed with lemon, garlic, oregano and mint.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 40,
+    "cook_min": 10,
+    "equipment": [
+      "6 skewers",
+      "griddle pan or grill",
+      "mixing bowl"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "meat-free",
+      "grill"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "halloumi-needs-label",
+        "qty": 200,
+        "unit": "g",
+        "label": "halloumi"
+      },
+      {
+        "ref": "item",
+        "ref_key": "courgette-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "courgette"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-yellow-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "yellow pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "red onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-cherry-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "cherry tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mint-fresh",
+        "qty": 4,
+        "unit": "g",
+        "label": "mint"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 120,
+        "unit": "g",
+        "label": "Greek yogurt",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-pitta-white-as-sold",
+        "qty": 120,
+        "unit": "g",
+        "label": "pitta",
+        "optional": true
+      }
+    ],
+    "method": [
+      "If you are using wooden skewers, soak them in water for 30 minutes.",
+      "Cut the halloumi into 2.5 cm cubes and the courgette, red pepper, yellow pepper and red onion into 3 cm pieces. Toss the vegetables and cherry tomatoes in a bowl with half the olive oil, the crushed garlic, oregano and black pepper.",
+      "Thread the halloumi and vegetables onto 6 skewers. Cook on a hot griddle or under a hot grill for 8 to 10 minutes, turning, until the vegetables are charred and the halloumi is golden.",
+      "Whisk the rest of the olive oil with the lemon juice and half the chopped mint, spoon over the skewers and scatter with the rest of the mint. If you like, serve with Greek yogurt and warm pitta."
+    ],
+    "notes": "Halloumi is a placeholder record with no values until a pack label is added, so the total shows as incomplete until then (200 g is about one pack between two). No salt is added because halloumi is salty. The yogurt and pitta are optional lines."
+  },
+  {
+    "key": "black-bean-burger",
+    "name": "Black bean burger",
+    "name_mt": null,
+    "family": "vegetarian",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "vegetarian/black-bean-burger"
+    ],
+    "summary": "Spiced black bean and sweetcorn patties, pan-fried and served in buns with lettuce and tomato.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 12,
+    "equipment": [
+      "mixing bowl",
+      "potato masher",
+      "large frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "meat-free",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "black-beans-canned-drained",
+        "qty": 480,
+        "unit": "g",
+        "label": "black beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "breadcrumbs-dried-plain-as-sold",
+        "qty": 50,
+        "unit": "g",
+        "label": "breadcrumbs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "red onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-powder-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "chilli powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sweetcorn-tinned-drained",
+        "qty": 80,
+        "unit": "g",
+        "label": "sweetcorn"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 15,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bun-burger-white-as-sold",
+        "qty": 4,
+        "unit": "p:1 roll 1 serving",
+        "label": "burger buns"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lettuce-cos-raw",
+        "qty": 40,
+        "unit": "g",
+        "label": "lettuce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "tomato"
+      },
+      {
+        "ref": "item",
+        "ref_key": "avocado-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "avocado",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Pat the drained black beans dry, then roughly mash two-thirds of them in a bowl, leaving the rest whole.",
+      "Mix in the breadcrumbs, beaten egg, finely chopped red onion, crushed garlic, cumin, paprika, chilli powder, sweetcorn, chopped coriander and salt. Shape into 4 patties and chill for 20 minutes.",
+      "Heat the vegetable oil in a large frying pan over a medium heat and cook the patties for 4 to 5 minutes a side until crisp and hot through, turning carefully.",
+      "Toast the burger buns and fill with the lettuce, sliced tomato and patties, adding sliced avocado if you like."
+    ],
+    "notes": "Black beans and sweetcorn are tinned, weighed drained. The avocado is optional."
+  }
+]

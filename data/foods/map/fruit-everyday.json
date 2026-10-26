@@ -1,0 +1,486 @@
+[
+  {
+    "req": "fruit-everyday/apple",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "apple-raw-with-skin",
+        "fdc_id": 171688,
+        "name": "Apple, with skin",
+        "state": "raw",
+        "aliases": [
+          "apple",
+          "apples",
+          "eating apple",
+          "tuffieħ"
+        ]
+      },
+      {
+        "key": "apple-raw-peeled",
+        "fdc_id": 171689,
+        "name": "Apple, peeled",
+        "state": "raw",
+        "aliases": [
+          "peeled apple"
+        ]
+      }
+    ],
+    "note": "Core excluded from edible grams."
+  },
+  {
+    "req": "fruit-everyday/banana",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "banana-raw",
+        "fdc_id": 173944,
+        "name": "Banana",
+        "state": "raw",
+        "aliases": [
+          "bananas"
+        ]
+      }
+    ],
+    "note": "Peeled flesh."
+  },
+  {
+    "req": "fruit-everyday/orange",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "orange-raw",
+        "fdc_id": 169097,
+        "name": "Orange",
+        "state": "raw",
+        "aliases": [
+          "oranges",
+          "larinġ"
+        ]
+      }
+    ],
+    "note": "Peeled flesh, all commercial varieties."
+  },
+  {
+    "req": "fruit-everyday/mandarin",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mandarin-raw",
+        "fdc_id": 169105,
+        "name": "Mandarin",
+        "state": "raw",
+        "aliases": [
+          "mandarins",
+          "tangerine",
+          "tangerines",
+          "mandarin orange"
+        ]
+      }
+    ],
+    "note": "Peeled flesh."
+  },
+  {
+    "req": "fruit-everyday/clementine",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "clementine-raw",
+        "fdc_id": 168195,
+        "name": "Clementine",
+        "state": "raw",
+        "aliases": [
+          "clementines",
+          "easy peeler"
+        ]
+      }
+    ],
+    "note": "Peeled flesh."
+  },
+  {
+    "req": "fruit-everyday/pear",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pear-raw",
+        "fdc_id": 169118,
+        "name": "Pear",
+        "state": "raw",
+        "aliases": [
+          "pears",
+          "lanġas"
+        ]
+      }
+    ],
+    "note": "Core excluded."
+  },
+  {
+    "req": "fruit-everyday/peach",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "peach-raw",
+        "fdc_id": 169928,
+        "name": "Peach",
+        "state": "raw",
+        "aliases": [
+          "peaches",
+          "ħawħ"
+        ]
+      }
+    ],
+    "note": "Stone excluded."
+  },
+  {
+    "req": "fruit-everyday/nectarine",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "nectarine-raw",
+        "fdc_id": 169914,
+        "name": "Nectarine",
+        "state": "raw",
+        "aliases": [
+          "nectarines"
+        ]
+      }
+    ],
+    "note": "Stone excluded."
+  },
+  {
+    "req": "fruit-everyday/plum",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "plum-raw",
+        "fdc_id": 169949,
+        "name": "Plum",
+        "state": "raw",
+        "aliases": [
+          "plums"
+        ]
+      }
+    ],
+    "note": "Stone excluded."
+  },
+  {
+    "req": "fruit-everyday/apricot",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "apricot-raw",
+        "fdc_id": 171697,
+        "name": "Apricot",
+        "state": "raw",
+        "aliases": [
+          "apricots",
+          "berquq"
+        ]
+      }
+    ],
+    "note": "Stone excluded."
+  },
+  {
+    "req": "fruit-everyday/red-grapes",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "grapes-red-raw",
+        "fdc_id": 174683,
+        "name": "Red grapes",
+        "state": "raw",
+        "aliases": [
+          "red grape",
+          "red seedless grapes",
+          "għeneb"
+        ]
+      }
+    ],
+    "note": "SR record covers red or green European-type grapes and has gram portions (10 grapes). Foundation red seedless (2346412) is colour-specific but has no portions or fibre."
+  },
+  {
+    "req": "fruit-everyday/green-grapes",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "grapes-green-raw",
+        "fdc_id": 174683,
+        "name": "Green grapes",
+        "state": "raw",
+        "aliases": [
+          "green grape",
+          "white grapes",
+          "green seedless grapes"
+        ]
+      }
+    ],
+    "note": "SR record covers red or green European-type grapes and has gram portions (10 grapes). Foundation green seedless (2346413) is colour-specific but has no portions or fibre."
+  },
+  {
+    "req": "fruit-everyday/strawberry",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "strawberries-raw",
+        "fdc_id": 167762,
+        "name": "Strawberries",
+        "state": "raw",
+        "aliases": [
+          "strawberry",
+          "frawli"
+        ]
+      }
+    ],
+    "note": "Hulled."
+  },
+  {
+    "req": "fruit-everyday/blueberry",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "blueberries-raw",
+        "fdc_id": 171711,
+        "name": "Blueberries",
+        "state": "raw",
+        "aliases": [
+          "blueberry"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fruit-everyday/raspberry",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "raspberries-raw",
+        "fdc_id": 167755,
+        "name": "Raspberries",
+        "state": "raw",
+        "aliases": [
+          "raspberry"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fruit-everyday/blackberry",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "blackberries-raw",
+        "fdc_id": 173946,
+        "name": "Blackberries",
+        "state": "raw",
+        "aliases": [
+          "blackberry",
+          "brambles"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fruit-everyday/cherry",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cherries-raw",
+        "fdc_id": 171719,
+        "name": "Cherries",
+        "state": "raw",
+        "aliases": [
+          "cherry",
+          "sweet cherries",
+          "ċirasa"
+        ]
+      }
+    ],
+    "note": "Sweet cherries; nutrients per pitted weight, portions include with-pit yields."
+  },
+  {
+    "req": "fruit-everyday/pineapple",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pineapple-raw",
+        "fdc_id": 169124,
+        "name": "Pineapple",
+        "state": "raw",
+        "aliases": [
+          "pineapples",
+          "ananas"
+        ]
+      }
+    ],
+    "note": "Peeled, cored flesh."
+  },
+  {
+    "req": "fruit-everyday/mango",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mango-raw",
+        "fdc_id": 169910,
+        "name": "Mango",
+        "state": "raw",
+        "aliases": [
+          "mangoes",
+          "mangos"
+        ]
+      }
+    ],
+    "note": "Peeled flesh, stone excluded."
+  },
+  {
+    "req": "fruit-everyday/kiwi",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "kiwi-raw",
+        "fdc_id": 168153,
+        "name": "Kiwi fruit",
+        "state": "raw",
+        "aliases": [
+          "kiwi",
+          "kiwis",
+          "kiwifruit",
+          "green kiwi"
+        ]
+      }
+    ],
+    "note": "Green kiwi, peeled."
+  },
+  {
+    "req": "fruit-everyday/watermelon",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "watermelon-raw",
+        "fdc_id": 167765,
+        "name": "Watermelon",
+        "state": "raw",
+        "aliases": [
+          "dulliegħa"
+        ]
+      }
+    ],
+    "note": "Flesh only, rind excluded."
+  },
+  {
+    "req": "fruit-everyday/cantaloupe",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cantaloupe-raw",
+        "fdc_id": 169092,
+        "name": "Cantaloupe melon",
+        "state": "raw",
+        "aliases": [
+          "cantaloupe",
+          "rockmelon",
+          "musk melon"
+        ]
+      }
+    ],
+    "note": "Flesh only."
+  },
+  {
+    "req": "fruit-everyday/honeydew-melon",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "honeydew-melon-raw",
+        "fdc_id": 169911,
+        "name": "Honeydew melon",
+        "state": "raw",
+        "aliases": [
+          "honeydew"
+        ]
+      }
+    ],
+    "note": "Flesh only."
+  },
+  {
+    "req": "fruit-everyday/lemon",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "lemon-raw",
+        "fdc_id": 167746,
+        "name": "Lemon, peeled",
+        "state": "raw",
+        "aliases": [
+          "lemon",
+          "lemons",
+          "lumi"
+        ]
+      },
+      {
+        "key": "lemon-peel-raw",
+        "fdc_id": 167749,
+        "name": "Lemon peel",
+        "state": "raw",
+        "aliases": [
+          "lemon zest",
+          "lemon rind"
+        ]
+      }
+    ],
+    "note": "Flesh without peel, plus peel for zest. Lemon juice is not mapped here."
+  },
+  {
+    "req": "fruit-everyday/lime",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "lime-raw",
+        "fdc_id": 168155,
+        "name": "Lime",
+        "state": "raw",
+        "aliases": [
+          "limes"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fruit-everyday/grapefruit",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "grapefruit-raw",
+        "fdc_id": 173033,
+        "name": "Grapefruit",
+        "state": "raw",
+        "aliases": [
+          "grapefruits",
+          "pink grapefruit",
+          "white grapefruit",
+          "red grapefruit"
+        ]
+      }
+    ],
+    "note": "Pink, red and white, all areas; peeled sections."
+  },
+  {
+    "req": "fruit-everyday/avocado",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "avocado-raw",
+        "fdc_id": 171705,
+        "name": "Avocado",
+        "state": "raw",
+        "aliases": [
+          "avocados",
+          "avocado pear",
+          "hass avocado"
+        ]
+      }
+    ],
+    "note": "All commercial varieties; skin and stone excluded."
+  }
+]

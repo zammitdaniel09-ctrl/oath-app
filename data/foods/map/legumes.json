@@ -1,0 +1,475 @@
+[
+  {
+    "req": "legumes/chickpeas",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chickpeas-dry",
+        "fdc_id": 173756,
+        "name": "Chickpeas, dried",
+        "state": "dry",
+        "aliases": [
+          "garbanzo beans",
+          "chick peas",
+          "ċiċri"
+        ]
+      },
+      {
+        "key": "chickpeas-boiled",
+        "fdc_id": 173757,
+        "name": "Chickpeas, boiled (no salt)",
+        "state": "boiled"
+      },
+      {
+        "key": "chickpeas-canned-drained",
+        "fdc_id": 173800,
+        "name": "Chickpeas, canned, drained",
+        "state": "canned-drained",
+        "aliases": [
+          "tinned chickpeas"
+        ]
+      }
+    ],
+    "note": "Canned record is drained solids (not rinsed). USDA also has canned with liquid (175206) and a salted boiled version (173799)."
+  },
+  {
+    "req": "legumes/kidney-beans",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "kidney-beans-dry",
+        "fdc_id": 173744,
+        "name": "Red kidney beans, dried",
+        "state": "dry",
+        "aliases": [
+          "kidney beans"
+        ]
+      },
+      {
+        "key": "kidney-beans-boiled",
+        "fdc_id": 175194,
+        "name": "Red kidney beans, boiled (no salt)",
+        "state": "boiled"
+      },
+      {
+        "key": "kidney-beans-canned-drained",
+        "fdc_id": 174285,
+        "name": "Red kidney beans, canned, drained",
+        "state": "canned-drained",
+        "aliases": [
+          "tinned kidney beans"
+        ]
+      }
+    ],
+    "note": "Canned with liquid also exists (175195)."
+  },
+  {
+    "req": "legumes/black-beans",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "black-beans-dry",
+        "fdc_id": 173734,
+        "name": "Black beans, dried",
+        "state": "dry",
+        "aliases": [
+          "black turtle beans"
+        ]
+      },
+      {
+        "key": "black-beans-boiled",
+        "fdc_id": 173735,
+        "name": "Black beans, boiled (no salt)",
+        "state": "boiled"
+      },
+      {
+        "key": "black-beans-canned-drained",
+        "fdc_id": 2644285,
+        "name": "Black beans, canned, drained and rinsed",
+        "state": "canned-drained",
+        "aliases": [
+          "tinned black beans"
+        ]
+      }
+    ],
+    "note": "Canned drained form is Foundation (no gram portions); SR only has canned with liquid."
+  },
+  {
+    "req": "legumes/cannellini-beans",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cannellini-beans-dry",
+        "fdc_id": 2644281,
+        "name": "Cannellini beans, dried",
+        "state": "dry",
+        "aliases": [
+          "white kidney beans"
+        ]
+      },
+      {
+        "key": "cannellini-beans-canned-drained",
+        "fdc_id": 2644287,
+        "name": "Cannellini beans, canned, drained and rinsed",
+        "state": "canned-drained",
+        "aliases": [
+          "tinned cannellini beans"
+        ]
+      }
+    ],
+    "note": "Foundation records only (no gram portions). No boiled cannellini record; the canned drained form covers cooked use."
+  },
+  {
+    "req": "legumes/butter-beans",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "butter-beans-dry",
+        "fdc_id": 174252,
+        "name": "Butter beans (large lima), dried",
+        "state": "dry",
+        "aliases": [
+          "lima beans",
+          "large lima beans"
+        ]
+      },
+      {
+        "key": "butter-beans-boiled",
+        "fdc_id": 174253,
+        "name": "Butter beans (large lima), boiled (no salt)",
+        "state": "boiled"
+      },
+      {
+        "key": "butter-beans-canned",
+        "fdc_id": 174254,
+        "name": "Butter beans (large lima), canned, with liquid",
+        "state": "canned-with-liquid",
+        "aliases": [
+          "tinned butter beans"
+        ]
+      }
+    ],
+    "note": "UK butter beans are mature large lima beans. USDA has no drained canned form; the canned record includes the liquid, so use boiled for drained beans."
+  },
+  {
+    "req": "legumes/haricot-beans",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "haricot-beans-dry",
+        "fdc_id": 173745,
+        "name": "Haricot beans (navy), dried",
+        "state": "dry",
+        "aliases": [
+          "navy beans"
+        ]
+      },
+      {
+        "key": "haricot-beans-boiled",
+        "fdc_id": 173746,
+        "name": "Haricot beans (navy), boiled (no salt)",
+        "state": "boiled"
+      },
+      {
+        "key": "haricot-beans-canned-drained",
+        "fdc_id": 2644286,
+        "name": "Haricot beans (navy), canned, drained and rinsed",
+        "state": "canned-drained"
+      }
+    ],
+    "note": "USDA navy beans = haricot beans. Canned drained form is Foundation (no gram portions)."
+  },
+  {
+    "req": "legumes/borlotti-beans",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "borlotti-beans-dry",
+        "fdc_id": 175189,
+        "name": "Borlotti beans (cranberry), dried",
+        "state": "dry",
+        "aliases": [
+          "cranberry beans",
+          "roman beans"
+        ]
+      },
+      {
+        "key": "borlotti-beans-boiled",
+        "fdc_id": 173736,
+        "name": "Borlotti beans (cranberry), boiled (no salt)",
+        "state": "boiled"
+      },
+      {
+        "key": "borlotti-beans-canned",
+        "fdc_id": 173737,
+        "name": "Borlotti beans (cranberry), canned, with liquid",
+        "state": "canned-with-liquid"
+      }
+    ],
+    "note": "USDA cranberry (roman) beans = borlotti. No drained canned form; the canned record includes the liquid."
+  },
+  {
+    "req": "legumes/broad-beans",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "broad-beans-fresh-raw",
+        "fdc_id": 170377,
+        "name": "Broad beans, fresh (immature), raw",
+        "state": "raw",
+        "aliases": [
+          "fava beans",
+          "ful"
+        ]
+      },
+      {
+        "key": "broad-beans-fresh-boiled",
+        "fdc_id": 170378,
+        "name": "Broad beans, fresh (immature), boiled (no salt)",
+        "state": "boiled"
+      },
+      {
+        "key": "broad-beans-dry",
+        "fdc_id": 175205,
+        "name": "Broad beans (fava), dried",
+        "state": "dry",
+        "aliases": [
+          "dried fava beans"
+        ]
+      },
+      {
+        "key": "broad-beans-dried-boiled",
+        "fdc_id": 173753,
+        "name": "Broad beans (fava), dried, boiled (no salt)",
+        "state": "boiled"
+      },
+      {
+        "key": "broad-beans-canned",
+        "fdc_id": 173754,
+        "name": "Broad beans (fava), canned, with liquid",
+        "state": "canned-with-liquid"
+      }
+    ],
+    "note": "Fresh/frozen (immature) and dried (mature) broad beans are separate records."
+  },
+  {
+    "req": "legumes/red-lentils",
+    "status": "partial",
+    "records": [
+      {
+        "key": "red-lentils-dry",
+        "fdc_id": 174284,
+        "name": "Red lentils, dried",
+        "state": "dry",
+        "aliases": [
+          "split red lentils",
+          "pink lentils"
+        ]
+      }
+    ],
+    "note": "Missing: boiled red lentils. USDA only has generic boiled lentils (lentils-boiled, fdc 172421), which is the closest proxy."
+  },
+  {
+    "req": "legumes/green-lentils",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "green-lentils-dry",
+        "fdc_id": 172420,
+        "name": "Green lentils, dried (generic lentils)",
+        "state": "dry",
+        "aliases": [
+          "puy lentils"
+        ]
+      },
+      {
+        "key": "green-lentils-boiled",
+        "fdc_id": 172421,
+        "name": "Green lentils, boiled (generic lentils, no salt)",
+        "state": "boiled"
+      }
+    ],
+    "note": "USDA has no green or Puy lentil record; uses the generic lentil records (variety not specified)."
+  },
+  {
+    "req": "legumes/brown-lentils",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "lentils-dry",
+        "fdc_id": 172420,
+        "name": "Brown lentils, dried",
+        "state": "dry",
+        "aliases": [
+          "lentils",
+          "għads"
+        ]
+      },
+      {
+        "key": "lentils-boiled",
+        "fdc_id": 172421,
+        "name": "Brown lentils, boiled (no salt)",
+        "state": "boiled",
+        "aliases": [
+          "cooked lentils"
+        ]
+      }
+    ],
+    "note": "USDA generic \"Lentils\" records (the common brown lentil; variety not stated)."
+  },
+  {
+    "req": "legumes/split-peas",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "split-peas-dry",
+        "fdc_id": 172428,
+        "name": "Split peas (green), dried",
+        "state": "dry",
+        "aliases": [
+          "green split peas"
+        ]
+      },
+      {
+        "key": "split-peas-boiled",
+        "fdc_id": 172429,
+        "name": "Split peas, boiled (no salt)",
+        "state": "boiled"
+      }
+    ],
+    "note": "Dried record is green split peas; yellow split peas are not listed separately."
+  },
+  {
+    "req": "legumes/edamame",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "edamame-frozen",
+        "fdc_id": 168410,
+        "name": "Edamame, frozen, uncooked",
+        "state": "frozen",
+        "aliases": [
+          "green soya beans",
+          "green soybeans"
+        ]
+      },
+      {
+        "key": "edamame-cooked",
+        "fdc_id": 168411,
+        "name": "Edamame, cooked from frozen",
+        "state": "cooked"
+      }
+    ],
+    "note": "Shelled edamame. The Foundation duplicate (2758981) has no nutrient values."
+  },
+  {
+    "req": "legumes/firm-tofu",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tofu-firm-calcium",
+        "fdc_id": 172475,
+        "name": "Firm tofu (calcium sulphate set)",
+        "state": "raw",
+        "aliases": [
+          "tofu",
+          "firm tofu"
+        ]
+      },
+      {
+        "key": "tofu-firm-nigari",
+        "fdc_id": 172448,
+        "name": "Firm tofu (nigari set)",
+        "state": "raw"
+      }
+    ],
+    "note": "Generic USDA firm tofu varies with coagulant and pressing (144 vs 78 kcal per 100 g); brands vary widely, so prefer the pack label. Extra-firm nigari tofu is 174290."
+  },
+  {
+    "req": "legumes/silken-tofu",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "tofu-silken-proxy",
+        "fdc_id": 172449,
+        "name": "Silken tofu (proxy: soft tofu)",
+        "state": "raw",
+        "aliases": [
+          "silken tofu"
+        ]
+      }
+    ],
+    "note": "USDA silken tofu records are all branded (Mori-Nu, Nasoya). Generic soft tofu (nigari) is the closest unbranded proxy; not interchangeable with firm tofu."
+  },
+  {
+    "req": "legumes/tempeh",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tempeh",
+        "fdc_id": 174272,
+        "name": "Tempeh",
+        "state": "as-sold"
+      },
+      {
+        "key": "tempeh-cooked",
+        "fdc_id": 172467,
+        "name": "Tempeh, cooked",
+        "state": "cooked"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "legumes/seitan",
+    "status": "product",
+    "records": [],
+    "note": "No seitan record in USDA. Packaged seitan varies by brand; use the label. Homemade seitan should be a recipe from vital wheat gluten (fdc 168147)."
+  },
+  {
+    "req": "legumes/textured-vegetable-protein",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "tvp-dry",
+        "fdc_id": 174275,
+        "name": "Textured vegetable protein, dry (proxy: defatted soya flour)",
+        "state": "dry",
+        "aliases": [
+          "TVP",
+          "textured soy protein",
+          "dried soya mince"
+        ]
+      }
+    ],
+    "note": "No TVP record in USDA. TVP is extruded defatted soya flour, so defatted soya flour is used as proxy; check the pack label."
+  },
+  {
+    "req": "legumes/baked-beans-in-tomato-sauce",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "baked-beans-canned",
+        "fdc_id": 175182,
+        "name": "Baked beans in tomato sauce, canned",
+        "state": "canned-with-liquid",
+        "aliases": [
+          "baked beans"
+        ]
+      }
+    ],
+    "note": "USDA \"Beans, baked, canned, plain or vegetarian\" is the US style, usually sweeter than UK baked beans; reduced-sugar/salt UK tins differ more. Prefer the label."
+  },
+  {
+    "req": "legumes/plant-mince",
+    "status": "product",
+    "records": [],
+    "note": "Plant-based mince (soya/pea) varies by brand; needs the exact packaged product. No generic USDA record."
+  },
+  {
+    "req": "legumes/plant-burger",
+    "status": "product",
+    "records": [],
+    "note": "Needs the exact packaged product. USDA \"Veggie burgers or soyburgers, unprepared\" (174287) is an old soy composite and not representative of current plant burgers."
+  }
+]

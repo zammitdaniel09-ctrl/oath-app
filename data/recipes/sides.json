@@ -1,0 +1,678 @@
+[
+  {
+    "key": "mashed-potatoes",
+    "name": "Mashed potatoes",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": ["sides/mashed-potatoes"],
+    "summary": "Smooth mashed potatoes with butter and warm milk.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 25,
+    "equipment": ["saucepan", "colander", "potato masher"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "potato-white-raw", "qty": 1000, "unit": "g", "label": "potatoes" },
+      { "ref": "item", "ref_key": "milk-semi-skimmed", "qty": 120, "unit": "ml", "label": "milk" },
+      { "ref": "item", "ref_key": "butter-salted", "qty": 40, "unit": "g", "label": "butter" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 2, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" }
+    ],
+    "method": [
+      "Peel the potatoes and cut them into even chunks. Put them in a pan of cold water, bring to the boil and simmer for 15 to 20 minutes until completely tender.",
+      "Drain well and leave to steam dry in the colander for 2 minutes. Warm the milk and butter in the empty pan.",
+      "Return the potatoes and mash until smooth, then season with the salt and black pepper."
+    ],
+    "notes": "Weigh the potatoes after peeling."
+  },
+  {
+    "key": "sweet-potato-mash",
+    "name": "Sweet potato mash",
+    "name_mt": null,
+    "family": "sides",
+    "type": "variant",
+    "parent_key": "mashed-potatoes",
+    "req": ["sides/sweet-potato-mash"],
+    "summary": "Sweet potatoes mashed with butter and a pinch of nutmeg.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 20,
+    "equipment": ["saucepan", "colander", "potato masher"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "sweet-potato-raw", "qty": 800, "unit": "g", "label": "sweet potatoes" },
+      { "ref": "item", "ref_key": "butter-salted", "qty": 25, "unit": "g", "label": "butter" },
+      { "ref": "item", "ref_key": "nutmeg-ground-as-sold", "qty": 0.2, "unit": "g", "label": "nutmeg" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 1, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.3, "unit": "g", "label": "black pepper" }
+    ],
+    "method": [
+      "Peel the sweet potatoes and cut them into even chunks. Boil or steam for 12 to 15 minutes until completely tender.",
+      "Drain very well and leave to steam dry for 2 minutes, as sweet potatoes hold more water than potatoes.",
+      "Mash with the butter, nutmeg, salt and black pepper until smooth."
+    ],
+    "notes": "The mashed potato method with sweet potatoes; no milk is needed. Weigh the sweet potatoes after peeling."
+  },
+  {
+    "key": "roast-potatoes",
+    "name": "Roast potatoes",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": ["sides/roast-potatoes"],
+    "summary": "Parboiled potatoes roasted in hot olive oil until crisp and golden.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 65,
+    "equipment": ["saucepan", "colander", "roasting tin"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "potato-white-raw", "qty": 1000, "unit": "g", "label": "potatoes" },
+      { "ref": "item", "ref_key": "oil-olive", "qty": 3, "unit": "p:1 tablespoon", "label": "olive oil" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 3, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "rosemary-fresh", "qty": 3, "unit": "g", "label": "rosemary", "optional": true }
+    ],
+    "method": [
+      "Heat the oven to 220°C (200°C fan) and put the olive oil in a large roasting tin to heat for 10 minutes.",
+      "Peel the potatoes and cut them into large chunks. Boil for 8 to 10 minutes until the edges are soft, drain and shake in the colander to rough up the edges.",
+      "Carefully tip the potatoes into the hot oil, turn to coat and roast for 45 to 55 minutes, turning once or twice, until deep golden and crisp. Add the rosemary for the last 10 minutes if using, and sprinkle with the salt to serve."
+    ],
+    "notes": "Weigh the potatoes after peeling. A little oil is usually left in the tin, so the full amount counted here slightly overstates what you eat."
+  },
+  {
+    "key": "oven-chips",
+    "name": "Oven chips",
+    "name_mt": null,
+    "family": "sides",
+    "type": "template",
+    "parent_key": null,
+    "req": ["sides/oven-chips"],
+    "summary": "Frozen oven chips baked from the bag; weigh them frozen.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 1,
+    "cook_min": 20,
+    "equipment": ["baking tray"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "oven-chips-frozen", "qty": 150, "unit": "g", "label": "oven chips" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 0.5, "unit": "g", "label": "salt", "optional": true }
+    ],
+    "method": [
+      "Spread the frozen oven chips on a tray and bake at 220°C (200°C fan) for 18 to 22 minutes, turning halfway, then sprinkle with salt if you like."
+    ],
+    "notes": "A plain cooked food rather than an authored recipe. Weigh the chips frozen, before baking."
+  },
+  {
+    "key": "air-fryer-potato-wedges",
+    "name": "Air-fryer potato wedges",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": ["sides/air-fryer-potato-wedges"],
+    "summary": "Skin-on potato wedges tossed in olive oil and paprika and crisped in the air fryer.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 22,
+    "equipment": ["air fryer"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "potato-white-raw", "qty": 500, "unit": "g", "label": "potatoes" },
+      { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tablespoon", "label": "olive oil" },
+      { "ref": "item", "ref_key": "paprika-as-sold", "qty": 2, "unit": "g", "label": "paprika" },
+      { "ref": "item", "ref_key": "garlic-powder-as-sold", "qty": 1, "unit": "g", "label": "garlic powder" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 1.5, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.3, "unit": "g", "label": "black pepper" }
+    ],
+    "method": [
+      "Scrub the potatoes and cut each into 8 wedges, leaving the skin on. Pat dry with a clean tea towel.",
+      "Toss the wedges with the olive oil, paprika, garlic powder, salt and black pepper.",
+      "Air-fry at 200°C for 18 to 22 minutes, shaking the basket two or three times, until crisp outside and tender in the middle."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "sweet-potato-wedges",
+    "name": "Sweet potato wedges",
+    "name_mt": null,
+    "family": "sides",
+    "type": "variant",
+    "parent_key": "air-fryer-potato-wedges",
+    "req": ["sides/sweet-potato-wedges"],
+    "summary": "Skin-on sweet potato wedges with paprika and garlic, crisped in the air fryer.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 18,
+    "equipment": ["air fryer"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "sweet-potato-raw", "qty": 500, "unit": "g", "label": "sweet potatoes" },
+      { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tablespoon", "label": "olive oil" },
+      { "ref": "item", "ref_key": "paprika-as-sold", "qty": 2, "unit": "g", "label": "paprika" },
+      { "ref": "item", "ref_key": "garlic-powder-as-sold", "qty": 1, "unit": "g", "label": "garlic powder" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 1.5, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.3, "unit": "g", "label": "black pepper" }
+    ],
+    "method": [
+      "Scrub the sweet potatoes and cut them into wedges about 2 cm thick, leaving the skin on. Pat dry.",
+      "Toss the wedges with the olive oil, paprika, garlic powder, salt and black pepper.",
+      "Air-fry at 200°C for 15 to 18 minutes, shaking the basket two or three times, until tender and browned at the edges. They soften more than potato wedges, so watch them at the end."
+    ],
+    "notes": "The potato wedge method with sweet potatoes, which cook a little faster."
+  },
+  {
+    "key": "baked-potato-with-beans",
+    "name": "Baked potato with beans",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": ["sides/baked-potato-with-beans"],
+    "summary": "A crisp-skinned jacket potato with butter and hot baked beans.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 70,
+    "equipment": ["oven", "small saucepan"],
+    "tags": ["lunch", "dinner", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "potato-white-raw", "qty": 300, "unit": "g", "label": "baking potato" },
+      { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tsp", "label": "olive oil" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 0.5, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "butter-salted", "qty": 10, "unit": "g", "label": "butter" },
+      { "ref": "item", "ref_key": "baked-beans-canned", "qty": 200, "unit": "g", "label": "baked beans" }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Scrub the baking potato, prick it a few times with a fork, rub with the olive oil and salt and bake directly on the shelf for 60 to 75 minutes until the skin is crisp and the inside soft.",
+      "For a quicker version, microwave the pricked potato for 6 to 8 minutes, then crisp it in the oven for 15 to 20 minutes.",
+      "Heat the baked beans in a small pan. Split the potato, add the butter and spoon over the beans."
+    ],
+    "notes": "Half a standard 400 g tin of beans."
+  },
+  {
+    "key": "baked-potato-with-tuna",
+    "name": "Baked potato with tuna",
+    "name_mt": null,
+    "family": "sides",
+    "type": "variant",
+    "parent_key": "baked-potato-with-beans",
+    "req": ["sides/baked-potato-with-tuna"],
+    "summary": "A crisp-skinned jacket potato filled with tuna mayonnaise, sweetcorn and spring onion.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 70,
+    "equipment": ["oven", "bowl"],
+    "tags": ["lunch", "dinner"],
+    "lines": [
+      { "ref": "item", "ref_key": "potato-white-raw", "qty": 300, "unit": "g", "label": "baking potato" },
+      { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tsp", "label": "olive oil" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 0.5, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "tuna-canned-water-light", "qty": 110, "unit": "g", "label": "tuna" },
+      { "ref": "item", "ref_key": "mayonnaise-regular", "qty": 20, "unit": "g", "label": "mayonnaise" },
+      { "ref": "item", "ref_key": "sweetcorn-tinned-drained", "qty": 40, "unit": "g", "label": "sweetcorn" },
+      { "ref": "item", "ref_key": "spring-onion-raw", "qty": 10, "unit": "g", "label": "spring onion" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.2, "unit": "g", "label": "black pepper" }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Scrub the baking potato, prick it a few times with a fork, rub with the olive oil and salt and bake directly on the shelf for 60 to 75 minutes until the skin is crisp and the inside soft.",
+      "For a quicker version, microwave the pricked potato for 6 to 8 minutes, then crisp it in the oven for 15 to 20 minutes.",
+      "Mix the drained tuna with the mayonnaise, sweetcorn, sliced spring onion and black pepper. Split the potato and pile in the filling."
+    ],
+    "notes": "The jacket potato with tuna mayonnaise in place of the beans and butter. One small tin of tuna in water, drained."
+  },
+  {
+    "key": "baked-potato-with-cheese",
+    "name": "Baked potato with cheese",
+    "name_mt": null,
+    "family": "sides",
+    "type": "variant",
+    "parent_key": "baked-potato-with-beans",
+    "req": ["sides/baked-potato-with-cheese"],
+    "summary": "A crisp-skinned jacket potato with butter and melting grated cheddar.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 75,
+    "equipment": ["oven"],
+    "tags": ["lunch", "dinner", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "potato-white-raw", "qty": 300, "unit": "g", "label": "baking potato" },
+      { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tsp", "label": "olive oil" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 0.5, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "butter-salted", "qty": 10, "unit": "g", "label": "butter" },
+      { "ref": "item", "ref_key": "cheddar", "qty": 50, "unit": "g", "label": "cheddar" }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Scrub the baking potato, prick it a few times with a fork, rub with the olive oil and salt and bake directly on the shelf for 60 to 75 minutes until the skin is crisp and the inside soft.",
+      "For a quicker version, microwave the pricked potato for 6 to 8 minutes, then crisp it in the oven for 15 to 20 minutes.",
+      "Split the potato, add the butter and pile in the grated cheddar. Return to the oven for 3 to 5 minutes to melt the cheese if you like."
+    ],
+    "notes": "The jacket potato with grated cheddar in place of the beans."
+  },
+  {
+    "key": "potato-salad",
+    "name": "Potato salad",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": ["sides/potato-salad"],
+    "summary": "Cooled new potatoes in a mustardy mayonnaise and yogurt dressing with spring onions and chives.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 15,
+    "equipment": ["saucepan", "large bowl"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "potato-new-raw", "qty": 750, "unit": "g", "label": "new potatoes" },
+      { "ref": "item", "ref_key": "mayonnaise-regular", "qty": 80, "unit": "g", "label": "mayonnaise" },
+      { "ref": "item", "ref_key": "yogurt-plain-whole", "qty": 60, "unit": "g", "label": "yogurt" },
+      { "ref": "item", "ref_key": "mustard-yellow", "qty": 5, "unit": "g", "label": "mustard" },
+      { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 10, "unit": "ml", "label": "lemon juice" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 2, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
+      { "ref": "item", "ref_key": "spring-onion-raw", "qty": 30, "unit": "g", "label": "spring onions" },
+      { "ref": "item", "ref_key": "chives-fresh", "qty": 5, "unit": "g", "label": "chives" }
+    ],
+    "method": [
+      "Halve any large new potatoes, cover with cold water, bring to the boil and simmer for 12 to 15 minutes until tender. Drain and leave to cool for at least 20 minutes.",
+      "Mix the mayonnaise, yogurt, mustard, lemon juice, salt and black pepper in a large bowl.",
+      "Add the potatoes, sliced spring onions and snipped chives and fold together gently. Chill until needed."
+    ],
+    "notes": "Keeps covered in the fridge for up to 2 days."
+  },
+  {
+    "key": "coleslaw",
+    "name": "Coleslaw",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": ["sides/coleslaw"],
+    "summary": "Shredded white cabbage, carrot and onion in a tangy mayonnaise dressing.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 0,
+    "equipment": ["large bowl", "grater"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "cabbage-white-raw", "qty": 300, "unit": "g", "label": "white cabbage" },
+      { "ref": "item", "ref_key": "carrot-raw", "qty": 150, "unit": "g", "label": "carrots" },
+      { "ref": "item", "ref_key": "onion-raw", "qty": 40, "unit": "g", "label": "onion" },
+      { "ref": "item", "ref_key": "mayonnaise-regular", "qty": 80, "unit": "g", "label": "mayonnaise" },
+      { "ref": "item", "ref_key": "vinegar-cider", "qty": 10, "unit": "ml", "label": "cider vinegar" },
+      { "ref": "item", "ref_key": "mustard-yellow", "qty": 3, "unit": "g", "label": "mustard" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 1, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.3, "unit": "g", "label": "black pepper" }
+    ],
+    "method": [
+      "Finely shred the white cabbage, coarsely grate the carrots and very thinly slice the onion.",
+      "Mix the mayonnaise, cider vinegar, mustard, salt and black pepper in a large bowl, add the vegetables and toss well. Chill for 30 minutes before serving."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "roasted-vegetables",
+    "name": "Roasted vegetables",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": ["sides/roasted-vegetables"],
+    "summary": "Mediterranean vegetables roasted in olive oil with garlic and oregano.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 45,
+    "equipment": ["large roasting tin"],
+    "tags": ["side", "meat-free", "batch-friendly"],
+    "lines": [
+      { "ref": "item", "ref_key": "courgette-raw", "qty": 300, "unit": "g", "label": "courgettes" },
+      { "ref": "item", "ref_key": "pepper-red-raw", "qty": 200, "unit": "g", "label": "red pepper" },
+      { "ref": "item", "ref_key": "pepper-yellow-raw", "qty": 150, "unit": "g", "label": "yellow pepper" },
+      { "ref": "item", "ref_key": "aubergine-raw", "qty": 250, "unit": "g", "label": "aubergine" },
+      { "ref": "item", "ref_key": "onion-red-raw", "qty": 150, "unit": "g", "label": "red onions" },
+      { "ref": "item", "ref_key": "oil-olive", "qty": 3, "unit": "p:1 tablespoon", "label": "olive oil" },
+      { "ref": "item", "ref_key": "garlic-raw", "qty": 4, "unit": "p:1 clove", "label": "garlic" },
+      { "ref": "item", "ref_key": "oregano-dried-as-sold", "qty": 1, "unit": "g", "label": "dried oregano" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 2, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
+      { "ref": "item", "ref_key": "tomato-cherry-raw", "qty": 200, "unit": "g", "label": "cherry tomatoes" }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Cut the courgettes, red pepper, yellow pepper and aubergine into large chunks and the red onions into wedges.",
+      "Toss them in a large roasting tin with the olive oil, the unpeeled garlic cloves, dried oregano, salt and black pepper, spreading them out in one layer.",
+      "Roast for 25 minutes, turn, add the cherry tomatoes and roast for 15 to 20 minutes more until tender and caramelised at the edges."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "steamed-vegetables-with-butter",
+    "name": "Steamed vegetables with butter",
+    "name_mt": null,
+    "family": "sides",
+    "type": "template",
+    "parent_key": null,
+    "req": ["sides/steamed-vegetables-with-butter"],
+    "summary": "Steamed broccoli, carrots and green beans with a little butter.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 7,
+    "equipment": ["steamer"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "broccoli-raw", "qty": 150, "unit": "g", "label": "broccoli" },
+      { "ref": "item", "ref_key": "carrot-raw", "qty": 150, "unit": "g", "label": "carrots" },
+      { "ref": "item", "ref_key": "green-beans-raw", "qty": 100, "unit": "g", "label": "green beans" },
+      { "ref": "item", "ref_key": "butter-salted", "qty": 10, "unit": "g", "label": "butter" }
+    ],
+    "method": [
+      "Steam the broccoli, sliced carrots and green beans for 5 to 7 minutes until just tender, then toss with the butter."
+    ],
+    "notes": "A minimal preparation saved for quick logging; swap the vegetables for whatever you steam."
+  },
+  {
+    "key": "garlic-mushrooms",
+    "name": "Garlic mushrooms",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": ["sides/garlic-mushrooms"],
+    "summary": "Chestnut mushrooms browned in butter and finished with garlic and parsley.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 10,
+    "equipment": ["large frying pan"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "mushroom-chestnut-raw", "qty": 300, "unit": "g", "label": "mushrooms" },
+      { "ref": "item", "ref_key": "garlic-raw", "qty": 3, "unit": "p:1 clove", "label": "garlic" },
+      { "ref": "item", "ref_key": "parsley-fresh", "qty": 8, "unit": "g", "label": "parsley" },
+      { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tsp", "label": "olive oil" },
+      { "ref": "item", "ref_key": "butter-salted", "qty": 25, "unit": "g", "label": "butter" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.3, "unit": "g", "label": "black pepper" },
+      { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 5, "unit": "ml", "label": "lemon juice", "optional": true }
+    ],
+    "method": [
+      "Halve or quarter the mushrooms and finely chop the garlic and parsley.",
+      "Heat the olive oil and half the butter in a large frying pan over a high heat and fry the mushrooms for 5 to 6 minutes until browned and their liquid has cooked off.",
+      "Lower the heat, add the rest of the butter and the garlic and cook for 1 to 2 minutes until fragrant. Stir in the parsley, black pepper and the lemon juice if using."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "sauteed-spinach",
+    "name": "Sautéed spinach",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": ["sides/sauteed-spinach"],
+    "summary": "Spinach wilted in olive oil with garlic and finished with lemon.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 5,
+    "equipment": ["large pan", "tongs"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "spinach-raw", "qty": 400, "unit": "g", "label": "spinach" },
+      { "ref": "item", "ref_key": "garlic-raw", "qty": 2, "unit": "p:1 clove", "label": "garlic" },
+      { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tablespoon", "label": "olive oil" },
+      { "ref": "item", "ref_key": "chilli-flakes-as-sold", "qty": 0.3, "unit": "g", "label": "chilli flakes", "optional": true },
+      { "ref": "item", "ref_key": "salt-table", "qty": 1, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 10, "unit": "ml", "label": "lemon juice" }
+    ],
+    "method": [
+      "Wash the spinach and leave the water clinging to the leaves. Thinly slice the garlic.",
+      "Heat the olive oil in a large pan over a medium heat, add the garlic and the chilli flakes if using and cook for 30 to 60 seconds without browning.",
+      "Add the spinach in handfuls, turning with tongs, for 2 to 3 minutes until just wilted. Season with the salt and lemon juice and drain off any excess liquid before serving."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "green-beans-with-garlic",
+    "name": "Green beans with garlic",
+    "name_mt": null,
+    "family": "sides",
+    "type": "variant",
+    "parent_key": "sauteed-spinach",
+    "req": ["sides/green-beans-with-garlic"],
+    "summary": "Blanched green beans tossed in olive oil with garlic and lemon.",
+    "servings": 3,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 8,
+    "equipment": ["saucepan", "large frying pan"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "green-beans-raw", "qty": 300, "unit": "g", "label": "green beans" },
+      { "ref": "item", "ref_key": "garlic-raw", "qty": 2, "unit": "p:1 clove", "label": "garlic" },
+      { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tablespoon", "label": "olive oil" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 1, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 10, "unit": "ml", "label": "lemon juice" }
+    ],
+    "method": [
+      "Trim the green beans and boil them for 3 to 4 minutes until just tender, then drain. Thinly slice the garlic.",
+      "Heat the olive oil in a large frying pan over a medium heat, add the garlic and cook for 30 to 60 seconds without browning.",
+      "Add the beans and toss for 2 minutes until hot and coated, then season with the salt and lemon juice."
+    ],
+    "notes": "The sautéed spinach method with green beans, which need blanching first."
+  },
+  {
+    "key": "cauliflower-cheese",
+    "name": "Cauliflower cheese",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": ["sides/cauliflower-cheese"],
+    "summary": "Cauliflower florets baked in a mustardy cheddar sauce until golden.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 35,
+    "equipment": ["saucepan", "baking dish", "whisk"],
+    "tags": ["side", "dinner", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "cauliflower-raw", "qty": 700, "unit": "g", "label": "cauliflower" },
+      { "ref": "item", "ref_key": "butter-unsalted", "qty": 30, "unit": "g", "label": "butter" },
+      { "ref": "item", "ref_key": "flour-plain-white-as-sold", "qty": 30, "unit": "g", "label": "plain flour" },
+      { "ref": "item", "ref_key": "milk-semi-skimmed", "qty": 450, "unit": "ml", "label": "milk" },
+      { "ref": "item", "ref_key": "cheddar", "qty": 100, "unit": "g", "label": "cheddar" },
+      { "ref": "item", "ref_key": "mustard-yellow", "qty": 5, "unit": "g", "label": "mustard" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 1, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.3, "unit": "g", "label": "black pepper" },
+      { "ref": "item", "ref_key": "breadcrumbs-dried-plain-as-sold", "qty": 15, "unit": "g", "label": "breadcrumbs", "optional": true }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Cut the cauliflower into florets and boil for 5 minutes until just tender; drain well and put in a baking dish.",
+      "Melt the butter in a saucepan, stir in the plain flour and cook for 1 minute. Gradually whisk in the milk and simmer, stirring, for 3 to 4 minutes until thick and smooth.",
+      "Take off the heat and stir in three-quarters of the grated cheddar, the mustard, salt and black pepper.",
+      "Pour the sauce over the cauliflower, scatter with the rest of the cheddar and the breadcrumbs if using, and bake for 20 to 25 minutes until bubbling and golden."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "corn-with-butter",
+    "name": "Corn on the cob with butter",
+    "name_mt": null,
+    "family": "sides",
+    "type": "template",
+    "parent_key": null,
+    "req": ["sides/corn-with-butter"],
+    "summary": "A boiled corn cob with butter.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 7,
+    "equipment": ["saucepan"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "corn-on-the-cob-boiled", "qty": 1, "unit": "p:1 ear medium (6-3/4\" to 7-1/2\" long)", "label": "corn on the cob" },
+      { "ref": "item", "ref_key": "butter-salted", "qty": 10, "unit": "g", "label": "butter" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 0.3, "unit": "g", "label": "salt", "optional": true }
+    ],
+    "method": [
+      "Boil the corn on the cob for 5 to 7 minutes, drain and spread with the butter; add a pinch of salt if you like."
+    ],
+    "notes": "A minimal preparation. The cob amount is the edible kernels of one medium ear."
+  },
+  {
+    "key": "potato-gratin",
+    "name": "Potato gratin",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "Thinly sliced potatoes baked slowly in garlicky cream and milk until tender and golden.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 90,
+    "equipment": ["saucepan", "baking dish"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "butter-unsalted", "qty": 10, "unit": "g", "label": "butter" },
+      { "ref": "item", "ref_key": "cream-double", "qty": 200, "unit": "ml", "label": "double cream" },
+      { "ref": "item", "ref_key": "milk-whole", "qty": 200, "unit": "ml", "label": "milk" },
+      { "ref": "item", "ref_key": "garlic-raw", "qty": 2, "unit": "p:1 clove", "label": "garlic" },
+      { "ref": "item", "ref_key": "nutmeg-ground-as-sold", "qty": 0.3, "unit": "g", "label": "nutmeg" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 3, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
+      { "ref": "item", "ref_key": "potato-white-raw", "qty": 800, "unit": "g", "label": "potatoes" }
+    ],
+    "method": [
+      "Heat the oven to 160°C (140°C fan) and rub a baking dish with the butter.",
+      "Warm the double cream and milk with the crushed garlic, nutmeg, salt and black pepper until steaming, then take off the heat.",
+      "Peel the potatoes and slice them about 3 mm thick. Layer them in the dish, pour over the cream mixture and press down so the top layer is just covered.",
+      "Bake for 1 hour 15 minutes to 1 hour 30 minutes until the potatoes are completely tender and the top is golden. Rest for 10 minutes before serving."
+    ],
+    "notes": "Dauphinoise-style. Weigh the potatoes after peeling."
+  },
+  {
+    "key": "braised-red-cabbage",
+    "name": "Braised red cabbage",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "Red cabbage braised slowly with apple, onion, brown sugar and red wine vinegar.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 60,
+    "equipment": ["large lidded pan"],
+    "tags": ["side", "meat-free", "batch-friendly", "freezer-friendly"],
+    "lines": [
+      { "ref": "item", "ref_key": "cabbage-red-raw", "qty": 600, "unit": "g", "label": "red cabbage" },
+      { "ref": "item", "ref_key": "onion-raw", "qty": 120, "unit": "g", "label": "onion" },
+      { "ref": "item", "ref_key": "apple-raw-with-skin", "qty": 150, "unit": "g", "label": "apple" },
+      { "ref": "item", "ref_key": "butter-unsalted", "qty": 20, "unit": "g", "label": "butter" },
+      { "ref": "item", "ref_key": "sugar-brown-soft-as-sold", "qty": 20, "unit": "g", "label": "brown sugar" },
+      { "ref": "item", "ref_key": "vinegar-red-wine", "qty": 40, "unit": "ml", "label": "red wine vinegar" },
+      { "ref": "item", "ref_key": "cinnamon-ground-as-sold", "qty": 0.5, "unit": "g", "label": "cinnamon" },
+      { "ref": "item", "ref_key": "cloves-ground-as-sold", "qty": 0.2, "unit": "g", "label": "ground cloves" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 2, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "water-tap", "qty": 60, "unit": "ml", "label": "water" }
+    ],
+    "method": [
+      "Shred the red cabbage finely, slice the onion and core and chop the apple.",
+      "Melt the butter in a large lidded pan and soften the onion for 5 minutes.",
+      "Add the cabbage, apple, brown sugar, red wine vinegar, cinnamon, ground cloves, salt and the water, stir well, cover and cook on a low heat for 45 minutes to 1 hour, stirring now and then, until very soft. Uncover for the last 10 minutes if much liquid is left."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "bombay-style-potatoes",
+    "name": "Bombay-style potatoes",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "Boiled potato cubes fried with onion, tomato and warm spices.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 30,
+    "equipment": ["saucepan", "large frying pan"],
+    "tags": ["side", "meat-free"],
+    "lines": [
+      { "ref": "item", "ref_key": "potato-white-raw", "qty": 800, "unit": "g", "label": "potatoes" },
+      { "ref": "item", "ref_key": "oil-vegetable", "qty": 2, "unit": "p:1 tbsp", "label": "vegetable oil" },
+      { "ref": "item", "ref_key": "onion-raw", "qty": 150, "unit": "g", "label": "onion" },
+      { "ref": "item", "ref_key": "garlic-raw", "qty": 2, "unit": "p:1 clove", "label": "garlic" },
+      { "ref": "item", "ref_key": "ginger-root-raw", "qty": 10, "unit": "g", "label": "ginger" },
+      { "ref": "item", "ref_key": "cumin-as-sold", "qty": 3, "unit": "g", "label": "cumin" },
+      { "ref": "item", "ref_key": "turmeric-ground-as-sold", "qty": 1, "unit": "g", "label": "turmeric" },
+      { "ref": "item", "ref_key": "coriander-ground-as-sold", "qty": 2, "unit": "g", "label": "ground coriander" },
+      { "ref": "item", "ref_key": "chilli-flakes-as-sold", "qty": 0.5, "unit": "g", "label": "chilli flakes" },
+      { "ref": "item", "ref_key": "tomatoes-tinned-chopped", "qty": 200, "unit": "g", "label": "chopped tomatoes" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 3, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 10, "unit": "ml", "label": "lemon juice" },
+      { "ref": "item", "ref_key": "coriander-fresh", "qty": 8, "unit": "g", "label": "fresh coriander" }
+    ],
+    "method": [
+      "Peel the potatoes and cut them into 2 to 3 cm cubes. Boil for 8 to 10 minutes until just tender, then drain.",
+      "Heat the vegetable oil in a large frying pan and fry the chopped onion for 6 to 8 minutes until golden. Add the grated garlic and ginger, the cumin, turmeric, ground coriander and chilli flakes and stir for 1 minute.",
+      "Add the chopped tomatoes and salt and cook for 3 to 4 minutes until thickened, then add the potatoes and toss gently over a medium heat for 5 to 8 minutes until coated and lightly crisp in places.",
+      "Finish with the lemon juice and fresh coriander."
+    ],
+    "notes": "Weigh the potatoes after peeling."
+  },
+  {
+    "key": "ratatouille",
+    "name": "Ratatouille",
+    "name_mt": null,
+    "family": "sides",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "Aubergine, courgette, pepper and onion stewed slowly in tomato with thyme and basil.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 50,
+    "equipment": ["large deep lidded pan"],
+    "tags": ["side", "dinner", "meat-free", "batch-friendly", "freezer-friendly"],
+    "lines": [
+      { "ref": "item", "ref_key": "aubergine-raw", "qty": 300, "unit": "g", "label": "aubergine" },
+      { "ref": "item", "ref_key": "courgette-raw", "qty": 300, "unit": "g", "label": "courgettes" },
+      { "ref": "item", "ref_key": "pepper-red-raw", "qty": 200, "unit": "g", "label": "red pepper" },
+      { "ref": "item", "ref_key": "onion-raw", "qty": 150, "unit": "g", "label": "onion" },
+      { "ref": "item", "ref_key": "garlic-raw", "qty": 3, "unit": "p:1 clove", "label": "garlic" },
+      { "ref": "item", "ref_key": "oil-olive", "qty": 3, "unit": "p:1 tablespoon", "label": "olive oil" },
+      { "ref": "item", "ref_key": "tomatoes-tinned-chopped", "qty": 400, "unit": "g", "label": "chopped tomatoes" },
+      { "ref": "item", "ref_key": "tomato-paste", "qty": 1, "unit": "p:1 tbsp", "label": "tomato paste" },
+      { "ref": "item", "ref_key": "thyme-dried-as-sold", "qty": 1, "unit": "g", "label": "dried thyme" },
+      { "ref": "item", "ref_key": "salt-table", "qty": 3, "unit": "g", "label": "salt" },
+      { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
+      { "ref": "item", "ref_key": "basil-fresh", "qty": 8, "unit": "g", "label": "basil" }
+    ],
+    "method": [
+      "Cut the aubergine, courgettes and red pepper into 2 cm chunks and chop the onion and garlic.",
+      "Heat half the olive oil in a large, deep pan and fry the aubergine for 6 to 8 minutes until browned; lift out. Add the rest of the oil and cook the onion and red pepper for 5 minutes, then the courgettes and garlic for 3 minutes.",
+      "Return the aubergine, add the chopped tomatoes, tomato paste, dried thyme, salt and black pepper, cover and simmer gently for 30 to 35 minutes, stirring now and then, until everything is soft.",
+      "Stir in the torn basil before serving, hot or at room temperature."
+    ],
+    "notes": ""
+  }
+]

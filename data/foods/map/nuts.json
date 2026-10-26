@@ -1,0 +1,431 @@
+[
+  {
+    "req": "nuts/almond",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "almonds-raw",
+        "fdc_id": 170567,
+        "name": "Almonds",
+        "state": "raw",
+        "aliases": [
+          "almond",
+          "whole almonds"
+        ]
+      },
+      {
+        "key": "almonds-dry-roasted-salted",
+        "fdc_id": 168596,
+        "name": "Almonds, dry roasted, salted",
+        "state": "roasted"
+      },
+      {
+        "key": "almonds-dry-roasted-unsalted",
+        "fdc_id": 170158,
+        "name": "Almonds, dry roasted, unsalted",
+        "state": "roasted"
+      }
+    ],
+    "note": "Blanched almonds: 170568."
+  },
+  {
+    "req": "nuts/walnut",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "walnuts",
+        "fdc_id": 170187,
+        "name": "Walnuts",
+        "state": "raw",
+        "aliases": [
+          "walnut",
+          "walnut halves"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "nuts/cashew",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cashews-raw",
+        "fdc_id": 170162,
+        "name": "Cashew nuts",
+        "state": "raw",
+        "aliases": [
+          "cashews",
+          "cashew"
+        ]
+      },
+      {
+        "key": "cashews-dry-roasted-salted",
+        "fdc_id": 169421,
+        "name": "Cashew nuts, dry roasted, salted",
+        "state": "roasted"
+      },
+      {
+        "key": "cashews-dry-roasted-unsalted",
+        "fdc_id": 170571,
+        "name": "Cashew nuts, dry roasted, unsalted",
+        "state": "roasted"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "nuts/pistachio",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pistachios-raw",
+        "fdc_id": 170184,
+        "name": "Pistachios",
+        "state": "raw",
+        "aliases": [
+          "pistachio nuts"
+        ]
+      },
+      {
+        "key": "pistachios-dry-roasted-salted",
+        "fdc_id": 169426,
+        "name": "Pistachios, dry roasted, salted",
+        "state": "roasted"
+      }
+    ],
+    "note": "Shelled kernel weight; in-shell weight includes inedible shell."
+  },
+  {
+    "req": "nuts/peanut",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "peanuts-raw",
+        "fdc_id": 172430,
+        "name": "Peanuts",
+        "state": "raw",
+        "aliases": [
+          "peanut",
+          "groundnuts"
+        ]
+      },
+      {
+        "key": "peanuts-dry-roasted-salted",
+        "fdc_id": 174262,
+        "name": "Peanuts, dry roasted, salted",
+        "state": "roasted",
+        "aliases": [
+          "salted peanuts"
+        ]
+      }
+    ],
+    "note": "Oil-roasted salted peanuts: 174261."
+  },
+  {
+    "req": "nuts/hazelnut",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "hazelnuts",
+        "fdc_id": 170581,
+        "name": "Hazelnuts",
+        "state": "raw",
+        "aliases": [
+          "hazelnut",
+          "filberts"
+        ]
+      },
+      {
+        "key": "hazelnuts-dry-roasted",
+        "fdc_id": 170583,
+        "name": "Hazelnuts, dry roasted, unsalted",
+        "state": "roasted"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "nuts/pecan",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pecans",
+        "fdc_id": 170182,
+        "name": "Pecans",
+        "state": "raw",
+        "aliases": [
+          "pecan nuts"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "nuts/brazil-nut",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "brazil-nuts",
+        "fdc_id": 170569,
+        "name": "Brazil nuts",
+        "state": "raw",
+        "aliases": [
+          "brazil nut"
+        ]
+      }
+    ],
+    "note": "USDA \"dried, unblanched\" (the usual raw form)."
+  },
+  {
+    "req": "nuts/macadamia-nut",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "macadamias-raw",
+        "fdc_id": 170178,
+        "name": "Macadamia nuts",
+        "state": "raw",
+        "aliases": [
+          "macadamias"
+        ]
+      },
+      {
+        "key": "macadamias-dry-roasted-salted",
+        "fdc_id": 168598,
+        "name": "Macadamia nuts, dry roasted, salted",
+        "state": "roasted"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "nuts/mixed-nuts",
+    "status": "partial",
+    "records": [
+      {
+        "key": "mixed-nuts-dry-roasted-salted",
+        "fdc_id": 168599,
+        "name": "Mixed nuts with peanuts, dry roasted, salted",
+        "state": "roasted",
+        "aliases": [
+          "salted mixed nuts"
+        ]
+      },
+      {
+        "key": "mixed-nuts-dry-roasted-unsalted",
+        "fdc_id": 170585,
+        "name": "Mixed nuts with peanuts, dry roasted, unsalted",
+        "state": "roasted"
+      },
+      {
+        "key": "mixed-nuts-no-peanuts-oil-roasted-salted",
+        "fdc_id": 169423,
+        "name": "Mixed nuts without peanuts, oil roasted, salted",
+        "state": "roasted"
+      }
+    ],
+    "note": "Missing: raw unsalted mixed nuts (the common UK bag); USDA mixes are all roasted."
+  },
+  {
+    "req": "nuts/chia-seeds",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chia-seeds",
+        "fdc_id": 170554,
+        "name": "Chia seeds",
+        "state": "dry",
+        "aliases": [
+          "chia"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "nuts/flaxseed",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "flaxseed",
+        "fdc_id": 169414,
+        "name": "Flaxseed (linseed)",
+        "state": "dry",
+        "aliases": [
+          "linseed",
+          "flax seeds",
+          "ground flaxseed"
+        ]
+      }
+    ],
+    "note": "Portions cover whole and ground tablespoons."
+  },
+  {
+    "req": "nuts/pumpkin-seeds",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pumpkin-seeds",
+        "fdc_id": 170556,
+        "name": "Pumpkin seeds (kernels)",
+        "state": "dry",
+        "aliases": [
+          "pepitas",
+          "pumpkin seed kernels"
+        ]
+      },
+      {
+        "key": "pumpkin-seeds-roasted-salted",
+        "fdc_id": 169415,
+        "name": "Pumpkin seeds (kernels), roasted, salted",
+        "state": "roasted"
+      }
+    ],
+    "note": "Hulled kernels; whole roasted seeds in shell are 168601."
+  },
+  {
+    "req": "nuts/sunflower-seeds",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sunflower-seeds",
+        "fdc_id": 170562,
+        "name": "Sunflower seeds (kernels)",
+        "state": "dry",
+        "aliases": [
+          "sunflower seed kernels"
+        ]
+      },
+      {
+        "key": "sunflower-seeds-dry-roasted-salted",
+        "fdc_id": 169418,
+        "name": "Sunflower seeds (kernels), dry roasted, salted",
+        "state": "roasted"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "nuts/sesame-seeds",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sesame-seeds",
+        "fdc_id": 170150,
+        "name": "Sesame seeds",
+        "state": "dry",
+        "aliases": [
+          "sesame"
+        ]
+      }
+    ],
+    "note": "Whole (unhulled) dried seeds."
+  },
+  {
+    "req": "nuts/hemp-seeds",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "hemp-seeds-hulled",
+        "fdc_id": 170148,
+        "name": "Hemp seeds, hulled",
+        "state": "dry",
+        "aliases": [
+          "hemp hearts"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "nuts/peanut-butter",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "peanut-butter-smooth",
+        "fdc_id": 174266,
+        "name": "Peanut butter, smooth, salted",
+        "state": "as-sold",
+        "aliases": [
+          "smooth peanut butter"
+        ]
+      },
+      {
+        "key": "peanut-butter-smooth-no-salt",
+        "fdc_id": 172470,
+        "name": "Peanut butter, smooth, no added salt",
+        "state": "as-sold"
+      },
+      {
+        "key": "peanut-butter-crunchy",
+        "fdc_id": 174265,
+        "name": "Peanut butter, crunchy, salted",
+        "state": "as-sold",
+        "aliases": [
+          "chunky peanut butter"
+        ]
+      }
+    ],
+    "note": "US-style peanut butter may include added sugar and oil; 100% peanut butters differ slightly, so prefer the label."
+  },
+  {
+    "req": "nuts/almond-butter",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "almond-butter",
+        "fdc_id": 168588,
+        "name": "Almond butter, no added salt",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Salted version: 168603."
+  },
+  {
+    "req": "nuts/cashew-butter",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cashew-butter",
+        "fdc_id": 170163,
+        "name": "Cashew butter, no added salt",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Salted version: 168597."
+  },
+  {
+    "req": "nuts/tahini",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tahini",
+        "fdc_id": 170189,
+        "name": "Tahini (roasted sesame)",
+        "state": "as-sold",
+        "aliases": [
+          "tahina",
+          "sesame paste"
+        ]
+      }
+    ],
+    "note": "Roasted-kernel tahini, the most common type."
+  },
+  {
+    "req": "nuts/chocolate-hazelnut-spread",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chocolate-hazelnut-spread",
+        "fdc_id": 168000,
+        "name": "Chocolate hazelnut spread",
+        "state": "as-sold",
+        "aliases": [
+          "hazelnut chocolate spread"
+        ]
+      }
+    ],
+    "note": "Generic sweetened spread; nut-only hazelnut butter is different."
+  }
+]

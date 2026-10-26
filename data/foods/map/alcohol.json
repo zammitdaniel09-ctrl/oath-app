@@ -1,0 +1,281 @@
+[
+  {
+    "req": "alcohol/beer",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "beer-regular",
+        "fdc_id": 168746,
+        "name": "Beer",
+        "state": "as-sold",
+        "aliases": [
+          "lager",
+          "ale"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "beer-light",
+        "fdc_id": 168749,
+        "name": "Beer, light",
+        "state": "as-sold",
+        "aliases": [
+          "light lager"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "beer-strong",
+        "fdc_id": 171906,
+        "name": "Beer, higher alcohol",
+        "state": "as-sold",
+        "aliases": [
+          "strong lager",
+          "IPA"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "ABV varies; use the label ABV and volume when known."
+  },
+  {
+    "req": "alcohol/non-alcoholic-beer",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "beer-alcohol-free",
+        "fdc_id": 174863,
+        "name": "Beer, alcohol-free",
+        "state": "as-sold",
+        "aliases": [
+          "non-alcoholic beer",
+          "0.0% beer"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "USDA groups non-alcoholic beer with malt beverages in one record; alcohol-free lagers vary. Use the label when known."
+  },
+  {
+    "req": "alcohol/cider",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "cider-proxy",
+        "fdc_id": 174146,
+        "name": "Cider (US hard cider)",
+        "state": "as-sold",
+        "aliases": [
+          "hard cider"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Only one US amber hard cider record; cider sweetness and ABV vary a lot. Use the label when known."
+  },
+  {
+    "req": "alcohol/red-wine",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "wine-red",
+        "fdc_id": 173190,
+        "name": "Red wine",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "alcohol/white-wine",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "wine-white",
+        "fdc_id": 174837,
+        "name": "White wine",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "alcohol/rose-wine",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "wine-rose",
+        "fdc_id": 171908,
+        "name": "Rosé wine",
+        "state": "as-sold",
+        "aliases": [
+          "rose wine",
+          "blush wine"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "alcohol/sparkling-wine",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "wine-sparkling-proxy",
+        "fdc_id": 174837,
+        "name": "Sparkling wine, dry (white wine proxy)",
+        "state": "as-sold",
+        "aliases": [
+          "prosecco",
+          "cava",
+          "champagne",
+          "bubbly"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "No sparkling wine in USDA; dry white table wine is the proxy for brut styles. Sweeter styles and different ABVs need the label."
+  },
+  {
+    "req": "alcohol/vodka",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "spirit-vodka",
+        "fdc_id": 174818,
+        "name": "Vodka (40% ABV)",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": "USDA 80 proof = 40% ABV."
+  },
+  {
+    "req": "alcohol/gin",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "spirit-gin",
+        "fdc_id": 174815,
+        "name": "Gin (40% ABV)",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": "USDA has no gin-only record; uses the distilled spirits (gin, rum, vodka, whiskey) 80 proof record. Mixers logged separately."
+  },
+  {
+    "req": "alcohol/rum",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "spirit-rum",
+        "fdc_id": 174817,
+        "name": "Rum (40% ABV)",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": "USDA 80 proof = 40% ABV; spiced rums with sugar need the label."
+  },
+  {
+    "req": "alcohol/whisky",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "spirit-whisky",
+        "fdc_id": 174819,
+        "name": "Whisky (43% ABV)",
+        "state": "as-sold",
+        "aliases": [
+          "whiskey",
+          "Scotch",
+          "bourbon"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "USDA whiskey record is 86 proof (43% ABV); 40% whisky matches the 80 proof distilled-spirits record (174815)."
+  },
+  {
+    "req": "alcohol/liqueur",
+    "status": "partial",
+    "records": [
+      {
+        "key": "liqueur-coffee",
+        "fdc_id": 175097,
+        "name": "Coffee liqueur",
+        "state": "as-sold",
+        "liquid": true
+      },
+      {
+        "key": "liqueur-cream",
+        "fdc_id": 175098,
+        "name": "Cream liqueur",
+        "state": "as-sold",
+        "aliases": [
+          "Irish cream liqueur"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "liqueur-creme-de-menthe",
+        "fdc_id": 173168,
+        "name": "Crème de menthe",
+        "state": "as-sold",
+        "aliases": [
+          "mint liqueur"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Only coffee, cream and mint liqueurs exist; amaretto, limoncello, herbal and fruit liqueurs need labels."
+  },
+  {
+    "req": "alcohol/premixed-cocktail",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cocktail-canned-daiquiri",
+        "fdc_id": 169573,
+        "name": "Daiquiri, canned",
+        "state": "as-sold",
+        "liquid": true
+      },
+      {
+        "key": "cocktail-canned-pina-colada",
+        "fdc_id": 168750,
+        "name": "Piña colada, canned",
+        "state": "as-sold",
+        "aliases": [
+          "pina colada"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "cocktail-canned-whiskey-sour",
+        "fdc_id": 174810,
+        "name": "Whiskey sour, canned",
+        "state": "as-sold",
+        "liquid": true
+      },
+      {
+        "key": "cocktail-canned-tequila-sunrise",
+        "fdc_id": 168753,
+        "name": "Tequila sunrise, canned",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": "Generic US canned cocktails only; canned G&T, spritz, hard seltzer and alcopops need the can label."
+  },
+  {
+    "req": "alcohol/alcohol-free-cocktail",
+    "status": "recipe",
+    "records": [],
+    "note": "Build mocktails from juice, soda and syrup records; bottled alcohol-free cocktails need the label."
+  }
+]

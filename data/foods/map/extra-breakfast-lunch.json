@@ -1,0 +1,49 @@
+[
+ {
+  "req": null,
+  "status": "mapped",
+  "records": [
+   {
+    "key": "falafel-home-prepared",
+    "fdc_id": 172455,
+    "name": "Falafel, home-prepared",
+    "state": "fried",
+    "aliases": [
+     "falafel"
+    ],
+    "category": "legumes"
+   },
+   {
+    "key": "tomatoes-sun-dried-oil-drained",
+    "fdc_id": 169384,
+    "name": "Sun-dried tomatoes, in oil, drained",
+    "state": "canned-drained",
+    "aliases": [
+     "sun-dried tomatoes",
+     "sundried tomatoes"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "chives-fresh",
+    "fdc_id": 169994,
+    "name": "Chives, fresh",
+    "state": "raw",
+    "aliases": [
+     "chives"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "dill-fresh",
+    "fdc_id": 172233,
+    "name": "Dill, fresh",
+    "state": "raw",
+    "aliases": [
+     "dill"
+    ],
+    "category": "vegetables"
+   }
+  ]
+ }
+]

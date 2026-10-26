@@ -1,0 +1,927 @@
+[
+  {
+    "req": "meat/chicken-breast",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chicken-breast-skinless-raw",
+        "fdc_id": 171077,
+        "name": "Chicken breast, skinless, meat only, raw",
+        "state": "raw",
+        "aliases": [
+          "chicken breast fillet",
+          "chicken fillet",
+          "chicken breasts"
+        ]
+      },
+      {
+        "key": "chicken-breast-skinless-roasted",
+        "fdc_id": 171477,
+        "name": "Chicken breast, skinless, meat only, roasted",
+        "state": "roasted"
+      },
+      {
+        "key": "chicken-breast-skinless-grilled",
+        "fdc_id": 171534,
+        "name": "Chicken breast, skinless, meat only, grilled",
+        "state": "grilled"
+      },
+      {
+        "key": "chicken-breast-skin-on-raw",
+        "fdc_id": 171474,
+        "name": "Chicken breast, with skin, raw",
+        "state": "raw"
+      },
+      {
+        "key": "chicken-breast-skin-on-roasted",
+        "fdc_id": 171075,
+        "name": "Chicken breast, with skin, roasted",
+        "state": "roasted"
+      }
+    ],
+    "note": "Per 100 g edible meat, bone removed. Records \"with added solution\" (enhanced) were not used."
+  },
+  {
+    "req": "meat/chicken-thigh",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chicken-thigh-skinless-raw",
+        "fdc_id": 173627,
+        "name": "Chicken thigh, skinless, meat only, raw",
+        "state": "raw",
+        "aliases": [
+          "chicken thighs",
+          "boneless chicken thigh"
+        ]
+      },
+      {
+        "key": "chicken-thigh-skinless-roasted",
+        "fdc_id": 172388,
+        "name": "Chicken thigh, skinless, meat only, roasted",
+        "state": "roasted"
+      },
+      {
+        "key": "chicken-thigh-skin-on-raw",
+        "fdc_id": 172385,
+        "name": "Chicken thigh, with skin, raw",
+        "state": "raw"
+      },
+      {
+        "key": "chicken-thigh-skin-on-roasted",
+        "fdc_id": 173625,
+        "name": "Chicken thigh, with skin, roasted",
+        "state": "roasted"
+      }
+    ],
+    "note": "Per 100 g edible meat, bone removed; USDA portions give per-thigh edible weights."
+  },
+  {
+    "req": "meat/chicken-drumstick",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chicken-drumstick-skinless-raw",
+        "fdc_id": 173614,
+        "name": "Chicken drumstick, skinless, meat only, raw",
+        "state": "raw",
+        "aliases": [
+          "drumsticks",
+          "chicken drumsticks"
+        ]
+      },
+      {
+        "key": "chicken-drumstick-skinless-roasted",
+        "fdc_id": 172376,
+        "name": "Chicken drumstick, skinless, meat only, roasted",
+        "state": "roasted"
+      },
+      {
+        "key": "chicken-drumstick-skin-on-raw",
+        "fdc_id": 172373,
+        "name": "Chicken drumstick, with skin, raw",
+        "state": "raw"
+      },
+      {
+        "key": "chicken-drumstick-skin-on-roasted",
+        "fdc_id": 173612,
+        "name": "Chicken drumstick, with skin, roasted",
+        "state": "roasted"
+      }
+    ],
+    "note": "Per 100 g edible meat, bone removed."
+  },
+  {
+    "req": "meat/chicken-wing",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chicken-wing-skin-on-raw",
+        "fdc_id": 172390,
+        "name": "Chicken wing, with skin, raw",
+        "state": "raw",
+        "aliases": [
+          "chicken wings"
+        ]
+      },
+      {
+        "key": "chicken-wing-skin-on-roasted",
+        "fdc_id": 173630,
+        "name": "Chicken wing, with skin, roasted",
+        "state": "roasted"
+      },
+      {
+        "key": "chicken-wing-meat-only-raw",
+        "fdc_id": 173632,
+        "name": "Chicken wing, skinless, meat only, raw",
+        "state": "raw"
+      },
+      {
+        "key": "chicken-wing-meat-only-roasted",
+        "fdc_id": 172392,
+        "name": "Chicken wing, skinless, meat only, roasted",
+        "state": "roasted"
+      }
+    ],
+    "note": "Per 100 g edible portion, bone removed."
+  },
+  {
+    "req": "meat/whole-chicken",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chicken-whole-skin-on-raw",
+        "fdc_id": 171447,
+        "name": "Whole chicken, meat and skin, raw",
+        "state": "raw",
+        "aliases": [
+          "roast chicken",
+          "whole chicken"
+        ]
+      },
+      {
+        "key": "chicken-whole-skin-on-roasted",
+        "fdc_id": 171450,
+        "name": "Whole chicken, meat and skin, roasted",
+        "state": "roasted"
+      },
+      {
+        "key": "chicken-whole-meat-only-raw",
+        "fdc_id": 171052,
+        "name": "Whole chicken, meat only, raw",
+        "state": "raw"
+      },
+      {
+        "key": "chicken-whole-meat-only-roasted",
+        "fdc_id": 171054,
+        "name": "Whole chicken, meat only, roasted",
+        "state": "roasted"
+      }
+    ],
+    "note": "Mixed light and dark meat, per 100 g edible portion (bones excluded)."
+  },
+  {
+    "req": "meat/turkey-breast",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "turkey-breast-skinless-raw",
+        "fdc_id": 174515,
+        "name": "Turkey breast, skinless, meat only, raw",
+        "state": "raw",
+        "aliases": [
+          "turkey breast steak",
+          "turkey fillet"
+        ]
+      },
+      {
+        "key": "turkey-breast-skinless-roasted",
+        "fdc_id": 174516,
+        "name": "Turkey breast, skinless, meat only, roasted",
+        "state": "roasted"
+      },
+      {
+        "key": "turkey-breast-skin-on-raw",
+        "fdc_id": 171528,
+        "name": "Turkey breast, with skin, raw",
+        "state": "raw"
+      },
+      {
+        "key": "turkey-breast-skin-on-roasted",
+        "fdc_id": 171529,
+        "name": "Turkey breast, with skin, roasted",
+        "state": "roasted"
+      }
+    ],
+    "note": "USDA retail-parts turkey breast, not enhanced."
+  },
+  {
+    "req": "meat/turkey-mince",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "turkey-mince-fat-free-raw",
+        "fdc_id": 172847,
+        "name": "Turkey mince, fat-free (breast mince), raw",
+        "state": "raw",
+        "aliases": [
+          "ground turkey",
+          "turkey breast mince"
+        ]
+      },
+      {
+        "key": "turkey-mince-fat-free-browned",
+        "fdc_id": 172848,
+        "name": "Turkey mince, fat-free (breast mince), browned",
+        "state": "fried"
+      },
+      {
+        "key": "turkey-mince-7-fat-raw",
+        "fdc_id": 172850,
+        "name": "Turkey mince, 7% fat, raw",
+        "state": "raw",
+        "aliases": [
+          "ground turkey 93% lean"
+        ]
+      },
+      {
+        "key": "turkey-mince-7-fat-browned",
+        "fdc_id": 172851,
+        "name": "Turkey mince, 7% fat, browned",
+        "state": "fried"
+      },
+      {
+        "key": "turkey-mince-15-fat-raw",
+        "fdc_id": 174493,
+        "name": "Turkey mince, 15% fat, raw",
+        "state": "raw",
+        "aliases": [
+          "ground turkey 85% lean"
+        ]
+      },
+      {
+        "key": "turkey-mince-15-fat-browned",
+        "fdc_id": 174494,
+        "name": "Turkey mince, 15% fat, browned",
+        "state": "fried"
+      }
+    ],
+    "note": "Browned = USDA pan-broiled crumbles. USDA \"fat free\" ground turkey fits UK lean turkey breast mince."
+  },
+  {
+    "req": "meat/beef-steak",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "beef-sirloin-steak-lean-raw",
+        "fdc_id": 174055,
+        "name": "Beef sirloin steak, lean only, raw",
+        "state": "raw",
+        "aliases": [
+          "sirloin steak",
+          "steak",
+          "top sirloin"
+        ]
+      },
+      {
+        "key": "beef-sirloin-steak-lean-grilled",
+        "fdc_id": 174054,
+        "name": "Beef sirloin steak, lean only, grilled",
+        "state": "grilled"
+      },
+      {
+        "key": "beef-sirloin-steak-lean-fat-raw",
+        "fdc_id": 168726,
+        "name": "Beef sirloin steak, lean and fat, raw",
+        "state": "raw"
+      },
+      {
+        "key": "beef-sirloin-steak-lean-fat-grilled",
+        "fdc_id": 168727,
+        "name": "Beef sirloin steak, lean and fat, grilled",
+        "state": "grilled"
+      }
+    ],
+    "note": "USDA top sirloin trimmed to 1/8\" fat, all grades; grilled = US broiled. Other cuts (rump, ribeye, fillet) are not mapped here."
+  },
+  {
+    "req": "meat/beef-mince",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "beef-mince-5-fat-raw",
+        "fdc_id": 171790,
+        "name": "Beef mince, 5% fat, raw",
+        "state": "raw",
+        "aliases": [
+          "ground beef 95% lean",
+          "lean beef mince",
+          "minced beef"
+        ]
+      },
+      {
+        "key": "beef-mince-5-fat-browned",
+        "fdc_id": 174028,
+        "name": "Beef mince, 5% fat, browned",
+        "state": "fried"
+      },
+      {
+        "key": "beef-mince-10-fat-raw",
+        "fdc_id": 174030,
+        "name": "Beef mince, 10% fat, raw",
+        "state": "raw",
+        "aliases": [
+          "ground beef 90% lean"
+        ]
+      },
+      {
+        "key": "beef-mince-10-fat-browned",
+        "fdc_id": 171794,
+        "name": "Beef mince, 10% fat, browned",
+        "state": "fried"
+      },
+      {
+        "key": "beef-mince-15-fat-raw",
+        "fdc_id": 171796,
+        "name": "Beef mince, 15% fat, raw",
+        "state": "raw",
+        "aliases": [
+          "ground beef 85% lean"
+        ]
+      },
+      {
+        "key": "beef-mince-15-fat-browned",
+        "fdc_id": 174034,
+        "name": "Beef mince, 15% fat, browned",
+        "state": "fried"
+      },
+      {
+        "key": "beef-mince-20-fat-raw",
+        "fdc_id": 174036,
+        "name": "Beef mince, 20% fat, raw",
+        "state": "raw",
+        "aliases": [
+          "ground beef 80% lean",
+          "beef mince"
+        ]
+      },
+      {
+        "key": "beef-mince-20-fat-browned",
+        "fdc_id": 171799,
+        "name": "Beef mince, 20% fat, browned",
+        "state": "fried"
+      }
+    ],
+    "note": "Browned = USDA pan-browned crumbles. Other levels exist (3%, 7%, 25%, 30%)."
+  },
+  {
+    "req": "meat/stewing-beef",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "stewing-beef-raw",
+        "fdc_id": 171206,
+        "name": "Stewing beef (chuck), lean and fat, raw",
+        "state": "raw",
+        "aliases": [
+          "braising steak",
+          "diced beef",
+          "beef chuck"
+        ]
+      },
+      {
+        "key": "stewing-beef-braised",
+        "fdc_id": 171203,
+        "name": "Stewing beef (chuck), braised",
+        "state": "cooked"
+      }
+    ],
+    "note": "USDA \"Beef, chuck for stew\", all grades."
+  },
+  {
+    "req": "meat/beef-liver",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "beef-liver-raw",
+        "fdc_id": 169451,
+        "name": "Beef liver, raw",
+        "state": "raw",
+        "aliases": [
+          "ox liver"
+        ]
+      },
+      {
+        "key": "beef-liver-fried",
+        "fdc_id": 168627,
+        "name": "Beef liver, pan-fried",
+        "state": "fried"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "meat/pork-loin",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pork-loin-lean-raw",
+        "fdc_id": 168230,
+        "name": "Pork loin, lean only, raw",
+        "state": "raw",
+        "aliases": [
+          "pork loin steak"
+        ]
+      },
+      {
+        "key": "pork-loin-lean-roasted",
+        "fdc_id": 168233,
+        "name": "Pork loin, lean only, roasted",
+        "state": "roasted"
+      },
+      {
+        "key": "pork-loin-lean-fat-raw",
+        "fdc_id": 167818,
+        "name": "Pork loin, lean and fat, raw",
+        "state": "raw"
+      },
+      {
+        "key": "pork-loin-lean-fat-roasted",
+        "fdc_id": 167821,
+        "name": "Pork loin, lean and fat, roasted",
+        "state": "roasted"
+      }
+    ],
+    "note": "USDA whole pork loin. Pork tenderloin (fillet) is a separate cut (168249 raw, 168250 roasted)."
+  },
+  {
+    "req": "meat/pork-chop",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pork-chop-lean-fat-raw",
+        "fdc_id": 168238,
+        "name": "Pork loin chop, lean and fat, raw",
+        "state": "raw",
+        "aliases": [
+          "pork chop",
+          "pork chops"
+        ]
+      },
+      {
+        "key": "pork-chop-lean-fat-grilled",
+        "fdc_id": 167827,
+        "name": "Pork loin chop, lean and fat, grilled",
+        "state": "grilled"
+      },
+      {
+        "key": "pork-chop-lean-raw",
+        "fdc_id": 167829,
+        "name": "Pork loin chop, lean only, raw",
+        "state": "raw"
+      },
+      {
+        "key": "pork-chop-lean-grilled",
+        "fdc_id": 168240,
+        "name": "Pork loin chop, lean only, grilled",
+        "state": "grilled"
+      }
+    ],
+    "note": "Bone-in centre loin chops; values per 100 g edible meat (bone excluded); grilled = US broiled."
+  },
+  {
+    "req": "meat/pork-mince",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pork-mince-4-fat-raw",
+        "fdc_id": 169190,
+        "name": "Pork mince, 4% fat, raw",
+        "state": "raw",
+        "aliases": [
+          "ground pork 96% lean",
+          "lean pork mince"
+        ]
+      },
+      {
+        "key": "pork-mince-4-fat-browned",
+        "fdc_id": 169193,
+        "name": "Pork mince, 4% fat, browned",
+        "state": "fried"
+      },
+      {
+        "key": "pork-mince-16-fat-raw",
+        "fdc_id": 168372,
+        "name": "Pork mince, 16% fat, raw",
+        "state": "raw",
+        "aliases": [
+          "ground pork 84% lean"
+        ]
+      },
+      {
+        "key": "pork-mince-16-fat-browned",
+        "fdc_id": 169192,
+        "name": "Pork mince, 16% fat, browned",
+        "state": "fried"
+      },
+      {
+        "key": "pork-mince-regular-raw",
+        "fdc_id": 167902,
+        "name": "Pork mince, regular fat, raw",
+        "state": "raw",
+        "aliases": [
+          "ground pork",
+          "minced pork"
+        ]
+      },
+      {
+        "key": "pork-mince-regular-cooked",
+        "fdc_id": 167903,
+        "name": "Pork mince, regular fat, cooked",
+        "state": "cooked"
+      }
+    ],
+    "note": "Regular = USDA \"Pork, fresh, ground\" with no stated lean ratio (about 21 g fat per 100 g raw)."
+  },
+  {
+    "req": "meat/lamb-chop",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "lamb-loin-chop-lean-fat-raw",
+        "fdc_id": 174319,
+        "name": "Lamb loin chop, lean and fat, raw",
+        "state": "raw",
+        "aliases": [
+          "lamb chop",
+          "lamb chops"
+        ]
+      },
+      {
+        "key": "lamb-loin-chop-lean-fat-grilled",
+        "fdc_id": 172489,
+        "name": "Lamb loin chop, lean and fat, grilled",
+        "state": "grilled"
+      },
+      {
+        "key": "lamb-loin-chop-lean-raw",
+        "fdc_id": 172491,
+        "name": "Lamb loin chop, lean only, raw",
+        "state": "raw"
+      },
+      {
+        "key": "lamb-loin-chop-lean-grilled",
+        "fdc_id": 172492,
+        "name": "Lamb loin chop, lean only, grilled",
+        "state": "grilled"
+      }
+    ],
+    "note": "USDA domestic lamb loin trimmed to 1/4\" fat, choice; per 100 g edible meat (bone excluded); grilled = US broiled."
+  },
+  {
+    "req": "meat/lamb-mince",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "lamb-mince-raw",
+        "fdc_id": 174370,
+        "name": "Lamb mince, regular fat, raw",
+        "state": "raw",
+        "aliases": [
+          "ground lamb",
+          "minced lamb"
+        ]
+      },
+      {
+        "key": "lamb-mince-grilled",
+        "fdc_id": 172544,
+        "name": "Lamb mince, regular fat, grilled",
+        "state": "grilled"
+      }
+    ],
+    "note": "USDA ground lamb has no stated lean ratio (about 23 g fat per 100 g raw). Leaner New Zealand ground lamb is 172617 (raw)."
+  },
+  {
+    "req": "meat/rabbit",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "rabbit-raw",
+        "fdc_id": 172521,
+        "name": "Rabbit, farmed, raw",
+        "state": "raw",
+        "aliases": [
+          "fenek",
+          "rabbit meat"
+        ]
+      },
+      {
+        "key": "rabbit-roasted",
+        "fdc_id": 172522,
+        "name": "Rabbit, farmed, roasted",
+        "state": "roasted"
+      },
+      {
+        "key": "rabbit-stewed",
+        "fdc_id": 174346,
+        "name": "Rabbit, farmed, stewed",
+        "state": "cooked"
+      }
+    ],
+    "note": "USDA domesticated rabbit, composite of cuts. Stewed is meat only, not the full stew recipe."
+  },
+  {
+    "req": "meat/duck-breast",
+    "status": "partial",
+    "records": [
+      {
+        "key": "duck-breast-skin-on-roasted",
+        "fdc_id": 171510,
+        "name": "Duck breast, with skin, roasted",
+        "state": "roasted",
+        "aliases": [
+          "duck breast"
+        ]
+      },
+      {
+        "key": "duck-breast-skinless-grilled",
+        "fdc_id": 171511,
+        "name": "Duck breast, skinless, grilled",
+        "state": "grilled"
+      }
+    ],
+    "note": "Missing: raw duck breast. USDA only has raw wild duck breast (174469) and raw whole domestic duck meat (172410), neither a fair match for farmed duck breast. Cooked records are Pekin duckling."
+  },
+  {
+    "req": "meat/bacon",
+    "status": "partial",
+    "records": [
+      {
+        "key": "bacon-streaky-raw",
+        "fdc_id": 168277,
+        "name": "Streaky bacon, raw",
+        "state": "raw",
+        "aliases": [
+          "streaky bacon",
+          "American bacon",
+          "bacon rashers"
+        ]
+      },
+      {
+        "key": "bacon-streaky-fried",
+        "fdc_id": 168322,
+        "name": "Streaky bacon, fried",
+        "state": "fried"
+      },
+      {
+        "key": "bacon-streaky-baked",
+        "fdc_id": 167914,
+        "name": "Streaky bacon, baked",
+        "state": "baked"
+      },
+      {
+        "key": "bacon-back-lean-raw",
+        "fdc_id": 167869,
+        "name": "Back bacon, fat removed (Canadian bacon), raw",
+        "state": "raw",
+        "aliases": [
+          "Canadian bacon",
+          "back bacon medallions"
+        ]
+      },
+      {
+        "key": "bacon-back-lean-fried",
+        "fdc_id": 168383,
+        "name": "Back bacon, fat removed (Canadian bacon), fried",
+        "state": "fried"
+      }
+    ],
+    "note": "US bacon = UK streaky bacon. Missing: UK back bacon with its fat rim; USDA Canadian bacon (lean loin) only fits fat-trimmed back bacon or medallions."
+  },
+  {
+    "req": "meat/cooked-ham",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ham-cooked-extra-lean-sliced",
+        "fdc_id": 173863,
+        "name": "Cooked ham, sliced, extra lean (96% fat-free)",
+        "state": "as-sold",
+        "aliases": [
+          "ham slices",
+          "sliced ham",
+          "deli ham"
+        ]
+      },
+      {
+        "key": "ham-cooked-regular-sliced",
+        "fdc_id": 173864,
+        "name": "Cooked ham, sliced, regular",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Regular is described by USDA as about 11% fat."
+  },
+  {
+    "req": "meat/roast-turkey-slices",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "turkey-breast-slices",
+        "fdc_id": 172941,
+        "name": "Roast turkey breast slices, pre-packed",
+        "state": "as-sold",
+        "aliases": [
+          "turkey slices",
+          "deli turkey"
+        ]
+      }
+    ],
+    "note": "The Foundation turkey lunchmeat record (2759001) has no nutrient values."
+  },
+  {
+    "req": "meat/salami",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "salami-pork",
+        "fdc_id": 172938,
+        "name": "Salami, dry/hard, pork",
+        "state": "as-sold",
+        "aliases": [
+          "Italian salami",
+          "salame"
+        ]
+      },
+      {
+        "key": "salami-pork-beef",
+        "fdc_id": 174582,
+        "name": "Salami, dry/hard, pork and beef",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Cooked (soft) salami is a different product (172935 beef, 172936 beef and pork)."
+  },
+  {
+    "req": "meat/chorizo",
+    "status": "partial",
+    "records": [
+      {
+        "key": "chorizo-fresh-raw",
+        "fdc_id": 173859,
+        "name": "Cooking chorizo (fresh), raw",
+        "state": "raw",
+        "aliases": [
+          "fresh chorizo",
+          "Mexican chorizo"
+        ]
+      },
+      {
+        "key": "chorizo-fresh-fried",
+        "fdc_id": 746781,
+        "name": "Cooking chorizo (fresh), pan-fried",
+        "state": "fried"
+      }
+    ],
+    "note": "Missing: Spanish-style cured, ready-to-eat chorizo (the common UK/Malta form); USDA only has fresh pork chorizo. 332864 is an older duplicate of the fried record."
+  },
+  {
+    "req": "meat/frankfurter",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "frankfurter-pork",
+        "fdc_id": 172964,
+        "name": "Frankfurter, pork",
+        "state": "as-sold",
+        "aliases": [
+          "frankfurters",
+          "hot dog sausage",
+          "wiener"
+        ]
+      },
+      {
+        "key": "frankfurter-mixed-meat",
+        "fdc_id": 172968,
+        "name": "Frankfurter, mixed meat",
+        "state": "as-sold"
+      },
+      {
+        "key": "frankfurter-chicken",
+        "fdc_id": 171624,
+        "name": "Frankfurter, chicken",
+        "state": "as-sold",
+        "aliases": [
+          "chicken hot dog"
+        ]
+      }
+    ],
+    "note": "Frankfurters are pre-cooked; values are as sold."
+  },
+  {
+    "req": "meat/pork-sausage",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "pork-sausage-us-raw",
+        "fdc_id": 172934,
+        "name": "Pork sausage (US-style, no rusk), raw",
+        "state": "raw",
+        "aliases": [
+          "pork sausages",
+          "bangers"
+        ]
+      },
+      {
+        "key": "pork-sausage-us-fried",
+        "fdc_id": 174578,
+        "name": "Pork sausage (US-style, no rusk), fried",
+        "state": "fried"
+      }
+    ],
+    "note": "USDA pork sausage has almost no cereal, while UK sausages contain rusk or breadcrumb (more carbohydrate, less meat). Use the pack label where possible."
+  },
+  {
+    "req": "meat/chicken-sausage",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "poultry-sausage-proxy-raw",
+        "fdc_id": 174617,
+        "name": "Chicken sausage (proxy: fresh turkey sausage), raw",
+        "state": "raw",
+        "aliases": [
+          "chicken sausages"
+        ]
+      },
+      {
+        "key": "poultry-sausage-proxy-cooked",
+        "fdc_id": 173871,
+        "name": "Chicken sausage (proxy: fresh turkey sausage), cooked",
+        "state": "cooked"
+      }
+    ],
+    "note": "No plain chicken sausage in USDA; fresh turkey sausage used as the closest poultry sausage. Brands vary; prefer the label."
+  },
+  {
+    "req": "meat/meatballs",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "meatballs-frozen-italian",
+        "fdc_id": 171638,
+        "name": "Meatballs, frozen, Italian style",
+        "state": "frozen",
+        "aliases": [
+          "frozen meatballs"
+        ]
+      }
+    ],
+    "note": "Covers shop-bought frozen (pre-cooked) meatballs only. Homemade meatballs should be a recipe from their ingredients."
+  },
+  {
+    "req": "meat/breaded-chicken-nuggets",
+    "status": "partial",
+    "records": [
+      {
+        "key": "chicken-nuggets-white-frozen",
+        "fdc_id": 172112,
+        "name": "Chicken nuggets, white meat, breaded, frozen (not reheated)",
+        "state": "frozen",
+        "aliases": [
+          "chicken nuggets"
+        ]
+      },
+      {
+        "key": "chicken-nuggets-mixed-frozen",
+        "fdc_id": 172111,
+        "name": "Chicken nuggets, dark and white meat, breaded, frozen (not reheated)",
+        "state": "frozen"
+      }
+    ],
+    "note": "Pre-cooked as-sold only. Missing: oven-baked/reheated state. Fast-food nuggets are branded and not used."
+  },
+  {
+    "req": "meat/breaded-chicken-strips",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chicken-strips-breaded-uncooked",
+        "fdc_id": 171515,
+        "name": "Breaded chicken breast strips, uncooked",
+        "state": "raw",
+        "aliases": [
+          "chicken goujons",
+          "chicken tenders"
+        ]
+      },
+      {
+        "key": "chicken-strips-breaded-prepared",
+        "fdc_id": 173346,
+        "name": "Breaded chicken strips, frozen, oven-cooked",
+        "state": "prepared"
+      }
+    ],
+    "note": "Generic breaded tenders; fast-food strips are branded and not used."
+  }
+]

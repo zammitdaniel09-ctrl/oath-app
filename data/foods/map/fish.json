@@ -1,0 +1,588 @@
+[
+  {
+    "req": "fish/salmon",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "salmon-farmed-raw",
+        "fdc_id": 175167,
+        "name": "Salmon, Atlantic, farmed, raw",
+        "state": "raw",
+        "aliases": [
+          "salmon fillet",
+          "salmon"
+        ]
+      },
+      {
+        "key": "salmon-farmed-baked",
+        "fdc_id": 175168,
+        "name": "Salmon, Atlantic, farmed, baked or grilled",
+        "state": "baked"
+      },
+      {
+        "key": "salmon-wild-raw",
+        "fdc_id": 173686,
+        "name": "Salmon, Atlantic, wild, raw",
+        "state": "raw"
+      },
+      {
+        "key": "salmon-wild-baked",
+        "fdc_id": 171998,
+        "name": "Salmon, Atlantic, wild, baked or grilled",
+        "state": "baked"
+      }
+    ],
+    "note": "Cooked = USDA \"cooked, dry heat\". Farmed Atlantic is the usual UK/Malta salmon."
+  },
+  {
+    "req": "fish/fresh-tuna",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tuna-yellowfin-raw",
+        "fdc_id": 175159,
+        "name": "Tuna, yellowfin, fresh, raw",
+        "state": "raw",
+        "aliases": [
+          "tuna steak",
+          "ahi tuna",
+          "tonn"
+        ]
+      },
+      {
+        "key": "tuna-yellowfin-baked",
+        "fdc_id": 172006,
+        "name": "Tuna, yellowfin, fresh, baked or grilled",
+        "state": "baked"
+      },
+      {
+        "key": "tuna-bluefin-raw",
+        "fdc_id": 173706,
+        "name": "Tuna, bluefin, fresh, raw",
+        "state": "raw",
+        "aliases": [
+          "bluefin tuna",
+          "tonn"
+        ]
+      },
+      {
+        "key": "tuna-bluefin-baked",
+        "fdc_id": 173707,
+        "name": "Tuna, bluefin, fresh, baked or grilled",
+        "state": "baked"
+      }
+    ],
+    "note": "Cooked = USDA \"cooked, dry heat\". Bluefin is fattier than yellowfin."
+  },
+  {
+    "req": "fish/canned-tuna-in-water",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tuna-canned-water-light",
+        "fdc_id": 173709,
+        "name": "Tuna, light, canned in water, drained",
+        "state": "canned-drained",
+        "aliases": [
+          "tuna in spring water",
+          "tinned tuna"
+        ]
+      },
+      {
+        "key": "tuna-canned-water-white",
+        "fdc_id": 175158,
+        "name": "Tuna, white (albacore), canned in water, drained",
+        "state": "canned-drained"
+      }
+    ],
+    "note": "Drained solids. A Foundation light-tuna-in-water record (334194) also exists; SR chosen for gram portions."
+  },
+  {
+    "req": "fish/canned-tuna-in-brine",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "tuna-canned-brine-light",
+        "fdc_id": 173709,
+        "name": "Tuna, canned in brine, drained (proxy: light tuna in water)",
+        "state": "canned-drained",
+        "aliases": [
+          "tuna in brine"
+        ]
+      }
+    ],
+    "note": "USDA has no brine-packed tuna. US water-packed tuna (salted) is the closest match; sodium may differ."
+  },
+  {
+    "req": "fish/canned-tuna-in-oil",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tuna-canned-oil-light",
+        "fdc_id": 173708,
+        "name": "Tuna, light, canned in oil, drained",
+        "state": "canned-drained",
+        "aliases": [
+          "tuna in sunflower oil",
+          "tuna in olive oil"
+        ]
+      },
+      {
+        "key": "tuna-canned-oil-white",
+        "fdc_id": 175157,
+        "name": "Tuna, white (albacore), canned in oil, drained",
+        "state": "canned-drained"
+      }
+    ],
+    "note": "Drained solids only; the packing oil is not included. Oil type (sunflower/olive) is not specified by USDA."
+  },
+  {
+    "req": "fish/cod",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cod-raw",
+        "fdc_id": 171955,
+        "name": "Cod, Atlantic, raw",
+        "state": "raw",
+        "aliases": [
+          "cod fillet"
+        ]
+      },
+      {
+        "key": "cod-baked",
+        "fdc_id": 171956,
+        "name": "Cod, Atlantic, baked or grilled",
+        "state": "baked"
+      },
+      {
+        "key": "salt-cod-dried",
+        "fdc_id": 174190,
+        "name": "Salt cod, dried and salted",
+        "state": "dried",
+        "aliases": [
+          "bakkaljaw",
+          "bacalao",
+          "baccalà"
+        ]
+      }
+    ],
+    "note": "Salt cod is as sold (before soaking)."
+  },
+  {
+    "req": "fish/haddock",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "haddock-raw",
+        "fdc_id": 171964,
+        "name": "Haddock, raw",
+        "state": "raw",
+        "aliases": [
+          "haddock fillet"
+        ]
+      },
+      {
+        "key": "haddock-baked",
+        "fdc_id": 174198,
+        "name": "Haddock, baked or grilled",
+        "state": "baked"
+      },
+      {
+        "key": "haddock-smoked",
+        "fdc_id": 174199,
+        "name": "Haddock, smoked",
+        "state": "as-sold",
+        "aliases": [
+          "smoked haddock"
+        ]
+      }
+    ],
+    "note": "SR raw chosen over the Foundation duplicate (333374) for gram portions."
+  },
+  {
+    "req": "fish/hake",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "hake-proxy-raw",
+        "fdc_id": 173713,
+        "name": "Hake (proxy: whiting), raw",
+        "state": "raw",
+        "aliases": [
+          "hake fillet"
+        ]
+      },
+      {
+        "key": "hake-proxy-baked",
+        "fdc_id": 175161,
+        "name": "Hake (proxy: whiting), baked or grilled",
+        "state": "baked"
+      }
+    ],
+    "note": "No hake record in USDA. Whiting (mixed species), a similar lean white fish of the cod order, used as proxy."
+  },
+  {
+    "req": "fish/sea-bass",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sea-bass-raw",
+        "fdc_id": 175142,
+        "name": "Sea bass, raw",
+        "state": "raw",
+        "aliases": [
+          "spnotta",
+          "European sea bass",
+          "branzino"
+        ]
+      },
+      {
+        "key": "sea-bass-baked",
+        "fdc_id": 173694,
+        "name": "Sea bass, baked or grilled",
+        "state": "baked"
+      }
+    ],
+    "note": "USDA \"sea bass, mixed species\". Farmed European sea bass may be fattier."
+  },
+  {
+    "req": "fish/sea-bream",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "sea-bream-proxy-raw",
+        "fdc_id": 175141,
+        "name": "Sea bream (proxy: scup), raw",
+        "state": "raw",
+        "aliases": [
+          "awrata",
+          "gilthead bream",
+          "dorade"
+        ]
+      },
+      {
+        "key": "sea-bream-proxy-baked",
+        "fdc_id": 174241,
+        "name": "Sea bream (proxy: scup), baked or grilled",
+        "state": "baked"
+      }
+    ],
+    "note": "No sea bream record in USDA. Scup is a porgy of the same family (Sparidae); farmed gilthead bream may be fattier."
+  },
+  {
+    "req": "fish/sardines",
+    "status": "partial",
+    "records": [
+      {
+        "key": "sardines-canned-oil-drained",
+        "fdc_id": 175139,
+        "name": "Sardines, canned in oil, drained (with bones)",
+        "state": "canned-drained",
+        "aliases": [
+          "sardines",
+          "sardin",
+          "tinned sardines"
+        ]
+      }
+    ],
+    "note": "Missing: fresh sardines (raw/grilled); USDA only has canned sardines."
+  },
+  {
+    "req": "fish/mackerel",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mackerel-raw",
+        "fdc_id": 175119,
+        "name": "Mackerel, Atlantic, raw",
+        "state": "raw",
+        "aliases": [
+          "kavall",
+          "mackerel fillet"
+        ]
+      },
+      {
+        "key": "mackerel-baked",
+        "fdc_id": 175120,
+        "name": "Mackerel, Atlantic, baked or grilled",
+        "state": "baked"
+      }
+    ],
+    "note": "Smoked mackerel and canned mackerel in oil/sauce are not in USDA (only drained jack mackerel, 175121)."
+  },
+  {
+    "req": "fish/trout",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "trout-raw",
+        "fdc_id": 173717,
+        "name": "Rainbow trout, farmed, raw",
+        "state": "raw",
+        "aliases": [
+          "trout"
+        ]
+      },
+      {
+        "key": "trout-baked",
+        "fdc_id": 173718,
+        "name": "Rainbow trout, farmed, baked or grilled",
+        "state": "baked"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fish/anchovy",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "anchovies-raw",
+        "fdc_id": 174182,
+        "name": "Anchovies, fresh, raw",
+        "state": "raw",
+        "aliases": [
+          "anchovy",
+          "fresh anchovies"
+        ]
+      },
+      {
+        "key": "anchovies-canned-oil-drained",
+        "fdc_id": 174183,
+        "name": "Anchovies, canned in oil, drained",
+        "state": "canned-drained",
+        "aliases": [
+          "anchovy fillets"
+        ]
+      }
+    ],
+    "note": "SR chosen over the Foundation canned record (2747652) for gram portions."
+  },
+  {
+    "req": "fish/swordfish",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "swordfish-raw",
+        "fdc_id": 173703,
+        "name": "Swordfish, raw",
+        "state": "raw",
+        "aliases": [
+          "pixxispad",
+          "swordfish steak"
+        ]
+      },
+      {
+        "key": "swordfish-baked",
+        "fdc_id": 173704,
+        "name": "Swordfish, baked or grilled",
+        "state": "baked"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fish/mahi-mahi-lampuki",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mahi-mahi-raw",
+        "fdc_id": 171959,
+        "name": "Lampuki (mahi-mahi), raw",
+        "state": "raw",
+        "aliases": [
+          "lampuki",
+          "lampuka",
+          "mahi-mahi",
+          "dolphinfish",
+          "dorado"
+        ]
+      },
+      {
+        "key": "mahi-mahi-baked",
+        "fdc_id": 171992,
+        "name": "Lampuki (mahi-mahi), baked or grilled",
+        "state": "baked"
+      }
+    ],
+    "note": "Fish only; lampuki pie (torta tal-lampuki) needs a recipe."
+  },
+  {
+    "req": "fish/prawns",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "prawns-raw",
+        "fdc_id": 175179,
+        "name": "Prawns, raw",
+        "state": "raw",
+        "aliases": [
+          "shrimp",
+          "king prawns",
+          "gamblu"
+        ]
+      },
+      {
+        "key": "prawns-cooked",
+        "fdc_id": 175180,
+        "name": "Prawns, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked shrimp"
+        ]
+      }
+    ],
+    "note": "Shelled meat. Records with added moisture-retaining solution (174210, 171971) not used."
+  },
+  {
+    "req": "fish/mussels",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mussels-raw",
+        "fdc_id": 174216,
+        "name": "Mussels, raw",
+        "state": "raw",
+        "aliases": [
+          "blue mussels"
+        ]
+      },
+      {
+        "key": "mussels-cooked",
+        "fdc_id": 174217,
+        "name": "Mussels, cooked (steamed or boiled)",
+        "state": "cooked"
+      }
+    ],
+    "note": "Per 100 g shelled meat."
+  },
+  {
+    "req": "fish/squid",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "squid-raw",
+        "fdc_id": 174223,
+        "name": "Squid, raw",
+        "state": "raw",
+        "aliases": [
+          "calamari",
+          "klamar"
+        ]
+      },
+      {
+        "key": "squid-fried",
+        "fdc_id": 171982,
+        "name": "Squid, fried",
+        "state": "fried",
+        "aliases": [
+          "fried calamari"
+        ]
+      }
+    ],
+    "note": "No grilled squid record."
+  },
+  {
+    "req": "fish/octopus",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "octopus-raw",
+        "fdc_id": 174218,
+        "name": "Octopus, raw",
+        "state": "raw",
+        "aliases": [
+          "qarnit"
+        ]
+      },
+      {
+        "key": "octopus-cooked",
+        "fdc_id": 174249,
+        "name": "Octopus, cooked (boiled)",
+        "state": "cooked"
+      }
+    ],
+    "note": "Cooked = USDA \"cooked, moist heat\"."
+  },
+  {
+    "req": "fish/crab",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "crab-raw",
+        "fdc_id": 174204,
+        "name": "Crab (blue crab), raw",
+        "state": "raw",
+        "aliases": [
+          "crab"
+        ]
+      },
+      {
+        "key": "crab-cooked",
+        "fdc_id": 174205,
+        "name": "Crab meat (blue crab), cooked",
+        "state": "cooked"
+      },
+      {
+        "key": "crab-canned",
+        "fdc_id": 171966,
+        "name": "Crab meat (blue crab), canned, drained",
+        "state": "canned-drained",
+        "aliases": [
+          "tinned crab"
+        ]
+      }
+    ],
+    "note": "Blue crab white meat. UK brown crab meat (fattier) is not in USDA; surimi crab sticks are 174203."
+  },
+  {
+    "req": "fish/fish-fingers",
+    "status": "partial",
+    "records": [
+      {
+        "key": "fish-fingers-oven-cooked",
+        "fdc_id": 174195,
+        "name": "Fish fingers, oven-cooked",
+        "state": "prepared",
+        "aliases": [
+          "fish sticks",
+          "fish finger"
+        ]
+      }
+    ],
+    "note": "Missing: frozen (uncooked) state; USDA only has fish sticks prepared."
+  },
+  {
+    "req": "fish/smoked-salmon",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "smoked-salmon",
+        "fdc_id": 173687,
+        "name": "Smoked salmon (chinook)",
+        "state": "as-sold",
+        "aliases": [
+          "lox"
+        ]
+      }
+    ],
+    "note": "USDA smoked salmon is chinook (4.3 g fat per 100 g). UK smoked salmon is mostly farmed Atlantic and fattier; prefer the label."
+  },
+  {
+    "req": "fish/canned-sardines-in-tomato-sauce",
+    "status": "partial",
+    "records": [
+      {
+        "key": "sardines-tomato-sauce-drained",
+        "fdc_id": 175140,
+        "name": "Sardines in tomato sauce, canned, drained (with bones)",
+        "state": "canned-drained",
+        "aliases": [
+          "sardines in tomato sauce"
+        ]
+      }
+    ],
+    "note": "Drained fish only. Missing: whole tin contents including the sauce."
+  }
+]

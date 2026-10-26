@@ -62,7 +62,8 @@ Protocols:
 Never claim (no evidence): habits take 21 days (the median is about 66 days, anywhere from 2 weeks to 8 months), willpower is a battery that runs out, decision fatigue, leaving tasks unfinished helps you remember them, or "95% success with an accountability partner".
 
 What you can do (your tools run the app for him):
-- Tasks: add, edit, move, finish, reopen, triage. Habits: add, edit, tick off (or the minimum), untick, link to Apple Health. The day: take the oath, start and stop focus blocks, log a "Not now" with its reason, close the day, pardon a miss, book or cancel rest days. Goals: create, edit, log progress, build out the map, turn steps into tasks or habits, tick steps. Settings: brief times, day end, alerts, time zone, Health targets, the game rules. The weekly review.
+- Tasks: add, edit, move, finish, reopen, triage. Habits: add, edit, tick off (or the minimum), untick, link to Apple Health. The day: take the oath, start and stop focus blocks, log a "Not now" with its reason, close the day, pardon a miss, book or cancel rest days. Goals: create, edit, log progress, build out the map, turn steps into tasks or habits, tick steps. Settings: brief times, day end, alerts, time zone, Health targets, the game rules. The weekly review. Food: search the catalogue, log what he says he ate or drank (foods, drinks, saved meals, recipes), quick add calories, remove a diary entry.
+- Food is a diary, not a game: it never touches HP, and you never invent targets, judge meals or call food good or bad. Pick the record whose state matches what he ate (cooked or dry, drained or not). If the exact branded product is not in the catalogue, say so and ask for a label photo instead of using a similar one.
 - Act when he tells you to, then say what you did in one short line per action and get back to coaching. When it is unclear which item or which day he means, use find_items or ask one short question.
 - Tick something done only when he says he did it. A pardon needs his own words for what got in the way and his if-then plan; never invent them.
 - Deleting a task, archiving a habit, dropping a goal, deleting a goal step, changing the game rules, or dropping habits in a review wait for him to tap Confirm under your reply. Say what will happen and that it needs his tap. Never say it is done.
@@ -120,6 +121,25 @@ async function complete({ system, messages, maxTokens = CHAT_TOKENS, effort = 'm
     convo.push({ role: 'user', content: results });
   }
   return { text: said.join('\n\n') || 'I ran out of steps on that one. Ask again more specifically.', refused: false };
+}
+
+// One structured reading of an image (food photos): the coach's client, model and refusal fallback,
+// with the answer held to a JSON schema. Returns the parsed object, or { refused: true }.
+export async function readStructured({ system, content, schema, maxTokens = 6000 }) {
+  const c = anthropic();
+  if (!c) throw new RuleError('Reading photos needs the AI key, which is not set on the server.', 503);
+  const res = await ask(c, {
+    model: MODEL(), max_tokens: maxTokens, system, messages: [{ role: 'user', content }],
+    output_config: { effort: 'medium', format: { type: 'json_schema', schema } },
+  });
+  if (res.stop_reason === 'refusal') return { refused: true };
+  if (res.stop_reason === 'max_tokens') throw new RuleError('The photo reading was cut off. Try a closer photo.', 502);
+  const text = res.content.filter((b) => b.type === 'text').map((b) => b.text).join('');
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new RuleError('The photo reading came back unreadable. Try again.', 502);
+  }
 }
 
 // Short scheduled writing (briefs, plans, replies): low effort, plain text, no tools.

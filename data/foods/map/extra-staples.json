@@ -1,0 +1,122 @@
+[
+ {
+  "req": null,
+  "status": "mapped",
+  "records": [
+   {
+    "key": "salt-table",
+    "fdc_id": 173468,
+    "name": "Salt",
+    "state": "as-sold",
+    "aliases": [
+     "table salt",
+     "melh"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "lemon-juice-fresh",
+    "fdc_id": 167747,
+    "name": "Lemon juice, fresh",
+    "state": "raw",
+    "aliases": [
+     "lemon juice"
+    ],
+    "liquid": true,
+    "category": "fruit-everyday"
+   },
+   {
+    "key": "lime-juice-fresh",
+    "fdc_id": 168156,
+    "name": "Lime juice, fresh",
+    "state": "raw",
+    "aliases": [
+     "lime juice"
+    ],
+    "liquid": true,
+    "category": "fruit-everyday"
+   },
+   {
+    "key": "tomatoes-tinned-chopped",
+    "fdc_id": 170051,
+    "name": "Tomatoes, tinned (chopped or whole, in juice)",
+    "state": "canned-with-liquid",
+    "aliases": [
+     "chopped tomatoes",
+     "tinned tomatoes",
+     "canned tomatoes",
+     "plum tomatoes"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "puff-pastry-raw",
+    "fdc_id": 172790,
+    "name": "Puff pastry, ready-to-bake",
+    "state": "raw",
+    "aliases": [
+     "puff pastry"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "filo-pastry",
+    "fdc_id": 172791,
+    "name": "Filo pastry",
+    "state": "raw",
+    "aliases": [
+     "phyllo",
+     "filo"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "shortcrust-pastry-raw",
+    "fdc_id": 167932,
+    "name": "Shortcrust pastry, ready-made, unbaked",
+    "state": "raw",
+    "aliases": [
+     "shortcrust",
+     "pie crust",
+     "pastry"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "cream-double",
+    "fdc_id": 170859,
+    "name": "Double cream",
+    "state": "as-sold",
+    "aliases": [
+     "heavy cream",
+     "whipping cream"
+    ],
+    "liquid": true,
+    "category": "dairy"
+   },
+   {
+    "key": "olives-black",
+    "fdc_id": 169094,
+    "name": "Olives, black, tinned",
+    "state": "canned-drained",
+    "aliases": [
+     "black olives",
+     "zebbug"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "capers-drained",
+    "fdc_id": 172238,
+    "name": "Capers, drained",
+    "state": "canned-drained",
+    "aliases": [
+     "capers",
+     "kappar"
+    ],
+    "category": "vegetables"
+   }
+  ],
+  "note": "Shared staples for recipes, not on the blueprint list."
+ }
+]

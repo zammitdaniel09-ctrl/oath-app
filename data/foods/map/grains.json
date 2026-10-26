@@ -1,0 +1,466 @@
+[
+  {
+    "req": "grains/white-long-grain-rice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "rice-white-long-grain-dry",
+        "fdc_id": 169756,
+        "name": "White long-grain rice, dry",
+        "state": "dry",
+        "aliases": [
+          "rice",
+          "white rice",
+          "long grain rice",
+          "long-grain rice"
+        ]
+      },
+      {
+        "key": "rice-white-long-grain-cooked",
+        "fdc_id": 169757,
+        "name": "White long-grain rice, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked rice",
+          "boiled rice",
+          "steamed rice"
+        ]
+      }
+    ],
+    "note": "Unenriched; cooked in water without salt."
+  },
+  {
+    "req": "grains/brown-rice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "rice-brown-long-grain-dry",
+        "fdc_id": 169703,
+        "name": "Brown rice, dry",
+        "state": "dry",
+        "aliases": [
+          "brown rice",
+          "wholegrain rice",
+          "whole grain rice"
+        ]
+      },
+      {
+        "key": "rice-brown-long-grain-cooked",
+        "fdc_id": 169704,
+        "name": "Brown rice, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked brown rice",
+          "boiled brown rice"
+        ]
+      }
+    ],
+    "note": "Long-grain brown rice; cooked in water."
+  },
+  {
+    "req": "grains/basmati-rice",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "rice-basmati-dry",
+        "fdc_id": 169756,
+        "name": "Basmati rice, dry",
+        "state": "dry",
+        "aliases": [
+          "basmati"
+        ]
+      },
+      {
+        "key": "rice-basmati-cooked",
+        "fdc_id": 169757,
+        "name": "Basmati rice, cooked",
+        "state": "cooked",
+        "aliases": [
+          "boiled basmati",
+          "cooked basmati"
+        ]
+      }
+    ],
+    "note": "No USDA basmati record. Uses white long-grain unenriched rice (fdc 169756/169757); basmati is a long-grain white rice, so close but not exact. Brown basmati: use brown rice."
+  },
+  {
+    "req": "grains/jasmine-rice",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "rice-jasmine-dry",
+        "fdc_id": 169756,
+        "name": "Jasmine rice, dry",
+        "state": "dry",
+        "aliases": [
+          "jasmine",
+          "Thai fragrant rice"
+        ]
+      },
+      {
+        "key": "rice-jasmine-cooked",
+        "fdc_id": 169757,
+        "name": "Jasmine rice, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked jasmine rice"
+        ]
+      }
+    ],
+    "note": "No USDA jasmine record. Uses white long-grain unenriched rice (fdc 169756/169757) as the nearest generic; not exact."
+  },
+  {
+    "req": "grains/arborio-rice",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "rice-arborio-dry",
+        "fdc_id": 169760,
+        "name": "Arborio rice, dry",
+        "state": "dry",
+        "aliases": [
+          "arborio",
+          "risotto rice"
+        ]
+      },
+      {
+        "key": "rice-arborio-cooked",
+        "fdc_id": 168930,
+        "name": "Arborio rice, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked arborio rice"
+        ]
+      }
+    ],
+    "note": "No USDA arborio record. Uses white medium-grain unenriched rice, dry and cooked in water. Risotto with stock, butter and cheese is a recipe."
+  },
+  {
+    "req": "grains/parboiled-rice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "rice-parboiled-dry",
+        "fdc_id": 169758,
+        "name": "Parboiled rice, dry",
+        "state": "dry",
+        "aliases": [
+          "easy-cook rice",
+          "easy cook rice",
+          "converted rice"
+        ]
+      },
+      {
+        "key": "rice-parboiled-cooked",
+        "fdc_id": 169759,
+        "name": "Parboiled rice, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked easy-cook rice"
+        ]
+      }
+    ],
+    "note": "White long-grain parboiled rice, unenriched."
+  },
+  {
+    "req": "grains/wild-rice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "wild-rice-dry",
+        "fdc_id": 169726,
+        "name": "Wild rice, dry",
+        "state": "dry",
+        "aliases": [
+          "wild rice"
+        ]
+      },
+      {
+        "key": "wild-rice-cooked",
+        "fdc_id": 168897,
+        "name": "Wild rice, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked wild rice"
+        ]
+      }
+    ],
+    "note": "True wild rice only; white and wild rice blends need the pack label."
+  },
+  {
+    "req": "grains/sushi-rice",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "rice-sushi-dry",
+        "fdc_id": 168931,
+        "name": "Sushi rice, dry",
+        "state": "dry",
+        "aliases": [
+          "sushi rice",
+          "Japanese rice",
+          "short-grain rice",
+          "short grain rice"
+        ]
+      },
+      {
+        "key": "rice-sushi-cooked",
+        "fdc_id": 168932,
+        "name": "Sushi rice, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked sushi rice"
+        ]
+      }
+    ],
+    "note": "No USDA sushi rice record. Uses white short-grain unenriched rice, dry and plain cooked. Seasoned sushi rice (vinegar, sugar, salt) is a recipe."
+  },
+  {
+    "req": "grains/quinoa",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "quinoa-dry",
+        "fdc_id": 168874,
+        "name": "Quinoa, dry",
+        "state": "dry",
+        "aliases": [
+          "quinoa"
+        ]
+      },
+      {
+        "key": "quinoa-cooked",
+        "fdc_id": 168917,
+        "name": "Quinoa, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked quinoa"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "grains/couscous",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "couscous-dry",
+        "fdc_id": 169699,
+        "name": "Couscous, dry",
+        "state": "dry",
+        "aliases": [
+          "couscous"
+        ]
+      },
+      {
+        "key": "couscous-cooked",
+        "fdc_id": 169700,
+        "name": "Couscous, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked couscous"
+        ]
+      }
+    ],
+    "note": "Plain couscous prepared with water; flavoured couscous sachets need the pack label."
+  },
+  {
+    "req": "grains/wholewheat-couscous",
+    "status": "product",
+    "records": [],
+    "note": "No USDA wholewheat couscous record, and plain couscous lacks the bran. Use the pack label."
+  },
+  {
+    "req": "grains/bulgur",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bulgur-dry",
+        "fdc_id": 170688,
+        "name": "Bulgur wheat, dry",
+        "state": "dry",
+        "aliases": [
+          "bulgur",
+          "bulgar wheat",
+          "bulghur"
+        ]
+      },
+      {
+        "key": "bulgur-cooked",
+        "fdc_id": 170287,
+        "name": "Bulgur wheat, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked bulgur"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "grains/pearl-barley",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pearl-barley-dry",
+        "fdc_id": 170284,
+        "name": "Pearl barley, dry",
+        "state": "dry",
+        "aliases": [
+          "pearl barley",
+          "pearled barley",
+          "barley"
+        ]
+      },
+      {
+        "key": "pearl-barley-cooked",
+        "fdc_id": 170285,
+        "name": "Pearl barley, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked pearl barley"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "grains/millet",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "millet-dry",
+        "fdc_id": 169702,
+        "name": "Millet, dry",
+        "state": "dry",
+        "aliases": [
+          "millet"
+        ]
+      },
+      {
+        "key": "millet-cooked",
+        "fdc_id": 168871,
+        "name": "Millet, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked millet"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "grains/buckwheat",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "buckwheat-groats-dry",
+        "fdc_id": 170685,
+        "name": "Buckwheat groats, dry",
+        "state": "dry",
+        "aliases": [
+          "buckwheat",
+          "kasha",
+          "buckwheat groats"
+        ]
+      },
+      {
+        "key": "buckwheat-groats-cooked",
+        "fdc_id": 170686,
+        "name": "Buckwheat groats, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked buckwheat"
+        ]
+      }
+    ],
+    "note": "USDA dry/cooked pair is roasted buckwheat groats (kasha); unroasted groats are similar but not separately covered."
+  },
+  {
+    "req": "grains/polenta",
+    "status": "partial",
+    "records": [
+      {
+        "key": "polenta-cornmeal-dry",
+        "fdc_id": 168929,
+        "name": "Polenta (cornmeal), dry",
+        "state": "dry",
+        "aliases": [
+          "polenta",
+          "cornmeal",
+          "maize meal",
+          "yellow cornmeal"
+        ]
+      }
+    ],
+    "note": "Dry polenta mapped to degermed yellow cornmeal, unenriched. Missing: cooked polenta (USDA has none; log the dry weight). Ready-made polenta blocks need a label."
+  },
+  {
+    "req": "grains/semolina",
+    "status": "partial",
+    "records": [
+      {
+        "key": "semolina-dry",
+        "fdc_id": 168933,
+        "name": "Semolina, dry",
+        "state": "dry",
+        "aliases": [
+          "semolina",
+          "durum wheat semolina"
+        ]
+      }
+    ],
+    "note": "Dry semolina, unenriched. Missing: cooked semolina (USDA has none; semolina pudding or porridge is a recipe)."
+  },
+  {
+    "req": "grains/farro",
+    "status": "partial",
+    "records": [
+      {
+        "key": "farro-pearled-dry",
+        "fdc_id": 2710828,
+        "name": "Farro, pearled, dry",
+        "state": "dry",
+        "aliases": [
+          "farro",
+          "emmer"
+        ]
+      }
+    ],
+    "note": "Foundation record, dry only with no household portions. Missing: cooked farro."
+  },
+  {
+    "req": "grains/freekeh",
+    "status": "product",
+    "records": [],
+    "note": "No USDA freekeh (roasted green wheat) record. Use the pack label."
+  },
+  {
+    "req": "grains/pearl-couscous",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "pearl-couscous-dry",
+        "fdc_id": 168927,
+        "name": "Pearl couscous, dry",
+        "state": "dry",
+        "aliases": [
+          "giant couscous",
+          "Israeli couscous",
+          "ptitim"
+        ]
+      },
+      {
+        "key": "pearl-couscous-cooked",
+        "fdc_id": 168928,
+        "name": "Pearl couscous, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked giant couscous"
+        ]
+      }
+    ],
+    "note": "No USDA record. Pearl couscous is a toasted wheat pasta, so it uses plain dry and cooked pasta (fdc 168927/168928). Toasting and water uptake make it approximate."
+  }
+]

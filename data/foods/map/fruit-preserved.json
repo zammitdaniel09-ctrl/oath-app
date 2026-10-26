@@ -1,0 +1,407 @@
+[
+  {
+    "req": "fruit-preserved/raisins",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "raisins-seedless",
+        "fdc_id": 168165,
+        "name": "Raisins",
+        "state": "dried",
+        "aliases": [
+          "raisin",
+          "seedless raisins"
+        ]
+      }
+    ],
+    "note": "Dark seedless raisins."
+  },
+  {
+    "req": "fruit-preserved/sultanas",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sultanas",
+        "fdc_id": 168164,
+        "name": "Sultanas",
+        "state": "dried",
+        "aliases": [
+          "sultana",
+          "golden raisins"
+        ]
+      }
+    ],
+    "note": "USDA golden seedless raisins, the US name for sultanas."
+  },
+  {
+    "req": "fruit-preserved/dried-dates",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "dates-deglet-noor-dried",
+        "fdc_id": 171726,
+        "name": "Dates, dried",
+        "state": "dried",
+        "aliases": [
+          "dried dates",
+          "dates",
+          "deglet noor",
+          "pitted dates"
+        ]
+      }
+    ],
+    "note": "Deglet Noor, pitted weight. Medjool dates are mapped under fruit-wider/fresh-date (168191)."
+  },
+  {
+    "req": "fruit-preserved/dried-figs",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "figs-dried",
+        "fdc_id": 174665,
+        "name": "Figs, dried",
+        "state": "dried",
+        "aliases": [
+          "dried figs",
+          "dried fig"
+        ]
+      }
+    ],
+    "note": "Uncooked."
+  },
+  {
+    "req": "fruit-preserved/dried-apricots",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "apricots-dried",
+        "fdc_id": 173941,
+        "name": "Apricots, dried",
+        "state": "dried",
+        "aliases": [
+          "dried apricots",
+          "dried apricot"
+        ]
+      }
+    ],
+    "note": "Sulphured, uncooked."
+  },
+  {
+    "req": "fruit-preserved/prunes",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "prunes-dried",
+        "fdc_id": 168162,
+        "name": "Prunes",
+        "state": "dried",
+        "aliases": [
+          "prune",
+          "dried plums"
+        ]
+      }
+    ],
+    "note": "Uncooked, pitted weight."
+  },
+  {
+    "req": "fruit-preserved/dried-mango",
+    "status": "partial",
+    "records": [
+      {
+        "key": "mango-dried-sweetened",
+        "fdc_id": 169091,
+        "name": "Mango, dried, sweetened",
+        "state": "dried",
+        "aliases": [
+          "dried mango",
+          "sweetened dried mango"
+        ]
+      }
+    ],
+    "note": "Sweetened dried mango only; no unsweetened dried mango record, and the record has no gram portions."
+  },
+  {
+    "req": "fruit-preserved/dried-cranberries",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cranberries-dried-sweetened",
+        "fdc_id": 171723,
+        "name": "Cranberries, dried, sweetened",
+        "state": "dried",
+        "aliases": [
+          "dried cranberries",
+          "sweetened dried cranberries"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fruit-preserved/banana-chips",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "banana-chips",
+        "fdc_id": 168849,
+        "name": "Banana chips",
+        "state": "as-sold",
+        "aliases": [
+          "banana chip",
+          "dried banana chips"
+        ]
+      }
+    ],
+    "note": "Fried banana chips (USDA snack record)."
+  },
+  {
+    "req": "fruit-preserved/apple-chips",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "apple-chips-dehydrated",
+        "fdc_id": 173931,
+        "name": "Apple chips",
+        "state": "dried",
+        "aliases": [
+          "apple chips",
+          "apple crisps",
+          "dried apple crisps"
+        ]
+      }
+    ],
+    "note": "No apple-chip record. Low-moisture dehydrated apple used as proxy for crisp, unsweetened apple chips; fried or sugared apple chips need the product."
+  },
+  {
+    "req": "fruit-preserved/frozen-berries",
+    "status": "partial",
+    "records": [
+      {
+        "key": "strawberries-frozen",
+        "fdc_id": 168173,
+        "name": "Strawberries, frozen, unsweetened",
+        "state": "frozen",
+        "aliases": [
+          "frozen strawberries"
+        ]
+      },
+      {
+        "key": "blueberries-frozen",
+        "fdc_id": 173950,
+        "name": "Blueberries, frozen, unsweetened",
+        "state": "frozen",
+        "aliases": [
+          "frozen blueberries"
+        ]
+      },
+      {
+        "key": "raspberries-frozen",
+        "fdc_id": 168209,
+        "name": "Raspberries, frozen, unsweetened",
+        "state": "frozen",
+        "aliases": [
+          "frozen raspberries"
+        ]
+      },
+      {
+        "key": "blackberries-frozen",
+        "fdc_id": 171710,
+        "name": "Blackberries, frozen, unsweetened",
+        "state": "frozen",
+        "aliases": [
+          "frozen blackberries"
+        ]
+      }
+    ],
+    "note": "Single-berry frozen records only; no mixed-berry or summer-fruits blend. Log a mix as its components."
+  },
+  {
+    "req": "fruit-preserved/frozen-mango",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "mango-frozen",
+        "fdc_id": 169910,
+        "name": "Mango, frozen",
+        "state": "frozen",
+        "aliases": [
+          "frozen mango",
+          "frozen mango chunks"
+        ]
+      }
+    ],
+    "note": "No frozen mango record; plain frozen mango uses raw mango values."
+  },
+  {
+    "req": "fruit-preserved/tinned-peaches-in-juice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "peaches-tinned-juice-with-liquid",
+        "fdc_id": 169930,
+        "name": "Peaches, tinned in juice, with juice",
+        "state": "canned-with-liquid",
+        "aliases": [
+          "tinned peaches in juice",
+          "canned peaches in juice"
+        ]
+      }
+    ],
+    "note": "USDA has no drained juice-pack peach record."
+  },
+  {
+    "req": "fruit-preserved/tinned-peaches-in-syrup",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "peaches-tinned-light-syrup-with-liquid",
+        "fdc_id": 169111,
+        "name": "Peaches, tinned in light syrup, with syrup",
+        "state": "canned-with-liquid",
+        "aliases": [
+          "tinned peaches in syrup",
+          "peaches in light syrup"
+        ]
+      },
+      {
+        "key": "peaches-tinned-heavy-syrup-with-liquid",
+        "fdc_id": 169112,
+        "name": "Peaches, tinned in heavy syrup, with syrup",
+        "state": "canned-with-liquid",
+        "aliases": [
+          "peaches in heavy syrup"
+        ]
+      },
+      {
+        "key": "peaches-tinned-heavy-syrup-drained",
+        "fdc_id": 168181,
+        "name": "Peaches, tinned in heavy syrup, drained",
+        "state": "canned-drained",
+        "aliases": [
+          "drained tinned peaches"
+        ]
+      }
+    ],
+    "note": "No drained light-syrup record."
+  },
+  {
+    "req": "fruit-preserved/tinned-pineapple-in-juice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pineapple-tinned-juice-drained",
+        "fdc_id": 167767,
+        "name": "Pineapple, tinned in juice, drained",
+        "state": "canned-drained",
+        "aliases": [
+          "tinned pineapple",
+          "canned pineapple",
+          "pineapple chunks",
+          "pineapple rings"
+        ]
+      },
+      {
+        "key": "pineapple-tinned-juice-with-liquid",
+        "fdc_id": 169126,
+        "name": "Pineapple, tinned in juice, with juice",
+        "state": "canned-with-liquid",
+        "aliases": [
+          "tinned pineapple in juice"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "fruit-preserved/tinned-fruit-cocktail",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "fruit-cocktail-tinned-juice-with-liquid",
+        "fdc_id": 174668,
+        "name": "Fruit cocktail, tinned in juice, with juice",
+        "state": "canned-with-liquid",
+        "aliases": [
+          "fruit cocktail",
+          "tinned fruit cocktail",
+          "canned fruit cocktail"
+        ]
+      },
+      {
+        "key": "fruit-cocktail-tinned-light-syrup-with-liquid",
+        "fdc_id": 173027,
+        "name": "Fruit cocktail, tinned in light syrup, with syrup",
+        "state": "canned-with-liquid",
+        "aliases": [
+          "fruit cocktail in syrup"
+        ]
+      },
+      {
+        "key": "fruit-cocktail-tinned-heavy-syrup-drained",
+        "fdc_id": 168178,
+        "name": "Fruit cocktail, tinned in heavy syrup, drained",
+        "state": "canned-drained"
+      }
+    ],
+    "note": "Peach, pineapple, pear, grape and cherry mix. No drained juice-pack record."
+  },
+  {
+    "req": "fruit-preserved/applesauce",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "apple-sauce-unsweetened",
+        "fdc_id": 171695,
+        "name": "Apple sauce, unsweetened",
+        "state": "as-sold",
+        "aliases": [
+          "applesauce",
+          "unsweetened apple sauce",
+          "apple puree"
+        ]
+      },
+      {
+        "key": "apple-sauce-sweetened",
+        "fdc_id": 171696,
+        "name": "Apple sauce, sweetened",
+        "state": "as-sold",
+        "aliases": [
+          "sweetened applesauce",
+          "bramley apple sauce"
+        ]
+      }
+    ],
+    "note": "Tinned or jarred, no added vitamin C, no added salt."
+  },
+  {
+    "req": "fruit-preserved/fruit-puree",
+    "status": "product",
+    "records": [],
+    "note": "Composition depends on the fruit and any added juice or sugar. Log the exact product, or the plain fruit (unsweetened apple sauce 171695 covers apple purée)."
+  },
+  {
+    "req": "fruit-preserved/fruit-compote",
+    "status": "recipe",
+    "records": [],
+    "note": "Stewed fruit with variable sugar; build from the fruit plus measured sugar. USDA stewed records cover only specific dried fruits."
+  },
+  {
+    "req": "fruit-preserved/candied-peel",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "candied-peel",
+        "fdc_id": 167781,
+        "name": "Candied peel",
+        "state": "as-sold",
+        "aliases": [
+          "mixed peel",
+          "candied citrus peel",
+          "candied orange peel",
+          "candied lemon peel"
+        ]
+      }
+    ],
+    "note": "Only a generic USDA \"Candied fruit\" record exists (no gram portions); used as proxy for candied citrus peel."
+  }
+]

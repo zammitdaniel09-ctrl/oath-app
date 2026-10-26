@@ -20,6 +20,10 @@ import { calendarApi } from './calendar.js';
 import { businessApi } from './business.js';
 import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleUpdate, webhookSecret } from './telegram.js';
 import { setupStatus, noteIngestError } from './setup.js';
+import { foodApi, saveCustomFood } from './food.js';
+import { ensureFoodSeed } from './food-seed.js';
+import { readFoodPhoto } from './food-photo.js';
+import { productByBarcode, searchOff } from './off.js';
 import * as passkeys from './passkeys.js';
 
 const v = { validTime, validDate };
@@ -186,10 +190,12 @@ api.delete('/rest/:date', async (c) => c.json(await engine.cancelRest(c.req.para
 // ---------- Export: everything, as one JSON file ----------
 const EXPORT_TABLES = ['habits', 'completions', 'tasks', 'misses', 'days', 'reflections', 'deferrals', 'focus_sessions',
   'day_plans', 'goals', 'goal_logs', 'nodes', 'rest_days', 'weekly_reviews', 'coach_messages', 'briefs', 'events',
-  'health_samples', 'health_workouts', 'cal_events'];
+  'health_samples', 'health_workouts', 'cal_events', 'food_log', 'food_meals', 'food_batches', 'food_plans'];
 api.get('/export', async (c) => {
   const out = { exportedAt: new Date().toISOString(), app: 'Oath' };
   for (const t of EXPORT_TABLES) out[t] = await db().unsafe(`select * from ${t} order by 1`);
+  out.food_items_yours = await db()`select * from food_items where kind in ('custom', 'label') order by id`;
+  out.recipes_yours = await db()`select r.*, (select json_agg(l order by l.sort) from recipe_lines l where l.recipe_id = r.id) as lines from recipes r where source = 'you' order by id`;
   out.game = (await db()`select value from kv where key = 'game'`)[0]?.value || null;
   out.settings = (await db()`select value from kv where key = 'settings'`)[0]?.value || null;
   c.header('Content-Disposition', `attachment; filename="oath-export-${new Date().toISOString().slice(0, 10)}.json"`);
@@ -289,6 +295,14 @@ api.route('/', healthApi);
 api.route('/', calendarApi);
 api.route('/', businessApi);
 
+// ---------- Food ----------
+// Photo of anything: barcode, packet, label or plate. The photo is read and dropped, never stored.
+api.post('/food/photo', async (c) => c.json(await readFoodPhoto(await body(c))));
+api.post('/food/label', async (c) => c.json(await saveCustomFood(await body(c), { fromLabel: true })));
+api.get('/food/barcode/:code', async (c) => c.json({ item: await productByBarcode(c.req.param('code')) }));
+api.get('/food/off-search', async (c) => c.json({ items: await searchOff(c.req.query('q')) }));
+api.route('/', foodApi);
+
 app.route('/api', api);
 
 // Telegram calls this; it proves itself with the secret token set when the webhook was registered.
@@ -328,6 +342,7 @@ if (isMain) {
   await vapidKeys();
   initTelegram().catch((err) => console.error('telegram init failed:', err.message));
   checkCoach();
+  ensureFoodSeed().catch((err) => console.error('food seed failed:', err.message));
   const port = Number(process.env.PORT || 3000);
   const server = serve({ fetch: app.fetch, port, hostname: '0.0.0.0' }, () => console.log(`Oath listening on ${port}`));
   const loop = startLoop();

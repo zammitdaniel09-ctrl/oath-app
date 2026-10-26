@@ -1,0 +1,371 @@
+[
+  {
+    "req": "dairy/whole-egg",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "egg-whole-raw",
+        "fdc_id": 171287,
+        "name": "Egg, whole, raw",
+        "state": "raw",
+        "aliases": [
+          "egg",
+          "eggs",
+          "bajd"
+        ]
+      },
+      {
+        "key": "egg-whole-boiled",
+        "fdc_id": 173424,
+        "name": "Egg, whole, hard-boiled",
+        "state": "boiled",
+        "aliases": [
+          "boiled egg"
+        ]
+      },
+      {
+        "key": "egg-whole-fried",
+        "fdc_id": 173423,
+        "name": "Egg, whole, fried",
+        "state": "fried",
+        "aliases": [
+          "fried egg"
+        ]
+      },
+      {
+        "key": "egg-whole-poached",
+        "fdc_id": 172186,
+        "name": "Egg, whole, poached",
+        "state": "cooked",
+        "aliases": [
+          "poached egg"
+        ]
+      }
+    ],
+    "note": "SR portions give edible weights by US size (large, extra large, jumbo); UK egg sizes differ, so weigh where possible."
+  },
+  {
+    "req": "dairy/egg-white",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "egg-white-raw",
+        "fdc_id": 172183,
+        "name": "Egg white, raw",
+        "state": "raw",
+        "aliases": [
+          "egg whites"
+        ]
+      }
+    ],
+    "note": "Liquid pasteurised egg white: 172203."
+  },
+  {
+    "req": "dairy/egg-yolk",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "egg-yolk-raw",
+        "fdc_id": 172184,
+        "name": "Egg yolk, raw",
+        "state": "raw",
+        "aliases": [
+          "egg yolks"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "dairy/whole-milk",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "milk-whole",
+        "fdc_id": 172217,
+        "name": "Whole milk",
+        "state": "as-sold",
+        "aliases": [
+          "full-fat milk",
+          "whole milk",
+          "ħalib"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "US whole milk (3.25% fat), without added vitamins A and D like UK milk; UK whole milk is slightly higher in fat."
+  },
+  {
+    "req": "dairy/semi-skimmed-milk",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "milk-semi-skimmed",
+        "fdc_id": 172205,
+        "name": "Semi-skimmed milk (US 2% milk)",
+        "state": "as-sold",
+        "aliases": [
+          "semi-skimmed",
+          "2% milk",
+          "reduced-fat milk"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "UK semi-skimmed is close to US 2% reduced-fat milk (slightly lower fat). Record is without added vitamins A and D."
+  },
+  {
+    "req": "dairy/skimmed-milk",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "milk-skimmed",
+        "fdc_id": 173432,
+        "name": "Skimmed milk",
+        "state": "as-sold",
+        "aliases": [
+          "skim milk",
+          "fat-free milk",
+          "nonfat milk"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "US nonfat milk without added vitamins A and D."
+  },
+  {
+    "req": "dairy/lactose-free-milk",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "milk-lactose-free-semi-skimmed",
+        "fdc_id": 172205,
+        "name": "Lactose-free semi-skimmed milk (proxy: 2% milk)",
+        "state": "as-sold",
+        "aliases": [
+          "lactose-free milk"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "No lactose-free milk in USDA. Enzyme-treated lactose-free milk has the same macros as ordinary milk; filtered lower-sugar brands differ, so use the label for those."
+  },
+  {
+    "req": "dairy/evaporated-milk",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "evaporated-milk",
+        "fdc_id": 171276,
+        "name": "Evaporated milk",
+        "state": "as-sold",
+        "aliases": [
+          "evaporated milk, tinned"
+        ]
+      },
+      {
+        "key": "evaporated-milk-light",
+        "fdc_id": 171302,
+        "name": "Evaporated milk, light (2% fat)",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Undiluted, as sold."
+  },
+  {
+    "req": "dairy/sweetened-condensed-milk",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "condensed-milk-sweetened",
+        "fdc_id": 171275,
+        "name": "Sweetened condensed milk",
+        "state": "as-sold",
+        "aliases": [
+          "condensed milk"
+        ]
+      }
+    ],
+    "note": "The Foundation record (2758990) has no nutrient values."
+  },
+  {
+    "req": "dairy/plain-yogurt",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "yogurt-plain-whole",
+        "fdc_id": 171284,
+        "name": "Plain yogurt, whole milk",
+        "state": "as-sold",
+        "aliases": [
+          "natural yogurt",
+          "plain yoghurt"
+        ]
+      },
+      {
+        "key": "yogurt-plain-low-fat",
+        "fdc_id": 170886,
+        "name": "Plain yogurt, low-fat",
+        "state": "as-sold",
+        "aliases": [
+          "low-fat natural yogurt"
+        ]
+      },
+      {
+        "key": "yogurt-plain-fat-free",
+        "fdc_id": 170887,
+        "name": "Plain yogurt, fat-free",
+        "state": "as-sold",
+        "aliases": [
+          "fat-free natural yogurt",
+          "skimmed milk yogurt"
+        ]
+      }
+    ],
+    "note": "Unstrained yogurt."
+  },
+  {
+    "req": "dairy/fruit-yogurt",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "yogurt-fruit-low-fat",
+        "fdc_id": 170889,
+        "name": "Fruit yogurt, low-fat",
+        "state": "as-sold",
+        "aliases": [
+          "fruit yoghurt"
+        ]
+      },
+      {
+        "key": "yogurt-fruit-fat-free",
+        "fdc_id": 169898,
+        "name": "Fruit yogurt, fat-free",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Sugar content varies by brand; low-calorie sweetened yogurts are separate records."
+  },
+  {
+    "req": "dairy/greek-style-yogurt",
+    "status": "product",
+    "records": [],
+    "note": "UK \"Greek style\" yogurt (unstrained, thickened, about 10% fat) has no USDA equivalent; do not substitute strained Greek yogurt. Use the pack label."
+  },
+  {
+    "req": "dairy/strained-greek-yogurt",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "yogurt-greek-whole",
+        "fdc_id": 171304,
+        "name": "Greek yogurt (strained), plain, whole milk",
+        "state": "as-sold",
+        "aliases": [
+          "Greek yoghurt",
+          "authentic Greek yogurt"
+        ]
+      },
+      {
+        "key": "yogurt-greek-low-fat",
+        "fdc_id": 170903,
+        "name": "Greek yogurt (strained), plain, low-fat",
+        "state": "as-sold"
+      },
+      {
+        "key": "yogurt-greek-fat-free",
+        "fdc_id": 330137,
+        "name": "Greek yogurt (strained), plain, fat-free",
+        "state": "as-sold",
+        "aliases": [
+          "0% Greek yogurt"
+        ]
+      }
+    ],
+    "note": "Fat-free is Foundation (generic; SR plain nonfat Greek is branded only)."
+  },
+  {
+    "req": "dairy/skyr",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "skyr-plain-proxy",
+        "fdc_id": 330137,
+        "name": "Skyr, plain (proxy: fat-free Greek yogurt)",
+        "state": "as-sold",
+        "aliases": [
+          "skyr",
+          "Icelandic yogurt"
+        ]
+      }
+    ],
+    "note": "No skyr record in USDA. Plain skyr is a strained fat-free cultured dairy product close to fat-free Greek yogurt; prefer the label."
+  },
+  {
+    "req": "dairy/kefir",
+    "status": "product",
+    "records": [],
+    "note": "USDA only has branded kefir (Lifeway). Kefir fat level varies by brand; use the label."
+  },
+  {
+    "req": "dairy/drinking-yogurt",
+    "status": "product",
+    "records": [],
+    "note": "No generic drinking yogurt in USDA; needs the exact product."
+  },
+  {
+    "req": "dairy/custard",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "custard-semi-skimmed-milk",
+        "fdc_id": 168787,
+        "name": "Custard, made with semi-skimmed (2%) milk",
+        "state": "prepared",
+        "aliases": [
+          "custard"
+        ]
+      },
+      {
+        "key": "custard-whole-milk",
+        "fdc_id": 168773,
+        "name": "Custard, made with whole milk",
+        "state": "prepared"
+      }
+    ],
+    "note": "USDA egg custard from dry mix prepared with milk. UK custard powder (egg-free) made with milk and sugar, and ready-to-serve custard, are close but not exact; use the label for ready-to-serve."
+  },
+  {
+    "req": "dairy/chocolate-milk",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chocolate-milk-whole",
+        "fdc_id": 170879,
+        "name": "Chocolate milk, whole",
+        "state": "as-sold",
+        "aliases": [
+          "full-fat chocolate milk"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "chocolate-milk-reduced-fat",
+        "fdc_id": 170880,
+        "name": "Chocolate milk, reduced-fat (semi-skimmed)",
+        "state": "as-sold",
+        "aliases": [
+          "chocolate milk"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Commercial ready-to-drink chocolate milk. Protein-enriched chocolate milk drinks are products."
+  },
+  {
+    "req": "dairy/ready-to-drink-protein-milk",
+    "status": "product",
+    "records": [],
+    "note": "Needs the exact packaged product (brand-specific protein and sugar)."
+  }
+]

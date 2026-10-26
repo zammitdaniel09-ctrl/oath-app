@@ -1,0 +1,203 @@
+[
+  {
+    "req": "cereals/rolled-oats",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oats-rolled-dry",
+        "fdc_id": 173904,
+        "name": "Rolled oats, dry",
+        "state": "dry",
+        "aliases": [
+          "oats",
+          "porridge oats",
+          "jumbo oats",
+          "old-fashioned oats",
+          "oat flakes"
+        ]
+      }
+    ],
+    "note": "Unfortified oats, dry. USDA covers regular and quick oats in one record (shared with quick oats). Porridge made with milk or water belongs in recipes or components."
+  },
+  {
+    "req": "cereals/quick-oats",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oats-quick-dry",
+        "fdc_id": 173904,
+        "name": "Quick oats, dry",
+        "state": "dry",
+        "aliases": [
+          "quick oats",
+          "quick-cook oats",
+          "quick porridge oats"
+        ]
+      }
+    ],
+    "note": "Same USDA record as rolled oats (regular and quick, not fortified). Flavoured or fortified instant oat sachets need labels."
+  },
+  {
+    "req": "cereals/steel-cut-oats",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oats-steel-cut-dry",
+        "fdc_id": 2346397,
+        "name": "Steel-cut oats, dry",
+        "state": "dry",
+        "aliases": [
+          "steel cut oats",
+          "pinhead oats",
+          "Irish oats"
+        ]
+      }
+    ],
+    "note": "Foundation record; no household portions."
+  },
+  {
+    "req": "cereals/oat-bran",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oat-bran-dry",
+        "fdc_id": 168872,
+        "name": "Oat bran, dry",
+        "state": "dry",
+        "aliases": [
+          "oat bran"
+        ]
+      }
+    ],
+    "note": "Plain oat bran, uncooked."
+  },
+  {
+    "req": "cereals/wheat-bran",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "wheat-bran-dry",
+        "fdc_id": 169722,
+        "name": "Wheat bran, dry",
+        "state": "dry",
+        "aliases": [
+          "wheat bran",
+          "natural wheat bran",
+          "unprocessed bran"
+        ]
+      }
+    ],
+    "note": "Unprocessed (crude) wheat bran, not bran flakes cereal."
+  },
+  {
+    "req": "cereals/plain-muesli",
+    "status": "product",
+    "records": [],
+    "note": "No USDA muesli record; mixes of oats, nuts, seeds and fruit vary. Use the pack label."
+  },
+  {
+    "req": "cereals/fruit-muesli",
+    "status": "product",
+    "records": [],
+    "note": "No USDA muesli record; fruit, nut and sugar content vary. Use the pack label."
+  },
+  {
+    "req": "cereals/granola",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "granola-dry",
+        "fdc_id": 171646,
+        "name": "Granola",
+        "state": "dry",
+        "aliases": [
+          "granola",
+          "crunchy oat cereal"
+        ]
+      }
+    ],
+    "note": "USDA's only generic granola is a homemade recipe (oats, nuts, oil, sweetener). Commercial granola varies widely in sugar, oil and nuts, so prefer the pack label."
+  },
+  {
+    "req": "cereals/cornflakes",
+    "status": "product",
+    "records": [],
+    "note": "USDA only has branded US cornflakes; fortification is brand-specific. Use the pack label."
+  },
+  {
+    "req": "cereals/bran-flakes",
+    "status": "product",
+    "records": [],
+    "note": "USDA only has branded US bran flakes; fortification and sugar are brand-specific. Use the pack label."
+  },
+  {
+    "req": "cereals/wheat-biscuits",
+    "status": "product",
+    "records": [],
+    "note": "Wheat biscuit cereals are fortified brand formulations; USDA only has US branded shredded wheat, a different product. Use the pack label."
+  },
+  {
+    "req": "cereals/puffed-rice-cereal",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "cereal-puffed-rice-dry",
+        "fdc_id": 173912,
+        "name": "Puffed rice cereal",
+        "state": "dry",
+        "aliases": [
+          "puffed rice",
+          "rice puffs"
+        ]
+      }
+    ],
+    "note": "Generic USDA puffed rice, unsweetened but US-fortified, so macros fit plain puffed rice while iron and B vitamins may not. Sweetened crisped rice cereals need a label."
+  },
+  {
+    "req": "cereals/puffed-wheat-cereal",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "cereal-puffed-wheat-dry",
+        "fdc_id": 173913,
+        "name": "Puffed wheat cereal",
+        "state": "dry",
+        "aliases": [
+          "puffed wheat",
+          "wheat puffs"
+        ]
+      }
+    ],
+    "note": "Generic USDA puffed wheat, unsweetened but US-fortified, so micronutrients may differ. Honey or sugar-coated puffed wheat needs a label."
+  },
+  {
+    "req": "cereals/chocolate-cereal",
+    "status": "product",
+    "records": [],
+    "note": "USDA only has branded US chocolate cereals plus one generic chocolate frosted puffed corn; base grain, sugar and fortification vary. Use the pack label."
+  },
+  {
+    "req": "cereals/honey-cereal",
+    "status": "product",
+    "records": [],
+    "note": "USDA only has branded US honey cereals. Use the pack label."
+  },
+  {
+    "req": "cereals/rice-porridge-grain",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "rice-pudding-short-grain-dry",
+        "fdc_id": 168931,
+        "name": "Pudding rice, dry",
+        "state": "dry",
+        "aliases": [
+          "rice porridge grain",
+          "pudding rice",
+          "porridge rice"
+        ]
+      }
+    ],
+    "note": "Assumed to be the dry short-grain white rice used for rice porridge or pudding (unenriched short-grain record). Ground rice or branded cream of rice need labels; porridge cooked with milk is a recipe."
+  }
+]

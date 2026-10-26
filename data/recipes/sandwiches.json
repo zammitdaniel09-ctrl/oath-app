@@ -1,0 +1,1946 @@
+[
+ {
+  "key": "ham-and-cheese-sandwich",
+  "name": "Ham and cheese sandwich",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/ham-and-cheese-sandwich"
+  ],
+  "summary": "Buttered wholemeal bread with sliced ham, cheddar and lettuce.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 4,
+  "cook_min": 0,
+  "equipment": [
+   "knife"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "packed-lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "bread-wholemeal-sliced-as-sold",
+    "qty": 2,
+    "unit": "p:1 slice",
+    "label": "wholemeal bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "butter-salted",
+    "qty": 7,
+    "unit": "g",
+    "label": "butter"
+   },
+   {
+    "ref": "item",
+    "ref_key": "ham-cooked-regular-sliced",
+    "qty": 2,
+    "unit": "p:1 slice",
+    "label": "ham"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cheddar",
+    "qty": 25,
+    "unit": "g",
+    "label": "cheddar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-iceberg-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "lettuce"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mustard-yellow",
+    "qty": 5,
+    "unit": "g",
+    "label": "mustard",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Spread the wholemeal bread with the butter, and with mustard too if you like.",
+   "Layer the ham, sliced cheddar and lettuce on one slice, top with the other and cut in half."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "tuna-mayonnaise-sandwich",
+  "name": "Tuna mayonnaise sandwich",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/tuna-mayonnaise-sandwich"
+  ],
+  "summary": "Tuna mashed with mayonnaise and black pepper, with cucumber and lettuce in wholemeal bread.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 0,
+  "equipment": [
+   "bowl",
+   "fork"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "packed-lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "tuna-canned-brine-light",
+    "qty": 80,
+    "unit": "g",
+    "label": "tuna"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 15,
+    "unit": "g",
+    "label": "mayonnaise"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-wholemeal-sliced-as-sold",
+    "qty": 2,
+    "unit": "p:1 slice",
+    "label": "wholemeal bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cucumber-raw",
+    "qty": 30,
+    "unit": "g",
+    "label": "cucumber"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-iceberg-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "lettuce"
+   },
+   {
+    "ref": "item",
+    "ref_key": "butter-salted",
+    "qty": 5,
+    "unit": "g",
+    "label": "butter",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Drain the tuna well and mash it with the mayonnaise and black pepper.",
+   "Spread it over a slice of the wholemeal bread (buttered first if you like), add the sliced cucumber and the lettuce, top with the second slice and cut in half."
+  ],
+  "notes": "Weigh the tuna drained; a small tin gives about 100 g."
+ },
+ {
+  "key": "tuna-sweetcorn-sandwich",
+  "name": "Tuna and sweetcorn sandwich",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "variant",
+  "parent_key": "tuna-mayonnaise-sandwich",
+  "req": [
+   "sandwiches/tuna-and-sweetcorn-sandwich"
+  ],
+  "summary": "Tuna mayonnaise with sweetcorn and lettuce in white bread.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 0,
+  "equipment": [
+   "bowl",
+   "fork"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "packed-lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "tuna-canned-brine-light",
+    "qty": 80,
+    "unit": "g",
+    "label": "tuna"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sweetcorn-tinned-drained",
+    "qty": 40,
+    "unit": "g",
+    "label": "sweetcorn"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 15,
+    "unit": "g",
+    "label": "mayonnaise"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-white-sliced-as-sold",
+    "qty": 2,
+    "unit": "p:1 slice",
+    "label": "white bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-iceberg-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "lettuce"
+   }
+  ],
+  "method": [
+   "Drain the tuna and sweetcorn well, then mix with the mayonnaise and black pepper.",
+   "Spread over one slice of white bread, add the lettuce, top with the second slice and cut in half."
+  ],
+  "notes": "Variant of the tuna mayonnaise sandwich: sweetcorn replaces the cucumber, in white bread."
+ },
+ {
+  "key": "tuna-mayonnaise-wrap",
+  "name": "Tuna wrap",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "variant",
+  "parent_key": "tuna-mayonnaise-sandwich",
+  "req": [
+   "sandwiches/tuna-wrap"
+  ],
+  "summary": "Tuna mayonnaise with red onion, lettuce and tomato rolled in a tortilla.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 0,
+  "equipment": [
+   "bowl",
+   "fork"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "packed-lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "tuna-canned-brine-light",
+    "qty": 80,
+    "unit": "g",
+    "label": "tuna"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 15,
+    "unit": "g",
+    "label": "mayonnaise"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tortilla-wrap-plain-as-sold",
+    "qty": 1,
+    "unit": "p:1 tortilla",
+    "label": "tortilla"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-iceberg-raw",
+    "qty": 20,
+    "unit": "g",
+    "label": "lettuce"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "tomato"
+   }
+  ],
+  "method": [
+   "Drain the tuna and mix it with the mayonnaise, finely chopped red onion and black pepper.",
+   "Spread down the middle of the tortilla, add the shredded lettuce and sliced tomato, fold in the ends and roll up tightly."
+  ],
+  "notes": "Variant of the tuna mayonnaise sandwich: a tortilla replaces the bread."
+ },
+ {
+  "key": "egg-mayonnaise-sandwich",
+  "name": "Egg mayonnaise sandwich",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/egg-mayonnaise-sandwich"
+  ],
+  "summary": "Chopped hard-boiled eggs in mayonnaise with chives and lettuce in wholemeal bread.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 10,
+  "equipment": [
+   "saucepan",
+   "bowl",
+   "fork"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 2,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 15,
+    "unit": "g",
+    "label": "mayonnaise"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chives-fresh",
+    "qty": 2,
+    "unit": "g",
+    "label": "chives",
+    "optional": true
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-wholemeal-sliced-as-sold",
+    "qty": 2,
+    "unit": "p:1 slice",
+    "label": "wholemeal bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-iceberg-raw",
+    "qty": 10,
+    "unit": "g",
+    "label": "lettuce"
+   }
+  ],
+  "method": [
+   "Boil the eggs for 9 minutes, cool them in cold water and peel.",
+   "Mash the eggs with the mayonnaise, salt, black pepper and snipped chives if using.",
+   "Spread over a slice of the wholemeal bread, add the lettuce, top with the other slice and cut in half."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "chicken-salad-sandwich",
+  "name": "Chicken salad sandwich",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/chicken-salad-sandwich"
+  ],
+  "summary": "Leftover roast chicken bound with mayonnaise, yogurt, celery and lemon in seeded bread.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 6,
+  "cook_min": 0,
+  "equipment": [
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "packed-lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "chicken-breast-skinless-roasted",
+    "qty": 80,
+    "unit": "g",
+    "label": "cooked chicken"
+   },
+   {
+    "ref": "item",
+    "ref_key": "celery-raw",
+    "qty": 25,
+    "unit": "g",
+    "label": "celery"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 10,
+    "unit": "g",
+    "label": "mayonnaise"
+   },
+   {
+    "ref": "item",
+    "ref_key": "yogurt-greek-low-fat",
+    "qty": 15,
+    "unit": "g",
+    "label": "Greek yogurt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 3,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-seeded-as-sold",
+    "qty": 2,
+    "unit": "p:1 slice regular",
+    "label": "seeded bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-iceberg-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "lettuce"
+   }
+  ],
+  "method": [
+   "Shred or dice the cooked chicken and finely chop the celery.",
+   "Mix them with the mayonnaise, Greek yogurt, lemon juice and black pepper.",
+   "Pile onto a slice of the seeded bread with the lettuce, top with the second slice and cut in half."
+  ],
+  "notes": "Uses leftover roast chicken breast."
+ },
+ {
+  "key": "roast-vegetable-ciabatta",
+  "name": "Roast vegetable ciabatta",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/roast-vegetable-sandwich"
+  ],
+  "summary": "Toasted ciabatta spread with pesto and filled with roast courgette, pepper and red onion, mozzarella and rocket.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 25,
+  "equipment": [
+   "oven",
+   "baking tray"
+  ],
+  "tags": [
+   "lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "courgette-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "courgette"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 40,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-ciabatta-as-sold",
+    "qty": 80,
+    "unit": "g",
+    "label": "ciabatta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pesto-jar",
+    "qty": 15,
+    "unit": "g",
+    "label": "pesto"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mozzarella-whole-milk",
+    "qty": 40,
+    "unit": "g",
+    "label": "mozzarella"
+   },
+   {
+    "ref": "item",
+    "ref_key": "rocket-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "rocket"
+   }
+  ],
+  "method": [
+   "Heat the oven to 200°C (180°C fan). Slice the courgette, red pepper and red onion, toss with the olive oil and salt and roast on a tray for 20 to 25 minutes, turning once.",
+   "Split the ciabatta, toast it lightly and spread the cut sides with the pesto.",
+   "Fill with the roast vegetables, sliced mozzarella and rocket, and press together."
+  ],
+  "notes": "Roast a double tray of vegetables and keep half in the fridge for another sandwich or a pasta salad."
+ },
+ {
+  "key": "grilled-cheese-sandwich",
+  "name": "Grilled cheese sandwich",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/grilled-cheese-sandwich"
+  ],
+  "summary": "White bread buttered on the outside and pan-fried around melted cheddar.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 2,
+  "cook_min": 7,
+  "equipment": [
+   "frying pan",
+   "grater"
+  ],
+  "tags": [
+   "lunch",
+   "snack",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "bread-white-sliced-as-sold",
+    "qty": 2,
+    "unit": "p:1 slice",
+    "label": "white bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "butter-salted",
+    "qty": 10,
+    "unit": "g",
+    "label": "butter"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cheddar",
+    "qty": 40,
+    "unit": "g",
+    "label": "cheddar"
+   }
+  ],
+  "method": [
+   "Butter one side of each slice of white bread and grate the cheddar.",
+   "Sandwich the cheddar between the unbuttered sides.",
+   "Cook in a frying pan over a medium-low heat for 3 to 4 minutes a side, pressing down gently, until golden and the cheese has melted."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "cheese-and-tomato-toastie",
+  "name": "Cheese and tomato toastie",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "variant",
+  "parent_key": "grilled-cheese-sandwich",
+  "req": [
+   "sandwiches/cheese-and-tomato-toastie"
+  ],
+  "summary": "Cheddar and sliced tomato toasted in buttered white bread.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 3,
+  "cook_min": 6,
+  "equipment": [
+   "toastie maker or frying pan",
+   "grater"
+  ],
+  "tags": [
+   "lunch",
+   "snack",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "bread-white-sliced-as-sold",
+    "qty": 2,
+    "unit": "p:1 slice",
+    "label": "white bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "butter-salted",
+    "qty": 8,
+    "unit": "g",
+    "label": "butter"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cheddar",
+    "qty": 35,
+    "unit": "g",
+    "label": "cheddar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "tomato"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   }
+  ],
+  "method": [
+   "Heat a toastie maker or a frying pan. Butter one side of each slice of white bread.",
+   "With the buttered sides outwards, fill with the grated cheddar and thinly sliced tomato, seasoned with black pepper.",
+   "Toast for 3 to 4 minutes in the toastie maker, or 3 minutes a side in the pan, until golden and melted."
+  ],
+  "notes": "Variant of the grilled cheese sandwich with tomato added."
+ },
+ {
+  "key": "peanut-butter-banana-toast",
+  "name": "Peanut butter and banana toast",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/peanut-butter-and-banana-toast"
+  ],
+  "summary": "Wholemeal toast spread with peanut butter and topped with sliced banana.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 3,
+  "cook_min": 2,
+  "equipment": [
+   "toaster"
+  ],
+  "tags": [
+   "breakfast",
+   "snack",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "bread-wholemeal-sliced-as-sold",
+    "qty": 2,
+    "unit": "p:1 slice",
+    "label": "wholemeal bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "peanut-butter-smooth",
+    "qty": 25,
+    "unit": "g",
+    "label": "peanut butter"
+   },
+   {
+    "ref": "item",
+    "ref_key": "banana-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "banana"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cinnamon-ground-as-sold",
+    "qty": 0.25,
+    "unit": "p:1 tsp",
+    "label": "cinnamon",
+    "optional": true
+   },
+   {
+    "ref": "item",
+    "ref_key": "honey-as-sold",
+    "qty": 5,
+    "unit": "g",
+    "label": "honey",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Toast the wholemeal bread.",
+   "Spread with the peanut butter, top with the sliced banana and finish with a pinch of cinnamon or a drizzle of honey if you like."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "hummus-vegetable-wrap",
+  "name": "Hummus and vegetable wrap",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/hummus-and-vegetable-wrap"
+  ],
+  "summary": "Wholemeal tortilla spread with hummus and filled with carrot, cucumber, red pepper and spinach.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 6,
+  "cook_min": 0,
+  "equipment": [
+   "grater",
+   "knife"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "carrot-raw",
+    "qty": 40,
+    "unit": "g",
+    "label": "carrot"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cucumber-raw",
+    "qty": 40,
+    "unit": "g",
+    "label": "cucumber"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 40,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tortilla-wrap-wholemeal-as-sold",
+    "qty": 1,
+    "unit": "p:1 tortilla 1 serving",
+    "label": "tortilla"
+   },
+   {
+    "ref": "item",
+    "ref_key": "hummus-shop",
+    "qty": 50,
+    "unit": "g",
+    "label": "hummus"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spinach-raw",
+    "qty": 20,
+    "unit": "g",
+    "label": "spinach"
+   },
+   {
+    "ref": "item",
+    "ref_key": "feta",
+    "qty": 20,
+    "unit": "g",
+    "label": "feta",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Grate the carrot and cut the cucumber and red pepper into thin strips.",
+   "Spread the tortilla with the hummus, pile the vegetables and spinach down the middle, add crumbled feta if using, then fold in the ends and roll up tightly."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "chicken-fajita-wrap",
+  "name": "Chicken fajita wrap",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/chicken-fajita-wrap"
+  ],
+  "summary": "Spiced chicken strips stir-fried with pepper and onion, rolled in a tortilla with soured cream and salsa.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 8,
+  "equipment": [
+   "frying pan"
+  ],
+  "tags": [
+   "lunch",
+   "dinner"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "chicken-breast-skinless-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "chicken breast"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "paprika-as-sold",
+    "qty": 0.5,
+    "unit": "p:1 tsp",
+    "label": "paprika"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cumin-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "cumin"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-powder-as-sold",
+    "qty": 0.25,
+    "unit": "p:1 tsp",
+    "label": "garlic powder"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chilli-flakes-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "chilli flakes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lime-juice-fresh",
+    "qty": 5,
+    "unit": "ml",
+    "label": "lime juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tortilla-wrap-plain-as-sold",
+    "qty": 1,
+    "unit": "p:1 tortilla",
+    "label": "tortilla"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sour-cream",
+    "qty": 20,
+    "unit": "g",
+    "label": "soured cream"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salsa-jar",
+    "qty": 30,
+    "unit": "g",
+    "label": "salsa"
+   }
+  ],
+  "method": [
+   "Slice the chicken breast, red pepper and onion into thin strips.",
+   "Toss the chicken with the paprika, cumin, garlic powder, chilli flakes and half the olive oil.",
+   "Heat the rest of the olive oil in a frying pan over a high heat and stir-fry the chicken for 5 to 6 minutes until cooked through, adding the red pepper and onion halfway, then squeeze over the lime juice.",
+   "Warm the tortilla, spread with the soured cream and salsa, fill with the chicken and vegetables and roll up."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "chicken-caesar-wrap",
+  "name": "Chicken Caesar wrap",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "variant",
+  "parent_key": "chicken-caesar-salad",
+  "req": [
+   "sandwiches/chicken-caesar-wrap"
+  ],
+  "summary": "Cooked chicken and cos lettuce tossed in Caesar dressing and Parmesan, rolled in a tortilla.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 0,
+  "equipment": [
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "packed-lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "chicken-breast-skinless-roasted",
+    "qty": 80,
+    "unit": "g",
+    "label": "cooked chicken"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-cos-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "cos lettuce"
+   },
+   {
+    "ref": "item",
+    "ref_key": "dressing-caesar",
+    "qty": 15,
+    "unit": "g",
+    "label": "Caesar dressing"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-grated",
+    "qty": 10,
+    "unit": "g",
+    "label": "Parmesan"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tortilla-wrap-plain-as-sold",
+    "qty": 1,
+    "unit": "p:1 tortilla",
+    "label": "tortilla"
+   }
+  ],
+  "method": [
+   "Slice the cooked chicken and shred the cos lettuce.",
+   "Toss the lettuce and chicken with the Caesar dressing, Parmesan and black pepper.",
+   "Pile down the middle of the tortilla, fold in the ends and roll up tightly; wrap in baking paper if packing it for later."
+  ],
+  "notes": "Variant of the chicken Caesar salad: wrapped in a tortilla instead of served with croutons, using leftover cooked chicken."
+ },
+ {
+  "key": "halloumi-wrap",
+  "name": "Halloumi wrap",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/halloumi-wrap"
+  ],
+  "summary": "Golden halloumi with charred pepper and courgette, rocket and minted yogurt in a wholemeal tortilla.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 6,
+  "cook_min": 10,
+  "equipment": [
+   "griddle or frying pan"
+  ],
+  "tags": [
+   "lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "courgette-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "courgette"
+   },
+   {
+    "ref": "item",
+    "ref_key": "halloumi-needs-label",
+    "qty": 60,
+    "unit": "g",
+    "label": "halloumi"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 5,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "yogurt-greek-low-fat",
+    "qty": 30,
+    "unit": "g",
+    "label": "Greek yogurt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mint-fresh",
+    "qty": 2,
+    "unit": "g",
+    "label": "mint"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 3,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tortilla-wrap-wholemeal-as-sold",
+    "qty": 1,
+    "unit": "p:1 tortilla 1 serving",
+    "label": "tortilla"
+   },
+   {
+    "ref": "item",
+    "ref_key": "rocket-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "rocket"
+   }
+  ],
+  "method": [
+   "Slice the red pepper and courgette into strips, toss with the olive oil and griddle or fry for 5 to 6 minutes until charred and soft.",
+   "Slice the halloumi and dry-fry it in the same pan for 1 to 2 minutes a side until golden.",
+   "Mix the Greek yogurt with the chopped mint and lemon juice.",
+   "Warm the tortilla, spread with the minted yogurt, fill with the vegetables, halloumi and rocket, and roll up."
+  ],
+  "notes": "Halloumi has no generic source, so its line has no values until you add your pack's label; until then the total is marked incomplete."
+ },
+ {
+  "key": "falafel-wrap",
+  "name": "Falafel wrap",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/falafel-wrap"
+  ],
+  "summary": "Warm falafel with hummus, lettuce, tomato and cucumber in a tortilla, with chilli sauce if you like.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 5,
+  "equipment": [
+   "frying pan"
+  ],
+  "tags": [
+   "lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "falafel-home-prepared",
+    "qty": 4,
+    "unit": "p:1 patty (approx 2-1/4\" dia)",
+    "label": "falafel"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tortilla-wrap-plain-as-sold",
+    "qty": 1,
+    "unit": "p:1 tortilla",
+    "label": "tortilla"
+   },
+   {
+    "ref": "item",
+    "ref_key": "hummus-shop",
+    "qty": 30,
+    "unit": "g",
+    "label": "hummus"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-iceberg-raw",
+    "qty": 20,
+    "unit": "g",
+    "label": "lettuce"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "tomato"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cucumber-raw",
+    "qty": 30,
+    "unit": "g",
+    "label": "cucumber"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sauce-hot-pepper",
+    "qty": 2,
+    "unit": "g",
+    "label": "chilli sauce",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Warm the falafel in a dry frying pan for about 5 minutes, turning, then lightly crush them.",
+   "Warm the tortilla and spread with the hummus.",
+   "Add the shredded lettuce, sliced tomato and cucumber and the falafel, with a few drops of chilli sauce if you like, then roll up."
+  ],
+  "notes": "Counted as ready-made falafel (USDA values for fried falafel). Four small falafel weigh about 70 g."
+ },
+ {
+  "key": "breakfast-burrito",
+  "name": "Breakfast burrito",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/breakfast-burrito"
+  ],
+  "summary": "Crisp potato, chorizo and scrambled egg rolled in a tortilla with cheddar and salsa.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 15,
+  "equipment": [
+   "frying pan"
+  ],
+  "tags": [
+   "breakfast",
+   "lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "potato-white-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "potato"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chorizo-fresh-raw",
+    "qty": 40,
+    "unit": "g",
+    "label": "chorizo"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 2,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tortilla-wrap-plain-as-sold",
+    "qty": 1,
+    "unit": "p:1 tortilla",
+    "label": "tortilla"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cheddar",
+    "qty": 20,
+    "unit": "g",
+    "label": "cheddar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salsa-jar",
+    "qty": 30,
+    "unit": "g",
+    "label": "salsa"
+   }
+  ],
+  "method": [
+   "Cut the potato into small cubes and the chorizo into small pieces.",
+   "Heat the olive oil in a frying pan and fry the potato for 10 to 12 minutes until golden and tender, adding the chorizo for the last 3 minutes.",
+   "Beat the eggs, pour them into the pan and stir gently until softly scrambled.",
+   "Warm the tortilla, fill with the egg mixture, grated cheddar and salsa, fold in the sides and roll up."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "bean-and-rice-burrito",
+  "name": "Bean and rice burrito",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/bean-and-rice-burrito"
+  ],
+  "summary": "Spiced black beans and leftover rice with salsa, cheddar and lettuce in a tortilla.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 8,
+  "equipment": [
+   "frying pan"
+  ],
+  "tags": [
+   "lunch",
+   "dinner",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 5,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 40,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cumin-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "cumin"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chilli-flakes-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "chilli flakes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-beans-canned-drained",
+    "qty": 100,
+    "unit": "g",
+    "label": "black beans"
+   },
+   {
+    "ref": "item",
+    "ref_key": "rice-white-long-grain-cooked",
+    "qty": 100,
+    "unit": "g",
+    "label": "cooked rice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tortilla-wrap-plain-as-sold",
+    "qty": 1,
+    "unit": "p:1 tortilla",
+    "label": "tortilla"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salsa-jar",
+    "qty": 40,
+    "unit": "g",
+    "label": "salsa"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cheddar",
+    "qty": 20,
+    "unit": "g",
+    "label": "cheddar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-iceberg-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "lettuce"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sour-cream",
+    "qty": 20,
+    "unit": "g",
+    "label": "soured cream",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Heat the olive oil in a frying pan and soften the chopped onion for 4 minutes, then stir in the cumin and chilli flakes.",
+   "Add the black beans and cooked rice and stir for 3 to 4 minutes until piping hot, lightly crushing some of the beans.",
+   "Warm the tortilla, spoon the rice and beans down the middle and top with the salsa, grated cheddar, shredded lettuce and soured cream if using.",
+   "Fold in the sides and roll up tightly."
+  ],
+  "notes": "Uses leftover cooked rice: cool it quickly, keep it in the fridge for no more than a day, and reheat until piping hot."
+ },
+ {
+  "key": "cheese-pepper-quesadilla",
+  "name": "Cheese and pepper quesadilla",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/quesadilla"
+  ],
+  "summary": "Two tortillas pan-crisped around cheddar, red pepper, spring onion and sweetcorn, with salsa.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 6,
+  "equipment": [
+   "large frying pan",
+   "grater"
+  ],
+  "tags": [
+   "lunch",
+   "snack",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spring-onion-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "spring onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cheddar",
+    "qty": 50,
+    "unit": "g",
+    "label": "cheddar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tortilla-wrap-plain-as-sold",
+    "qty": 2,
+    "unit": "p:1 tortilla",
+    "label": "tortilla"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sweetcorn-tinned-drained",
+    "qty": 30,
+    "unit": "g",
+    "label": "sweetcorn"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 3,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salsa-jar",
+    "qty": 40,
+    "unit": "g",
+    "label": "salsa"
+   }
+  ],
+  "method": [
+   "Finely dice the red pepper, slice the spring onion and grate the cheddar.",
+   "Scatter the cheddar, red pepper, spring onion and sweetcorn over one tortilla and press the second tortilla on top.",
+   "Brush a large frying pan with the olive oil and cook the quesadilla over a medium heat for 2 to 3 minutes a side, flipping it with the help of a plate, until crisp and melted.",
+   "Cut into wedges and serve with the salsa."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "club-sandwich",
+  "name": "Club sandwich",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/club-sandwich"
+  ],
+  "summary": "Three slices of toast layered with chicken, lettuce, back bacon, tomato and mayonnaise.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 6,
+  "cook_min": 5,
+  "equipment": [
+   "grill",
+   "toaster",
+   "cocktail sticks"
+  ],
+  "tags": [
+   "lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "bacon-back-lean-raw",
+    "qty": 1,
+    "unit": "p:2 slices (6 per 6-oz pkg.)",
+    "label": "back bacon"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-white-sliced-as-sold",
+    "qty": 3,
+    "unit": "p:1 slice",
+    "label": "white bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 15,
+    "unit": "g",
+    "label": "mayonnaise"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chicken-breast-skinless-roasted",
+    "qty": 60,
+    "unit": "g",
+    "label": "cooked chicken"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-iceberg-raw",
+    "qty": 20,
+    "unit": "g",
+    "label": "lettuce"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "tomato"
+   }
+  ],
+  "method": [
+   "Grill the back bacon for 3 to 4 minutes, turning once, and toast the white bread.",
+   "Spread the toast with the mayonnaise.",
+   "Top one slice with the sliced cooked chicken and lettuce, add the second slice, then the back bacon and sliced tomato, and finish with the third slice.",
+   "Push in four cocktail sticks and cut into four triangles."
+  ],
+  "notes": "Uses leftover roast chicken breast."
+ },
+ {
+  "key": "smoked-salmon-bagel",
+  "name": "Smoked salmon bagel",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "sandwiches/smoked-salmon-bagel"
+  ],
+  "summary": "Toasted bagel with cream cheese, smoked salmon, red onion, capers and lemon.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 2,
+  "equipment": [
+   "toaster"
+  ],
+  "tags": [
+   "breakfast",
+   "lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "bagel-plain-as-sold",
+    "qty": 1,
+    "unit": "p:1 bagel",
+    "label": "bagel"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cream-cheese-full-fat",
+    "qty": 30,
+    "unit": "g",
+    "label": "cream cheese"
+   },
+   {
+    "ref": "item",
+    "ref_key": "smoked-salmon",
+    "qty": 50,
+    "unit": "g",
+    "label": "smoked salmon"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 10,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "capers-drained",
+    "qty": 5,
+    "unit": "g",
+    "label": "capers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 3,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "dill-fresh",
+    "qty": 1,
+    "unit": "p:5 sprigs",
+    "label": "dill",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Split and lightly toast the bagel.",
+   "Spread both halves with the cream cheese and lay the smoked salmon on top.",
+   "Scatter over the thinly sliced red onion, the capers and dill if using, squeeze over the lemon juice, grind over black pepper and sandwich together."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "chicken-souvlaki-pitta",
+  "name": "Chicken souvlaki pitta",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Lemon and oregano chicken skewers in a warm pitta with garlic yogurt, tomato, red onion and lettuce.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 15,
+  "cook_min": 10,
+  "equipment": [
+   "grill or griddle pan",
+   "skewers"
+  ],
+  "tags": [
+   "lunch",
+   "dinner"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "chicken-breast-skinless-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "chicken breast"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 10,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oregano-dried-as-sold",
+    "qty": 0.5,
+    "unit": "p:1 tsp, leaves",
+    "label": "oregano"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 1,
+    "unit": "p:1 clove",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cucumber-raw",
+    "qty": 30,
+    "unit": "g",
+    "label": "cucumber"
+   },
+   {
+    "ref": "item",
+    "ref_key": "yogurt-greek-low-fat",
+    "qty": 40,
+    "unit": "g",
+    "label": "Greek yogurt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-pitta-white-as-sold",
+    "qty": 1,
+    "unit": "p:1 pita, large (6-1/2\" dia)",
+    "label": "pitta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "tomato"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-cos-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "lettuce"
+   }
+  ],
+  "method": [
+   "Cut the chicken breast into 2 cm cubes and mix with the olive oil, half the lemon juice, the oregano, half the crushed garlic and the salt; leave for 10 minutes, or up to a day in the fridge.",
+   "Thread onto skewers and grill or griddle for 8 to 10 minutes, turning, until cooked through.",
+   "Grate the cucumber, squeeze out the liquid and mix it with the Greek yogurt, the rest of the garlic and the rest of the lemon juice.",
+   "Warm the pitta, split it open and fill with the chicken, garlic yogurt, sliced tomato, red onion and shredded lettuce."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "fish-finger-sandwich",
+  "name": "Fish finger sandwich",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Oven-crisp fish fingers in buttered white bread with lettuce and a quick tartare sauce.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 15,
+  "equipment": [
+   "oven",
+   "baking tray"
+  ],
+  "tags": [
+   "lunch",
+   "dinner"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "fish-fingers-oven-cooked",
+    "qty": 4,
+    "unit": "p:1 stick (4\" x 1\" x 1/2\")",
+    "label": "fish fingers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pickled-cucumber-dill",
+    "qty": 15,
+    "unit": "g",
+    "label": "gherkin"
+   },
+   {
+    "ref": "item",
+    "ref_key": "capers-drained",
+    "qty": 3,
+    "unit": "g",
+    "label": "capers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 10,
+    "unit": "g",
+    "label": "mayonnaise"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 2,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-white-sliced-as-sold",
+    "qty": 2,
+    "unit": "p:1 slice",
+    "label": "white bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "butter-salted",
+    "qty": 5,
+    "unit": "g",
+    "label": "butter"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-iceberg-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "lettuce"
+   }
+  ],
+  "method": [
+   "Cook the fish fingers from frozen in the oven as the pack directs, usually about 15 minutes at 220°C (200°C fan), turning halfway.",
+   "Meanwhile finely chop the gherkin and capers and mix them with the mayonnaise and lemon juice to make a quick tartare sauce.",
+   "Butter the white bread, spread one slice with the tartare sauce, add the lettuce and fish fingers and top with the other slice."
+  ],
+  "notes": "USDA only has values for oven-cooked fish fingers, so they are counted per cooked finger, about 28 g each."
+ },
+ {
+  "key": "tomato-bruschetta",
+  "name": "Tomato bruschetta",
+  "name_mt": null,
+  "family": "sandwiches",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Griddled ciabatta rubbed with garlic and topped with chopped tomato, basil and olive oil.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 15,
+  "cook_min": 4,
+  "equipment": [
+   "griddle pan or toaster",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "snack",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 150,
+    "unit": "g",
+    "label": "tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "basil-fresh",
+    "qty": 3,
+    "unit": "g",
+    "label": "basil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-ciabatta-as-sold",
+    "qty": 70,
+    "unit": "g",
+    "label": "ciabatta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 1,
+    "unit": "p:1 clove",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "vinegar-balsamic",
+    "qty": 3,
+    "unit": "ml",
+    "label": "balsamic vinegar",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Finely chop the tomatoes and mix with the torn basil, half the olive oil, the salt and black pepper; leave for 10 minutes.",
+   "Slice the ciabatta and toast or griddle it until crisp, then rub the cut garlic clove over the hot toast and drizzle with the rest of the olive oil.",
+   "Spoon the tomatoes on top, with a few drops of balsamic vinegar if you like, and eat straight away."
+  ],
+  "notes": ""
+ }
+]

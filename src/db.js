@@ -275,11 +275,13 @@ create index if not exists events_at_idx on events (at);
 
 export async function migrate() {
   await db().unsafe(SCHEMA);
-  // Health and calendar tables live with their code; imported lazily so db.js has no import cycle.
+  // Health, calendar and food tables live with their code; imported lazily so db.js has no import cycle.
   const { migrateHealth } = await import('./health.js');
   await migrateHealth();
   const { migrateCalendar } = await import('./calendar.js');
   await migrateCalendar();
+  const { migrateFood } = await import('./food.js');
+  await migrateFood();
 }
 
 export async function getKV(key, fallback = null) {

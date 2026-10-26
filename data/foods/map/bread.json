@@ -1,0 +1,441 @@
+[
+  {
+    "req": "bread/white-sliced-bread",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bread-white-sliced-as-sold",
+        "fdc_id": 174924,
+        "name": "White bread, sliced",
+        "state": "as-sold",
+        "aliases": [
+          "white bread",
+          "sliced white bread",
+          "white loaf"
+        ]
+      }
+    ],
+    "note": "USDA commercially prepared white bread (US flour is enriched). Slice weight varies by loaf; use the pack or weigh."
+  },
+  {
+    "req": "bread/wholemeal-sliced-bread",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bread-wholemeal-sliced-as-sold",
+        "fdc_id": 172688,
+        "name": "Wholemeal bread, sliced",
+        "state": "as-sold",
+        "aliases": [
+          "wholemeal bread",
+          "whole wheat bread",
+          "wholewheat bread",
+          "wholemeal loaf"
+        ]
+      }
+    ],
+    "note": "USDA commercially prepared whole-wheat bread. Slice weight varies by loaf."
+  },
+  {
+    "req": "bread/seeded-bread",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "bread-seeded-as-sold",
+        "fdc_id": 168013,
+        "name": "Seeded bread",
+        "state": "as-sold",
+        "aliases": [
+          "seeded loaf",
+          "seeded bread",
+          "multigrain bread",
+          "multi-grain bread"
+        ]
+      }
+    ],
+    "note": "No USDA seeded loaf. Estimated from multi-grain bread (includes whole-grain). Seeded loaves usually carry more fat from seeds, so prefer a pack label when available."
+  },
+  {
+    "req": "bread/sourdough-bread",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bread-sourdough-as-sold",
+        "fdc_id": 172675,
+        "name": "Sourdough bread",
+        "state": "as-sold",
+        "aliases": [
+          "sourdough",
+          "sourdough loaf"
+        ]
+      }
+    ],
+    "note": "USDA groups sourdough with French/Vienna bread (fdc 172675, description says \"includes sourdough\"). Same record as baguette and the Maltese bread estimate."
+  },
+  {
+    "req": "bread/rye-bread",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bread-rye-as-sold",
+        "fdc_id": 172684,
+        "name": "Rye bread",
+        "state": "as-sold",
+        "aliases": [
+          "rye loaf"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "bread/baguette",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bread-baguette-as-sold",
+        "fdc_id": 172675,
+        "name": "Baguette",
+        "state": "as-sold",
+        "aliases": [
+          "baguettes",
+          "French bread",
+          "French stick"
+        ]
+      }
+    ],
+    "note": "USDA French or Vienna bread record (fdc 172675), shared with sourdough."
+  },
+  {
+    "req": "bread/bread-roll",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bread-roll-white-soft-as-sold",
+        "fdc_id": 172793,
+        "name": "White bread roll, soft",
+        "state": "as-sold",
+        "aliases": [
+          "bread roll",
+          "bread rolls",
+          "dinner roll",
+          "soft roll",
+          "bap"
+        ]
+      },
+      {
+        "key": "bread-roll-crusty-as-sold",
+        "fdc_id": 175031,
+        "name": "Crusty bread roll",
+        "state": "as-sold",
+        "aliases": [
+          "crusty roll",
+          "hard roll",
+          "kaiser roll"
+        ]
+      }
+    ],
+    "note": "Soft white dinner roll and hard/crusty (kaiser-type) roll. Roll weights vary; weigh or use the pack."
+  },
+  {
+    "req": "bread/ciabatta",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "bread-ciabatta-as-sold",
+        "fdc_id": 174913,
+        "name": "Ciabatta",
+        "state": "as-sold",
+        "aliases": [
+          "ciabatta loaf",
+          "ciabatta roll"
+        ]
+      }
+    ],
+    "note": "No USDA ciabatta. Estimated from the generic Italian bread record (fdc 174913); ciabatta is a wetter, often olive-oil dough, so values are approximate."
+  },
+  {
+    "req": "bread/focaccia",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bread-focaccia-plain-as-sold",
+        "fdc_id": 167945,
+        "name": "Focaccia, plain",
+        "state": "as-sold",
+        "aliases": [
+          "focaccia"
+        ]
+      }
+    ],
+    "note": "Plain focaccia; topped versions (olives, cheese, extra oil) differ."
+  },
+  {
+    "req": "bread/pita",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bread-pitta-white-as-sold",
+        "fdc_id": 172816,
+        "name": "Pitta bread, white",
+        "state": "as-sold",
+        "aliases": [
+          "pitta",
+          "pita",
+          "pita bread",
+          "pittas"
+        ]
+      },
+      {
+        "key": "bread-pitta-wholemeal-as-sold",
+        "fdc_id": 174916,
+        "name": "Pitta bread, wholemeal",
+        "state": "as-sold",
+        "aliases": [
+          "wholemeal pitta",
+          "whole wheat pita"
+        ]
+      }
+    ],
+    "note": "White pitta uses the unenriched record."
+  },
+  {
+    "req": "bread/naan",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bread-naan-plain-as-sold",
+        "fdc_id": 171845,
+        "name": "Naan bread, plain",
+        "state": "as-sold",
+        "aliases": [
+          "naan",
+          "nan bread",
+          "plain naan"
+        ]
+      }
+    ],
+    "note": "Commercially prepared plain naan; garlic or peshwari naan differ."
+  },
+  {
+    "req": "bread/tortilla-wrap",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tortilla-wrap-plain-as-sold",
+        "fdc_id": 167535,
+        "name": "Tortilla wrap, plain",
+        "state": "as-sold",
+        "aliases": [
+          "wrap",
+          "wraps",
+          "flour tortilla",
+          "tortilla"
+        ]
+      }
+    ],
+    "note": "Shelf-stable wheat flour tortilla. Wrap weight varies by size; use the pack."
+  },
+  {
+    "req": "bread/wholemeal-wrap",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tortilla-wrap-wholemeal-as-sold",
+        "fdc_id": 174081,
+        "name": "Tortilla wrap, wholemeal",
+        "state": "as-sold",
+        "aliases": [
+          "wholemeal wrap",
+          "wholemeal tortilla",
+          "whole wheat tortilla",
+          "whole wheat wrap"
+        ]
+      }
+    ],
+    "note": "Whole-wheat flour tortilla."
+  },
+  {
+    "req": "bread/bagel",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bagel-plain-as-sold",
+        "fdc_id": 174899,
+        "name": "Bagel, plain",
+        "state": "as-sold",
+        "aliases": [
+          "bagel",
+          "bagels",
+          "plain bagel",
+          "sesame bagel",
+          "onion bagel"
+        ]
+      }
+    ],
+    "note": "USDA plain bagel record includes onion, poppy and sesame bagels; US enriched flour."
+  },
+  {
+    "req": "bread/english-muffin",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "english-muffin-plain-as-sold",
+        "fdc_id": 174994,
+        "name": "English muffin, plain",
+        "state": "as-sold",
+        "aliases": [
+          "English muffins",
+          "breakfast muffin"
+        ]
+      }
+    ],
+    "note": "Plain English muffin (US enriched flour)."
+  },
+  {
+    "req": "bread/crumpet",
+    "status": "product",
+    "records": [],
+    "note": "No USDA crumpet record. Use the pack label; crumpet weight varies by brand."
+  },
+  {
+    "req": "bread/brioche",
+    "status": "product",
+    "records": [],
+    "note": "No USDA brioche record. The USDA egg bread is a leaner enriched loaf, so it is not used. Use the pack label."
+  },
+  {
+    "req": "bread/burger-bun",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bun-burger-white-as-sold",
+        "fdc_id": 172796,
+        "name": "Burger bun, white",
+        "state": "as-sold",
+        "aliases": [
+          "burger bun",
+          "burger buns",
+          "hamburger bun",
+          "burger roll"
+        ]
+      }
+    ],
+    "note": "USDA combines hamburger and hot dog rolls in one plain record (fdc 172796)."
+  },
+  {
+    "req": "bread/hot-dog-bun",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bun-hot-dog-white-as-sold",
+        "fdc_id": 172796,
+        "name": "Hot dog bun, white",
+        "state": "as-sold",
+        "aliases": [
+          "hot dog bun",
+          "hot dog buns",
+          "hot dog roll",
+          "finger roll"
+        ]
+      }
+    ],
+    "note": "Same USDA record as burger bun (fdc 172796)."
+  },
+  {
+    "req": "bread/crispbread",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "crispbread-rye-as-sold",
+        "fdc_id": 172739,
+        "name": "Crispbread, rye",
+        "state": "as-sold",
+        "aliases": [
+          "crispbread",
+          "crispbreads",
+          "rye crispbread"
+        ]
+      }
+    ],
+    "note": "USDA crispbread is rye-based; wheat or seeded crispbreads need a label."
+  },
+  {
+    "req": "bread/breadsticks",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "breadsticks-plain-as-sold",
+        "fdc_id": 174929,
+        "name": "Breadsticks, plain",
+        "state": "as-sold",
+        "aliases": [
+          "breadstick",
+          "bread sticks",
+          "grissini"
+        ]
+      }
+    ],
+    "note": "Dry, crunchy plain breadsticks."
+  },
+  {
+    "req": "bread/breadcrumbs",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "breadcrumbs-dried-plain-as-sold",
+        "fdc_id": 174928,
+        "name": "Breadcrumbs, dried, plain",
+        "state": "as-sold",
+        "aliases": [
+          "breadcrumbs",
+          "bread crumbs",
+          "dried breadcrumbs"
+        ]
+      }
+    ],
+    "note": "Dry grated plain crumbs. Fresh breadcrumbs are just the bread; seasoned crumbs differ."
+  },
+  {
+    "req": "bread/garlic-bread",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "garlic-bread-frozen",
+        "fdc_id": 167939,
+        "name": "Garlic bread, frozen",
+        "state": "frozen",
+        "aliases": [
+          "garlic bread",
+          "garlic baguette"
+        ]
+      }
+    ],
+    "note": "Frozen garlic bread as sold, before baking; the garlic butter is already included, so do not add it again."
+  },
+  {
+    "req": "bread/croissant",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "croissant-butter-as-sold",
+        "fdc_id": 174987,
+        "name": "Croissant, butter",
+        "state": "as-sold",
+        "aliases": [
+          "croissant",
+          "croissants",
+          "butter croissant",
+          "plain croissant"
+        ]
+      }
+    ],
+    "note": "Plain butter croissant; filled croissants differ."
+  },
+  {
+    "req": "bread/pain-au-chocolat",
+    "status": "product",
+    "records": [],
+    "note": "No USDA pain au chocolat. The plain croissant record misses the chocolate, so it is not used. Use the pack or bakery label."
+  }
+]

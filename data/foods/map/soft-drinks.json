@@ -1,0 +1,446 @@
+[
+  {
+    "req": "soft-drinks/tap-water",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "water-tap",
+        "fdc_id": 173647,
+        "name": "Tap water",
+        "state": "as-sold",
+        "aliases": [
+          "water"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "soft-drinks/still-bottled-water",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "water-bottled-still",
+        "fdc_id": 174158,
+        "name": "Bottled water, still",
+        "state": "as-sold",
+        "aliases": [
+          "mineral water",
+          "spring water"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "soft-drinks/sparkling-water",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "water-sparkling",
+        "fdc_id": 174842,
+        "name": "Sparkling water",
+        "state": "as-sold",
+        "aliases": [
+          "soda water",
+          "club soda",
+          "carbonated water"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Plain unflavoured carbonated water."
+  },
+  {
+    "req": "soft-drinks/flavoured-water",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "water-flavoured-sweetener",
+        "fdc_id": 171926,
+        "name": "Flavoured water, sweetened with sweetener",
+        "state": "as-sold",
+        "aliases": [
+          "zero-calorie flavoured water"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "water-flavoured-sugar",
+        "fdc_id": 171940,
+        "name": "Flavoured water, with sugar",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": "Sugar-sweetened and sweetener-only versions kept separate."
+  },
+  {
+    "req": "soft-drinks/orange-juice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "juice-orange",
+        "fdc_id": 169100,
+        "name": "Orange juice",
+        "state": "as-sold",
+        "aliases": [
+          "OJ",
+          "orange juice from concentrate"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "soft-drinks/apple-juice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "juice-apple",
+        "fdc_id": 173933,
+        "name": "Apple juice",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "soft-drinks/pineapple-juice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "juice-pineapple",
+        "fdc_id": 169947,
+        "name": "Pineapple juice",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "soft-drinks/grape-juice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "juice-grape",
+        "fdc_id": 173042,
+        "name": "Grape juice",
+        "state": "as-sold",
+        "aliases": [
+          "red grape juice"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "soft-drinks/juice-drink",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "juice-drink-fruit",
+        "fdc_id": 171914,
+        "name": "Fruit juice drink",
+        "state": "as-sold",
+        "aliases": [
+          "fruit punch",
+          "juice drink"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "juice-drink-orange",
+        "fdc_id": 169044,
+        "name": "Orange juice drink",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": "Sugar-sweetened US juice drinks; UK juice drinks often add sweeteners and have less sugar, so check the label."
+  },
+  {
+    "req": "soft-drinks/fruit-nectar",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "nectar-peach",
+        "fdc_id": 168185,
+        "name": "Peach nectar",
+        "state": "as-sold",
+        "liquid": true
+      },
+      {
+        "key": "nectar-apricot",
+        "fdc_id": 171704,
+        "name": "Apricot nectar",
+        "state": "as-sold",
+        "liquid": true
+      },
+      {
+        "key": "nectar-mango",
+        "fdc_id": 167785,
+        "name": "Mango nectar",
+        "state": "as-sold",
+        "liquid": true
+      },
+      {
+        "key": "nectar-pear",
+        "fdc_id": 169940,
+        "name": "Pear nectar",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "soft-drinks/squash-concentrate",
+    "status": "product",
+    "records": [],
+    "note": "No UK-style squash in USDA. Squash ranges from full-sugar to no-added-sugar; use the bottle label, logged as concentrate (undiluted)."
+  },
+  {
+    "req": "soft-drinks/prepared-squash",
+    "status": "product",
+    "records": [],
+    "note": "No USDA record. Derive from the bottle label and dilution ratio; never count concentrate and diluted drink twice."
+  },
+  {
+    "req": "soft-drinks/lemonade",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "lemonade-sparkling",
+        "fdc_id": 173205,
+        "name": "Lemonade, sparkling (UK-style)",
+        "state": "as-sold",
+        "aliases": [
+          "clear lemonade",
+          "fizzy lemonade"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "lemonade-sparkling-diet",
+        "fdc_id": 173204,
+        "name": "Lemonade, sparkling, diet",
+        "state": "as-sold",
+        "aliases": [
+          "diet lemonade"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "lemonade-still",
+        "fdc_id": 173217,
+        "name": "Lemonade, still (US-style)",
+        "state": "prepared",
+        "aliases": [
+          "still lemonade",
+          "cloudy lemonade"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "UK lemonade is a clear carbonated lemon soda, mapped to the USDA lemon-lime soda record (diet: low-calorie non-cola soda). Still lemonade uses the US record made up from concentrate."
+  },
+  {
+    "req": "soft-drinks/regular-cola",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cola-regular",
+        "fdc_id": 174852,
+        "name": "Cola",
+        "state": "as-sold",
+        "aliases": [
+          "coke",
+          "cola, full sugar"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "USDA caffeine value kept."
+  },
+  {
+    "req": "soft-drinks/zero-sugar-cola",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cola-zero",
+        "fdc_id": 175099,
+        "name": "Cola, zero sugar / diet",
+        "state": "as-sold",
+        "aliases": [
+          "diet coke",
+          "cola zero",
+          "diet cola"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Low-calorie caffeinated cola record; kept separate from regular."
+  },
+  {
+    "req": "soft-drinks/regular-orange-soda",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "orange-soda-regular",
+        "fdc_id": 174854,
+        "name": "Orange soda",
+        "state": "as-sold",
+        "aliases": [
+          "orangeade",
+          "fizzy orange"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "US full-sugar orange soda; European orange sodas often contain juice and less sugar, so check the label."
+  },
+  {
+    "req": "soft-drinks/zero-sugar-orange-soda",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "orange-soda-zero",
+        "fdc_id": 173204,
+        "name": "Orange soda, zero sugar / diet",
+        "state": "as-sold",
+        "aliases": [
+          "diet orange",
+          "fizzy orange zero"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "USDA generic low-calorie non-cola, caffeine-free soda."
+  },
+  {
+    "req": "soft-drinks/lemon-lime-soda",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "lemon-lime-soda",
+        "fdc_id": 173205,
+        "name": "Lemon-lime soda",
+        "state": "as-sold",
+        "aliases": [
+          "lemon and lime",
+          "clear soda"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "soft-drinks/tonic-water",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tonic-water",
+        "fdc_id": 171869,
+        "name": "Tonic water",
+        "state": "as-sold",
+        "aliases": [
+          "Indian tonic water"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "soft-drinks/sugar-free-tonic-water",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tonic-water-sugar-free",
+        "fdc_id": 173204,
+        "name": "Tonic water, sugar-free",
+        "state": "as-sold",
+        "aliases": [
+          "slimline tonic",
+          "diet tonic"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "USDA has no diet tonic; mapped to the generic low-calorie non-cola soda record. \"Light\" tonics that still contain some sugar need their label."
+  },
+  {
+    "req": "soft-drinks/iced-tea",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "iced-tea-lemon",
+        "fdc_id": 171888,
+        "name": "Iced tea, lemon, sweetened",
+        "state": "as-sold",
+        "aliases": [
+          "ice tea",
+          "lemon iced tea"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "iced-tea-lemon-diet",
+        "fdc_id": 174129,
+        "name": "Iced tea, lemon, diet",
+        "state": "as-sold",
+        "aliases": [
+          "diet ice tea"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Ready-to-drink black tea; USDA caffeine values kept. Peach and other flavours need labels."
+  },
+  {
+    "req": "soft-drinks/ready-made-smoothie",
+    "status": "product",
+    "records": [],
+    "note": "USDA only has US branded smoothies (Naked, Odwalla, Bolthouse); recipes and fruit mixes differ. Use the bottle label."
+  },
+  {
+    "req": "soft-drinks/coconut-water",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "coconut-water",
+        "fdc_id": 174831,
+        "name": "Coconut water",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "soft-drinks/malt-drink",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "malt-drink",
+        "fdc_id": 174863,
+        "name": "Malt drink (non-alcoholic)",
+        "state": "as-sold",
+        "aliases": [
+          "malt beverage",
+          "malta"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "USDA groups non-alcoholic malt beverages with non-alcoholic beer; sweetened malt drinks vary. Malted milk powders (e.g. Horlicks-style) are a different item."
+  }
+]

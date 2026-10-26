@@ -1,0 +1,344 @@
+[
+  {
+    "req": "convenience/frozen-plain-vegetables",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "frozen-mixed-veg",
+        "fdc_id": 170471,
+        "name": "Mixed vegetables, frozen",
+        "state": "frozen",
+        "aliases": [
+          "frozen mixed veg"
+        ]
+      },
+      {
+        "key": "frozen-mixed-veg-boiled",
+        "fdc_id": 170472,
+        "name": "Mixed vegetables, frozen, boiled",
+        "state": "boiled"
+      }
+    ],
+    "note": "USDA mix is the US blend (corn, lima beans, peas, green beans, carrots); real mixes vary. Single frozen vegetables should use their own vegetable records."
+  },
+  {
+    "req": "convenience/frozen-vegetables-in-sauce",
+    "status": "product",
+    "records": [],
+    "note": "No vegetables-in-sauce record; the sauce drives the numbers, so use the pack label."
+  },
+  {
+    "req": "convenience/frozen-pizza",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "frozen-pizza-cheese",
+        "fdc_id": 170317,
+        "name": "Frozen pizza, cheese, regular crust (cooked)",
+        "state": "baked",
+        "aliases": [
+          "margherita pizza"
+        ]
+      },
+      {
+        "key": "frozen-pizza-cheese-thin",
+        "fdc_id": 170373,
+        "name": "Frozen pizza, cheese, thin crust (cooked)",
+        "state": "baked"
+      },
+      {
+        "key": "frozen-pizza-pepperoni",
+        "fdc_id": 172096,
+        "name": "Frozen pizza, pepperoni (cooked)",
+        "state": "baked"
+      }
+    ],
+    "note": "Generic US frozen pizza estimates; real products vary, so use the box label when known."
+  },
+  {
+    "req": "convenience/chilled-ready-meal",
+    "status": "product",
+    "records": [],
+    "note": "Chilled ready meals need the exact pack label."
+  },
+  {
+    "req": "convenience/frozen-ready-meal",
+    "status": "product",
+    "records": [],
+    "note": "Frozen ready meals need the exact pack label."
+  },
+  {
+    "req": "convenience/ready-made-soup",
+    "status": "product",
+    "records": [],
+    "note": "Chilled/fresh soups vary widely; use the pot label. Canned soup estimates exist under canned soup."
+  },
+  {
+    "req": "convenience/canned-soup",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "soup-tomato-canned",
+        "fdc_id": 171176,
+        "name": "Tomato soup, canned (made up)",
+        "state": "prepared",
+        "aliases": [
+          "cream of tomato soup"
+        ]
+      },
+      {
+        "key": "soup-tomato-condensed",
+        "fdc_id": 172882,
+        "name": "Tomato soup, condensed (undiluted)",
+        "state": "concentrate"
+      },
+      {
+        "key": "soup-vegetable-canned",
+        "fdc_id": 171559,
+        "name": "Vegetable soup, canned, ready to serve",
+        "state": "as-sold"
+      },
+      {
+        "key": "soup-chicken-noodle-canned",
+        "fdc_id": 171148,
+        "name": "Chicken noodle soup, canned, ready to serve",
+        "state": "as-sold"
+      },
+      {
+        "key": "soup-minestrone-canned",
+        "fdc_id": 171550,
+        "name": "Minestrone soup, canned, ready to serve",
+        "state": "as-sold"
+      },
+      {
+        "key": "soup-cream-chicken-canned",
+        "fdc_id": 174553,
+        "name": "Cream of chicken soup, canned (made up)",
+        "state": "prepared"
+      }
+    ],
+    "note": "Generic US canned soups; real products vary (UK cans are usually ready to serve, not condensed). Keep condensed and made-up separate."
+  },
+  {
+    "req": "convenience/canned-pasta",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "canned-pasta-tomato",
+        "fdc_id": 172100,
+        "name": "Pasta in tomato sauce, canned",
+        "state": "as-sold",
+        "aliases": [
+          "spaghetti hoops",
+          "tinned spaghetti"
+        ]
+      },
+      {
+        "key": "canned-spaghetti-meatballs",
+        "fdc_id": 172099,
+        "name": "Spaghetti and meatballs, canned",
+        "state": "as-sold"
+      },
+      {
+        "key": "canned-ravioli-meat",
+        "fdc_id": 173329,
+        "name": "Ravioli in tomato sauce, canned",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Generic US canned pasta; real products vary."
+  },
+  {
+    "req": "convenience/instant-soup-powder",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "instant-soup-chicken-noodle-dry",
+        "fdc_id": 171571,
+        "name": "Instant chicken noodle soup (dry)",
+        "state": "dry"
+      },
+      {
+        "key": "instant-soup-chicken-noodle-made",
+        "fdc_id": 172925,
+        "name": "Instant chicken noodle soup, made up",
+        "state": "prepared"
+      },
+      {
+        "key": "instant-soup-tomato-made",
+        "fdc_id": 174569,
+        "name": "Instant tomato soup, made up",
+        "state": "prepared",
+        "aliases": [
+          "cup soup"
+        ]
+      },
+      {
+        "key": "instant-soup-cream-chicken-made",
+        "fdc_id": 174567,
+        "name": "Instant cream of chicken soup, made up",
+        "state": "prepared"
+      },
+      {
+        "key": "instant-soup-cream-veg-dry",
+        "fdc_id": 171166,
+        "name": "Instant cream of vegetable soup (dry)",
+        "state": "dry"
+      }
+    ],
+    "note": "Generic US soup mixes; sachets vary. Dry powder and made-up soup must never both be logged."
+  },
+  {
+    "req": "convenience/ready-made-sandwich",
+    "status": "product",
+    "records": [],
+    "note": "Packaged sandwiches need the exact label."
+  },
+  {
+    "req": "convenience/prepared-salad",
+    "status": "product",
+    "records": [],
+    "note": "Prepared salads (with dressing, pasta, protein) need the exact label."
+  },
+  {
+    "req": "convenience/sushi-pack",
+    "status": "product",
+    "records": [],
+    "note": "No sushi in SR Legacy/Foundation; use the pack label."
+  },
+  {
+    "req": "convenience/sausage-roll",
+    "status": "product",
+    "records": [],
+    "note": "No sausage roll in USDA; use the label. Homemade: recipe from puff pastry (172738) and sausage meat."
+  },
+  {
+    "req": "convenience/quiche",
+    "status": "product",
+    "records": [],
+    "note": "No quiche in USDA; use the label. Homemade should be a recipe."
+  },
+  {
+    "req": "convenience/spring-roll",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "spring-roll-vegetable",
+        "fdc_id": 172105,
+        "name": "Spring roll, vegetable (frozen, cooked)",
+        "state": "prepared",
+        "aliases": [
+          "egg roll"
+        ]
+      },
+      {
+        "key": "spring-roll-pork",
+        "fdc_id": 172103,
+        "name": "Spring roll, pork (chilled, heated)",
+        "state": "prepared"
+      }
+    ],
+    "note": "USDA has US egg rolls, which are larger with thicker wrappers than most spring rolls; real products vary."
+  },
+  {
+    "req": "convenience/dumpling",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "dumpling-pork-veg",
+        "fdc_id": 169773,
+        "name": "Dumplings, pork and vegetable (frozen)",
+        "state": "frozen",
+        "aliases": [
+          "gyoza",
+          "potstickers",
+          "wontons"
+        ]
+      },
+      {
+        "key": "dumpling-potato-cheese",
+        "fdc_id": 169779,
+        "name": "Dumplings, potato or cheese filled (frozen)",
+        "state": "frozen",
+        "aliases": [
+          "pierogi"
+        ]
+      }
+    ],
+    "note": "Frozen, unprepared weights; frying adds oil. Real products vary."
+  },
+  {
+    "req": "convenience/burger",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "burger-fast-food",
+        "fdc_id": 170694,
+        "name": "Burger, fast-food, single patty",
+        "state": "as-sold",
+        "aliases": [
+          "hamburger"
+        ]
+      },
+      {
+        "key": "burger-fast-food-large",
+        "fdc_id": 173317,
+        "name": "Burger, large, with salad and mayo",
+        "state": "as-sold"
+      },
+      {
+        "key": "burger-fast-food-double",
+        "fdc_id": 172080,
+        "name": "Burger, double, with salad and mayo",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Generic US fast-food burgers; real burgers vary. Use chain nutrition info when known."
+  },
+  {
+    "req": "convenience/takeaway-pizza",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "takeaway-pizza-cheese",
+        "fdc_id": 173292,
+        "name": "Takeaway pizza, cheese",
+        "state": "as-sold",
+        "aliases": [
+          "margherita"
+        ]
+      },
+      {
+        "key": "takeaway-pizza-pepperoni",
+        "fdc_id": 173295,
+        "name": "Takeaway pizza, pepperoni",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Generic US pizza-chain records (regular crust); real pizzas vary by crust and toppings."
+  },
+  {
+    "req": "convenience/kebab",
+    "status": "gap",
+    "records": [],
+    "note": "No doner, shawarma or gyro in SR Legacy/Foundation. Build an estimate from components (bread, meat, salad, sauce) or use shop info."
+  },
+  {
+    "req": "convenience/chips-from-takeaway",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "chips-takeaway",
+        "fdc_id": 170698,
+        "name": "Chips, takeaway",
+        "state": "fried",
+        "aliases": [
+          "fries",
+          "french fries",
+          "chip shop chips"
+        ]
+      }
+    ],
+    "note": "US fast-food fries; chip-shop chips are thicker cut and fried differently, so fat varies."
+  }
+]

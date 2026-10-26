@@ -1,0 +1,2008 @@
+[
+  {
+    "key": "baked-salmon",
+    "name": "Baked salmon",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/baked-salmon"
+    ],
+    "summary": "Salmon fillets baked with lemon, garlic and dill until just flaking.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 15,
+    "equipment": [
+      "baking dish or lined tray"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "quick"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "salmon-farmed-raw",
+        "qty": 260,
+        "unit": "g",
+        "label": "salmon fillets"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-peel-raw",
+        "qty": 1,
+        "unit": "g",
+        "label": "lemon zest"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 3,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "dill-fresh",
+        "qty": 4,
+        "unit": "g",
+        "label": "dill"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Lay the salmon fillets skin side down in a baking dish.",
+      "Mix the olive oil, lemon juice, lemon zest, crushed garlic, chopped dill, salt and black pepper and spoon over the fish.",
+      "Bake for 12 to 15 minutes until the salmon is opaque and flakes easily in the thickest part."
+    ],
+    "notes": "Salmon is farmed Atlantic, weighed raw as two skin-on fillets of about 130 g. Sides are left to the diary."
+  },
+  {
+    "key": "lemon-cod",
+    "name": "Lemon cod",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/lemon-cod"
+    ],
+    "summary": "Cod fillets baked under a lemon, garlic and parsley butter crumb.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 15,
+    "equipment": [
+      "baking dish",
+      "small bowl"
+    ],
+    "tags": [
+      "dinner",
+      "quick"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "cod-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "cod fillets"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 20,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 20,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-peel-raw",
+        "qty": 2,
+        "unit": "g",
+        "label": "lemon zest"
+      },
+      {
+        "ref": "item",
+        "ref_key": "breadcrumbs-dried-plain-as-sold",
+        "qty": 20,
+        "unit": "g",
+        "label": "breadcrumbs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 8,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 3,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Lay the cod fillets in a baking dish, season with the salt and black pepper and pour over the lemon juice.",
+      "Melt the butter and mix it with the breadcrumbs, lemon zest, chopped parsley and crushed garlic.",
+      "Press the crumb over the top of the fish and bake for 12 to 15 minutes until the crumb is golden and the cod flakes easily."
+    ],
+    "notes": "Cod is skinless and boneless, weighed raw."
+  },
+  {
+    "key": "garlic-prawns",
+    "name": "Garlic prawns",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/garlic-prawns"
+    ],
+    "summary": "Peeled prawns sizzled in olive oil with plenty of garlic, chilli, white wine, lemon and parsley.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 6,
+    "equipment": [
+      "large frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "quick",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "prawns-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "prawns"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 25,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-flakes-as-sold",
+        "qty": 1,
+        "unit": "g",
+        "label": "chilli flakes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "wine-white",
+        "qty": 30,
+        "unit": "ml",
+        "label": "white wine"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 8,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-baguette-as-sold",
+        "qty": 80,
+        "unit": "g",
+        "label": "crusty bread",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Pat the prawns dry. Warm the olive oil in a large frying pan over a medium heat with the thinly sliced garlic and chilli flakes for 1 to 2 minutes, until the garlic is just turning golden.",
+      "Turn up the heat, add the prawns and salt and cook for 2 minutes, turning once, until pink.",
+      "Pour in the white wine and lemon juice and bubble for 1 minute, then stir in the chopped parsley. Serve with crusty bread to mop up the oil if you like."
+    ],
+    "notes": "Prawns are weighed peeled and raw; about 500 g shell-on prawns gives 300 g peeled. The bread is optional."
+  },
+  {
+    "key": "fish-tacos",
+    "name": "Fish tacos",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/fish-tacos"
+    ],
+    "summary": "Spiced cod pan-fried and flaked into warm corn tortillas with a lime yogurt red cabbage slaw.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 8,
+    "equipment": [
+      "frying pan",
+      "mixing bowl"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "quick"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "cod-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "cod"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-powder-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "chilli powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-powder-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "garlic powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 10,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cabbage-red-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "red cabbage"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 20,
+        "unit": "g",
+        "label": "spring onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 60,
+        "unit": "g",
+        "label": "yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lime-juice-fresh",
+        "qty": 20,
+        "unit": "ml",
+        "label": "lime juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 8,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tortilla-corn-as-sold",
+        "qty": 6,
+        "unit": "p:1 tortilla",
+        "label": "corn tortillas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "avocado-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "avocado",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Shred the red cabbage finely and toss with the sliced spring onions, the yogurt, half the lime juice and half the coriander.",
+      "Mix the paprika, cumin, chilli powder, garlic powder and salt and rub over the cod.",
+      "Heat the vegetable oil in a frying pan over a medium-high heat and cook the fish for 3 to 4 minutes a side until it flakes. Break into chunks and squeeze over the rest of the lime juice.",
+      "Warm the corn tortillas in a dry pan for 30 seconds a side. Fill with the slaw and fish, add sliced avocado if you like, and finish with the rest of the coriander."
+    ],
+    "notes": "Cod is skinless and boneless, weighed raw. Six small corn tortillas of about 24 g. The avocado is optional."
+  },
+  {
+    "key": "tuna-patties",
+    "name": "Tuna patties",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/tuna-patties"
+    ],
+    "summary": "Tinned tuna and mashed potato patties with spring onion and parsley, crumbed and shallow-fried.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 25,
+    "equipment": [
+      "saucepan",
+      "mixing bowl",
+      "frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "lunch"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "tuna-canned-water-light",
+        "qty": 200,
+        "unit": "g",
+        "label": "tuna"
+      },
+      {
+        "ref": "item",
+        "ref_key": "potato-white-raw",
+        "qty": 250,
+        "unit": "g",
+        "label": "potato"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 20,
+        "unit": "g",
+        "label": "spring onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 5,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-peel-raw",
+        "qty": 1,
+        "unit": "g",
+        "label": "lemon zest"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "breadcrumbs-dried-plain-as-sold",
+        "qty": 30,
+        "unit": "g",
+        "label": "breadcrumbs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sunflower",
+        "qty": 15,
+        "unit": "g",
+        "label": "sunflower oil"
+      }
+    ],
+    "method": [
+      "Peel the potato, cut into chunks and boil for 12 to 15 minutes until tender. Drain well, mash and leave to cool for 10 minutes.",
+      "Flake the drained tuna into the mash and add the finely sliced spring onions, half the beaten egg, the chopped parsley, lemon zest, salt and black pepper. Mix and shape into 4 patties.",
+      "Brush the patties with the rest of the egg and press into the breadcrumbs to coat. Chill for 15 minutes if they feel soft.",
+      "Heat the sunflower oil in a frying pan over a medium heat and fry the patties for 3 to 4 minutes a side until golden and hot through. Drain on kitchen paper."
+    ],
+    "notes": "Tuna is tinned in water, weighed drained (two 145 g tins give about 200 g). Shallow-fried: the 15 g of oil is what the patties take up, not the whole pan."
+  },
+  {
+    "key": "salmon-patties",
+    "name": "Salmon patties",
+    "name_mt": null,
+    "family": "fish",
+    "type": "variant",
+    "parent_key": "tuna-patties",
+    "req": [
+      "fish/salmon-patties"
+    ],
+    "summary": "The tuna patties made with tinned pink salmon and dill instead of tuna and parsley.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 25,
+    "equipment": [
+      "saucepan",
+      "mixing bowl",
+      "frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "lunch"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "salmon-pink-canned-drained",
+        "qty": 200,
+        "unit": "g",
+        "label": "salmon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "potato-white-raw",
+        "qty": 250,
+        "unit": "g",
+        "label": "potato"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 20,
+        "unit": "g",
+        "label": "spring onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "dill-fresh",
+        "qty": 4,
+        "unit": "g",
+        "label": "dill"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-peel-raw",
+        "qty": 1,
+        "unit": "g",
+        "label": "lemon zest"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "breadcrumbs-dried-plain-as-sold",
+        "qty": 30,
+        "unit": "g",
+        "label": "breadcrumbs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sunflower",
+        "qty": 15,
+        "unit": "g",
+        "label": "sunflower oil"
+      }
+    ],
+    "method": [
+      "Peel the potato, cut into chunks and boil for 12 to 15 minutes until tender. Drain well, mash and leave to cool for 10 minutes.",
+      "Flake the drained salmon into the mash and add the finely sliced spring onions, half the beaten egg, the chopped dill, lemon zest, salt and black pepper. Mix and shape into 4 patties.",
+      "Brush the patties with the rest of the egg and press into the breadcrumbs to coat. Chill for 15 minutes if they feel soft.",
+      "Heat the sunflower oil in a frying pan over a medium heat and fry the patties for 3 to 4 minutes a side until golden and hot through. Drain on kitchen paper."
+    ],
+    "notes": "Salmon is tinned pink salmon, weighed drained with the skin and bones picked out. Shallow-fried: the 15 g of oil is what the patties take up, not the whole pan."
+  },
+  {
+    "key": "fish-pie",
+    "name": "Fish pie",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/fish-pie"
+    ],
+    "summary": "Cod, smoked haddock and prawns in a parsley white sauce with peas, under a cheesy mashed potato top.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 30,
+    "cook_min": 60,
+    "equipment": [
+      "2 saucepans",
+      "shallow pan for poaching",
+      "ovenproof dish (about 2 litres)"
+    ],
+    "tags": [
+      "dinner",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "potato-white-raw",
+        "qty": 900,
+        "unit": "g",
+        "label": "potatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 500,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cod-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "cod"
+      },
+      {
+        "ref": "item",
+        "ref_key": "haddock-smoked",
+        "qty": 200,
+        "unit": "g",
+        "label": "smoked haddock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "prawns-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "prawns"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 40,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 30,
+        "unit": "g",
+        "label": "flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peas-frozen",
+        "qty": 100,
+        "unit": "g",
+        "label": "peas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cheddar",
+        "qty": 30,
+        "unit": "g",
+        "label": "cheddar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Peel the potatoes, cut into chunks and boil for 15 to 20 minutes until tender. Drain and mash with 15 g of the butter and 50 ml of the milk.",
+      "Meanwhile put the cod and smoked haddock in a shallow pan with the rest of the milk, bring to a bare simmer and poach for 4 to 5 minutes until just cooked. Lift out the fish, flake into large pieces, and keep the milk.",
+      "Melt the rest of the butter in a saucepan, stir in the flour and cook for 1 minute, then whisk in the poaching milk a little at a time until smooth. Simmer for 3 minutes until thick, then season with the salt and black pepper and stir in the chopped parsley.",
+      "Heat the oven to 200°C (180°C fan). Put the flaked fish, raw prawns and frozen peas in an ovenproof dish, pour over the sauce and spread the mash on top. Scatter with the grated cheddar.",
+      "Bake for 25 to 30 minutes until golden and bubbling and the prawns are pink."
+    ],
+    "notes": "Fish weights are raw, skinless and boneless; prawns are peeled and raw. The mash is the pie topping, so it is part of the recipe."
+  },
+  {
+    "key": "seafood-pasta",
+    "name": "Seafood pasta",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/seafood-pasta"
+    ],
+    "summary": "Spaghetti with mussels, prawns and squid in a garlic, chilli, white wine and cherry tomato sauce.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 15,
+    "equipment": [
+      "large saucepan",
+      "large deep frying pan with lid"
+    ],
+    "tags": [
+      "dinner"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "spaghetti-dry",
+        "qty": 180,
+        "unit": "g",
+        "label": "spaghetti"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-flakes-as-sold",
+        "qty": 1,
+        "unit": "g",
+        "label": "chilli flakes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-cherry-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "cherry tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "wine-white",
+        "qty": 80,
+        "unit": "ml",
+        "label": "white wine"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mussels-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "mussels"
+      },
+      {
+        "ref": "item",
+        "ref_key": "prawns-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "prawns"
+      },
+      {
+        "ref": "item",
+        "ref_key": "squid-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "squid"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      }
+    ],
+    "method": [
+      "Scrub the mussels and pull off the beards, throwing away any that stay open when tapped. Cut the squid into rings.",
+      "Cook the spaghetti in a large pan of boiling water for 1 minute less than the pack says.",
+      "Meanwhile warm the olive oil in a large deep frying pan with the sliced garlic and chilli flakes for 1 minute, then add the halved cherry tomatoes and salt and cook for 3 minutes until they soften.",
+      "Add the white wine and the mussels, cover and cook for 3 minutes, then add the prawns and squid and cook uncovered for 2 minutes until the prawns are pink and the mussels have opened. Throw away any that stay shut.",
+      "Drain the spaghetti, keeping a splash of the water, and toss it in the pan with the seafood and the chopped parsley, loosening with a little pasta water."
+    ],
+    "notes": "Mussels are weighed as raw meat out of the shell: about 500 g of live mussels in their shells gives roughly 120 g of meat. Prawns are peeled and raw; squid is cleaned. Salt for the pasta water is not counted, as most of it is drained away."
+  },
+  {
+    "key": "seafood-rice",
+    "name": "Seafood rice",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/seafood-rice"
+    ],
+    "summary": "A paella-style pan of short-grain rice cooked in paprika and tomato stock with squid, prawns, mussels and peas.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 40,
+    "equipment": [
+      "large wide frying pan or paella pan"
+    ],
+    "tags": [
+      "dinner",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 30,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 2,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "turmeric-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "turmeric"
+      },
+      {
+        "ref": "item",
+        "ref_key": "squid-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "squid"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-arborio-dry",
+        "qty": 300,
+        "unit": "g",
+        "label": "rice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 200,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 900,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "prawns-raw",
+        "qty": 250,
+        "unit": "g",
+        "label": "prawns"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mussels-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "mussels"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peas-frozen",
+        "qty": 100,
+        "unit": "g",
+        "label": "peas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "parsley"
+      }
+    ],
+    "method": [
+      "Heat the olive oil in a large wide pan and cook the chopped onion and red pepper for 8 minutes until soft. Add the garlic, paprika and turmeric and cook for 1 minute.",
+      "Add the squid, cut into rings, and cook for 2 minutes. Stir in the rice to coat it in the oil, then add the chopped tomatoes and hot chicken stock (the stock seasons the rice, so no extra salt is needed).",
+      "Bring to the boil, then simmer without stirring for 15 minutes, until most of the liquid has been absorbed.",
+      "Scrub the mussels and remove the beards. Push them and the prawns into the rice and scatter over the peas. Cover with foil or a lid and cook for 6 to 8 minutes until the prawns are pink and the mussels open; throw away any that stay shut.",
+      "Rest for 5 minutes, then drizzle with the lemon juice and scatter with the parsley."
+    ],
+    "notes": "Rice is logged as Arborio, the closest short-grain record to paella rice. Turmeric stands in for saffron, which is not in the catalogue. Chicken stock is used because fish stock is not in the catalogue. Mussels are weighed as meat (about 600 g in shell gives roughly 150 g); prawns are peeled and raw."
+  },
+  {
+    "key": "fish-and-chips",
+    "name": "Fish and chips",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/fish-and-chips"
+    ],
+    "summary": "Cod in a crisp beer batter, fried, with chunky oven chips and lemon.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 40,
+    "equipment": [
+      "baking tray",
+      "mixing bowl",
+      "deep pan or deep-fat fryer",
+      "kitchen thermometer"
+    ],
+    "tags": [
+      "dinner"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "potato-white-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "potatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cod-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "cod"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 70,
+        "unit": "g",
+        "label": "flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "baking-powder-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "baking powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "beer-regular",
+        "qty": 90,
+        "unit": "ml",
+        "label": "beer"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sunflower",
+        "qty": 45,
+        "unit": "g",
+        "label": "sunflower oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-raw",
+        "qty": 2,
+        "unit": "p:1 wedge or slice (1/8 of one 2-1/8\" dia lemon)",
+        "label": "lemon wedges"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peas-frozen",
+        "qty": 160,
+        "unit": "g",
+        "label": "peas",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the oven to 220°C (200°C fan). Cut the potatoes into thick chips, rinse and pat dry, toss with 15 g of the sunflower oil and half the salt and spread on a baking tray. Bake for 35 to 40 minutes, turning once, until golden.",
+      "Whisk 60 g of the flour with the baking powder and the rest of the salt, then whisk in the cold beer to a smooth batter about as thick as double cream.",
+      "Heat the rest of the sunflower oil topped up to about 5 cm deep in a deep pan to 180°C. Pat the cod dry, dust with the remaining 10 g of flour, dip in the batter and fry one piece at a time for 6 to 7 minutes, turning once, until crisp and golden.",
+      "Drain on kitchen paper and serve with the chips and lemon wedges, and boiled peas if you like."
+    ],
+    "notes": "Fried dish: the 45 g of sunflower oil is what ends up in the food (about 30 g taken up by the battered fish and 15 g tossed with the chips), not the oil left in the pan. Cod is skinless and boneless, weighed raw. The peas are optional."
+  },
+  {
+    "key": "sardines-on-toast",
+    "name": "Sardines on toast",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/sardines-on-toast"
+    ],
+    "summary": "Tinned sardines mashed with lemon and black pepper on Maltese bread toast rubbed with tomato.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 3,
+    "equipment": [
+      "toaster or grill"
+    ],
+    "tags": [
+      "lunch",
+      "breakfast",
+      "quick"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "sardines-canned-oil-drained",
+        "qty": 90,
+        "unit": "g",
+        "label": "sardines"
+      },
+      {
+        "ref": "item",
+        "ref_key": "hobz-tal-malti-as-sold",
+        "qty": 70,
+        "unit": "g",
+        "label": "Maltese bread"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "tomato"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 5,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 2,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-flakes-as-sold",
+        "qty": 0.5,
+        "unit": "g",
+        "label": "chilli flakes",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Toast two slices of Maltese bread.",
+      "Halve the tomato and rub the cut side over the hot toast, then chop what is left and scatter it on.",
+      "Lightly mash the drained sardines with the lemon juice and black pepper, pile onto the toast and finish with the chopped parsley, and chilli flakes if you like."
+    ],
+    "notes": "One 120 g tin of sardines in oil gives about 90 g drained; the soft bones are eaten and are counted in the record. The chilli is optional."
+  },
+  {
+    "key": "mackerel-potato-salad",
+    "name": "Mackerel potato salad",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/mackerel-potato-salad"
+    ],
+    "summary": "Grilled mackerel flaked over warm new potatoes, beetroot and spring onion in a mustard yogurt dressing.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 20,
+    "equipment": [
+      "saucepan",
+      "grill",
+      "mixing bowl"
+    ],
+    "tags": [
+      "lunch",
+      "dinner"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "mackerel-raw",
+        "qty": 240,
+        "unit": "g",
+        "label": "mackerel fillets"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 5,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "potato-new-raw",
+        "qty": 400,
+        "unit": "g",
+        "label": "new potatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "beetroot-boiled",
+        "qty": 100,
+        "unit": "g",
+        "label": "beetroot"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 20,
+        "unit": "g",
+        "label": "spring onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 60,
+        "unit": "g",
+        "label": "yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mayonnaise-light",
+        "qty": 20,
+        "unit": "g",
+        "label": "light mayonnaise"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mustard-yellow",
+        "qty": 1,
+        "unit": "p:1 tsp or 1 packet",
+        "label": "mustard"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 10,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chives-fresh",
+        "qty": 5,
+        "unit": "g",
+        "label": "chives"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Boil the new potatoes for 15 to 18 minutes until tender, then drain and halve.",
+      "Meanwhile brush the mackerel fillets with the olive oil, season with half the salt and the black pepper and grill skin side up for 4 to 5 minutes until the skin blisters and the fish is cooked. Flake into large pieces, leaving out any bones.",
+      "Mix the yogurt, light mayonnaise, mustard, lemon juice, the rest of the salt and most of the chopped chives.",
+      "Toss the warm potatoes with the dressing, the diced beetroot and the sliced spring onions, then top with the mackerel and the rest of the chives."
+    ],
+    "notes": "Mackerel is fresh Atlantic mackerel, weighed raw as boneless fillets. Smoked mackerel is not in the catalogue. Beetroot is cooked and peeled (not pickled)."
+  },
+  {
+    "key": "grilled-sea-bass",
+    "name": "Grilled sea bass",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/grilled-sea-bass"
+    ],
+    "summary": "Sea bass fillets grilled skin-side up and dressed with a lemon, oregano and parsley olive oil.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 6,
+    "equipment": [
+      "grill or griddle pan",
+      "small bowl"
+    ],
+    "tags": [
+      "dinner",
+      "quick",
+      "grill"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "sea-bass-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "sea bass fillets"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 20,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 8,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 3,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Mix three-quarters of the olive oil with the lemon juice, oregano, chopped parsley, crushed garlic and half the salt to make the dressing.",
+      "Slash the skin of the sea bass fillets a few times, brush with the rest of the olive oil and season with the rest of the salt and the black pepper.",
+      "Grill skin side up under a hot grill, or skin side down on a hot griddle, for 4 to 6 minutes until the skin is crisp and the flesh is opaque.",
+      "Spoon the dressing over the fish to serve."
+    ],
+    "notes": "Sea bass is weighed as raw fillet. If you cook a whole fish, weigh only the fillet you eat."
+  },
+  {
+    "key": "fish-stew",
+    "name": "Fish stew",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/fish-stew"
+    ],
+    "summary": "Chunks of cod and prawns in a tomato, fennel and white wine broth with potatoes.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 40,
+    "equipment": [
+      "large saucepan or casserole"
+    ],
+    "tags": [
+      "dinner",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 25,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "fennel-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "fennel"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-flakes-as-sold",
+        "qty": 1,
+        "unit": "g",
+        "label": "chilli flakes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "wine-white",
+        "qty": 120,
+        "unit": "ml",
+        "label": "white wine"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-vegetable-ready",
+        "qty": 400,
+        "unit": "g",
+        "label": "vegetable stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "potato-white-raw",
+        "qty": 400,
+        "unit": "g",
+        "label": "potatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cod-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "cod"
+      },
+      {
+        "ref": "item",
+        "ref_key": "prawns-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "prawns"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Heat the olive oil in a large pan and cook the sliced onion and fennel for 10 minutes until soft. Add the sliced garlic, paprika and chilli flakes for 1 minute.",
+      "Pour in the white wine and bubble for 2 minutes, then add the chopped tomatoes, vegetable stock, salt and black pepper and the potatoes, peeled and cut into 2 cm chunks.",
+      "Simmer, covered, for 15 to 20 minutes until the potatoes are tender.",
+      "Add the cod, cut into large chunks, and simmer gently for 4 minutes, then add the prawns and cook for 2 minutes more until pink. Stir gently so the fish does not break up, and scatter with the parsley."
+    ],
+    "notes": "Cod is skinless and boneless, weighed raw; prawns are peeled and raw. Vegetable stock is used because fish stock is not in the catalogue. The potatoes cook in the stew, so they are part of the recipe."
+  },
+  {
+    "key": "prawn-curry",
+    "name": "Prawn coconut curry",
+    "name_mt": null,
+    "family": "fish",
+    "type": "variant",
+    "parent_key": "chicken-coconut-curry",
+    "req": [
+      "fish/prawn-curry"
+    ],
+    "summary": "The coconut curry made with prawns in place of chicken and vegetable stock in place of chicken stock, the prawns added at the end.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 25,
+    "equipment": [
+      "large saucepan or wok"
+    ],
+    "tags": [
+      "dinner",
+      "quick",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "prawns-raw",
+        "qty": 400,
+        "unit": "g",
+        "label": "prawns"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 20,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 12,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-red-fresh",
+        "qty": 15,
+        "unit": "g",
+        "label": "red chilli"
+      },
+      {
+        "ref": "item",
+        "ref_key": "curry-powder-as-sold",
+        "qty": 1,
+        "unit": "p:1 tbsp",
+        "label": "curry powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "turmeric-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "turmeric"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "ground coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coconut-milk-tinned",
+        "qty": 400,
+        "unit": "ml",
+        "label": "coconut milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-vegetable-ready",
+        "qty": 150,
+        "unit": "g",
+        "label": "vegetable stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lime-juice-fresh",
+        "qty": 20,
+        "unit": "ml",
+        "label": "lime juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-basmati-dry",
+        "qty": 300,
+        "unit": "g",
+        "label": "basmati rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the vegetable oil in a large pan over a medium heat and cook the sliced onion for 8 minutes until soft.",
+      "Add the grated garlic and ginger and the chopped red chilli and cook for 1 minute, then stir in the curry powder, turmeric and ground coriander for 30 seconds.",
+      "Pour in the coconut milk and vegetable stock, add the salt and simmer uncovered for 10 minutes to thicken.",
+      "Add the prawns and simmer for 3 to 4 minutes until pink all the way through. Stir in the spinach until it wilts, then add the lime juice and scatter with the fresh coriander.",
+      "If serving with basmati rice, rinse it and cook in plenty of boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Prawns are peeled and raw. Made with one 400 ml tin of full-fat coconut milk. Rice is an optional line."
+  },
+  {
+    "key": "calamari-style-squid",
+    "name": "Calamari-style squid",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/calamari-style-squid"
+    ],
+    "summary": "Squid rings tossed in seasoned flour and paprika and shallow-fried until crisp, with lemon wedges.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 8,
+    "equipment": [
+      "large frying pan",
+      "mixing bowl",
+      "kitchen paper"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "quick"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "squid-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "squid"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 30,
+        "unit": "g",
+        "label": "flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cornflour-cornstarch-as-sold",
+        "qty": 10,
+        "unit": "g",
+        "label": "cornflour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sunflower",
+        "qty": 20,
+        "unit": "g",
+        "label": "sunflower oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-raw",
+        "qty": 2,
+        "unit": "p:1 wedge or slice (1/8 of one 2-1/8\" dia lemon)",
+        "label": "lemon wedges"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mayonnaise-light",
+        "qty": 30,
+        "unit": "g",
+        "label": "light mayonnaise",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 2,
+        "unit": "g",
+        "label": "garlic"
+      }
+    ],
+    "method": [
+      "Cut the cleaned squid into 1 cm rings and pat very dry with kitchen paper.",
+      "Mix the flour, cornflour, paprika, salt and black pepper in a bowl and toss the squid in it, shaking off the excess.",
+      "Heat the sunflower oil about 1 cm deep in a large frying pan until a pinch of flour sizzles. Fry the squid in two batches for 1 to 2 minutes until pale golden; any longer and it turns tough. Drain on kitchen paper.",
+      "Serve with the lemon wedges. If you like, stir the crushed garlic into the light mayonnaise for a dip."
+    ],
+    "notes": "Shallow-fried: the 20 g of sunflower oil is what the coated squid takes up, not the oil left in the pan; coating amounts are what sticks. Squid is cleaned, weighed raw. The garlic mayonnaise is optional."
+  },
+  {
+    "key": "baked-fish-with-tomato-and-olives",
+    "name": "Baked fish with tomato and olives",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/baked-fish-with-tomato-and-olives"
+    ],
+    "summary": "Lampuki fillets baked on a bed of cherry tomatoes, black olives, capers and white wine.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 25,
+    "equipment": [
+      "baking dish"
+    ],
+    "tags": [
+      "dinner",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "mahi-mahi-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "lampuki fillets"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 15,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "red onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-cherry-raw",
+        "qty": 250,
+        "unit": "g",
+        "label": "cherry tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "olives-black",
+        "qty": 40,
+        "unit": "g",
+        "label": "black olives"
+      },
+      {
+        "ref": "item",
+        "ref_key": "capers-drained",
+        "qty": 10,
+        "unit": "g",
+        "label": "capers"
+      },
+      {
+        "ref": "item",
+        "ref_key": "wine-white",
+        "qty": 50,
+        "unit": "ml",
+        "label": "white wine"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 5,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Toss the halved cherry tomatoes, sliced red onion, sliced garlic, black olives and capers in a baking dish with most of the olive oil, the oregano and the white wine. Bake for 12 minutes until the tomatoes start to soften.",
+      "Season the lampuki fillets with the salt and black pepper, sit them on the tomatoes and drizzle with the rest of the olive oil.",
+      "Bake for 10 to 12 minutes until the fish is opaque and flakes easily. Scatter with the parsley."
+    ],
+    "notes": "Lampuki (mahi-mahi) is skinless and boneless, weighed raw. Lampuki are in season from late summer to early winter; out of season, hake, cod or sea bream work the same way, so swap the fish line for the matching record."
+  },
+  {
+    "key": "smoked-salmon-potato-bowl",
+    "name": "Smoked salmon potato bowl",
+    "name_mt": null,
+    "family": "fish",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "fish/smoked-salmon-potato-bowl"
+    ],
+    "summary": "Warm new potatoes with smoked salmon, cucumber, radish, red onion and capers, under a dill yogurt dressing.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 18,
+    "equipment": [
+      "saucepan",
+      "small bowl"
+    ],
+    "tags": [
+      "lunch",
+      "quick"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "potato-new-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "new potatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 5,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "smoked-salmon",
+        "qty": 80,
+        "unit": "g",
+        "label": "smoked salmon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cucumber-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "cucumber"
+      },
+      {
+        "ref": "item",
+        "ref_key": "radish-raw",
+        "qty": 30,
+        "unit": "g",
+        "label": "radishes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "red onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "capers-drained",
+        "qty": 5,
+        "unit": "g",
+        "label": "capers"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rocket-raw",
+        "qty": 20,
+        "unit": "g",
+        "label": "rocket"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 50,
+        "unit": "g",
+        "label": "yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 5,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "dill-fresh",
+        "qty": 2,
+        "unit": "g",
+        "label": "dill"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      }
+    ],
+    "method": [
+      "Boil the new potatoes for 15 to 18 minutes until tender, then drain, halve and toss with the olive oil.",
+      "If adding an egg, boil it for 7 minutes, cool under cold water and peel.",
+      "Mix the yogurt with the lemon juice, chopped dill and black pepper.",
+      "Pile the rocket and warm potatoes in a bowl and top with the smoked salmon, sliced cucumber, radishes and red onion, the capers and the dill yogurt."
+    ],
+    "notes": "The smoked salmon record is a catalogue estimate. The egg is optional."
+  }
+]

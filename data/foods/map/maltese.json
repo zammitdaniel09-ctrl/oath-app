@@ -1,0 +1,140 @@
+[
+  {
+    "req": "maltese/maltese-bread-hobz-tal-malti",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "hobz-tal-malti-as-sold",
+        "fdc_id": 172675,
+        "name": "Maltese bread (ħobż tal-Malti)",
+        "state": "as-sold",
+        "aliases": [
+          "hobz tal-malti",
+          "ħobż tal-Malti",
+          "Maltese bread",
+          "hobz",
+          "ħobż",
+          "hobza",
+          "ħobża",
+          "Maltese loaf"
+        ]
+      }
+    ],
+    "note": "No USDA record. Estimated from French/Vienna crusty white bread (fdc 172675, includes sourdough), the closest match to the crusty sourdough-style Maltese loaf. Not exact; bakery recipes vary, so weigh slices."
+  },
+  {
+    "req": "maltese/ftira-bread",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "ftira-bread-as-sold",
+        "fdc_id": 172675,
+        "name": "Ftira bread",
+        "state": "as-sold",
+        "aliases": [
+          "ftira",
+          "ftajjar",
+          "Maltese ftira",
+          "ftira bread"
+        ]
+      }
+    ],
+    "note": "Plain ring-shaped bread ftira only, made from the ħobż dough; estimated from French/Vienna bread (fdc 172675). Filled ftira and Gozitan baked ftira (ftira Għawdxija) are separate concepts and need recipes."
+  },
+  {
+    "req": "maltese/galletti",
+    "status": "product",
+    "records": [],
+    "note": "Maltese water biscuits; formulation is brand-specific. The USDA US water biscuit record is a different product. Use the pack label."
+  },
+  {
+    "req": "maltese/bigilla",
+    "status": "recipe",
+    "records": [],
+    "note": "Dip of dried broad beans (ful ta' Ġirba) with garlic, olive oil, chilli and herbs. Build from ingredients; the olive oil amount drives energy."
+  },
+  {
+    "req": "maltese/kunserva",
+    "status": "product",
+    "records": [],
+    "note": "Maltese concentrated tomato paste; concentration, salt and sugar vary by brand. Use the jar label rather than the generic US tomato paste."
+  },
+  {
+    "req": "maltese/gbejna-fresh",
+    "status": "product",
+    "records": [],
+    "note": "Fresh ġbejna (sheep or mixed-milk cheeselet). USDA has no comparable fresh sheep's milk curd cheese. Use a packaged ġbejna label."
+  },
+  {
+    "req": "maltese/gbejna-dried",
+    "status": "product",
+    "records": [],
+    "note": "Dried ġbejna; moisture and salt depend on the maker and drying time. Use the label."
+  },
+  {
+    "req": "maltese/gbejna-peppered",
+    "status": "product",
+    "records": [],
+    "note": "Peppered dried ġbejna (tal-bżar), sometimes kept in oil or vinegar. Use the label."
+  },
+  {
+    "req": "maltese/maltese-sausage-zalzett",
+    "status": "product",
+    "records": [],
+    "note": "Maltese pork sausage with coriander, pepper and salt; fat and salt vary by maker and USDA sausages are not equivalent. Use the label."
+  },
+  {
+    "req": "maltese/pastizz-with-ricotta",
+    "status": "recipe",
+    "records": [],
+    "note": "Flaky laminated pastry with ricotta filling. Build from ingredients (flour, fat, ricotta, egg)."
+  },
+  {
+    "req": "maltese/pastizz-with-peas",
+    "status": "recipe",
+    "records": [],
+    "note": "Flaky laminated pastry with mushy pea filling (peas, onion, curry or spices). Build from ingredients."
+  },
+  {
+    "req": "maltese/qassata-with-ricotta",
+    "status": "recipe",
+    "records": [],
+    "note": "Shortcrust pastry case with ricotta filling. Build from ingredients."
+  },
+  {
+    "req": "maltese/qassata-with-peas",
+    "status": "recipe",
+    "records": [],
+    "note": "Shortcrust pastry case with pea filling. Build from ingredients."
+  },
+  {
+    "req": "maltese/qassata-with-spinach",
+    "status": "recipe",
+    "records": [],
+    "note": "Shortcrust pastry case with spinach filling (often with anchovies or tuna and olives). Build from ingredients."
+  },
+  {
+    "req": "maltese/imqaret",
+    "status": "recipe",
+    "records": [],
+    "note": "Deep-fried date-filled pastry; frying oil uptake matters. Build from ingredients."
+  },
+  {
+    "req": "maltese/qaghaq-tal-ghasel",
+    "status": "recipe",
+    "records": [],
+    "note": "Pastry rings filled with black treacle, sugar, semolina, spices and citrus peel. Build from ingredients."
+  },
+  {
+    "req": "maltese/maltese-style-ravjul",
+    "status": "recipe",
+    "records": [],
+    "note": "Maltese ravioli filled with ricotta, egg, parsley and grated cheese, usually served with tomato sauce. USDA has no matching filled pasta; build from ingredients."
+  },
+  {
+    "req": "maltese/maltese-style-caponata",
+    "status": "recipe",
+    "records": [],
+    "note": "Aubergine, tomato, onion, capers and olives cooked in olive oil; the oil amount drives energy. Build from ingredients."
+  }
+]

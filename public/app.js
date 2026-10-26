@@ -8,18 +8,20 @@ import {
 import { parseCapture } from './parse.js';
 import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
 import { initData, loadDashboard, viewDashboard, dataClick, dataSubmit, AUTO_LABELS, autoValue } from './data.js';
+import { initFood, loadFood, viewFood, foodClick, foodSubmit, loadFoodToday, foodTodayCard } from './food.js';
 
 // ---------- Shell ----------
 
 const TABS = [
   ['today', 'Today', 'today'],
   ['plan', 'Plan', 'plan'],
+  ['food', 'Food', 'food'],
   ['goals', 'Goals', 'goals'],
   ['dashboard', 'Dashboard', 'dashboard'],
   ['coach', 'Coach', 'coach'],
 ];
 const WIDE_EXTRA = [['review', 'Review', 'review'], ['settings', 'Settings', 'settings']];
-const ROUTES = ['today', 'plan', 'goals', 'dashboard', 'coach', 'review', 'settings'];
+const ROUTES = ['today', 'plan', 'food', 'goals', 'dashboard', 'coach', 'review', 'settings'];
 
 function shell(inner) {
   // One selected destination: on the phone Review lives under Dashboard; the sidebar has its own row.
@@ -34,7 +36,7 @@ function shell(inner) {
   $app.innerHTML = `<main class="page page-${state.route}">${inner}</main>
     <nav class="tabbar" aria-label="Sections"><div class="tabbar-brand wide-only">${brandMark(30)}<span>Oath</span></div>${nav}${more}</nav>
     ${sheetHtml()}`;
-  document.body.classList.toggle('sheet-open', Boolean(state.sheet || state.sheetNode));
+  document.body.classList.toggle('sheet-open', Boolean(state.sheet || state.sheetNode || state.foodSheet));
   drawRings();
 }
 
@@ -44,6 +46,7 @@ function skeleton(title) {
 
 initGoals({ shell, render: () => render(), go: () => go() });
 initData({ shell, render: () => render(), go: () => go() });
+initFood({ shell, render: () => render(), go: () => go() });
 
 // ---------- Today ----------
 
@@ -650,6 +653,7 @@ function viewToday() {
       ${section('This week', flex, flex.map((i) => habitRow(i, t)).join(''), `${flex.filter((i) => i.status === 'met').length} of ${flex.length} met`)}
       ${tasksHtml}
       ${setupCard(state.setup)}
+      ${foodTodayCard()}
       <div class="only-narrow">${timeline(t)}${healthMini(t)}</div>
       ${closeDayCard(t)}
     </div>
@@ -1303,8 +1307,12 @@ function loadSetup() {
 async function load(route) {
   if (route === 'today') {
     await fetchToday();
-    if (!state.offline) loadSetup();
+    if (!state.offline) {
+      loadSetup();
+      loadFoodToday();
+    }
   }
+  if (route === 'food') await loadFood();
   if (route === 'plan') state.plan = await api('GET', '/api/plan');
   if (route === 'coach') state.coach = await api('GET', '/api/coach');
   if (route === 'review') state.review = await api('GET', '/api/review');
@@ -1334,16 +1342,18 @@ function render() {
     if (state.param) return viewGoal();
     return viewGoals();
   }
-  const views = { today: viewToday, plan: viewPlan, coach: viewCoach, review: viewReview, settings: viewSettings, dashboard: viewDashboard };
+  const views = { today: viewToday, plan: viewPlan, food: viewFood, coach: viewCoach, review: viewReview, settings: viewSettings, dashboard: viewDashboard };
   (views[state.route] || viewToday)();
 }
 
 function parseHash() {
   const raw = location.hash.replace(/^#\/?/, '');
   const [path, qs] = raw.split('?');
-  const [route, param] = (path || 'today').split('/');
+  const [route, param, param2] = (path || 'today').split('/');
   state.route = ROUTES.includes(route) ? route : route === 'ledger' ? 'review' : route === 'health' ? 'dashboard' : 'today';
   state.param = param || null;
+  state.param2 = param2 ? decodeURIComponent(param2) : null;
+  if (state.route !== 'food') state.foodSheet = null;
   state.query = new URLSearchParams(qs || '');
 }
 
@@ -1670,6 +1680,7 @@ $app.addEventListener('click', async (e) => {
   const a = el.dataset.action;
   if (await goalsClick(a, el)) return;
   if (await dataClick(a, el)) return;
+  if (await foodClick(a, el)) return;
   if (a === 'keep') {
     await keepHabit(el, id);
   } else if (a === 'keep-minimum') {
@@ -1860,6 +1871,7 @@ $app.addEventListener('submit', async (e) => {
   try {
     if (await goalsSubmit(kind, form)) return;
     if (await dataSubmit(kind, form)) return;
+    if (await foodSubmit(kind, form)) return;
     if (kind === 'login') {
       try {
         await api('POST', '/api/login', form2obj(form));
@@ -1981,9 +1993,10 @@ $app.addEventListener('keydown', (e) => {
     e.preventDefault();
     e.target.form.requestSubmit();
   }
-  if (e.key === 'Escape' && (state.sheet || state.sheetNode)) {
+  if (e.key === 'Escape' && (state.sheet || state.sheetNode || state.foodSheet)) {
     state.sheet = null;
     state.sheetNode = null;
+    state.foodSheet = null;
     render();
   }
   const g = e.target.closest('g[data-action]');

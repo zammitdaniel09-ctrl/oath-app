@@ -1,0 +1,1294 @@
+[
+  {
+    "key": "toast-with-butter",
+    "name": "Toast with butter",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/toast-with-butter"
+    ],
+    "summary": "Two slices of white toast with butter.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 3,
+    "equipment": [
+      "toaster"
+    ],
+    "tags": [
+      "saved-meal",
+      "breakfast"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "bread-white-sliced-as-sold",
+        "qty": 2,
+        "unit": "p:1 slice",
+        "label": "white bread"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 10,
+        "unit": "g",
+        "label": "butter"
+      }
+    ],
+    "method": [
+      "Toast the bread and spread with the butter."
+    ],
+    "notes": "Swap the bread line for the loaf you actually use, or weigh the slices."
+  },
+  {
+    "key": "toast-with-jam",
+    "name": "Toast with jam",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/toast-with-jam"
+    ],
+    "summary": "Two slices of white toast with jam, and butter if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 3,
+    "equipment": [
+      "toaster"
+    ],
+    "tags": [
+      "saved-meal",
+      "breakfast"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "bread-white-sliced-as-sold",
+        "qty": 2,
+        "unit": "p:1 slice",
+        "label": "white bread"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 5,
+        "unit": "g",
+        "label": "butter",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "jam-as-sold",
+        "qty": 20,
+        "unit": "g",
+        "label": "jam"
+      }
+    ],
+    "method": [
+      "Toast the bread, spread thinly with butter if using, then with the jam."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "bread-with-cheese",
+    "name": "Bread with cheese",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/bread-with-cheese"
+    ],
+    "summary": "A thick slice of Maltese bread with cheddar, and tomato if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 0,
+    "equipment": [
+      "bread knife"
+    ],
+    "tags": [
+      "saved-meal",
+      "snack",
+      "lunch"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "hobz-tal-malti-as-sold",
+        "qty": 80,
+        "unit": "g",
+        "label": "Maltese bread"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cheddar",
+        "qty": 30,
+        "unit": "g",
+        "label": "cheddar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-raw",
+        "qty": 50,
+        "unit": "g",
+        "label": "tomato",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Slice the bread and top with the cheese, and sliced tomato if you like."
+    ],
+    "notes": "Swap the cheese line for the cheese you use; ġbejniet are products, so log them from the label."
+  },
+  {
+    "key": "cereal-with-milk",
+    "name": "Cereal with milk",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/cereal-with-milk"
+    ],
+    "summary": "A bowl of breakfast cereal with semi-skimmed milk.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 0,
+    "equipment": [
+      "bowl"
+    ],
+    "tags": [
+      "saved-meal",
+      "breakfast"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "cereal-puffed-rice-dry",
+        "qty": 35,
+        "unit": "g",
+        "label": "cereal"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 200,
+        "unit": "ml",
+        "label": "milk"
+      }
+    ],
+    "method": [
+      "Pour the cereal into a bowl and add the milk."
+    ],
+    "notes": "Most breakfast cereals (cornflakes, bran flakes, chocolate or honey cereals) are branded products, so the cereal line uses generic puffed rice cereal as the closest generic stand-in: swap it for your exact cereal from its pack label."
+  },
+  {
+    "key": "yogurt-with-fruit",
+    "name": "Yogurt with fruit",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/yogurt-with-fruit"
+    ],
+    "summary": "Greek yogurt topped with strawberries and banana, with honey if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 0,
+    "equipment": [
+      "bowl"
+    ],
+    "tags": [
+      "saved-meal",
+      "breakfast",
+      "snack"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 150,
+        "unit": "g",
+        "label": "yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Spoon the yogurt into a bowl and top with the sliced fruit, and honey if using."
+    ],
+    "notes": "Fruit lines are edible weight; swap them for whatever fruit you have."
+  },
+  {
+    "key": "banana-with-peanut-butter",
+    "name": "Banana with peanut butter",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/banana-with-peanut-butter"
+    ],
+    "summary": "A medium banana with a spoonful of peanut butter.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 0,
+    "equipment": [
+      "knife"
+    ],
+    "tags": [
+      "saved-meal",
+      "snack"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 1,
+        "unit": "p:1 medium (7\" to 7-7/8\" long)",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peanut-butter-smooth",
+        "qty": 15,
+        "unit": "g",
+        "label": "peanut butter"
+      }
+    ],
+    "method": [
+      "Peel and slice the banana and spread or dip with the peanut butter."
+    ],
+    "notes": "One medium banana is about 118 g peeled."
+  },
+  {
+    "key": "apple-with-peanut-butter",
+    "name": "Apple with peanut butter",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/apple-with-peanut-butter"
+    ],
+    "summary": "A medium apple in slices with a spoonful of peanut butter.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 0,
+    "equipment": [
+      "knife"
+    ],
+    "tags": [
+      "saved-meal",
+      "snack"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "apple-raw-with-skin",
+        "qty": 1,
+        "unit": "p:1 medium (3\" dia)",
+        "label": "apple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peanut-butter-smooth",
+        "qty": 15,
+        "unit": "g",
+        "label": "peanut butter"
+      }
+    ],
+    "method": [
+      "Core and slice the apple and serve with the peanut butter for dipping."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "fruit-with-nuts",
+    "name": "Fruit with nuts",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/fruit-with-nuts"
+    ],
+    "summary": "An apple and a small handful of almonds.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 0,
+    "equipment": [],
+    "tags": [
+      "saved-meal",
+      "snack"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "apple-raw-with-skin",
+        "qty": 150,
+        "unit": "g",
+        "label": "apple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "almonds-raw",
+        "qty": 25,
+        "unit": "g",
+        "label": "almonds"
+      }
+    ],
+    "method": [
+      "Serve the fruit with the nuts."
+    ],
+    "notes": "Swap the fruit and nut lines for what you have; the apple line is cored weight with skin."
+  },
+  {
+    "key": "crackers-with-cheese",
+    "name": "Crackers with cheese",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/crackers-with-cheese"
+    ],
+    "summary": "Water biscuits with cheddar.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 0,
+    "equipment": [
+      "plate"
+    ],
+    "tags": [
+      "saved-meal",
+      "snack"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "crackers-water-biscuits",
+        "qty": 30,
+        "unit": "g",
+        "label": "crackers"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cheddar",
+        "qty": 30,
+        "unit": "g",
+        "label": "cheddar"
+      }
+    ],
+    "method": [
+      "Top the crackers with slices of the cheese."
+    ],
+    "notes": "Galletti and most crackers are branded products, so the crackers line uses generic water biscuits; swap it for your pack and weigh what you eat."
+  },
+  {
+    "key": "rice-chicken-broccoli",
+    "name": "Rice with chicken and broccoli",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/rice-with-chicken-and-broccoli"
+    ],
+    "summary": "Cooked rice with grilled chicken breast, boiled broccoli and a little olive oil.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 20,
+    "equipment": [
+      "plate"
+    ],
+    "tags": [
+      "saved-meal",
+      "lunch",
+      "dinner"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "rice-white-long-grain-cooked",
+        "qty": 180,
+        "unit": "g",
+        "label": "cooked rice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chicken-breast-skinless-grilled",
+        "qty": 120,
+        "unit": "g",
+        "label": "grilled chicken"
+      },
+      {
+        "ref": "item",
+        "ref_key": "broccoli-boiled",
+        "qty": 100,
+        "unit": "g",
+        "label": "broccoli"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 5,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "soy-sauce-shoyu",
+        "qty": 10,
+        "unit": "ml",
+        "label": "soy sauce",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Plate the rice, chicken and broccoli and drizzle with the olive oil, and soy sauce if using."
+    ],
+    "notes": "Weights are cooked weights; swap them for what you served."
+  },
+  {
+    "key": "rice-beans-salsa",
+    "name": "Rice with beans and salsa",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/rice-with-beans-and-salsa"
+    ],
+    "summary": "Cooked rice with black beans and jar salsa, with avocado or cheese if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 5,
+    "equipment": [
+      "bowl"
+    ],
+    "tags": [
+      "saved-meal",
+      "lunch",
+      "dinner",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "rice-white-long-grain-cooked",
+        "qty": 180,
+        "unit": "g",
+        "label": "cooked rice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-beans-canned-drained",
+        "qty": 120,
+        "unit": "g",
+        "label": "black beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salsa-jar",
+        "qty": 60,
+        "unit": "g",
+        "label": "salsa"
+      },
+      {
+        "ref": "item",
+        "ref_key": "avocado-raw",
+        "qty": 40,
+        "unit": "g",
+        "label": "avocado",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "cheddar",
+        "qty": 20,
+        "unit": "g",
+        "label": "cheddar",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Warm the rice and beans, then top with the salsa and any extras."
+    ],
+    "notes": "Beans are tinned, drained and rinsed."
+  },
+  {
+    "key": "pasta-with-pesto",
+    "name": "Pasta with prepared pesto",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/pasta-with-prepared-pesto"
+    ],
+    "summary": "Cooked pasta tossed with jar pesto, with parmesan if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 12,
+    "equipment": [
+      "saucepan"
+    ],
+    "tags": [
+      "saved-meal",
+      "lunch",
+      "dinner",
+      "pasta"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "penne-cooked",
+        "qty": 220,
+        "unit": "g",
+        "label": "cooked pasta"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pesto-jar",
+        "qty": 30,
+        "unit": "g",
+        "label": "pesto"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parmesan-grated",
+        "qty": 5,
+        "unit": "g",
+        "label": "parmesan",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Toss the hot pasta with the pesto and scatter with parmesan if using."
+    ],
+    "notes": "The pasta line is cooked weight (about 80 g dry). Pesto is a jar product; swap for your jar or fresh pesto from its label."
+  },
+  {
+    "key": "soup-with-bread",
+    "name": "Soup with bread",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/soup-with-bread"
+    ],
+    "summary": "A bowl of vegetable soup with a slice of Maltese bread.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 5,
+    "equipment": [
+      "saucepan",
+      "bowl"
+    ],
+    "tags": [
+      "saved-meal",
+      "lunch"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "soup-vegetable-canned",
+        "qty": 300,
+        "unit": "g",
+        "label": "soup"
+      },
+      {
+        "ref": "item",
+        "ref_key": "hobz-tal-malti-as-sold",
+        "qty": 60,
+        "unit": "g",
+        "label": "bread"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 5,
+        "unit": "g",
+        "label": "butter",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the soup and serve with the bread, buttered if you like."
+    ],
+    "notes": "The soup line is a canned vegetable soup; swap it for a serving of a soup recipe you made (for example minestra) or for your carton or tin label."
+  },
+  {
+    "key": "baked-potato-tuna-mayo",
+    "name": "Baked potato with tuna and mayonnaise",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/baked-potato-with-tuna-and-mayonnaise"
+    ],
+    "summary": "A baked potato filled with tuna mixed with mayonnaise, with sweetcorn or butter if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 60,
+    "equipment": [
+      "oven or microwave",
+      "bowl"
+    ],
+    "tags": [
+      "saved-meal",
+      "lunch",
+      "dinner"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "potato-white-baked",
+        "qty": 250,
+        "unit": "g",
+        "label": "baked potato"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tuna-canned-water-light",
+        "qty": 80,
+        "unit": "g",
+        "label": "tuna"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mayonnaise-regular",
+        "qty": 15,
+        "unit": "g",
+        "label": "mayonnaise"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sweetcorn-tinned-drained",
+        "qty": 40,
+        "unit": "g",
+        "label": "sweetcorn",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 5,
+        "unit": "g",
+        "label": "butter",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Split the baked potato and fill with the tuna mixed with the mayonnaise and any extras."
+    ],
+    "notes": "The potato line is the baked weight, flesh and skin."
+  },
+  {
+    "key": "sandwich-crisps-drink",
+    "name": "Sandwich with crisps and a drink",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/sandwich-with-crisps-and-a-drink"
+    ],
+    "summary": "A ham and cheese sandwich on white bread with a bag of crisps and a can of cola.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "knife"
+    ],
+    "tags": [
+      "saved-meal",
+      "lunch"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "bread-white-sliced-as-sold",
+        "qty": 2,
+        "unit": "p:1 slice",
+        "label": "white bread"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 5,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ham-cooked-regular-sliced",
+        "qty": 40,
+        "unit": "g",
+        "label": "ham"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cheddar",
+        "qty": 20,
+        "unit": "g",
+        "label": "cheddar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "crisps-ready-salted",
+        "qty": 25,
+        "unit": "g",
+        "label": "crisps"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cola-regular",
+        "qty": 330,
+        "unit": "ml",
+        "label": "cola"
+      }
+    ],
+    "method": [
+      "Butter the bread, fill with the ham and cheese, and serve with the crisps and drink."
+    ],
+    "notes": "Crisps and canned drinks are products: the crisps and cola lines are generic stand-ins, so swap them for your exact bag (by weight) and can (by ml) from their labels."
+  },
+  {
+    "key": "pastizz-canned-drink",
+    "name": "Pastizz with a canned drink",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/pastizz-with-a-canned-drink"
+    ],
+    "summary": "One ricotta pastizz with a can of cola.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 1,
+    "cook_min": 0,
+    "equipment": [],
+    "tags": [
+      "saved-meal",
+      "snack",
+      "maltese"
+    ],
+    "lines": [
+      {
+        "ref": "recipe",
+        "ref_key": "pastizzi-ricotta",
+        "qty": 1,
+        "unit": "serving",
+        "label": "pastizz"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cola-regular",
+        "qty": 330,
+        "unit": "ml",
+        "label": "cola"
+      }
+    ],
+    "method": [
+      "Serve the pastizz with the drink."
+    ],
+    "notes": "The pastizz itself is a recipe estimate (home-made ricotta pastizzi with ready-made puff pastry), not a pastizzerija's nutrition; swap the line for the pea pastizzi recipe if you had a pea one. The cola line is a generic stand-in for a canned drink product, so swap it for your exact can and its ml from the label."
+  },
+  {
+    "key": "protein-bar-coffee",
+    "name": "Protein bar with coffee",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/protein-bar-with-coffee"
+    ],
+    "summary": "A bar weighed by the gram with a mug of coffee, with milk or sugar if you take them.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 0,
+    "equipment": [
+      "mug"
+    ],
+    "tags": [
+      "saved-meal",
+      "snack"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "granola-bar-chewy",
+        "qty": 60,
+        "unit": "g",
+        "label": "protein bar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coffee-filter",
+        "qty": 200,
+        "unit": "ml",
+        "label": "coffee"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 30,
+        "unit": "ml",
+        "label": "milk",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "sugar",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Make the coffee as you like it and have it with the bar."
+    ],
+    "notes": "Protein bars are exact branded products with no generic record, so the bar line uses a generic chewy granola bar by weight as the closest stand-in; it will understate protein. Swap it for your exact bar from its wrapper label."
+  },
+  {
+    "key": "fruit-bowl-with-yogurt",
+    "name": "Fruit bowl with yogurt",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/fruit-bowl-with-yogurt"
+    ],
+    "summary": "Banana, apple and strawberries over Greek yogurt, with honey or nuts if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "bowl",
+      "knife"
+    ],
+    "tags": [
+      "saved-meal",
+      "breakfast",
+      "snack"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "apple-raw-with-skin",
+        "qty": 120,
+        "unit": "g",
+        "label": "apple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 150,
+        "unit": "g",
+        "label": "yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "almonds-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "nuts",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Chop the fruit into a bowl over the yogurt and add honey or nuts if you like."
+    ],
+    "notes": "Fruit lines are edible weight; swap them for what you have."
+  },
+  {
+    "key": "leftover-pasta-salad",
+    "name": "Leftover pasta portion with salad",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/leftover-pasta-portion-with-salad"
+    ],
+    "summary": "A portion of pasta in tomato sauce with a simple dressed salad.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 3,
+    "equipment": [
+      "microwave or pan",
+      "bowl"
+    ],
+    "tags": [
+      "saved-meal",
+      "lunch",
+      "dinner",
+      "leftovers"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "penne-cooked",
+        "qty": 200,
+        "unit": "g",
+        "label": "cooked pasta"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-passata",
+        "qty": 80,
+        "unit": "g",
+        "label": "tomato sauce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parmesan-grated",
+        "qty": 5,
+        "unit": "g",
+        "label": "parmesan",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "lettuce-cos-raw",
+        "qty": 50,
+        "unit": "g",
+        "label": "lettuce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "tomato"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cucumber-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "cucumber"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vinegar-balsamic",
+        "qty": 5,
+        "unit": "ml",
+        "label": "vinegar",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Reheat the pasta and serve with the salad dressed with the oil and vinegar."
+    ],
+    "notes": "Leftovers are best logged as one serving of the recipe you cooked: replace the pasta, sauce and parmesan lines with that recipe (for example imqarrun il-forn) as a single sub-recipe line."
+  },
+  {
+    "key": "homemade-shake-snack",
+    "name": "Homemade shake with a snack",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "saved-meals/homemade-shake-with-a-snack"
+    ],
+    "summary": "A protein shake with milk alongside two rice cakes with peanut butter.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "shaker",
+      "knife"
+    ],
+    "tags": [
+      "saved-meal",
+      "snack"
+    ],
+    "lines": [
+      {
+        "ref": "recipe",
+        "ref_key": "shake-protein-milk",
+        "qty": 1,
+        "unit": "serving",
+        "label": "shake"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-cakes-plain",
+        "qty": 2,
+        "unit": "p:1 cake",
+        "label": "rice cakes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peanut-butter-smooth",
+        "qty": 15,
+        "unit": "g",
+        "label": "peanut butter"
+      }
+    ],
+    "method": [
+      "Make the shake and have it with the rice cakes spread with peanut butter."
+    ],
+    "notes": "The shake line is the protein shake with milk template, whose protein powder is a placeholder; swap it for whichever shake you actually made."
+  },
+  {
+    "key": "fruit-bowl-fresh",
+    "name": "Fresh fruit bowl",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [],
+    "summary": "Banana, apple and strawberries, with yogurt, nuts or honey if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "bowl",
+      "knife"
+    ],
+    "tags": [
+      "saved-meal",
+      "snack",
+      "breakfast",
+      "fruit"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "apple-raw-with-skin",
+        "qty": 120,
+        "unit": "g",
+        "label": "apple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 100,
+        "unit": "g",
+        "label": "yogurt",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "almonds-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "nuts",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Chop the fruit into a bowl and add yogurt, nuts or honey if you like."
+    ],
+    "notes": "Fruit lines are edible weight (peeled banana, cored apple, hulled strawberries). The nuts line is almonds; swap for the nuts you use."
+  },
+  {
+    "key": "snack-bar-banana-energy-drink",
+    "name": "Snack bar, banana and energy drink",
+    "name_mt": null,
+    "family": "saved-meals",
+    "type": "template",
+    "parent_key": null,
+    "req": [],
+    "summary": "A cereal or protein bar by weight, a banana and a can of energy drink.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 1,
+    "cook_min": 0,
+    "equipment": [],
+    "tags": [
+      "saved-meal",
+      "snack"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "granola-bar-chewy",
+        "qty": 40,
+        "unit": "g",
+        "label": "cereal or protein bar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 1,
+        "unit": "p:1 medium (7\" to 7-7/8\" long)",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "energy-drink-red-bull-us",
+        "qty": 1,
+        "unit": "p:1 can 8.4 fl oz",
+        "label": "energy drink"
+      }
+    ],
+    "method": [
+      "Have the bar and banana with the drink."
+    ],
+    "notes": "The bar is a product: the line uses a generic chewy granola bar by weight, so swap it for your exact bar from its wrapper. The energy drink is a product too: the line uses Red Bull (US formulation, 250 ml can) only as a US reference, not the can sold in Malta, so swap it for your exact can and flavour from its label. Energy drinks contain caffeine."
+  },
+  {
+    "key": "overnight-oats-banana",
+    "name": "Banana overnight oats",
+    "name_mt": null,
+    "family": "breakfast-fruit-oats",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "Rolled oats soaked overnight in milk and yogurt, topped with sliced banana.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "jar or bowl with lid",
+      "fridge"
+    ],
+    "tags": [
+      "breakfast",
+      "no-cook",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 50,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 150,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-low-fat",
+        "qty": 100,
+        "unit": "g",
+        "label": "yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "banana"
+      }
+    ],
+    "method": [
+      "Stir the oats, milk and yogurt together in a jar or bowl, cover and refrigerate overnight.",
+      "In the morning, stir well and top with the sliced banana."
+    ],
+    "notes": "The oats line is dry weight and the banana line is peeled weight."
+  }
+]

@@ -1,0 +1,2063 @@
+[
+  {
+    "key": "beef-chilli",
+    "name": "Beef chilli",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/beef-chilli"
+    ],
+    "summary": "Chilli con carne: 10% fat beef mince simmered with kidney beans, peppers, spices and a little cocoa.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 60,
+    "equipment": [
+      "large saucepan or casserole"
+    ],
+    "tags": [
+      "dinner",
+      "one-pan",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "beef-mince-10-fat-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "beef mince"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-powder-as-sold",
+        "qty": 2,
+        "unit": "p:1 tsp",
+        "label": "chilli powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-paste",
+        "qty": 30,
+        "unit": "g",
+        "label": "tomato purée"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-beef-from-cube",
+        "qty": 250,
+        "unit": "g",
+        "label": "beef stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "kidney-beans-canned-drained",
+        "qty": 240,
+        "unit": "g",
+        "label": "kidney beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cocoa-powder-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "cocoa powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-white-long-grain-dry",
+        "qty": 280,
+        "unit": "g",
+        "label": "rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the olive oil in a large pan over a medium heat and cook the chopped onion and red pepper for 8 minutes until soft.",
+      "Turn up the heat, add the beef mince and cook for 8 minutes, breaking it up, until browned. Stir in the crushed garlic, chilli powder, cumin, paprika, oregano and cinnamon and cook for 1 minute.",
+      "Add the chopped tomatoes, tomato purée, beef stock, cocoa powder, salt and black pepper. Bring to a simmer, cover and cook gently for 30 minutes, stirring now and then.",
+      "Stir in the drained kidney beans and simmer uncovered for 15 minutes more until thick.",
+      "If serving with rice, cook it in plenty of boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Beef mince is 10% fat, weighed raw; the fat that renders out stays in the sauce. Kidney beans are tinned, weighed drained. Rice is an optional line. Weigh the cooked batch in the app if you want to log by weight rather than by serving."
+  },
+  {
+    "key": "beef-and-bean-stew",
+    "name": "Beef and bean stew",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/beef-and-bean-stew"
+    ],
+    "summary": "Chuck steak braised slowly in red wine and stock with carrots, celery and borlotti beans cooked from dry.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 150,
+    "equipment": [
+      "large saucepan",
+      "large ovenproof casserole with lid"
+    ],
+    "tags": [
+      "dinner",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "borlotti-beans-dry",
+        "qty": 150,
+        "unit": "g",
+        "label": "borlotti beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stewing-beef-raw",
+        "qty": 600,
+        "unit": "g",
+        "label": "beef"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 15,
+        "unit": "g",
+        "label": "flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "carrot-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "carrots"
+      },
+      {
+        "ref": "item",
+        "ref_key": "celery-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "celery"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-paste",
+        "qty": 20,
+        "unit": "g",
+        "label": "tomato purée"
+      },
+      {
+        "ref": "item",
+        "ref_key": "wine-red",
+        "qty": 150,
+        "unit": "ml",
+        "label": "red wine"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-beef-from-cube",
+        "qty": 500,
+        "unit": "g",
+        "label": "beef stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "thyme-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "dried thyme"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "The night before, cover the borlotti beans with plenty of cold water and leave to soak for 8 to 12 hours.",
+      "Drain the beans, put them in a saucepan with fresh water, boil hard for 10 minutes, then simmer for 30 minutes and drain. They finish cooking in the stew.",
+      "Heat the oven to 160°C (140°C fan). Cut the beef into 4 cm chunks, toss in the flour with half the salt and the black pepper, and brown in batches in the olive oil in a casserole over a high heat. Lift out.",
+      "Lower the heat and cook the chopped onion, carrots and celery for 8 minutes. Add the crushed garlic and tomato purée for 1 minute, then pour in the red wine and bubble for 2 minutes, scraping the bottom of the pan.",
+      "Return the beef with the beef stock, dried thyme, the part-cooked beans and the rest of the salt. Bring to a simmer, cover and cook in the oven for 2 hours until the beef is tender, adding a splash of water if it gets dry."
+    ],
+    "notes": "Stewing beef is chuck, lean and fat, weighed raw. Borlotti beans are weighed dry; 150 g dry gives about 370 g cooked. Weigh the cooked batch in the app if you want to log by weight rather than by serving."
+  },
+  {
+    "key": "beef-meatballs-in-tomato-sauce",
+    "name": "Beef meatballs in tomato sauce",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/beef-meatballs-in-tomato-sauce"
+    ],
+    "summary": "Beef and Parmesan meatballs browned and simmered in a basil and passata sauce.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 35,
+    "equipment": [
+      "mixing bowl",
+      "large deep frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "beef-mince-10-fat-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "beef mince"
+      },
+      {
+        "ref": "item",
+        "ref_key": "breadcrumbs-dried-plain-as-sold",
+        "qty": 40,
+        "unit": "g",
+        "label": "breadcrumbs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parmesan-grated",
+        "qty": 20,
+        "unit": "g",
+        "label": "Parmesan"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-passata",
+        "qty": 500,
+        "unit": "g",
+        "label": "passata"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "basil-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "basil"
+      }
+    ],
+    "method": [
+      "In a bowl mix the beef mince, breadcrumbs, beaten egg, Parmesan, chopped parsley, a third of the crushed garlic, half the salt and the black pepper. Roll into about 20 meatballs.",
+      "Heat half the olive oil in a large deep frying pan and brown the meatballs all over for 6 to 8 minutes. Lift out.",
+      "Add the rest of the olive oil and the finely chopped onion and cook for 6 minutes, then add the rest of the garlic for 1 minute.",
+      "Pour in the passata with the oregano and the rest of the salt, bring to a simmer and return the meatballs. Cover and simmer gently for 20 minutes until cooked through, then tear over the basil."
+    ],
+    "notes": "Beef mince is 10% fat, weighed raw. Pasta or bread is left to the diary. Weigh the cooked batch in the app if you want to log by weight rather than by serving."
+  },
+  {
+    "key": "beef-burger",
+    "name": "Beef burger",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/beef-burger"
+    ],
+    "summary": "Seasoned 15% fat beef patties griddled and served in buns with lettuce, tomato and red onion.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 10,
+    "equipment": [
+      "griddle pan, frying pan or barbecue"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "grill"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "beef-mince-15-fat-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "beef mince"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 5,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bun-burger-white-as-sold",
+        "qty": 4,
+        "unit": "p:1 roll 1 serving",
+        "label": "burger buns"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lettuce-iceberg-raw",
+        "qty": 40,
+        "unit": "g",
+        "label": "lettuce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "tomato"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 40,
+        "unit": "g",
+        "label": "red onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cheddar",
+        "qty": 4,
+        "unit": "p:1 slice (1 oz)",
+        "label": "cheddar",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "pickled-cucumber-dill",
+        "qty": 40,
+        "unit": "g",
+        "label": "gherkins",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "ketchup-tomato",
+        "qty": 40,
+        "unit": "g",
+        "label": "ketchup",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Divide the beef mince into 4 and shape into patties about 1.5 cm thick, slightly wider than the burger buns. Press a shallow dip in the middle of each so they cook flat. Season both sides with the salt and black pepper.",
+      "Heat a griddle pan until very hot, brush the patties with the vegetable oil and cook for 3 to 4 minutes a side until cooked through. If using cheddar, lay a slice on each for the last minute.",
+      "Toast the cut sides of the buns and fill with the lettuce, sliced tomato, thinly sliced red onion and the burgers, adding gherkins and ketchup if you like."
+    ],
+    "notes": "Beef mince is 15% fat, weighed raw (about 125 g per patty). Cheddar, gherkins and ketchup are optional lines."
+  },
+  {
+    "key": "steak-with-potatoes",
+    "name": "Steak with potatoes",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/steak-with-potatoes"
+    ],
+    "summary": "Pan-fried sirloin steaks basted with garlic and thyme butter, with rosemary crushed new potatoes.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 30,
+    "equipment": [
+      "saucepan",
+      "heavy frying pan"
+    ],
+    "tags": [
+      "dinner"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "beef-sirloin-steak-lean-fat-raw",
+        "qty": 360,
+        "unit": "g",
+        "label": "sirloin steaks"
+      },
+      {
+        "ref": "item",
+        "ref_key": "potato-new-raw",
+        "qty": 400,
+        "unit": "g",
+        "label": "new potatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 10,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "thyme-fresh",
+        "qty": 2,
+        "unit": "g",
+        "label": "thyme"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rosemary-fresh",
+        "qty": 2,
+        "unit": "g",
+        "label": "rosemary"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rocket-raw",
+        "qty": 40,
+        "unit": "g",
+        "label": "rocket",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Boil the new potatoes in a pan of water for 15 to 18 minutes until tender, then drain. Take the sirloin steaks out of the fridge while they cook.",
+      "Lightly crush each potato with a fork, then fry in half the olive oil with the chopped rosemary and half the salt for 6 to 8 minutes until crisp at the edges. Keep warm.",
+      "Rub the steaks with the rest of the olive oil and season with the rest of the salt and the black pepper. Cook in a very hot heavy frying pan for 2 to 3 minutes a side for medium-rare, longer if you prefer.",
+      "For the last minute add the butter, the lightly crushed garlic and the thyme and spoon the foaming butter over the steaks. Rest for 5 minutes and serve with the potatoes, and the rocket if you like."
+    ],
+    "notes": "Sirloin is lean and fat, weighed raw with the outer fat strip on (two 180 g steaks). If you cut the fat off and leave it, switch the steak line to the lean-only sirloin record. The rocket is optional."
+  },
+  {
+    "key": "beef-stir-fry",
+    "name": "Beef stir-fry",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/beef-stir-fry"
+    ],
+    "summary": "Strips of lean sirloin and broccoli stir-fried in a ginger, garlic and oyster sauce glaze.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 10,
+    "equipment": [
+      "wok or large frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "quick",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "beef-sirloin-steak-lean-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "beef"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cornflour-cornstarch-as-sold",
+        "qty": 8,
+        "unit": "g",
+        "label": "cornflour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "soy-sauce-reduced-salt",
+        "qty": 25,
+        "unit": "ml",
+        "label": "soy sauce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oyster-sauce",
+        "qty": 30,
+        "unit": "g",
+        "label": "oyster sauce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 4,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 60,
+        "unit": "ml",
+        "label": "water"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 15,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "broccoli-raw",
+        "qty": 250,
+        "unit": "g",
+        "label": "broccoli"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 30,
+        "unit": "g",
+        "label": "spring onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 10,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sesame",
+        "qty": 5,
+        "unit": "g",
+        "label": "sesame oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-jasmine-dry",
+        "qty": 150,
+        "unit": "g",
+        "label": "jasmine rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Slice the beef thinly across the grain and toss with half the cornflour and 1 tbsp of the soy sauce.",
+      "Mix the rest of the soy sauce and cornflour with the oyster sauce, sugar and water to make the sauce.",
+      "Heat half the vegetable oil in a wok over a high heat and stir-fry the beef in two batches for 1 to 2 minutes until browned. Lift out.",
+      "Add the rest of the vegetable oil and stir-fry the broccoli, cut into small florets, for 3 minutes with a splash of water. Add the sliced garlic, ginger and spring onions for 1 minute.",
+      "Return the beef, pour in the sauce and toss for 1 minute until glossy. Drizzle with the sesame oil. If serving with jasmine rice, cook it in boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Sirloin is lean only (trimmed of visible fat), weighed raw. Rice is an optional line."
+  },
+  {
+    "key": "pork-stir-fry",
+    "name": "Sweet and sour pork stir-fry",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/pork-stir-fry"
+    ],
+    "summary": "Lean pork loin strips stir-fried with peppers, onion and pineapple in a homemade sweet and sour sauce.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 12,
+    "equipment": [
+      "wok or large frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "quick",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "pork-loin-lean-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "pork"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cornflour-cornstarch-as-sold",
+        "qty": 15,
+        "unit": "g",
+        "label": "cornflour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "soy-sauce-shoyu",
+        "qty": 15,
+        "unit": "ml",
+        "label": "soy sauce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 15,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-green-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "green pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 8,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pineapple-tinned-juice-drained",
+        "qty": 120,
+        "unit": "g",
+        "label": "pineapple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ketchup-tomato",
+        "qty": 30,
+        "unit": "g",
+        "label": "ketchup"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vinegar-cider",
+        "qty": 20,
+        "unit": "ml",
+        "label": "cider vinegar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-brown-soft-as-sold",
+        "qty": 10,
+        "unit": "g",
+        "label": "brown sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 60,
+        "unit": "ml",
+        "label": "water"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-jasmine-dry",
+        "qty": 150,
+        "unit": "g",
+        "label": "jasmine rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Cut the pork into thin strips and toss with 10 g of the cornflour and half the soy sauce.",
+      "Mix the ketchup, cider vinegar, brown sugar, the rest of the soy sauce and cornflour and the water to make the sauce.",
+      "Heat half the vegetable oil in a wok over a high heat and stir-fry the pork for 3 to 4 minutes until browned and cooked through. Lift out.",
+      "Add the rest of the vegetable oil and stir-fry the red pepper, green pepper and onion, all cut into chunks, for 3 minutes. Add the sliced garlic and ginger and the drained pineapple for 1 minute.",
+      "Return the pork, pour in the sauce and toss for 1 to 2 minutes until thick and glossy. If serving with jasmine rice, cook it in boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Pork loin is lean only, weighed raw. Pineapple is tinned in juice, weighed drained. Rice is an optional line."
+  },
+  {
+    "key": "pork-chops-with-apple-sauce",
+    "name": "Pork chops with apple sauce",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/pork-chops-with-apple-sauce"
+    ],
+    "summary": "Thyme-seasoned pork loin chops pan-fried and served with a quick homemade apple sauce.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 20,
+    "equipment": [
+      "small saucepan",
+      "frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "quick"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "pork-chop-lean-fat-raw",
+        "qty": 500,
+        "unit": "whole",
+        "label": "pork chops"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "thyme-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "dried thyme"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cooking-apple-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "cooking apple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 10,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 10,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 30,
+        "unit": "ml",
+        "label": "water"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 5,
+        "unit": "ml",
+        "label": "lemon juice"
+      }
+    ],
+    "method": [
+      "Peel, core and chop the cooking apple and put it in a small saucepan with the sugar, lemon juice and water. Cover and cook gently for 8 to 10 minutes until it collapses, then beat in the butter.",
+      "Snip the fat on the pork chops in a few places so they stay flat. Rub with the olive oil, dried thyme, salt and black pepper.",
+      "Fry in a hot frying pan for 4 to 5 minutes a side until golden and cooked through, with the juices running clear. Rest for 3 minutes and serve with the apple sauce."
+    ],
+    "notes": "Pork loin chops are lean and fat, weighed raw on the bone (two chops of about 250 g); the app counts the edible part. Potatoes or vegetables on the side are left to the diary."
+  },
+  {
+    "key": "sausage-and-bean-casserole",
+    "name": "Sausage and bean casserole",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/sausage-and-bean-casserole"
+    ],
+    "summary": "Browned pork sausages simmered with cannellini beans, peppers and smoked paprika in a tomato sauce.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 45,
+    "equipment": [
+      "large casserole or deep frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "one-pan",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "pork-sausage-us-raw",
+        "qty": 400,
+        "unit": "g",
+        "label": "pork sausages"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 2,
+        "unit": "p:1 tsp",
+        "label": "smoked paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-paste",
+        "qty": 15,
+        "unit": "g",
+        "label": "tomato purée"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 200,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cannellini-beans-canned-drained",
+        "qty": 480,
+        "unit": "g",
+        "label": "cannellini beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Brown the pork sausages in the olive oil in a large casserole over a medium heat for 8 to 10 minutes, turning, then lift out and cut each into three.",
+      "Cook the sliced onion and red pepper in the same pan for 8 minutes until soft, then add the crushed garlic and smoked paprika for 1 minute.",
+      "Add the chopped tomatoes, tomato purée, chicken stock and black pepper (the sausages and stock bring enough salt), return the sausages and simmer for 15 minutes.",
+      "Stir in the drained cannellini beans and simmer for 10 minutes more until thick. Scatter with the parsley."
+    ],
+    "notes": "Sausages are fresh pork sausages, weighed raw (about 6 to 7). The catalogue record is a pork sausage without rusk, which is close to Maltese zalzett; UK-style sausages with rusk have a little more carbohydrate, so use the pack label if you can. Cannellini beans are tinned, weighed drained. Weigh the cooked batch in the app if you want to log by weight rather than by serving."
+  },
+  {
+    "key": "sausage-traybake",
+    "name": "Sausage traybake",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/sausage-traybake"
+    ],
+    "summary": "Pork sausages roasted on one tray with peppers, red onion, cherry tomatoes, rosemary and balsamic, with new potatoes if you want them.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 45,
+    "equipment": [
+      "large roasting tin"
+    ],
+    "tags": [
+      "dinner",
+      "traybake"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "pork-sausage-us-raw",
+        "qty": 400,
+        "unit": "g",
+        "label": "pork sausages"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "red onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "red peppers"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-yellow-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "yellow pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-cherry-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "cherry tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 15,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rosemary-fresh",
+        "qty": 3,
+        "unit": "g",
+        "label": "rosemary"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vinegar-balsamic",
+        "qty": 15,
+        "unit": "ml",
+        "label": "balsamic vinegar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "potato-new-raw",
+        "qty": 600,
+        "unit": "g",
+        "label": "new potatoes",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). If you are adding the new potatoes, halve them and roast in a large roasting tin with 1 tsp of the olive oil for 15 minutes first.",
+      "Cut the red onions into wedges and the red peppers and yellow pepper into chunks. Add to the tin with the pork sausages, the rest of the olive oil, the rosemary leaves, salt and black pepper, and toss.",
+      "Roast for 20 minutes, turn the sausages, add the cherry tomatoes and drizzle over the balsamic vinegar. Roast for 10 to 15 minutes more until the sausages are browned and cooked through."
+    ],
+    "notes": "Sausages are fresh pork sausages without rusk, weighed raw; check the pack label for UK-style sausages. The potatoes are optional so the traybake can be logged on its own."
+  },
+  {
+    "key": "pork-meatballs",
+    "name": "Ginger pork meatballs",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/pork-meatballs"
+    ],
+    "summary": "Pork meatballs with ginger, garlic and spring onion, baked and tossed in a sticky soy and honey glaze.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 25,
+    "equipment": [
+      "mixing bowl",
+      "baking tray",
+      "baking paper",
+      "small saucepan"
+    ],
+    "tags": [
+      "dinner",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "pork-mince-16-fat-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "pork mince"
+      },
+      {
+        "ref": "item",
+        "ref_key": "breadcrumbs-dried-plain-as-sold",
+        "qty": 30,
+        "unit": "g",
+        "label": "breadcrumbs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 40,
+        "unit": "g",
+        "label": "spring onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "soy-sauce-shoyu",
+        "qty": 30,
+        "unit": "ml",
+        "label": "soy sauce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 25,
+        "unit": "g",
+        "label": "honey"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vinegar-cider",
+        "qty": 10,
+        "unit": "ml",
+        "label": "cider vinegar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cornflour-cornstarch-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "cornflour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 60,
+        "unit": "ml",
+        "label": "water"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 10,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sesame-seeds",
+        "qty": 5,
+        "unit": "g",
+        "label": "sesame seeds"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-jasmine-dry",
+        "qty": 300,
+        "unit": "g",
+        "label": "jasmine rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan) and line a baking tray. Mix the pork mince with the breadcrumbs, beaten egg, most of the finely sliced spring onions, half the grated garlic and ginger and 1 tbsp of the soy sauce. Roll into about 20 balls.",
+      "Set them on the tray, brush with the vegetable oil and bake for 18 to 20 minutes until browned and cooked through.",
+      "Meanwhile put the rest of the soy sauce, garlic and ginger in a small saucepan with the honey, cider vinegar and the cornflour mixed into the water. Simmer, stirring, for 2 minutes until thick.",
+      "Toss the meatballs in the glaze and scatter with the sesame seeds and the rest of the spring onions. If serving with jasmine rice, cook it in boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Pork mince is 16% fat, weighed raw. Rice is an optional line. Weigh the cooked batch in the app if you want to log by weight rather than by serving."
+  },
+  {
+    "key": "lamb-kofta",
+    "name": "Lamb kofta",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/lamb-kofta"
+    ],
+    "summary": "Spiced lamb mince shaped onto skewers and grilled, with a yogurt and cucumber sauce and pitta if you like.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 12,
+    "equipment": [
+      "mixing bowl",
+      "8 skewers",
+      "griddle pan or grill"
+    ],
+    "tags": [
+      "dinner",
+      "grill",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "lamb-mince-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "lamb mince"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "ground coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mint-fresh",
+        "qty": 5,
+        "unit": "g",
+        "label": "mint"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 5,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 150,
+        "unit": "g",
+        "label": "Greek yogurt",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "cucumber-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "cucumber",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-pitta-white-as-sold",
+        "qty": 240,
+        "unit": "g",
+        "label": "pitta",
+        "optional": true
+      }
+    ],
+    "method": [
+      "If you are using wooden skewers, soak them in water for 30 minutes.",
+      "Grate the onion and squeeze out the juice. Mix it into the lamb mince with the crushed garlic, cumin, ground coriander, paprika, cinnamon, half the chopped mint, the parsley, salt and black pepper.",
+      "Divide into 8 and press each portion into a long sausage shape around a skewer. Chill for 15 minutes if you have time.",
+      "Brush with the olive oil and cook on a hot griddle or under a hot grill for 8 to 10 minutes, turning, until browned and cooked through.",
+      "If you like, grate the cucumber into the Greek yogurt with the rest of the mint, and warm the pitta to serve alongside."
+    ],
+    "notes": "Lamb mince is regular fat, weighed raw; some fat drips off on the grill, so the figures lean high. The yogurt sauce and pitta are optional lines."
+  },
+  {
+    "key": "lamb-and-chickpea-stew",
+    "name": "Lamb and chickpea stew",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/lamb-and-chickpea-stew"
+    ],
+    "summary": "Diced lamb leg slow-cooked with warm spices, tomatoes, chickpeas cooked from dry and dried apricots.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 120,
+    "equipment": [
+      "large saucepan",
+      "large casserole with lid"
+    ],
+    "tags": [
+      "dinner",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chickpeas-dry",
+        "qty": 150,
+        "unit": "g",
+        "label": "chickpeas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lamb-leg-lean-fat-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "lamb"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 15,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 10,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "ground coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "turmeric-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "turmeric"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 400,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "apricots-dried",
+        "qty": 60,
+        "unit": "g",
+        "label": "dried apricots"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 10,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "couscous-dry",
+        "qty": 240,
+        "unit": "g",
+        "label": "couscous",
+        "optional": true
+      }
+    ],
+    "method": [
+      "The night before, cover the chickpeas with plenty of cold water and soak for 8 to 12 hours. Drain, cover with fresh water, boil for 10 minutes, then simmer for 40 minutes and drain. They finish cooking in the stew.",
+      "Cut the lamb into 3 cm pieces, season with half the salt and the black pepper and brown in batches in the olive oil in a casserole over a high heat. Lift out.",
+      "Lower the heat and cook the chopped onion for 8 minutes. Add the grated garlic and ginger, cumin, ground coriander, cinnamon, paprika and turmeric and cook for 1 minute.",
+      "Return the lamb with the chopped tomatoes, chicken stock, part-cooked chickpeas and the rest of the salt. Cover and simmer gently for 1 hour, then add the halved dried apricots and cook for 20 to 30 minutes more until the lamb is tender.",
+      "Stir in the lemon juice and scatter with the coriander. If serving with couscous, pour the same volume of boiling water over it, cover for 5 minutes and fluff with a fork."
+    ],
+    "notes": "Lamb is diced leg, lean and fat (trimmed to a thin fat layer), weighed raw. Chickpeas are weighed dry; 150 g dry gives about 350 g cooked. Couscous is an optional line. Weigh the cooked batch in the app if you want to log by weight rather than by serving."
+  },
+  {
+    "key": "lamb-chops-with-vegetables",
+    "name": "Lamb chops with roast vegetables",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/lamb-chops-with-vegetables"
+    ],
+    "summary": "Rosemary and garlic lamb loin chops grilled and served on roasted courgette, pepper, red onion and cherry tomatoes.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 35,
+    "equipment": [
+      "roasting tin",
+      "griddle pan or grill"
+    ],
+    "tags": [
+      "dinner"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "lamb-loin-chop-lean-fat-raw",
+        "qty": 400,
+        "unit": "whole",
+        "label": "lamb chops"
+      },
+      {
+        "ref": "item",
+        "ref_key": "courgette-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "courgette"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "red onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-cherry-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "cherry tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rosemary-fresh",
+        "qty": 3,
+        "unit": "g",
+        "label": "rosemary"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 10,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Cut the courgette, red pepper and red onion into chunks and toss in a roasting tin with most of the olive oil, the oregano and half the salt. Roast for 20 minutes, add the cherry tomatoes and roast for 10 minutes more.",
+      "Meanwhile rub the lamb chops with the rest of the olive oil, the crushed garlic, chopped rosemary, the rest of the salt and the black pepper.",
+      "Cook the chops on a very hot griddle or under a hot grill for 3 to 4 minutes a side for pink, longer if you prefer. Rest for 3 minutes.",
+      "Squeeze the lemon juice over the vegetables and serve with the chops."
+    ],
+    "notes": "Lamb loin chops are lean and fat, weighed raw on the bone (four chops of about 100 g); the app counts the edible part. If you cut off the fat and leave it, switch the chop line to the lean-only record."
+  },
+  {
+    "key": "slow-cooked-beef-ragu",
+    "name": "Slow-cooked beef ragù",
+    "name_mt": null,
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/slow-cooked-beef-ragu"
+    ],
+    "summary": "Chuck beef braised for three hours in red wine and tomatoes until it falls apart, then shredded into the sauce.",
+    "servings": 6,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 190,
+    "equipment": [
+      "large heavy casserole with lid"
+    ],
+    "tags": [
+      "dinner",
+      "batch-friendly",
+      "freezer-friendly",
+      "slow-cooked"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "stewing-beef-raw",
+        "qty": 800,
+        "unit": "g",
+        "label": "beef"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "carrot-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "carrot"
+      },
+      {
+        "ref": "item",
+        "ref_key": "celery-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "celery"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 12,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-paste",
+        "qty": 30,
+        "unit": "g",
+        "label": "tomato purée"
+      },
+      {
+        "ref": "item",
+        "ref_key": "wine-red",
+        "qty": 200,
+        "unit": "ml",
+        "label": "red wine"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 800,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-beef-from-cube",
+        "qty": 250,
+        "unit": "g",
+        "label": "beef stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rosemary-fresh",
+        "qty": 3,
+        "unit": "g",
+        "label": "rosemary"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tagliatelle-egg-dry",
+        "qty": 450,
+        "unit": "g",
+        "label": "tagliatelle",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "parmesan-grated",
+        "qty": 30,
+        "unit": "g",
+        "label": "Parmesan",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the oven to 150°C (130°C fan). Cut the beef into large chunks, season with half the salt and the black pepper and brown well in batches in the olive oil in a heavy casserole. Lift out.",
+      "Lower the heat and cook the finely chopped onion, carrot and celery for 10 minutes until soft. Add the crushed garlic and tomato purée and cook for 2 minutes.",
+      "Pour in the red wine and bubble for 3 minutes, then add the chopped tomatoes, beef stock, rosemary sprigs and the rest of the salt. Return the beef, bring to a simmer, cover and cook in the oven for 3 hours until the beef falls apart.",
+      "Lift out the rosemary stalks and shred the beef into the sauce with two forks. If serving with tagliatelle, cook it in boiling water, toss with the ragù and finish with the Parmesan."
+    ],
+    "notes": "Chuck stewing beef, lean and fat, weighed raw. Tagliatelle and Parmesan are optional lines. Weigh the cooked batch in the app if you want to log by weight rather than by serving."
+  },
+  {
+    "key": "rabbit-stew-garlic-wine",
+    "name": "Rabbit stew with garlic and white wine",
+    "name_mt": "Fenek bit-tewm u l-inbid",
+    "family": "meat",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "meat/rabbit-stew"
+    ],
+    "summary": "Jointed rabbit browned in olive oil and braised slowly with plenty of garlic, white wine, carrots, rosemary and peas.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 100,
+    "equipment": [
+      "large deep frying pan or casserole with lid"
+    ],
+    "tags": [
+      "dinner",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "rabbit-raw",
+        "qty": 750,
+        "unit": "g",
+        "label": "rabbit"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 15,
+        "unit": "g",
+        "label": "flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 30,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 20,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "carrot-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "carrots"
+      },
+      {
+        "ref": "item",
+        "ref_key": "wine-white",
+        "qty": 250,
+        "unit": "ml",
+        "label": "white wine"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 200,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rosemary-fresh",
+        "qty": 3,
+        "unit": "g",
+        "label": "rosemary"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peas-frozen",
+        "qty": 150,
+        "unit": "g",
+        "label": "peas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "potato-white-raw",
+        "qty": 600,
+        "unit": "g",
+        "label": "potatoes",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Season the rabbit pieces with half the salt and the black pepper and dust with the flour. Brown them in the olive oil in a large casserole over a medium-high heat, in batches, for 8 to 10 minutes. Lift out.",
+      "Lower the heat and cook the chopped onion and sliced carrots for 6 minutes. Add the garlic, peeled and lightly crushed (about 7 cloves), and cook for 2 minutes until fragrant.",
+      "Pour in the white wine and bubble for 3 minutes, then add the chicken stock, rosemary and the rest of the salt. Return the rabbit, cover and simmer gently for 1 hour, turning the pieces now and then.",
+      "If serving with potatoes, add them peeled and cut into chunks now. Add the peas and cook uncovered for 20 to 25 minutes more, until the rabbit comes away from the bone and the sauce has reduced."
+    ],
+    "notes": "Rabbit is weighed as edible meat off the bone (farmed rabbit); a 1.2 kg rabbit jointed on the bone gives roughly 700 to 800 g. This is the wine and garlic way of cooking fenek; the tomato-based stuffat tal-fenek is in the Maltese recipes. Potatoes are an optional line. Weigh the cooked batch in the app if you want to log by weight rather than by serving."
+  }
+]

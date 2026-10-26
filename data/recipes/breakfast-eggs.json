@@ -1,0 +1,2133 @@
+[
+  {
+    "key": "scrambled-eggs-on-toast",
+    "name": "Scrambled eggs on toast",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/scrambled-eggs-on-toast"
+    ],
+    "summary": "Soft, slowly stirred scrambled eggs on buttered wholemeal toast.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 5,
+    "equipment": [
+      "non-stick frying pan",
+      "toaster"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 3,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 15,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-wholemeal-sliced-as-sold",
+        "qty": 2,
+        "unit": "p:1 slice",
+        "label": "wholemeal bread"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 10,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chives-fresh",
+        "qty": 2,
+        "unit": "g",
+        "label": "chives",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Beat the eggs with the milk, salt and black pepper.",
+      "Toast the wholemeal bread and spread with half the butter.",
+      "Melt the rest of the butter in a non-stick pan over a low heat, add the eggs and stir slowly with a spatula for 2 to 3 minutes, taking the pan off the heat while they are still slightly wet.",
+      "Pile the eggs onto the toast and scatter with snipped chives if using."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "cheese-omelette",
+    "name": "Cheese omelette",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/cheese-omelette"
+    ],
+    "summary": "A three-egg omelette cooked in butter and folded over grated cheddar.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 4,
+    "equipment": [
+      "small non-stick frying pan"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 3,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 7,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cheddar",
+        "qty": 25,
+        "unit": "g",
+        "label": "cheddar"
+      }
+    ],
+    "method": [
+      "Beat the eggs with the salt and black pepper, and grate the cheddar.",
+      "Melt the butter in a small non-stick frying pan over a medium heat until foaming, then pour in the eggs.",
+      "Stir gently for a few seconds, then tilt the pan and draw the set edges into the middle so the raw egg runs underneath; cook for about 2 minutes until just set.",
+      "Scatter the cheddar over one half, fold the omelette over and slide it onto a plate."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "mushroom-omelette",
+    "name": "Mushroom omelette",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "variant",
+    "parent_key": "cheese-omelette",
+    "req": [
+      "breakfast-eggs/mushroom-omelette"
+    ],
+    "summary": "A three-egg omelette folded over golden fried mushrooms and parsley.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 8,
+    "equipment": [
+      "small non-stick frying pan"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "mushroom-chestnut-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "mushrooms"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 12,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 3,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 3,
+        "unit": "g",
+        "label": "parsley",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Slice the mushrooms. Melt half the butter in a small non-stick frying pan and fry them over a high heat for 4 to 5 minutes until golden, then tip onto a plate.",
+      "Beat the eggs with the salt and black pepper.",
+      "Melt the rest of the butter in the pan, pour in the eggs and draw the set edges into the middle for about 2 minutes until just set.",
+      "Spoon the mushrooms over one half, add chopped parsley if using, fold and serve."
+    ],
+    "notes": "Variant of the cheese omelette: fried mushrooms replace the cheddar."
+  },
+  {
+    "key": "spinach-feta-omelette",
+    "name": "Spinach omelette",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "variant",
+    "parent_key": "cheese-omelette",
+    "req": [
+      "breakfast-eggs/spinach-omelette"
+    ],
+    "summary": "A three-egg omelette folded over wilted spinach and crumbled feta.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 5,
+    "equipment": [
+      "small non-stick frying pan"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 40,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 3,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 7,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "feta",
+        "qty": 20,
+        "unit": "g",
+        "label": "feta"
+      }
+    ],
+    "method": [
+      "Wilt the spinach in a dry small non-stick frying pan for a minute, squeeze out any liquid and set aside.",
+      "Beat the eggs with the black pepper; the feta brings the salt.",
+      "Melt the butter in the pan, pour in the eggs and draw the set edges into the middle for about 2 minutes until just set.",
+      "Scatter the spinach and crumbled feta over one half, fold and serve."
+    ],
+    "notes": "Variant of the cheese omelette: spinach and feta replace the cheddar."
+  },
+  {
+    "key": "spanish-tortilla",
+    "name": "Spanish tortilla",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/spanish-tortilla"
+    ],
+    "summary": "Thick potato and onion omelette, slow-cooked in olive oil and flipped; good warm or cold.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 30,
+    "equipment": [
+      "20 cm non-stick frying pan",
+      "large bowl"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "batch-friendly",
+      "packed-lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "potato-white-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "potatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 30,
+        "unit": "ml",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 3,
+        "unit": "g",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 4,
+        "unit": "p:1 large",
+        "label": "eggs"
+      }
+    ],
+    "method": [
+      "Peel the potatoes and slice them thinly; halve and thinly slice the onion.",
+      "Heat the olive oil in a 20 cm non-stick frying pan, add the potatoes, onion and half the salt and cook gently, covered, for 15 to 20 minutes, turning now and then, until soft but not browned.",
+      "Beat the eggs with the rest of the salt in a large bowl, tip in the potatoes and onion with their oil and leave for 5 minutes.",
+      "Return everything to the pan over a low heat and cook for 5 to 6 minutes until the edges set, then put a plate on top, flip, slide the tortilla back in and cook for 2 to 3 minutes more.",
+      "Serve warm or at room temperature; the second portion keeps in the fridge for 2 days."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "courgette-pepper-frittata",
+    "name": "Courgette and pepper frittata",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/frittata"
+    ],
+    "summary": "Eggs and Parmesan set over soft courgette, red pepper and spring onion, finished under the grill.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 15,
+    "equipment": [
+      "20 cm ovenproof frying pan",
+      "grill"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "batch-friendly",
+      "packed-lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "courgette-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "courgette"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 30,
+        "unit": "g",
+        "label": "spring onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "ml",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 5,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parmesan-grated",
+        "qty": 20,
+        "unit": "g",
+        "label": "Parmesan"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 2,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Heat the grill to high. Dice the courgette and red pepper and slice the spring onions.",
+      "Heat the olive oil in a 20 cm ovenproof frying pan and fry the courgette and red pepper for 5 minutes until soft, adding the spring onions for the last minute.",
+      "Beat the eggs with the Parmesan, salt and black pepper, pour over the vegetables and cook over a low heat for 5 to 6 minutes until the base and edges are set.",
+      "Slide the pan under the grill for 2 to 3 minutes until the top is set and golden, then cut into wedges."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "shakshuka",
+    "name": "Shakshuka",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/shakshuka"
+    ],
+    "summary": "Eggs poached in a cumin and paprika pepper-tomato sauce, with crusty bread for dipping.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 20,
+    "equipment": [
+      "frying pan with lid"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "one-pan",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 1,
+        "unit": "p:1 clove",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "ml",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 1,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-flakes-as-sold",
+        "qty": 0.5,
+        "unit": "g",
+        "label": "chilli flakes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 200,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 3,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-roll-crusty-as-sold",
+        "qty": 60,
+        "unit": "g",
+        "label": "crusty bread"
+      }
+    ],
+    "method": [
+      "Slice the onion and red pepper and crush the garlic.",
+      "Heat the olive oil in a frying pan and cook the onion and red pepper over a medium heat for 6 to 8 minutes until soft.",
+      "Stir in the garlic, cumin, paprika and chilli flakes for 1 minute, then add the chopped tomatoes and salt and simmer for 5 minutes until thickened.",
+      "Make two hollows, crack in the eggs, cover and cook over a low heat for 5 to 7 minutes until the whites are set and the yolks still soft.",
+      "Scatter with chopped parsley and eat with the crusty bread."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "poached-eggs-on-toast",
+    "name": "Poached eggs on toast",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/poached-eggs-on-toast"
+    ],
+    "summary": "Two softly poached eggs on buttered seeded toast.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 5,
+    "equipment": [
+      "deep saucepan",
+      "slotted spoon",
+      "toaster"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-seeded-as-sold",
+        "qty": 2,
+        "unit": "p:1 slice regular",
+        "label": "seeded bread"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 7,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Bring a deep pan of water to a bare simmer. Crack each of the eggs into a cup.",
+      "Stir the water to make a gentle whirlpool, slide in the eggs one at a time and poach for 3 to 4 minutes until the whites are set.",
+      "Meanwhile toast the seeded bread and spread with the butter.",
+      "Lift out the eggs with a slotted spoon, drain on kitchen paper and set on the toast. Season with salt and black pepper."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "egg-and-avocado-toast",
+    "name": "Egg and avocado toast",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/egg-and-avocado-toast"
+    ],
+    "summary": "Sourdough toast with lemony crushed avocado, two fried eggs and chilli flakes.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 4,
+    "equipment": [
+      "non-stick frying pan",
+      "toaster"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "bread-sourdough-as-sold",
+        "qty": 60,
+        "unit": "g",
+        "label": "sourdough"
+      },
+      {
+        "ref": "item",
+        "ref_key": "avocado-raw",
+        "qty": 70,
+        "unit": "g",
+        "label": "avocado"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 5,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 5,
+        "unit": "ml",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-flakes-as-sold",
+        "qty": 0.5,
+        "unit": "g",
+        "label": "chilli flakes"
+      }
+    ],
+    "method": [
+      "Toast the sourdough.",
+      "Mash the avocado with the lemon juice, salt and black pepper, and spread it thickly over the toast.",
+      "Heat the olive oil in a non-stick frying pan, crack in the eggs and fry over a medium heat for about 3 minutes until the whites are set.",
+      "Lay the eggs on the avocado and finish with the chilli flakes."
+    ],
+    "notes": "About half a medium avocado. Weigh the flesh, or log the whole avocado weight with skin and stone."
+  },
+  {
+    "key": "breakfast-egg-wrap",
+    "name": "Breakfast egg wrap",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/breakfast-egg-wrap"
+    ],
+    "summary": "A tortilla cooked straight onto a thin layer of egg, then rolled around cheddar, spinach and tomato.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 4,
+    "equipment": [
+      "non-stick frying pan"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cheddar",
+        "qty": 20,
+        "unit": "g",
+        "label": "cheddar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-raw",
+        "qty": 50,
+        "unit": "g",
+        "label": "tomato"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 5,
+        "unit": "ml",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tortilla-wrap-wholemeal-as-sold",
+        "qty": 1,
+        "unit": "p:1 tortilla 1 serving",
+        "label": "tortilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 20,
+        "unit": "g",
+        "label": "spinach"
+      }
+    ],
+    "method": [
+      "Beat the eggs with the salt and black pepper; grate the cheddar and slice the tomato.",
+      "Heat the olive oil in a non-stick frying pan about the size of the tortilla, pour in the eggs and swirl to cover the base.",
+      "While the egg is still runny on top, press the tortilla onto it and cook for 1 minute, then flip and cook the tortilla side for 30 seconds.",
+      "Slide it out egg side up, scatter over the cheddar, spinach and tomato, roll up tightly and cut in half."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "breakfast-egg-muffin",
+    "name": "Breakfast egg sandwich",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/breakfast-egg-sandwich"
+    ],
+    "summary": "Toasted English muffin with a fried egg, back bacon and a slice of cheese.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 2,
+    "cook_min": 6,
+    "equipment": [
+      "frying pan",
+      "toaster"
+    ],
+    "tags": [
+      "breakfast"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "bacon-back-lean-raw",
+        "qty": 1,
+        "unit": "p:2 slices (6 per 6-oz pkg.)",
+        "label": "back bacon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 3,
+        "unit": "ml",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "english-muffin-plain-as-sold",
+        "qty": 1,
+        "unit": "p:1 muffin",
+        "label": "English muffin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 5,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cheese-slices-processed",
+        "qty": 1,
+        "unit": "p:1 slice (3/4 oz)",
+        "label": "cheese slice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ketchup-tomato",
+        "qty": 10,
+        "unit": "g",
+        "label": "ketchup",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Dry-fry the back bacon in a frying pan for 3 to 4 minutes, turning once, then move it to a plate.",
+      "Add the olive oil to the pan and fry the egg for about 3 minutes, flipping it briefly at the end if you like the yolk firm.",
+      "Meanwhile split and toast the English muffin and spread with the butter.",
+      "Layer the cheese slice, back bacon and egg in the muffin, add ketchup if using, and close."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "french-toast",
+    "name": "French toast",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/french-toast"
+    ],
+    "summary": "White bread soaked in cinnamon and vanilla egg custard, fried in butter and served with maple syrup.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 3,
+    "cook_min": 6,
+    "equipment": [
+      "shallow dish",
+      "frying pan"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 60,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "vanilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-white-sliced-as-sold",
+        "qty": 2,
+        "unit": "p:1 slice, large",
+        "label": "white bread"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 10,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "maple-syrup-as-sold",
+        "qty": 15,
+        "unit": "ml",
+        "label": "maple syrup"
+      },
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "strawberries",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Whisk the egg, milk, cinnamon and vanilla in a shallow dish.",
+      "Soak the white bread in the mixture for about 20 seconds a side so it takes up most of it.",
+      "Melt the butter in a frying pan over a medium heat and fry the slices for 2 to 3 minutes a side until golden and set.",
+      "Serve drizzled with the maple syrup, with sliced strawberries if you like."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "fluffy-pancakes",
+    "name": "Fluffy pancakes",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/pancakes"
+    ],
+    "summary": "Small, thick self-raising pancakes cooked in butter and stacked with maple syrup.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 10,
+    "equipment": [
+      "bowl",
+      "whisk",
+      "non-stick frying pan"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "flour-self-raising-as-sold",
+        "qty": 60,
+        "unit": "g",
+        "label": "self-raising flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "baking-powder-as-sold",
+        "qty": 1,
+        "unit": "p:0.5 tsp",
+        "label": "baking powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 10,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 70,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "maple-syrup-as-sold",
+        "qty": 20,
+        "unit": "ml",
+        "label": "maple syrup"
+      },
+      {
+        "ref": "item",
+        "ref_key": "blueberries-raw",
+        "qty": 50,
+        "unit": "g",
+        "label": "blueberries",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Mix the self-raising flour, baking powder and sugar in a bowl. Melt the butter.",
+      "Whisk the egg with the milk and half the melted butter, then stir into the flour until just combined; a few lumps are fine.",
+      "Brush a non-stick frying pan with a little of the remaining butter and cook tablespoons of batter over a medium heat for about 2 minutes until bubbles appear, then flip and cook for 1 minute more. Repeat to make about 5 small pancakes.",
+      "Stack and serve with the maple syrup, and blueberries if using."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "banana-oat-pancakes",
+    "name": "Banana oat pancakes",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/banana-oat-pancakes"
+    ],
+    "summary": "Flour-free pancakes blended from banana, eggs and oats.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 10,
+    "equipment": [
+      "blender",
+      "non-stick frying pan"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 40,
+        "unit": "g",
+        "label": "oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "baking-powder-as-sold",
+        "qty": 1,
+        "unit": "p:0.5 tsp",
+        "label": "baking powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-rapeseed",
+        "qty": 5,
+        "unit": "ml",
+        "label": "rapeseed oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 50,
+        "unit": "g",
+        "label": "Greek yogurt",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Blend the banana, eggs, oats, baking powder and cinnamon until smooth, then leave for 5 minutes to thicken.",
+      "Heat a non-stick frying pan over a medium-low heat and brush with a little of the rapeseed oil.",
+      "Spoon in small rounds of batter and cook for 2 minutes until set underneath, then flip carefully and cook for 1 to 2 minutes more. Repeat with the rest, oiling the pan between batches.",
+      "Serve with a spoonful of Greek yogurt if you like."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "classic-waffles",
+    "name": "Waffles",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/waffles"
+    ],
+    "summary": "Crisp waffles from a simple butter batter; spares freeze and reheat in the toaster.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 15,
+    "equipment": [
+      "waffle iron",
+      "bowl",
+      "whisk"
+    ],
+    "tags": [
+      "breakfast",
+      "batch-friendly",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 25,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 100,
+        "unit": "g",
+        "label": "plain flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "baking-powder-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "baking powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 10,
+        "unit": "g",
+        "label": "sugar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 160,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "maple-syrup-as-sold",
+        "qty": 30,
+        "unit": "ml",
+        "label": "maple syrup",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "raspberries-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "raspberries",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the waffle iron and melt the butter.",
+      "Mix the plain flour, baking powder, sugar and salt in a bowl, then whisk in the egg, milk and melted butter to a smooth, thick batter.",
+      "Cook ladlefuls of batter in the waffle iron for 3 to 4 minutes until crisp and golden; this makes about 4 waffles.",
+      "Serve two per person with maple syrup and raspberries if you like. Spare waffles freeze well and reheat in the toaster."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "potato-pepper-breakfast-hash",
+    "name": "Potato and pepper breakfast hash",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/breakfast-hash"
+    ],
+    "summary": "Crisp fried potato cubes with onion, red pepper and paprika, topped with two eggs.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 8,
+    "cook_min": 25,
+    "equipment": [
+      "saucepan",
+      "large frying pan with lid"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "potato-white-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "potatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 70,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 15,
+        "unit": "ml",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 3,
+        "unit": "g",
+        "label": "parsley",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Cut the potatoes into 1 cm cubes, cook them in boiling water for 5 minutes and drain well. Dice the onion and red pepper.",
+      "Heat the olive oil in a large frying pan and fry the potatoes over a medium-high heat for 8 minutes, turning now and then, until crisp.",
+      "Add the onion, red pepper, paprika, salt and black pepper and cook for 5 minutes more.",
+      "Make two hollows, crack in the eggs, cover and cook for 4 to 5 minutes until the whites are set. Scatter with chopped parsley if using."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "baked-eggs-tomatoes-spinach",
+    "name": "Baked eggs with tomatoes and spinach",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/baked-eggs-with-tomatoes"
+    ],
+    "summary": "Eggs baked over roasted cherry tomatoes and wilted spinach with a little cream and Parmesan.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 20,
+    "equipment": [
+      "oven",
+      "small ovenproof dish"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "tomato-cherry-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "cherry tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 1,
+        "unit": "p:1 clove",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 5,
+        "unit": "ml",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 50,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cream-double",
+        "qty": 15,
+        "unit": "ml",
+        "label": "double cream"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parmesan-grated",
+        "qty": 10,
+        "unit": "g",
+        "label": "Parmesan"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-sourdough-as-sold",
+        "qty": 50,
+        "unit": "g",
+        "label": "sourdough"
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Halve the cherry tomatoes and slice the garlic.",
+      "Toss the tomatoes and garlic with the olive oil in a small ovenproof dish and roast for 10 minutes until softened.",
+      "Stir in the spinach so it wilts in the heat, make two hollows and crack in the eggs. Spoon the double cream around them and scatter over the Parmesan and black pepper.",
+      "Bake for 8 to 10 minutes until the whites are set but the yolks are still runny, and serve with the sourdough, toasted, for dipping."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "savoury-egg-muffins",
+    "name": "Savoury egg muffins",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "breakfast-eggs/savoury-egg-muffins"
+    ],
+    "summary": "Six baked egg cups with red pepper, spinach, spring onion and cheddar; two make a serving.",
+    "servings": 3,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 20,
+    "equipment": [
+      "oven",
+      "muffin tin",
+      "bowl"
+    ],
+    "tags": [
+      "breakfast",
+      "snack",
+      "batch-friendly",
+      "packed-lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 5,
+        "unit": "ml",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 40,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 20,
+        "unit": "g",
+        "label": "spring onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cheddar",
+        "qty": 40,
+        "unit": "g",
+        "label": "cheddar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 6,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 30,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 2,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Heat the oven to 180°C (160°C fan) and brush 6 holes of a muffin tin with the olive oil.",
+      "Finely dice the red pepper, chop the spinach, slice the spring onion and grate the cheddar.",
+      "Beat the eggs with the milk, salt and black pepper, then stir in the vegetables and most of the cheddar.",
+      "Divide between the muffin holes, top with the remaining cheddar and bake for 18 to 20 minutes until puffed and set.",
+      "Cool for 5 minutes before turning out. They keep in the fridge for 3 days."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "eggs-benedict",
+    "name": "Eggs Benedict",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "Poached eggs and ham on a toasted English muffin under a quick hollandaise.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 12,
+    "equipment": [
+      "saucepan",
+      "heatproof bowl",
+      "whisk",
+      "toaster"
+    ],
+    "tags": [
+      "breakfast"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 25,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-yolk-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg yolk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 5,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "english-muffin-plain-as-sold",
+        "qty": 1,
+        "unit": "p:1 muffin",
+        "label": "English muffin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ham-cooked-regular-sliced",
+        "qty": 2,
+        "unit": "p:1 slice",
+        "label": "ham"
+      }
+    ],
+    "method": [
+      "For the hollandaise, melt the butter. Whisk the egg yolk and lemon juice in a heatproof bowl set over a pan of barely simmering water, then pour in the melted butter a little at a time, whisking, until thick. Season with the salt and keep warm off the heat.",
+      "Poach the eggs in a pan of barely simmering water for 3 to 4 minutes.",
+      "Meanwhile split and toast the English muffin and warm the ham in a dry frying pan.",
+      "Top each muffin half with ham and a drained egg, then spoon over the hollandaise."
+    ],
+    "notes": "The hollandaise uses one yolk; the white can go into an omelette or the egg muffins."
+  },
+  {
+    "key": "eggs-florentine",
+    "name": "Eggs Florentine",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "variant",
+    "parent_key": "eggs-benedict",
+    "req": [],
+    "summary": "Poached eggs on wilted spinach and toasted English muffin, under hollandaise.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 12,
+    "equipment": [
+      "saucepan",
+      "heatproof bowl",
+      "whisk",
+      "toaster"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 25,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-yolk-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg yolk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 5,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "english-muffin-plain-as-sold",
+        "qty": 1,
+        "unit": "p:1 muffin",
+        "label": "English muffin"
+      }
+    ],
+    "method": [
+      "For the hollandaise, melt the butter. Whisk the egg yolk and lemon juice in a heatproof bowl set over a pan of barely simmering water, then pour in the melted butter a little at a time, whisking, until thick. Season with the salt and keep warm off the heat.",
+      "Wilt the spinach in a dry pan for 1 to 2 minutes, squeeze out the liquid and season with black pepper.",
+      "Poach the eggs in a pan of barely simmering water for 3 to 4 minutes, and toast the English muffin.",
+      "Top each muffin half with spinach and a drained egg, then spoon over the hollandaise."
+    ],
+    "notes": "Variant of eggs Benedict: wilted spinach replaces the ham."
+  },
+  {
+    "key": "turkish-eggs",
+    "name": "Turkish eggs",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "Poached eggs on garlicky Greek yogurt with a paprika and chilli butter, with toasted sourdough.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 8,
+    "equipment": [
+      "saucepan",
+      "small pan",
+      "toaster"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-whole",
+        "qty": 120,
+        "unit": "g",
+        "label": "Greek yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 1,
+        "unit": "p:1 clove",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 dash",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 10,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-flakes-as-sold",
+        "qty": 0.5,
+        "unit": "g",
+        "label": "chilli flakes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "dill-fresh",
+        "qty": 1,
+        "unit": "p:5 sprigs",
+        "label": "dill",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "bread-sourdough-as-sold",
+        "qty": 60,
+        "unit": "g",
+        "label": "sourdough"
+      }
+    ],
+    "method": [
+      "Take the Greek yogurt out of the fridge to lose its chill, stir in the finely grated garlic and salt and spread it over a plate.",
+      "Poach the eggs in a pan of barely simmering water for 3 to 4 minutes.",
+      "Meanwhile melt the butter in a small pan until foaming, then take it off the heat and stir in the paprika and chilli flakes.",
+      "Set the drained eggs on the yogurt, spoon over the spiced butter, scatter with dill if using and serve with the sourdough, toasted."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "huevos-rancheros",
+    "name": "Huevos rancheros",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "Fried eggs on a warm tortilla with cumin black beans, salsa, feta and coriander.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 8,
+    "equipment": [
+      "small saucepan",
+      "frying pan"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "black-beans-canned-drained",
+        "qty": 80,
+        "unit": "g",
+        "label": "black beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 0.5,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tortilla-wrap-plain-as-sold",
+        "qty": 1,
+        "unit": "p:1 tortilla",
+        "label": "tortilla"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 5,
+        "unit": "ml",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salsa-jar",
+        "qty": 60,
+        "unit": "g",
+        "label": "salsa"
+      },
+      {
+        "ref": "item",
+        "ref_key": "feta",
+        "qty": 20,
+        "unit": "g",
+        "label": "feta"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 2,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "avocado-raw",
+        "qty": 40,
+        "unit": "g",
+        "label": "avocado",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Warm the black beans with the cumin in a small pan, mashing a few of them to thicken.",
+      "Warm the tortilla in a dry frying pan for 30 seconds a side and put it on a plate.",
+      "Add the olive oil to the pan and fry the eggs for about 3 minutes until the whites are set.",
+      "Spread the beans over the tortilla, top with the eggs and salsa, then crumble over the feta and add the coriander, with sliced avocado if using."
+    ],
+    "notes": "Feta stands in for Mexican queso fresco, which is not in the catalogue."
+  },
+  {
+    "key": "kedgeree",
+    "name": "Kedgeree",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "base",
+    "parent_key": null,
+    "req": [],
+    "summary": "Curried basmati rice with flaked smoked haddock, boiled eggs, parsley and lemon.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 20,
+    "equipment": [
+      "saucepan",
+      "frying pan"
+    ],
+    "tags": [
+      "breakfast",
+      "lunch"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "rice-basmati-dry",
+        "qty": 70,
+        "unit": "g",
+        "label": "basmati rice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "haddock-smoked",
+        "qty": 120,
+        "unit": "g",
+        "label": "smoked haddock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-salted",
+        "qty": 10,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "curry-powder-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "curry powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 5,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 10,
+        "unit": "ml",
+        "label": "lemon juice"
+      }
+    ],
+    "method": [
+      "Cook the basmati rice in boiling water for 10 to 12 minutes and drain. At the same time boil the eggs for 8 minutes, then cool, peel and quarter them.",
+      "Put the smoked haddock in a frying pan, cover with boiling water and simmer gently for 5 minutes, then drain and flake, removing any bones.",
+      "Melt the butter in the frying pan and soften the chopped onion for 5 minutes, then stir in the curry powder for 1 minute.",
+      "Fold in the rice and fish until hot, then top with the eggs, chopped parsley and lemon juice."
+    ],
+    "notes": "Weigh the haddock without its skin."
+  },
+  {
+    "key": "hard-boiled-eggs",
+    "name": "Hard-boiled eggs",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "component",
+    "parent_key": null,
+    "req": [],
+    "summary": "Eggs simmered for 9 minutes and cooled, for salads, sandwiches and snacks.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 1,
+    "cook_min": 10,
+    "equipment": [
+      "saucepan"
+    ],
+    "tags": [
+      "breakfast",
+      "snack",
+      "batch-friendly",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      }
+    ],
+    "method": [
+      "Lower the eggs into a pan of boiling water and simmer for 9 minutes, or 6 to 7 minutes for a jammy yolk.",
+      "Cool them in cold water for a few minutes, then peel. A serving is one egg; unpeeled, they keep in the fridge for up to a week."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "fried-egg",
+    "name": "Fried egg",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "component",
+    "parent_key": null,
+    "req": [],
+    "summary": "One egg fried in a little olive oil until the white is set and the edges crisp.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 1,
+    "cook_min": 3,
+    "equipment": [
+      "small non-stick frying pan"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 5,
+        "unit": "ml",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      }
+    ],
+    "method": [
+      "Heat the olive oil in a small non-stick frying pan over a medium heat.",
+      "Crack in the egg and fry for 2 to 3 minutes until the white is set and the edges are lightly crisp; spoon a little hot oil over the yolk, or flip it for 20 seconds if you like it firm."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "poached-eggs",
+    "name": "Poached eggs",
+    "name_mt": null,
+    "family": "breakfast-eggs",
+    "type": "component",
+    "parent_key": null,
+    "req": [],
+    "summary": "Eggs poached in barely simmering water for soft, runny yolks.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 1,
+    "cook_min": 5,
+    "equipment": [
+      "deep saucepan",
+      "slotted spoon"
+    ],
+    "tags": [
+      "breakfast",
+      "meat-free"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 2,
+        "unit": "p:1 large",
+        "label": "eggs"
+      }
+    ],
+    "method": [
+      "Bring a deep pan of water to a bare simmer and crack each of the eggs into a cup.",
+      "Swirl the water, slide in the eggs and poach for 3 to 4 minutes, then lift out with a slotted spoon and drain on kitchen paper. A serving is one egg."
+    ],
+    "notes": ""
+  }
+]

@@ -1,0 +1,146 @@
+[
+ {
+  "req": null,
+  "status": "mapped",
+  "records": [
+   {
+    "key": "kohlrabi-raw",
+    "fdc_id": 168424,
+    "name": "Kohlrabi",
+    "state": "raw",
+    "aliases": [
+     "kohlrabi",
+     "gidra",
+     "ġidra"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "chicken-liver-raw",
+    "fdc_id": 171060,
+    "name": "Chicken liver, raw",
+    "state": "raw",
+    "aliases": [
+     "chicken livers",
+     "fwied tat-tiġieġ"
+    ],
+    "category": "meat"
+   },
+   {
+    "key": "turmeric-ground-as-sold",
+    "fdc_id": 172231,
+    "name": "Turmeric, ground",
+    "state": "as-sold",
+    "aliases": [
+     "turmeric",
+     "ground turmeric"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "fennel-seeds-as-sold",
+    "fdc_id": 171323,
+    "name": "Fennel seeds",
+    "state": "as-sold",
+    "aliases": [
+     "fennel seed",
+     "fennel seeds"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "anise-seeds-as-sold",
+    "fdc_id": 171316,
+    "name": "Anise seeds",
+    "state": "as-sold",
+    "aliases": [
+     "aniseed",
+     "anise seed",
+     "anise seeds"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "bay-leaves-dried-as-sold",
+    "fdc_id": 170917,
+    "name": "Bay leaves, dried",
+    "state": "as-sold",
+    "aliases": [
+     "bay leaf",
+     "bay leaves"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "cloves-ground-as-sold",
+    "fdc_id": 171321,
+    "name": "Cloves, ground",
+    "state": "as-sold",
+    "aliases": [
+     "cloves",
+     "ground cloves"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "nutmeg-ground-as-sold",
+    "fdc_id": 171326,
+    "name": "Nutmeg, ground",
+    "state": "as-sold",
+    "aliases": [
+     "nutmeg",
+     "ground nutmeg"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "orange-peel-raw",
+    "fdc_id": 169103,
+    "name": "Orange peel (zest)",
+    "state": "raw",
+    "aliases": [
+     "orange zest",
+     "orange peel",
+     "grated orange rind"
+    ],
+    "category": "fruit-everyday"
+   },
+   {
+    "key": "molasses-as-sold",
+    "fdc_id": 168820,
+    "name": "Molasses",
+    "state": "as-sold",
+    "aliases": [
+     "molasses",
+     "treacle",
+     "black treacle"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "soy-protein-isolate-powder",
+    "fdc_id": 174276,
+    "name": "Soy protein isolate powder (unflavoured)",
+    "state": "dry",
+    "aliases": [
+     "soy protein isolate",
+     "soya protein powder",
+     "plant protein powder"
+    ],
+    "category": "energy-shakes"
+   },
+   {
+    "key": "marjoram-dried-as-sold",
+    "fdc_id": 170928,
+    "name": "Marjoram, dried",
+    "state": "as-sold",
+    "aliases": [
+     "marjoram",
+     "dried marjoram"
+    ],
+    "category": "baking"
+   }
+  ],
+  "note": "Generic USDA records added for the maltese, shakes, sweets and saved-meals recipe library: Maltese vegetables and spices, molasses as the treacle in qagħaq tal-għasel, and unflavoured soy protein isolate as a plant-protein placeholder (swap for the exact tub label)."
+ }
+]

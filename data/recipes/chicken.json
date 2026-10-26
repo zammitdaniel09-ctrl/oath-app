@@ -1,0 +1,2556 @@
+[
+  {
+    "key": "lemon-herb-chicken",
+    "name": "Lemon herb chicken",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/lemon-herb-chicken"
+    ],
+    "summary": "Chicken breasts marinated in lemon, garlic and herbs, then pan-fried with the juices spooned over.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 12,
+    "equipment": [
+      "frying pan",
+      "mixing bowl"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "quick",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-breast-skinless-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "chicken breasts"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 30,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-peel-raw",
+        "qty": 2,
+        "unit": "g",
+        "label": "lemon zest"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "thyme-fresh",
+        "qty": 2,
+        "unit": "g",
+        "label": "thyme"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 5,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Slice each of the chicken breasts in half horizontally so they cook evenly.",
+      "In a bowl mix the lemon juice, lemon zest, half the olive oil, the crushed garlic, oregano, thyme leaves, salt and black pepper. Turn the chicken in it and leave for 10 minutes, or up to 4 hours covered in the fridge.",
+      "Heat the rest of the olive oil in a frying pan over a medium-high heat. Lift the chicken out of the marinade and cook for 4 to 5 minutes a side until golden and cooked through, with no pink in the middle.",
+      "Pour the leftover marinade into the pan and let it bubble hard for a minute, then spoon it over the chicken and scatter with the parsley."
+    ],
+    "notes": "Sides are left to the diary, so log rice, potatoes or salad separately."
+  },
+  {
+    "key": "garlic-chicken",
+    "name": "Garlic chicken",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/garlic-chicken"
+    ],
+    "summary": "Boneless chicken thighs pan-fried, then finished in a garlic, white wine and butter sauce.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 20,
+    "equipment": [
+      "frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "quick",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-thigh-skinless-raw",
+        "qty": 350,
+        "unit": "g",
+        "label": "chicken thighs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 15,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "wine-white",
+        "qty": 60,
+        "unit": "ml",
+        "label": "white wine"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 80,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 10,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 5,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Season the chicken thighs with the salt and black pepper. Heat the olive oil in a frying pan over a medium-high heat and cook the thighs for 6 to 7 minutes a side until browned and cooked through. Lift onto a plate.",
+      "Turn the heat down, add the butter and the thinly sliced garlic (about 5 cloves) and cook gently for 1 to 2 minutes until pale golden, not brown.",
+      "Pour in the white wine and let it bubble for a minute, then add the chicken stock and lemon juice and simmer for 2 to 3 minutes until slightly reduced.",
+      "Return the chicken and any juices to the pan, turn to coat in the sauce and scatter with the parsley."
+    ],
+    "notes": "Thighs are boneless and skinless, weighed raw."
+  },
+  {
+    "key": "chicken-traybake",
+    "name": "Chicken traybake",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-traybake"
+    ],
+    "summary": "Chicken thighs roasted on one tray with peppers, courgette, red onion and cherry tomatoes, with new potatoes if you want them.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 45,
+    "equipment": [
+      "large roasting tin"
+    ],
+    "tags": [
+      "dinner",
+      "traybake",
+      "batch-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-thigh-skinless-raw",
+        "qty": 600,
+        "unit": "g",
+        "label": "chicken thighs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "red peppers"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-yellow-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "yellow pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "courgette-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "courgette"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-cherry-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "cherry tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 12,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 25,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 30,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "potato-new-raw",
+        "qty": 600,
+        "unit": "g",
+        "label": "new potatoes",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). If you are adding the new potatoes, halve them, toss with 1 tsp of the olive oil in a large roasting tin and roast for 15 minutes first.",
+      "Cut the red peppers, yellow pepper and courgette into chunks and the red onions into wedges. Add them to the tin with the chicken thighs, crushed garlic, the rest of the olive oil, paprika, oregano, salt and black pepper, and toss together.",
+      "Roast for 25 minutes, then add the cherry tomatoes, pour over the lemon juice and roast for 10 to 15 minutes more, until the chicken is cooked through and the vegetables are charred at the edges."
+    ],
+    "notes": "Thighs are boneless and skinless, weighed raw. The potatoes are optional so the traybake can be logged on its own."
+  },
+  {
+    "key": "roast-chicken-dinner",
+    "name": "Roast chicken dinner",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/roast-chicken-dinner"
+    ],
+    "summary": "A whole chicken roasted with garlic and thyme butter, served with carrots, green beans and gravy, plus roast potatoes if you want them.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 25,
+    "cook_min": 95,
+    "equipment": [
+      "roasting tin",
+      "second roasting tin",
+      "saucepan",
+      "steamer or saucepan"
+    ],
+    "tags": [
+      "dinner",
+      "sunday-roast"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-whole-skin-on-raw",
+        "qty": 1300,
+        "unit": "whole",
+        "label": "chicken"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 20,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "thyme-fresh",
+        "qty": 3,
+        "unit": "g",
+        "label": "thyme"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "carrot-raw",
+        "qty": 400,
+        "unit": "g",
+        "label": "carrots"
+      },
+      {
+        "ref": "item",
+        "ref_key": "green-beans-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "green beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "gravy-granules-chicken",
+        "qty": 25,
+        "unit": "g",
+        "label": "gravy granules"
+      },
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 300,
+        "unit": "ml",
+        "label": "water"
+      },
+      {
+        "ref": "item",
+        "ref_key": "potato-white-raw",
+        "qty": 1000,
+        "unit": "g",
+        "label": "potatoes",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sunflower",
+        "qty": 30,
+        "unit": "g",
+        "label": "sunflower oil"
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan) and take the chicken out of the fridge 20 minutes before it goes in. Mash the butter with the crushed garlic, thyme leaves, salt and black pepper, and rub it over the breast and under the skin.",
+      "Roast the chicken in a roasting tin for about 1 hour 10 minutes (20 minutes per 500 g plus 20 minutes), until the juices from the thickest part of the thigh run clear. Rest it under foil for 15 minutes before carving.",
+      "If you are making roast potatoes, peel the potatoes, cut into large chunks and boil for 8 minutes. Drain, shake to rough up the edges, toss with the sunflower oil in a second roasting tin and roast for 50 to 60 minutes alongside the chicken, turning once.",
+      "Twenty minutes before serving, cut the carrots into batons and steam or boil them with the green beans for 6 to 8 minutes until just tender.",
+      "Whisk the gravy granules into 300 ml of just-boiled water, stir in any resting juices from the chicken, and serve with the carved chicken and vegetables."
+    ],
+    "notes": "The chicken is weighed whole and raw with its bones; the app counts the edible meat and skin. A 1.3 kg bird is split across 4 plates with the skin eaten: if you leave the skin or keep leftovers, log a smaller share. The roast potatoes and their oil are optional lines."
+  },
+  {
+    "key": "chicken-and-vegetable-skewers",
+    "name": "Chicken and vegetable skewers",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-and-vegetable-skewers"
+    ],
+    "summary": "Chunks of lemon and paprika marinated chicken grilled on skewers with pepper, courgette, red onion and cherry tomatoes.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 40,
+    "cook_min": 12,
+    "equipment": [
+      "8 skewers",
+      "griddle pan or grill",
+      "mixing bowl"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "grill",
+      "batch-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-breast-skinless-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "chicken"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "red onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "courgette-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "courgette"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-cherry-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "cherry tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 20,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "If you are using wooden skewers, soak them in water for 30 minutes so they do not burn.",
+      "Cut the chicken into 3 cm chunks. In a bowl mix the olive oil, lemon juice, crushed garlic, paprika, cumin, oregano, salt and black pepper, add the chicken and leave for at least 20 minutes.",
+      "Cut the red pepper, red onion and courgette into similar-sized pieces. Thread onto 8 skewers, alternating with the chicken and cherry tomatoes, and brush any marinade left in the bowl over the vegetables.",
+      "Cook on a hot griddle pan or under a hot grill for 10 to 12 minutes, turning every few minutes, until the chicken is charred and cooked through with no pink in the middle."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "chicken-fajitas",
+    "name": "Chicken fajitas",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-fajitas"
+    ],
+    "summary": "Strips of spiced chicken fried hot with peppers and red onion, with tortillas, soured cream and salsa to add if you like.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 10,
+    "equipment": [
+      "large frying pan",
+      "mixing bowl"
+    ],
+    "tags": [
+      "dinner",
+      "quick",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-breast-skinless-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "chicken"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-yellow-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "yellow pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-red-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "red onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 15,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-powder-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "chilli powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lime-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lime juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tortilla-wrap-plain-as-sold",
+        "qty": 4,
+        "unit": "p:1 tortilla",
+        "label": "tortillas",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "sour-cream",
+        "qty": 60,
+        "unit": "g",
+        "label": "soured cream",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "salsa-jar",
+        "qty": 60,
+        "unit": "g",
+        "label": "salsa",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Cut the chicken into thin strips and toss in a bowl with the paprika, cumin, chilli powder, crushed garlic, salt and half the vegetable oil.",
+      "Slice the red pepper, yellow pepper and red onion into strips.",
+      "Heat the rest of the vegetable oil in a large frying pan over a high heat. Fry the chicken for 4 to 5 minutes until browned and cooked through, then add the vegetables and fry for 3 to 4 minutes more so they soften but keep some bite. Squeeze over the lime juice.",
+      "Warm the tortillas in a dry pan if using, and serve with the soured cream and salsa on the side."
+    ],
+    "notes": "Tortillas, soured cream and salsa are optional lines so the filling can be logged on its own."
+  },
+  {
+    "key": "chicken-schnitzel",
+    "name": "Chicken schnitzel",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-schnitzel"
+    ],
+    "summary": "Chicken breasts flattened, coated in flour, egg and breadcrumbs, and shallow-fried until crisp.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 10,
+    "equipment": [
+      "rolling pin or meat mallet",
+      "three shallow dishes",
+      "large frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "quick"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-breast-skinless-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "chicken breasts"
+      },
+      {
+        "ref": "item",
+        "ref_key": "flour-plain-white-as-sold",
+        "qty": 15,
+        "unit": "g",
+        "label": "flour"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "breadcrumbs-dried-plain-as-sold",
+        "qty": 45,
+        "unit": "g",
+        "label": "breadcrumbs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-sunflower",
+        "qty": 25,
+        "unit": "g",
+        "label": "sunflower oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-raw",
+        "qty": 2,
+        "unit": "p:1 wedge or slice (1/8 of one 2-1/8\" dia lemon)",
+        "label": "lemon wedges"
+      }
+    ],
+    "method": [
+      "Lay the chicken breasts between two sheets of baking paper and bash with a rolling pin until about 5 mm thick. Season with the salt and black pepper.",
+      "Put the flour, the beaten egg and the breadcrumbs in three shallow dishes. Coat each piece of chicken in flour, then egg, then breadcrumbs, pressing the crumbs on well.",
+      "Heat the sunflower oil in a large frying pan over a medium-high heat, to a depth of a few millimetres. Fry the schnitzels for 3 to 4 minutes a side until deep golden and cooked through.",
+      "Drain on kitchen paper and serve with the lemon wedges."
+    ],
+    "notes": "Shallow-fried: the 25 g of oil is what the crumb coating takes up, not the whole pan. Coating amounts are what sticks to the chicken; leftovers are thrown away."
+  },
+  {
+    "key": "chicken-curry",
+    "name": "Chicken curry",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-curry"
+    ],
+    "summary": "Chicken thighs simmered in a spiced onion and tomato sauce, finished with yogurt and coriander.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 45,
+    "equipment": [
+      "large saucepan or casserole"
+    ],
+    "tags": [
+      "dinner",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-thigh-skinless-raw",
+        "qty": 600,
+        "unit": "g",
+        "label": "chicken"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 30,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 12,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "curry-powder-as-sold",
+        "qty": 2,
+        "unit": "p:1 tbsp",
+        "label": "curry powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "turmeric-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "turmeric"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 200,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-low-fat",
+        "qty": 100,
+        "unit": "g",
+        "label": "yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-basmati-dry",
+        "qty": 300,
+        "unit": "g",
+        "label": "basmati rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the vegetable oil in a large pan over a medium heat and cook the finely chopped onions for 12 to 15 minutes, stirring often, until soft and golden.",
+      "Add the grated garlic and ginger and cook for 1 minute, then stir in the curry powder, turmeric, cumin and cinnamon and cook for 1 minute more.",
+      "Add the chicken, cut into bite-sized pieces, and stir to coat. Pour in the chopped tomatoes and chicken stock, add the salt, bring to a simmer, cover and cook for 25 minutes until the chicken is tender.",
+      "Take off the heat, stir in the yogurt a spoonful at a time so it does not split, and scatter with the coriander.",
+      "If serving with basmati rice, rinse it and cook in plenty of boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Freezes well before the yogurt is added. Rice is an optional line."
+  },
+  {
+    "key": "chicken-tikka-style-curry",
+    "name": "Chicken tikka-style curry",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-tikka-style-curry"
+    ],
+    "summary": "Yogurt and spice marinated chicken, charred under the grill and simmered in a creamy tomato sauce.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 35,
+    "equipment": [
+      "mixing bowl",
+      "grill pan or griddle",
+      "large saucepan"
+    ],
+    "tags": [
+      "dinner",
+      "batch-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-breast-skinless-raw",
+        "qty": 600,
+        "unit": "g",
+        "label": "chicken"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 100,
+        "unit": "g",
+        "label": "yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lemon juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 12,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 2,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "curry-powder-as-sold",
+        "qty": 1,
+        "unit": "p:1 tbsp",
+        "label": "curry powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "turmeric-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "turmeric"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-powder-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "chilli powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 25,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 15,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-passata",
+        "qty": 400,
+        "unit": "g",
+        "label": "passata"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cream-single",
+        "qty": 100,
+        "unit": "ml",
+        "label": "single cream"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-basmati-dry",
+        "qty": 300,
+        "unit": "g",
+        "label": "basmati rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Cut the chicken into large chunks. In a bowl mix the yogurt, lemon juice, half the garlic and half the ginger (both grated), the paprika, cumin, half the curry powder, the turmeric, half the chilli powder and half the salt. Stir in the chicken and leave for at least 30 minutes, or overnight in the fridge.",
+      "Heat the grill to high. Spread the chicken on a grill pan and grill for 10 to 12 minutes, turning once, until charred at the edges and cooked through.",
+      "Meanwhile heat the vegetable oil and butter in a large pan and cook the finely chopped onion for 10 minutes until soft. Add the rest of the garlic, ginger, curry powder, chilli powder and salt and cook for 1 minute.",
+      "Pour in the passata and simmer for 10 minutes, then stir in the single cream and the grilled chicken and simmer for 5 minutes more. Scatter with the coriander.",
+      "If serving with basmati rice, rinse it and cook in plenty of boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Tikka-style describes the yogurt-marinated, grilled chicken; this is a home-style recipe, not a traditional one. Rice is an optional line."
+  },
+  {
+    "key": "chicken-coconut-curry",
+    "name": "Chicken coconut curry",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-coconut-curry"
+    ],
+    "summary": "Chicken thighs simmered in coconut milk with ginger, chilli and turmeric, with spinach stirred through at the end.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 35,
+    "equipment": [
+      "large saucepan or wok"
+    ],
+    "tags": [
+      "dinner",
+      "batch-friendly",
+      "freezer-friendly",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-thigh-skinless-raw",
+        "qty": 600,
+        "unit": "g",
+        "label": "chicken"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 20,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 12,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ginger-root-raw",
+        "qty": 15,
+        "unit": "g",
+        "label": "ginger"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-red-fresh",
+        "qty": 15,
+        "unit": "g",
+        "label": "red chilli"
+      },
+      {
+        "ref": "item",
+        "ref_key": "curry-powder-as-sold",
+        "qty": 1,
+        "unit": "p:1 tbsp",
+        "label": "curry powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "turmeric-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "turmeric"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-ground-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "ground coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coconut-milk-tinned",
+        "qty": 400,
+        "unit": "ml",
+        "label": "coconut milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 150,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lime-juice-fresh",
+        "qty": 20,
+        "unit": "ml",
+        "label": "lime juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-basmati-dry",
+        "qty": 300,
+        "unit": "g",
+        "label": "basmati rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the vegetable oil in a large pan over a medium heat and cook the sliced onion for 8 minutes until soft.",
+      "Add the grated garlic and ginger and the chopped red chilli and cook for 1 minute, then stir in the curry powder, turmeric and ground coriander for 30 seconds.",
+      "Add the chicken, cut into bite-sized pieces, and stir to coat. Pour in the coconut milk and chicken stock, add the salt, bring to a gentle simmer and cook uncovered for 20 minutes until the chicken is tender.",
+      "Stir in the spinach until it wilts, then add the lime juice and scatter with the fresh coriander.",
+      "If serving with basmati rice, rinse it and cook in plenty of boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Made with one 400 ml tin of full-fat coconut milk. Rice is an optional line."
+  },
+  {
+    "key": "chicken-and-chickpea-stew",
+    "name": "Chicken and chickpea stew",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-and-chickpea-stew"
+    ],
+    "summary": "Chicken thighs, chickpeas and red pepper stewed with smoked paprika, cumin and tomatoes.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 40,
+    "equipment": [
+      "large casserole or deep pan"
+    ],
+    "tags": [
+      "dinner",
+      "one-pan",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-thigh-skinless-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "chicken thighs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 12,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 2,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 300,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chickpeas-canned-drained",
+        "qty": 480,
+        "unit": "g",
+        "label": "chickpeas"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "spinach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Cut the chicken thighs into large chunks and season with half the salt and the black pepper. Brown them in the olive oil in a large casserole over a medium-high heat for 5 minutes, then lift out.",
+      "Lower the heat, add the chopped onion and red pepper and cook for 8 minutes until soft. Add the sliced garlic, smoked or sweet paprika and cumin and cook for 1 minute.",
+      "Return the chicken with the chopped tomatoes, chicken stock, the drained chickpeas and the rest of the salt. Simmer gently, half covered, for 25 minutes until the chicken is tender and the sauce has thickened.",
+      "Stir in the spinach until wilted and finish with the parsley."
+    ],
+    "notes": "Chickpeas are tinned, weighed drained (two 400 g tins give about 480 g). Bread or rice on the side is left to the diary."
+  },
+  {
+    "key": "chicken-chilli",
+    "name": "Chicken chilli",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-chilli"
+    ],
+    "summary": "Diced chicken thigh simmered with black beans, sweetcorn, peppers and chilli spices in a tomato sauce.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 40,
+    "equipment": [
+      "large saucepan or casserole"
+    ],
+    "tags": [
+      "dinner",
+      "one-pan",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-thigh-skinless-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "chicken"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 15,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-powder-as-sold",
+        "qty": 2,
+        "unit": "p:1 tsp",
+        "label": "chilli powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-paste",
+        "qty": 30,
+        "unit": "g",
+        "label": "tomato purée"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 200,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-beans-canned-drained",
+        "qty": 240,
+        "unit": "g",
+        "label": "black beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sweetcorn-tinned-drained",
+        "qty": 150,
+        "unit": "g",
+        "label": "sweetcorn"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lime-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lime juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-white-long-grain-dry",
+        "qty": 280,
+        "unit": "g",
+        "label": "rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the vegetable oil in a large pan over a medium heat and cook the chopped onion and red pepper for 8 minutes until soft.",
+      "Add the chicken, cut into 2 cm pieces, and cook for 5 minutes until sealed all over. Stir in the crushed garlic, chilli powder, cumin, paprika and oregano and cook for 1 minute.",
+      "Add the chopped tomatoes, tomato purée, chicken stock and salt. Bring to a simmer, cover and cook for 20 minutes.",
+      "Stir in the drained black beans and sweetcorn and simmer uncovered for 10 minutes until thick. Finish with the lime juice and coriander.",
+      "If serving with rice, cook it in plenty of boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Black beans and sweetcorn are tinned, weighed drained. Rice is an optional line."
+  },
+  {
+    "key": "turkey-chilli",
+    "name": "Turkey chilli",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "variant",
+    "parent_key": "chicken-chilli",
+    "req": [
+      "chicken/turkey-chilli"
+    ],
+    "summary": "The chicken chilli made with lean turkey mince in place of the diced chicken thigh.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 40,
+    "equipment": [
+      "large saucepan or casserole"
+    ],
+    "tags": [
+      "dinner",
+      "one-pan",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "turkey-mince-7-fat-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "turkey mince"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 15,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chilli-powder-as-sold",
+        "qty": 2,
+        "unit": "p:1 tsp",
+        "label": "chilli powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cumin-as-sold",
+        "qty": 3,
+        "unit": "g",
+        "label": "cumin"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-paste",
+        "qty": 30,
+        "unit": "g",
+        "label": "tomato purée"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 200,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-beans-canned-drained",
+        "qty": 240,
+        "unit": "g",
+        "label": "black beans"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sweetcorn-tinned-drained",
+        "qty": 150,
+        "unit": "g",
+        "label": "sweetcorn"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lime-juice-fresh",
+        "qty": 15,
+        "unit": "ml",
+        "label": "lime juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coriander-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "coriander"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "rice-white-long-grain-dry",
+        "qty": 280,
+        "unit": "g",
+        "label": "rice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the vegetable oil in a large pan over a medium heat and cook the chopped onion and red pepper for 8 minutes until soft.",
+      "Turn up the heat, add the turkey mince and cook for 6 to 8 minutes, breaking it up with a wooden spoon, until browned. Stir in the crushed garlic, chilli powder, cumin, paprika and oregano and cook for 1 minute.",
+      "Add the chopped tomatoes, tomato purée, chicken stock and salt. Bring to a simmer, cover and cook for 20 minutes.",
+      "Stir in the drained black beans and sweetcorn and simmer uncovered for 10 minutes until thick. Finish with the lime juice and coriander.",
+      "If serving with rice, cook it in plenty of boiling water for 10 to 12 minutes, then drain."
+    ],
+    "notes": "Uses 7% fat turkey mince, weighed raw. Rice is an optional line."
+  },
+  {
+    "key": "chicken-meatballs",
+    "name": "Chicken meatballs",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-meatballs"
+    ],
+    "summary": "Baked chicken meatballs with feta, lemon, mint and oregano, with a cucumber yogurt dip if you like.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 20,
+    "equipment": [
+      "mixing bowl",
+      "baking tray",
+      "baking paper"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-mince-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "chicken mince"
+      },
+      {
+        "ref": "item",
+        "ref_key": "breadcrumbs-dried-plain-as-sold",
+        "qty": 40,
+        "unit": "g",
+        "label": "breadcrumbs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "feta",
+        "qty": 60,
+        "unit": "g",
+        "label": "feta"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 30,
+        "unit": "g",
+        "label": "spring onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-peel-raw",
+        "qty": 2,
+        "unit": "g",
+        "label": "lemon zest"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mint-fresh",
+        "qty": 6,
+        "unit": "g",
+        "label": "mint"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 150,
+        "unit": "g",
+        "label": "Greek yogurt",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "cucumber-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "cucumber",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan) and line a baking tray with baking paper.",
+      "Put the chicken mince in a bowl with the breadcrumbs, beaten egg, crumbled feta, finely sliced spring onions, crushed garlic, oregano, lemon zest, chopped mint, salt and black pepper. Mix with your hands until just combined.",
+      "Roll into about 20 walnut-sized balls, set them on the tray and brush with the olive oil.",
+      "Bake for 18 to 20 minutes, turning once, until golden and cooked through with no pink in the middle.",
+      "If you like, grate the cucumber, squeeze out the water and stir it into the Greek yogurt to serve alongside."
+    ],
+    "notes": "Makes about 20 meatballs. The yogurt and cucumber dip is optional."
+  },
+  {
+    "key": "turkey-meatballs",
+    "name": "Turkey meatballs",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "variant",
+    "parent_key": "chicken-meatballs",
+    "req": [
+      "chicken/turkey-meatballs"
+    ],
+    "summary": "The baked chicken meatballs made with lean turkey mince, with feta, lemon, mint and oregano.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 20,
+    "cook_min": 20,
+    "equipment": [
+      "mixing bowl",
+      "baking tray",
+      "baking paper"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "turkey-mince-7-fat-raw",
+        "qty": 500,
+        "unit": "g",
+        "label": "turkey mince"
+      },
+      {
+        "ref": "item",
+        "ref_key": "breadcrumbs-dried-plain-as-sold",
+        "qty": 40,
+        "unit": "g",
+        "label": "breadcrumbs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "egg-whole-raw",
+        "qty": 1,
+        "unit": "p:1 large",
+        "label": "egg"
+      },
+      {
+        "ref": "item",
+        "ref_key": "feta",
+        "qty": 60,
+        "unit": "g",
+        "label": "feta"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spring-onion-raw",
+        "qty": 30,
+        "unit": "g",
+        "label": "spring onions"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lemon-peel-raw",
+        "qty": 2,
+        "unit": "g",
+        "label": "lemon zest"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mint-fresh",
+        "qty": 6,
+        "unit": "g",
+        "label": "mint"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-greek-low-fat",
+        "qty": 150,
+        "unit": "g",
+        "label": "Greek yogurt",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "cucumber-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "cucumber",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan) and line a baking tray with baking paper.",
+      "Put the turkey mince in a bowl with the breadcrumbs, beaten egg, crumbled feta, finely sliced spring onions, crushed garlic, oregano, lemon zest, chopped mint, salt and black pepper. Mix with your hands until just combined.",
+      "Roll into about 20 walnut-sized balls, set them on the tray and brush with the olive oil.",
+      "Bake for 18 to 20 minutes, turning once, until golden and cooked through with no pink in the middle.",
+      "If you like, grate the cucumber, squeeze out the water and stir it into the Greek yogurt to serve alongside."
+    ],
+    "notes": "Uses 7% fat turkey mince, weighed raw. Makes about 20 meatballs. The yogurt and cucumber dip is optional."
+  },
+  {
+    "key": "chicken-burger",
+    "name": "Chicken burger",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-burger"
+    ],
+    "summary": "A paprika and garlic seasoned chicken breast, griddled and served in a bun with lettuce and tomato.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 12,
+    "equipment": [
+      "griddle pan or frying pan",
+      "rolling pin"
+    ],
+    "tags": [
+      "dinner",
+      "lunch",
+      "quick"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-breast-skinless-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "chicken breasts"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-powder-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "garlic powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 0.5,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "bun-burger-white-as-sold",
+        "qty": 2,
+        "unit": "p:1 roll 1 serving",
+        "label": "burger buns"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lettuce-cos-raw",
+        "qty": 30,
+        "unit": "g",
+        "label": "lettuce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "tomato"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mayonnaise-light",
+        "qty": 20,
+        "unit": "g",
+        "label": "light mayonnaise",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Flatten the chicken breasts between two sheets of baking paper with a rolling pin to an even 1.5 cm thickness.",
+      "Rub them with the olive oil, paprika, garlic powder, oregano, salt and black pepper.",
+      "Cook on a hot griddle pan for 5 to 6 minutes a side until charred and cooked through, with no pink in the middle. Rest for 2 minutes.",
+      "Toast the cut sides of the burger buns, then fill with the lettuce, sliced tomato and chicken, adding the light mayonnaise if you like."
+    ],
+    "notes": "The mayonnaise is optional."
+  },
+  {
+    "key": "chicken-in-tomato-sauce",
+    "name": "Chicken in tomato sauce",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-in-tomato-sauce"
+    ],
+    "summary": "Chicken thighs braised Italian-style in tomatoes, white wine and peppers with black olives and basil.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 15,
+    "cook_min": 45,
+    "equipment": [
+      "large casserole or deep frying pan with lid"
+    ],
+    "tags": [
+      "dinner",
+      "one-pan",
+      "batch-friendly",
+      "freezer-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-thigh-skinless-raw",
+        "qty": 600,
+        "unit": "g",
+        "label": "chicken thighs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 20,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "onion-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "onion"
+      },
+      {
+        "ref": "item",
+        "ref_key": "pepper-red-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "red pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 9,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "wine-white",
+        "qty": 100,
+        "unit": "ml",
+        "label": "white wine"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomatoes-tinned-chopped",
+        "qty": 400,
+        "unit": "g",
+        "label": "chopped tomatoes"
+      },
+      {
+        "ref": "item",
+        "ref_key": "tomato-paste",
+        "qty": 15,
+        "unit": "g",
+        "label": "tomato purée"
+      },
+      {
+        "ref": "item",
+        "ref_key": "olives-black",
+        "qty": 40,
+        "unit": "g",
+        "label": "black olives"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oregano-dried-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp, leaves",
+        "label": "oregano"
+      },
+      {
+        "ref": "item",
+        "ref_key": "basil-fresh",
+        "qty": 10,
+        "unit": "g",
+        "label": "basil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.75,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Season the chicken thighs with half the salt and the black pepper and brown them in the olive oil in a large casserole over a medium-high heat, 3 minutes a side. Lift out.",
+      "Add the sliced onion and red pepper and cook for 8 minutes until soft, then add the sliced garlic for 1 minute.",
+      "Pour in the white wine and let it bubble for 2 minutes, then add the chopped tomatoes, tomato purée, oregano and the rest of the salt.",
+      "Return the chicken, cover and simmer gently for 25 to 30 minutes until tender. Stir in the black olives for the last 5 minutes and tear over the basil to serve."
+    ],
+    "notes": "Thighs are boneless and skinless, weighed raw. Pasta, bread or potatoes on the side are left to the diary."
+  },
+  {
+    "key": "barbecue-chicken",
+    "name": "Barbecue chicken",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/barbecue-chicken"
+    ],
+    "summary": "Chicken thighs oven-baked and brushed with a homemade sticky barbecue glaze.",
+    "servings": 4,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 35,
+    "equipment": [
+      "roasting tin",
+      "small bowl",
+      "pastry brush"
+    ],
+    "tags": [
+      "dinner",
+      "traybake",
+      "batch-friendly"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-thigh-skinless-raw",
+        "qty": 700,
+        "unit": "g",
+        "label": "chicken thighs"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-vegetable",
+        "qty": 10,
+        "unit": "g",
+        "label": "vegetable oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "paprika-as-sold",
+        "qty": 2,
+        "unit": "p:1 tsp",
+        "label": "smoked paprika"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ketchup-tomato",
+        "qty": 80,
+        "unit": "g",
+        "label": "ketchup"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 25,
+        "unit": "g",
+        "label": "honey"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vinegar-cider",
+        "qty": 15,
+        "unit": "ml",
+        "label": "cider vinegar"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sauce-worcestershire",
+        "qty": 10,
+        "unit": "g",
+        "label": "Worcestershire sauce"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-powder-as-sold",
+        "qty": 1,
+        "unit": "p:1 tsp",
+        "label": "garlic powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mustard-yellow",
+        "qty": 1,
+        "unit": "p:1 tsp or 1 packet",
+        "label": "mustard"
+      }
+    ],
+    "method": [
+      "Heat the oven to 200°C (180°C fan). Rub the chicken thighs with the vegetable oil, half the smoked paprika, the salt and black pepper and lay them in a roasting tin. Roast for 15 minutes.",
+      "Meanwhile mix the ketchup, honey, cider vinegar, Worcestershire sauce, garlic powder, mustard and the rest of the smoked paprika in a small bowl.",
+      "Brush half the glaze over the chicken and roast for 10 minutes, then brush on the rest and roast for 8 to 10 minutes more until sticky and cooked through.",
+      "For extra char, finish under a hot grill for 2 minutes, watching that the glaze does not burn."
+    ],
+    "notes": "Thighs are boneless and skinless, weighed raw."
+  },
+  {
+    "key": "chicken-and-mushroom-sauce",
+    "name": "Chicken with mushroom sauce",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-and-mushroom-sauce"
+    ],
+    "summary": "Pan-fried chicken breasts in a creamy chestnut mushroom, garlic and thyme sauce.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 20,
+    "equipment": [
+      "large frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "quick",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-breast-skinless-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "chicken breasts"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "butter-unsalted",
+        "qty": 10,
+        "unit": "g",
+        "label": "butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mushroom-chestnut-raw",
+        "qty": 200,
+        "unit": "g",
+        "label": "mushrooms"
+      },
+      {
+        "ref": "item",
+        "ref_key": "garlic-raw",
+        "qty": 6,
+        "unit": "g",
+        "label": "garlic"
+      },
+      {
+        "ref": "item",
+        "ref_key": "thyme-fresh",
+        "qty": 2,
+        "unit": "g",
+        "label": "thyme"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 150,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cream-single",
+        "qty": 80,
+        "unit": "ml",
+        "label": "single cream"
+      },
+      {
+        "ref": "item",
+        "ref_key": "parsley-fresh",
+        "qty": 5,
+        "unit": "g",
+        "label": "parsley"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.5,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Season the chicken breasts with half the salt and the black pepper. Heat the olive oil in a large frying pan and cook them over a medium heat for 6 to 7 minutes a side until golden and cooked through. Lift onto a plate.",
+      "Add the butter and the sliced mushrooms to the pan and fry over a high heat for 5 minutes until golden. Add the crushed garlic and thyme leaves and cook for 1 minute.",
+      "Pour in the chicken stock and bubble for 3 minutes until reduced by half, then stir in the single cream and the rest of the salt and simmer for 2 minutes.",
+      "Return the chicken and its juices to the pan to warm through and scatter with the parsley."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "chicken-with-mustard-sauce",
+    "name": "Chicken with mustard sauce",
+    "name_mt": null,
+    "family": "chicken",
+    "type": "base",
+    "parent_key": null,
+    "req": [
+      "chicken/chicken-with-mustard-sauce"
+    ],
+    "summary": "Pan-fried chicken breasts in a white wine, shallot and mustard cream sauce.",
+    "servings": 2,
+    "final_weight": null,
+    "prep_min": 10,
+    "cook_min": 20,
+    "equipment": [
+      "large frying pan"
+    ],
+    "tags": [
+      "dinner",
+      "quick",
+      "one-pan"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "chicken-breast-skinless-raw",
+        "qty": 300,
+        "unit": "g",
+        "label": "chicken breasts"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oil-olive",
+        "qty": 10,
+        "unit": "g",
+        "label": "olive oil"
+      },
+      {
+        "ref": "item",
+        "ref_key": "shallot-raw",
+        "qty": 40,
+        "unit": "g",
+        "label": "shallot"
+      },
+      {
+        "ref": "item",
+        "ref_key": "wine-white",
+        "qty": 80,
+        "unit": "ml",
+        "label": "white wine"
+      },
+      {
+        "ref": "item",
+        "ref_key": "stock-chicken-from-cube",
+        "qty": 120,
+        "unit": "g",
+        "label": "chicken stock"
+      },
+      {
+        "ref": "item",
+        "ref_key": "creme-fraiche-full-fat-proxy",
+        "qty": 60,
+        "unit": "g",
+        "label": "crème fraîche"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mustard-yellow",
+        "qty": 20,
+        "unit": "g",
+        "label": "mustard"
+      },
+      {
+        "ref": "item",
+        "ref_key": "chives-fresh",
+        "qty": 5,
+        "unit": "g",
+        "label": "chives"
+      },
+      {
+        "ref": "item",
+        "ref_key": "salt-table",
+        "qty": 0.25,
+        "unit": "p:1 tsp",
+        "label": "salt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "black-pepper-ground-as-sold",
+        "qty": 0.25,
+        "unit": "p:1 tsp, ground",
+        "label": "black pepper"
+      }
+    ],
+    "method": [
+      "Season the chicken breasts with the salt and black pepper. Heat the olive oil in a large frying pan and cook over a medium heat for 6 to 7 minutes a side until golden and cooked through. Lift onto a plate.",
+      "Add the finely chopped shallot to the pan and cook gently for 2 minutes until soft.",
+      "Pour in the white wine and bubble until almost gone, then add the chicken stock and reduce by half.",
+      "Stir in the crème fraîche and the Dijon or wholegrain mustard and simmer for 1 to 2 minutes. Return the chicken and its juices to the pan and scatter with the chives."
+    ],
+    "notes": "The catalogue has no Dijon or wholegrain mustard, so the mustard is logged as prepared mustard, the nearest record. Crème fraîche is a catalogue estimate."
+  }
+]

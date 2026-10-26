@@ -1,0 +1,647 @@
+[
+  {
+    "req": "baking/plain-flour",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "flour-plain-white-as-sold",
+        "fdc_id": 169761,
+        "name": "Plain flour",
+        "state": "as-sold",
+        "aliases": [
+          "plain flour",
+          "all-purpose flour",
+          "plain white flour",
+          "white flour"
+        ]
+      }
+    ],
+    "note": "Unenriched white all-purpose flour. UK-milled white flour is fortified by law (calcium, iron, thiamin, niacin), so those can read low."
+  },
+  {
+    "req": "baking/self-raising-flour",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "flour-self-raising-as-sold",
+        "fdc_id": 168895,
+        "name": "Self-raising flour",
+        "state": "as-sold",
+        "aliases": [
+          "self-raising flour",
+          "self raising flour",
+          "self-rising flour"
+        ]
+      }
+    ],
+    "note": "Only an enriched US self-rising record exists; its raising agents add sodium."
+  },
+  {
+    "req": "baking/bread-flour",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "flour-strong-white-bread-as-sold",
+        "fdc_id": 168913,
+        "name": "Strong white bread flour",
+        "state": "as-sold",
+        "aliases": [
+          "bread flour",
+          "strong flour",
+          "strong white flour"
+        ]
+      }
+    ],
+    "note": "Unenriched white bread flour."
+  },
+  {
+    "req": "baking/wholemeal-flour",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "flour-wholemeal-as-sold",
+        "fdc_id": 168893,
+        "name": "Wholemeal flour",
+        "state": "as-sold",
+        "aliases": [
+          "wholemeal flour",
+          "whole wheat flour",
+          "wholewheat flour",
+          "wholegrain flour"
+        ]
+      }
+    ],
+    "note": "Whole-grain wheat flour."
+  },
+  {
+    "req": "baking/cornflour",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cornflour-cornstarch-as-sold",
+        "fdc_id": 169698,
+        "name": "Cornflour (cornstarch)",
+        "state": "as-sold",
+        "aliases": [
+          "cornflour",
+          "cornstarch",
+          "corn starch"
+        ]
+      }
+    ],
+    "note": "UK cornflour is cornstarch; US \"corn flour\" (ground maize) is a different food."
+  },
+  {
+    "req": "baking/chickpea-flour",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "flour-chickpea-as-sold",
+        "fdc_id": 174288,
+        "name": "Chickpea flour",
+        "state": "as-sold",
+        "aliases": [
+          "chickpea flour",
+          "gram flour",
+          "besan"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "baking/almond-flour",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "flour-almond-as-sold",
+        "fdc_id": 2261420,
+        "name": "Almond flour",
+        "state": "as-sold",
+        "aliases": [
+          "almond flour",
+          "almond meal"
+        ]
+      }
+    ],
+    "note": "Foundation record; no household portions."
+  },
+  {
+    "req": "baking/rice-flour",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "flour-rice-white-as-sold",
+        "fdc_id": 169714,
+        "name": "Rice flour, white",
+        "state": "as-sold",
+        "aliases": [
+          "rice flour",
+          "ground rice"
+        ]
+      }
+    ],
+    "note": "Unenriched white rice flour; brown rice flour differs."
+  },
+  {
+    "req": "baking/sugar",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sugar-white-as-sold",
+        "fdc_id": 169655,
+        "name": "White sugar",
+        "state": "as-sold",
+        "aliases": [
+          "sugar",
+          "granulated sugar",
+          "caster sugar",
+          "white sugar",
+          "table sugar"
+        ]
+      }
+    ],
+    "note": "Granulated white sugar; caster sugar is the same food, finer."
+  },
+  {
+    "req": "baking/brown-sugar",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sugar-brown-soft-as-sold",
+        "fdc_id": 168833,
+        "name": "Brown sugar, soft",
+        "state": "as-sold",
+        "aliases": [
+          "brown sugar",
+          "soft brown sugar",
+          "light brown sugar",
+          "dark brown sugar"
+        ]
+      },
+      {
+        "key": "sugar-demerara-as-sold",
+        "fdc_id": 170674,
+        "name": "Demerara sugar",
+        "state": "as-sold",
+        "aliases": [
+          "demerara",
+          "turbinado sugar",
+          "raw cane sugar"
+        ]
+      }
+    ],
+    "note": "Soft brown sugar plus demerara (USDA turbinado). Muscovado is not covered."
+  },
+  {
+    "req": "baking/icing-sugar",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sugar-icing-as-sold",
+        "fdc_id": 169656,
+        "name": "Icing sugar",
+        "state": "as-sold",
+        "aliases": [
+          "icing sugar",
+          "powdered sugar",
+          "confectioners sugar"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "baking/honey",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "honey-as-sold",
+        "fdc_id": 169640,
+        "name": "Honey",
+        "state": "as-sold",
+        "aliases": [
+          "honey",
+          "clear honey",
+          "runny honey",
+          "set honey",
+          "għasel",
+          "ghasel"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "baking/maple-syrup",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "maple-syrup-as-sold",
+        "fdc_id": 169661,
+        "name": "Maple syrup",
+        "state": "as-sold",
+        "aliases": [
+          "maple syrup",
+          "pure maple syrup"
+        ]
+      }
+    ],
+    "note": "Pure maple syrup; pancake or table syrups differ."
+  },
+  {
+    "req": "baking/golden-syrup",
+    "status": "product",
+    "records": [],
+    "note": "No USDA golden syrup (partially inverted cane sugar syrup); US corn and table syrup blends differ. Use the tin label."
+  },
+  {
+    "req": "baking/jam",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "jam-as-sold",
+        "fdc_id": 169641,
+        "name": "Jam",
+        "state": "as-sold",
+        "aliases": [
+          "jam",
+          "jams",
+          "preserves",
+          "fruit jam"
+        ]
+      }
+    ],
+    "note": "Standard jam, any fruit. Reduced-sugar or no-added-sugar jams need a label."
+  },
+  {
+    "req": "baking/marmalade",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "marmalade-orange-as-sold",
+        "fdc_id": 168819,
+        "name": "Orange marmalade",
+        "state": "as-sold",
+        "aliases": [
+          "marmalade",
+          "orange marmalade"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "baking/cocoa-powder",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cocoa-powder-as-sold",
+        "fdc_id": 169593,
+        "name": "Cocoa powder, unsweetened",
+        "state": "as-sold",
+        "aliases": [
+          "cocoa",
+          "cocoa powder",
+          "natural cocoa"
+        ]
+      },
+      {
+        "key": "cocoa-powder-alkalised-as-sold",
+        "fdc_id": 169594,
+        "name": "Cocoa powder, alkalised",
+        "state": "as-sold",
+        "aliases": [
+          "Dutch-process cocoa",
+          "alkalised cocoa",
+          "dutched cocoa"
+        ]
+      }
+    ],
+    "note": "Unsweetened baking cocoa, natural and alkalised (most European baking cocoa is alkalised). Sweetened drinking chocolate is not covered."
+  },
+  {
+    "req": "baking/baking-chocolate",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "baking-chocolate-dark-45-59-as-sold",
+        "fdc_id": 170271,
+        "name": "Dark chocolate, 45-59% cocoa",
+        "state": "as-sold",
+        "aliases": [
+          "plain chocolate",
+          "cooking chocolate",
+          "baking chocolate",
+          "dark cooking chocolate",
+          "semi-sweet chocolate"
+        ]
+      },
+      {
+        "key": "baking-chocolate-dark-60-69-as-sold",
+        "fdc_id": 170272,
+        "name": "Dark chocolate, 60-69% cocoa",
+        "state": "as-sold",
+        "aliases": [
+          "60% dark chocolate"
+        ]
+      },
+      {
+        "key": "baking-chocolate-dark-70-85-as-sold",
+        "fdc_id": 170273,
+        "name": "Dark chocolate, 70-85% cocoa",
+        "state": "as-sold",
+        "aliases": [
+          "70% dark chocolate",
+          "85% dark chocolate"
+        ]
+      },
+      {
+        "key": "baking-chocolate-unsweetened-as-sold",
+        "fdc_id": 167568,
+        "name": "Baking chocolate, unsweetened",
+        "state": "as-sold",
+        "aliases": [
+          "unsweetened chocolate",
+          "100% cocoa chocolate"
+        ]
+      }
+    ],
+    "note": "Pick by cocoa percentage. Milk or white cooking chocolate and cake covering need labels."
+  },
+  {
+    "req": "baking/yeast",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "yeast-dried-active-as-sold",
+        "fdc_id": 175043,
+        "name": "Dried yeast",
+        "state": "as-sold",
+        "aliases": [
+          "dried yeast",
+          "active dry yeast",
+          "fast-action yeast",
+          "instant yeast"
+        ]
+      },
+      {
+        "key": "yeast-fresh-compressed-as-sold",
+        "fdc_id": 175042,
+        "name": "Fresh yeast",
+        "state": "as-sold",
+        "aliases": [
+          "fresh yeast",
+          "compressed yeast"
+        ]
+      }
+    ],
+    "note": "Active dry and compressed baker's yeast; fast-action yeast is close to active dry."
+  },
+  {
+    "req": "baking/baking-powder",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "baking-powder-as-sold",
+        "fdc_id": 172804,
+        "name": "Baking powder",
+        "state": "as-sold",
+        "aliases": [
+          "baking powder"
+        ]
+      }
+    ],
+    "note": "Double-acting straight-phosphate baking powder. UK/EU formulations differ, so check the label for sodium; sodium is counted here, not again as salt."
+  },
+  {
+    "req": "baking/bicarbonate-of-soda",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bicarbonate-of-soda-as-sold",
+        "fdc_id": 175040,
+        "name": "Bicarbonate of soda",
+        "state": "as-sold",
+        "aliases": [
+          "bicarbonate of soda",
+          "baking soda",
+          "bicarb",
+          "sodium bicarbonate"
+        ]
+      }
+    ],
+    "note": "Sodium is counted here, not again as salt."
+  },
+  {
+    "req": "baking/salt",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "salt-table-as-sold",
+        "fdc_id": 173468,
+        "name": "Salt",
+        "state": "as-sold",
+        "aliases": [
+          "salt",
+          "table salt",
+          "cooking salt",
+          "sea salt"
+        ]
+      }
+    ],
+    "note": "Table salt; count sodium once (do not add it again for foods whose record already includes salt)."
+  },
+  {
+    "req": "baking/black-pepper",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "black-pepper-ground-as-sold",
+        "fdc_id": 170931,
+        "name": "Black pepper",
+        "state": "as-sold",
+        "aliases": [
+          "black pepper",
+          "pepper",
+          "ground black pepper",
+          "black peppercorns"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "baking/paprika",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "paprika-as-sold",
+        "fdc_id": 171329,
+        "name": "Paprika",
+        "state": "as-sold",
+        "aliases": [
+          "paprika",
+          "sweet paprika",
+          "smoked paprika"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "baking/cumin",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cumin-as-sold",
+        "fdc_id": 170923,
+        "name": "Cumin",
+        "state": "as-sold",
+        "aliases": [
+          "cumin",
+          "ground cumin",
+          "cumin seeds"
+        ]
+      }
+    ],
+    "note": "Cumin seed, whole or ground."
+  },
+  {
+    "req": "baking/curry-powder",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "curry-powder-as-sold",
+        "fdc_id": 170924,
+        "name": "Curry powder",
+        "state": "as-sold",
+        "aliases": [
+          "curry powder"
+        ]
+      }
+    ],
+    "note": "Generic curry powder; blends vary."
+  },
+  {
+    "req": "baking/cinnamon",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cinnamon-ground-as-sold",
+        "fdc_id": 171320,
+        "name": "Cinnamon, ground",
+        "state": "as-sold",
+        "aliases": [
+          "cinnamon",
+          "ground cinnamon"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "baking/chilli-flakes",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "chilli-flakes-as-sold",
+        "fdc_id": 168570,
+        "name": "Chilli flakes",
+        "state": "as-sold",
+        "aliases": [
+          "chilli flakes",
+          "chili flakes",
+          "crushed chillies",
+          "red pepper flakes"
+        ]
+      }
+    ],
+    "note": "USDA has whole sun-dried hot chillies, not crushed flakes. Same food, but teaspoon portions are not in USDA."
+  },
+  {
+    "req": "baking/dried-oregano",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oregano-dried-as-sold",
+        "fdc_id": 171328,
+        "name": "Oregano, dried",
+        "state": "as-sold",
+        "aliases": [
+          "oregano",
+          "dried oregano"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "baking/garlic-powder",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "garlic-powder-as-sold",
+        "fdc_id": 171325,
+        "name": "Garlic powder",
+        "state": "as-sold",
+        "aliases": [
+          "garlic powder",
+          "garlic granules"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "baking/stock-cube",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "stock-cube-chicken-as-sold",
+        "fdc_id": 171563,
+        "name": "Chicken stock cube",
+        "state": "as-sold",
+        "aliases": [
+          "stock cube",
+          "chicken stock cube",
+          "chicken bouillon cube"
+        ]
+      },
+      {
+        "key": "stock-cube-beef-as-sold",
+        "fdc_id": 171561,
+        "name": "Beef stock cube",
+        "state": "as-sold",
+        "aliases": [
+          "beef stock cube",
+          "beef bouillon cube"
+        ]
+      }
+    ],
+    "note": "Generic US dry bouillon cubes. Local stock cubes differ in cube weight and sodium, so prefer the pack label; no vegetable stock cube in USDA. Count sodium once."
+  },
+  {
+    "req": "baking/vanilla-extract",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "vanilla-extract-as-sold",
+        "fdc_id": 173471,
+        "name": "Vanilla extract",
+        "state": "as-sold",
+        "aliases": [
+          "vanilla extract",
+          "vanilla"
+        ]
+      }
+    ],
+    "note": "Most of its energy comes from alcohol. Vanilla essence or flavouring is a different product."
+  },
+  {
+    "req": "baking/non-sugar-sweetener",
+    "status": "product",
+    "records": [],
+    "note": "Tabletop sweeteners (sucralose, stevia, aspartame and others) differ by sweetener and bulking agent; USDA mostly has US branded packets. Use the pack label."
+  }
+]

@@ -1,0 +1,471 @@
+[
+  {
+    "req": "pasta/spaghetti",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "spaghetti-dry",
+        "fdc_id": 168927,
+        "name": "Spaghetti, dry",
+        "state": "dry",
+        "aliases": [
+          "spaghetti",
+          "pasta",
+          "linguine"
+        ]
+      },
+      {
+        "key": "spaghetti-cooked",
+        "fdc_id": 168928,
+        "name": "Spaghetti, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked spaghetti"
+        ]
+      }
+    ],
+    "note": "Shape of plain durum wheat pasta; shares the generic USDA dry/cooked formulation (fdc 168927/168928, unenriched, cooked without salt) with the other shapes."
+  },
+  {
+    "req": "pasta/penne",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "penne-dry",
+        "fdc_id": 168927,
+        "name": "Penne, dry",
+        "state": "dry",
+        "aliases": [
+          "penne",
+          "penne rigate"
+        ]
+      },
+      {
+        "key": "penne-cooked",
+        "fdc_id": 168928,
+        "name": "Penne, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked penne"
+        ]
+      }
+    ],
+    "note": "Shape of plain durum wheat pasta; shares the generic USDA dry/cooked formulation (fdc 168927/168928, unenriched, cooked without salt) with the other shapes."
+  },
+  {
+    "req": "pasta/fusilli",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "fusilli-dry",
+        "fdc_id": 168927,
+        "name": "Fusilli, dry",
+        "state": "dry",
+        "aliases": [
+          "fusilli",
+          "pasta twists",
+          "spirals"
+        ]
+      },
+      {
+        "key": "fusilli-cooked",
+        "fdc_id": 168928,
+        "name": "Fusilli, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked fusilli"
+        ]
+      }
+    ],
+    "note": "Shape of plain durum wheat pasta; shares the generic USDA dry/cooked formulation (fdc 168927/168928, unenriched, cooked without salt) with the other shapes."
+  },
+  {
+    "req": "pasta/macaroni",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "macaroni-dry",
+        "fdc_id": 168927,
+        "name": "Macaroni, dry",
+        "state": "dry",
+        "aliases": [
+          "macaroni",
+          "elbow macaroni"
+        ]
+      },
+      {
+        "key": "macaroni-cooked",
+        "fdc_id": 168928,
+        "name": "Macaroni, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked macaroni"
+        ]
+      }
+    ],
+    "note": "Shape of plain durum wheat pasta; shares the generic USDA dry/cooked formulation (fdc 168927/168928, unenriched, cooked without salt) with the other shapes."
+  },
+  {
+    "req": "pasta/farfalle",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "farfalle-dry",
+        "fdc_id": 168927,
+        "name": "Farfalle, dry",
+        "state": "dry",
+        "aliases": [
+          "farfalle",
+          "pasta bows",
+          "bow-tie pasta"
+        ]
+      },
+      {
+        "key": "farfalle-cooked",
+        "fdc_id": 168928,
+        "name": "Farfalle, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked farfalle"
+        ]
+      }
+    ],
+    "note": "Shape of plain durum wheat pasta; shares the generic USDA dry/cooked formulation (fdc 168927/168928, unenriched, cooked without salt) with the other shapes."
+  },
+  {
+    "req": "pasta/lasagne-sheets",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "lasagne-sheets-dry",
+        "fdc_id": 168927,
+        "name": "Lasagne sheets, dry",
+        "state": "dry",
+        "aliases": [
+          "lasagne sheets",
+          "lasagna sheets",
+          "lasagne",
+          "lasagna"
+        ]
+      },
+      {
+        "key": "lasagne-sheets-cooked",
+        "fdc_id": 168928,
+        "name": "Lasagne sheets, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked lasagne sheets"
+        ]
+      }
+    ],
+    "note": "Shape of plain durum wheat pasta; shares the generic USDA dry/cooked formulation (fdc 168927/168928, unenriched, cooked without salt) with the other shapes. Egg-free dry sheets; the cooked record is boiled pasta, while sheets baked in a dish absorb sauce instead."
+  },
+  {
+    "req": "pasta/orzo",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "orzo-dry",
+        "fdc_id": 168927,
+        "name": "Orzo, dry",
+        "state": "dry",
+        "aliases": [
+          "orzo",
+          "risoni"
+        ]
+      },
+      {
+        "key": "orzo-cooked",
+        "fdc_id": 168928,
+        "name": "Orzo, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked orzo"
+        ]
+      }
+    ],
+    "note": "Shape of plain durum wheat pasta; shares the generic USDA dry/cooked formulation (fdc 168927/168928, unenriched, cooked without salt) with the other shapes."
+  },
+  {
+    "req": "pasta/wholewheat-pasta",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pasta-wholewheat-dry",
+        "fdc_id": 169738,
+        "name": "Wholewheat pasta, dry",
+        "state": "dry",
+        "aliases": [
+          "wholewheat pasta",
+          "wholemeal pasta",
+          "whole wheat pasta",
+          "wholegrain pasta"
+        ]
+      },
+      {
+        "key": "pasta-wholewheat-cooked",
+        "fdc_id": 168910,
+        "name": "Wholewheat pasta, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked wholewheat pasta"
+        ]
+      }
+    ],
+    "note": "100% whole-wheat pasta; any shape."
+  },
+  {
+    "req": "pasta/egg-tagliatelle",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tagliatelle-egg-dry",
+        "fdc_id": 169755,
+        "name": "Egg tagliatelle, dry",
+        "state": "dry",
+        "aliases": [
+          "tagliatelle",
+          "egg pasta",
+          "fettuccine",
+          "pappardelle"
+        ]
+      },
+      {
+        "key": "tagliatelle-egg-cooked",
+        "fdc_id": 168926,
+        "name": "Egg tagliatelle, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked tagliatelle"
+        ]
+      }
+    ],
+    "note": "Dried egg pasta uses the USDA dried egg noodle formulation (unenriched, cooked without salt), shared with egg noodles. Fresh egg tagliatelle: use fresh pasta."
+  },
+  {
+    "req": "pasta/fresh-pasta",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pasta-fresh-as-sold",
+        "fdc_id": 169727,
+        "name": "Fresh pasta, uncooked",
+        "state": "as-sold",
+        "aliases": [
+          "fresh pasta",
+          "fresh egg pasta",
+          "fresh tagliatelle"
+        ]
+      },
+      {
+        "key": "pasta-fresh-cooked",
+        "fdc_id": 169728,
+        "name": "Fresh pasta, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked fresh pasta"
+        ]
+      }
+    ],
+    "note": "Unfilled fresh-refrigerated plain pasta, as purchased and cooked. Filled pasta is separate."
+  },
+  {
+    "req": "pasta/filled-ravioli",
+    "status": "product",
+    "records": [],
+    "note": "USDA only has canned or frozen ravioli in sauce. Filled fresh ravioli vary by filling; use the pack label."
+  },
+  {
+    "req": "pasta/tortellini",
+    "status": "partial",
+    "records": [
+      {
+        "key": "tortellini-cheese-fresh-as-sold",
+        "fdc_id": 172094,
+        "name": "Cheese tortellini, fresh, uncooked",
+        "state": "as-sold",
+        "aliases": [
+          "tortellini",
+          "cheese tortellini"
+        ]
+      }
+    ],
+    "note": "Only fresh cheese-filled tortellini as purchased. Missing: cooked tortellini, and meat or other fillings (need labels)."
+  },
+  {
+    "req": "pasta/potato-gnocchi",
+    "status": "product",
+    "records": [],
+    "note": "No USDA gnocchi record. Use the pack label."
+  },
+  {
+    "req": "pasta/rice-noodles",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "noodles-rice-dry",
+        "fdc_id": 169742,
+        "name": "Rice noodles, dry",
+        "state": "dry",
+        "aliases": [
+          "rice noodles",
+          "rice sticks",
+          "flat rice noodles"
+        ]
+      },
+      {
+        "key": "noodles-rice-cooked",
+        "fdc_id": 168914,
+        "name": "Rice noodles, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked rice noodles"
+        ]
+      }
+    ],
+    "note": "Shares records with rice vermicelli."
+  },
+  {
+    "req": "pasta/egg-noodles",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "noodles-egg-dry",
+        "fdc_id": 169755,
+        "name": "Egg noodles, dry",
+        "state": "dry",
+        "aliases": [
+          "egg noodles",
+          "medium egg noodles",
+          "noodles"
+        ]
+      },
+      {
+        "key": "noodles-egg-cooked",
+        "fdc_id": 168926,
+        "name": "Egg noodles, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked egg noodles"
+        ]
+      }
+    ],
+    "note": "Unenriched dried egg noodles, cooked without salt. Shares records with egg tagliatelle."
+  },
+  {
+    "req": "pasta/udon-noodles",
+    "status": "product",
+    "records": [],
+    "note": "No USDA udon record; usually sold pre-cooked in vacuum packs. Use the pack label."
+  },
+  {
+    "req": "pasta/soba-noodles",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "noodles-soba-dry",
+        "fdc_id": 168906,
+        "name": "Soba noodles, dry",
+        "state": "dry",
+        "aliases": [
+          "soba",
+          "buckwheat noodles"
+        ]
+      },
+      {
+        "key": "noodles-soba-cooked",
+        "fdc_id": 168907,
+        "name": "Soba noodles, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked soba"
+        ]
+      }
+    ],
+    "note": "Wheat and buckwheat ratio varies by brand."
+  },
+  {
+    "req": "pasta/instant-noodle-block",
+    "status": "product",
+    "records": [],
+    "note": "USDA instant ramen records (e.g. fdc 171177) cover the whole dry pack including the flavour sachet, so they cannot stand in for the noodle block alone. Use the pack label."
+  },
+  {
+    "req": "pasta/instant-noodle-seasoning-sachet",
+    "status": "product",
+    "records": [],
+    "note": "No separate USDA sachet record. Use the pack label; most of the pack's salt is here, so count sodium once."
+  },
+  {
+    "req": "pasta/vermicelli",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "vermicelli-wheat-dry",
+        "fdc_id": 168927,
+        "name": "Vermicelli (wheat pasta), dry",
+        "state": "dry",
+        "aliases": [
+          "vermicelli",
+          "tarja",
+          "angel hair",
+          "capellini"
+        ]
+      },
+      {
+        "key": "vermicelli-wheat-cooked",
+        "fdc_id": 168928,
+        "name": "Vermicelli (wheat pasta), cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked vermicelli"
+        ]
+      },
+      {
+        "key": "vermicelli-rice-dry",
+        "fdc_id": 169742,
+        "name": "Rice vermicelli, dry",
+        "state": "dry",
+        "aliases": [
+          "rice vermicelli",
+          "rice vermicelli noodles"
+        ]
+      },
+      {
+        "key": "vermicelli-rice-cooked",
+        "fdc_id": 168914,
+        "name": "Rice vermicelli, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked rice vermicelli"
+        ]
+      }
+    ],
+    "note": "Covers Italian wheat vermicelli (Maltese tarja; shares the generic pasta records 168927/168928) and Asian rice vermicelli (shares the rice noodle records)."
+  },
+  {
+    "req": "pasta/wonton-wrappers",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "wonton-wrappers-as-sold",
+        "fdc_id": 172802,
+        "name": "Wonton wrappers",
+        "state": "as-sold",
+        "aliases": [
+          "wonton wrappers",
+          "wonton skins",
+          "egg roll wrappers",
+          "dumpling wrappers"
+        ]
+      }
+    ],
+    "note": "USDA record includes egg roll wrappers."
+  },
+  {
+    "req": "pasta/rice-paper",
+    "status": "product",
+    "records": [],
+    "note": "No USDA rice paper wrapper record. Use the pack label."
+  }
+]

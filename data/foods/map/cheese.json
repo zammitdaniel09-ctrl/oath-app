@@ -1,0 +1,420 @@
+[
+  {
+    "req": "cheese/cheddar",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cheddar",
+        "fdc_id": 173414,
+        "name": "Cheddar",
+        "state": "as-sold",
+        "aliases": [
+          "cheddar cheese",
+          "mature cheddar"
+        ]
+      },
+      {
+        "key": "cheddar-reduced-fat",
+        "fdc_id": 171292,
+        "name": "Cheddar, reduced-fat",
+        "state": "as-sold",
+        "aliases": [
+          "lighter cheddar"
+        ]
+      }
+    ],
+    "note": "Very low-fat and fat-free cheddars are separate records (173439, 171295)."
+  },
+  {
+    "req": "cheese/mozzarella",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mozzarella-whole-milk",
+        "fdc_id": 170845,
+        "name": "Mozzarella, whole milk",
+        "state": "as-sold",
+        "aliases": [
+          "mozzarella ball",
+          "fresh mozzarella"
+        ]
+      },
+      {
+        "key": "mozzarella-part-skim",
+        "fdc_id": 170847,
+        "name": "Mozzarella, part-skim (light)",
+        "state": "as-sold",
+        "aliases": [
+          "light mozzarella"
+        ]
+      },
+      {
+        "key": "mozzarella-low-moisture",
+        "fdc_id": 171244,
+        "name": "Mozzarella, low-moisture, part-skim (grated/pizza)",
+        "state": "as-sold",
+        "aliases": [
+          "grated mozzarella",
+          "pizza mozzarella"
+        ]
+      }
+    ],
+    "note": "Whole-milk record is the regular (higher-moisture) type; drained weight for balls in brine."
+  },
+  {
+    "req": "cheese/feta",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "feta",
+        "fdc_id": 173420,
+        "name": "Feta",
+        "state": "as-sold",
+        "aliases": [
+          "feta cheese"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "cheese/parmesan",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "parmesan-hard",
+        "fdc_id": 170848,
+        "name": "Parmesan, hard (block)",
+        "state": "as-sold",
+        "aliases": [
+          "parmigiano reggiano",
+          "parmesan"
+        ]
+      },
+      {
+        "key": "parmesan-grated",
+        "fdc_id": 173431,
+        "name": "Parmesan, grated (fresh)",
+        "state": "as-sold",
+        "aliases": [
+          "grated parmesan"
+        ]
+      }
+    ],
+    "note": "Shelf-stable US grated parmesan (171247) contains fillers and was not used."
+  },
+  {
+    "req": "cheese/ricotta",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ricotta-whole-milk",
+        "fdc_id": 170851,
+        "name": "Ricotta, whole milk",
+        "state": "as-sold",
+        "aliases": [
+          "ricotta",
+          "irkotta"
+        ]
+      },
+      {
+        "key": "ricotta-part-skim",
+        "fdc_id": 171248,
+        "name": "Ricotta, part-skim (light)",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "cheese/cottage-cheese",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cottage-cheese-full-fat",
+        "fdc_id": 172179,
+        "name": "Cottage cheese, full-fat",
+        "state": "as-sold",
+        "aliases": [
+          "cottage cheese"
+        ]
+      },
+      {
+        "key": "cottage-cheese-low-fat",
+        "fdc_id": 172182,
+        "name": "Cottage cheese, low-fat (2% milkfat)",
+        "state": "as-sold"
+      },
+      {
+        "key": "cottage-cheese-1-fat",
+        "fdc_id": 173417,
+        "name": "Cottage cheese, 1% milkfat",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "cheese/cream-cheese",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cream-cheese-full-fat",
+        "fdc_id": 173418,
+        "name": "Cream cheese, full-fat",
+        "state": "as-sold",
+        "aliases": [
+          "soft cheese",
+          "cream cheese"
+        ]
+      },
+      {
+        "key": "cream-cheese-low-fat",
+        "fdc_id": 169079,
+        "name": "Cream cheese, low-fat",
+        "state": "as-sold",
+        "aliases": [
+          "light soft cheese"
+        ]
+      },
+      {
+        "key": "cream-cheese-fat-free",
+        "fdc_id": 172207,
+        "name": "Cream cheese, fat-free",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "cheese/halloumi",
+    "status": "gap",
+    "records": [],
+    "note": "No halloumi record in USDA and no fair proxy (high-salt brined grilling cheese). Use the pack label."
+  },
+  {
+    "req": "cheese/goat-cheese",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "goat-cheese-soft",
+        "fdc_id": 173435,
+        "name": "Goat's cheese, soft",
+        "state": "as-sold",
+        "aliases": [
+          "chèvre",
+          "goats cheese"
+        ]
+      },
+      {
+        "key": "goat-cheese-semisoft",
+        "fdc_id": 173433,
+        "name": "Goat's cheese, semi-soft",
+        "state": "as-sold"
+      },
+      {
+        "key": "goat-cheese-hard",
+        "fdc_id": 172197,
+        "name": "Goat's cheese, hard",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "cheese/blue-cheese",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "blue-cheese",
+        "fdc_id": 172175,
+        "name": "Blue cheese",
+        "state": "as-sold",
+        "aliases": [
+          "Stilton",
+          "Gorgonzola",
+          "Danish blue"
+        ]
+      }
+    ],
+    "note": "Generic blue cheese; individual varieties differ a little."
+  },
+  {
+    "req": "cheese/brie",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "brie",
+        "fdc_id": 172177,
+        "name": "Brie",
+        "state": "as-sold",
+        "aliases": [
+          "brie cheese"
+        ]
+      }
+    ],
+    "note": "Camembert is a separate record (172178)."
+  },
+  {
+    "req": "cheese/mascarpone",
+    "status": "gap",
+    "records": [],
+    "note": "No mascarpone record in USDA and no fair proxy (much higher fat than cream cheese or heavy cream). Use the pack label."
+  },
+  {
+    "req": "cheese/processed-cheese-slices",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cheese-slices-processed",
+        "fdc_id": 171289,
+        "name": "Processed cheese slices (cheese product)",
+        "state": "as-sold",
+        "aliases": [
+          "cheese singles",
+          "cheese slices"
+        ]
+      },
+      {
+        "key": "american-cheese-slices",
+        "fdc_id": 171290,
+        "name": "Processed American cheese slices",
+        "state": "as-sold",
+        "aliases": [
+          "American cheese"
+        ]
+      }
+    ],
+    "note": "Brands vary; UK singles are usually closer to the \"cheese product\" record."
+  },
+  {
+    "req": "cheese/cream",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cream-single",
+        "fdc_id": 170857,
+        "name": "Single cream (US light cream)",
+        "state": "as-sold",
+        "aliases": [
+          "single cream",
+          "light cream",
+          "table cream"
+        ]
+      },
+      {
+        "key": "cream-half",
+        "fdc_id": 171255,
+        "name": "Half cream (US half-and-half)",
+        "state": "as-sold",
+        "aliases": [
+          "half and half"
+        ]
+      }
+    ],
+    "note": "Missing: double cream; UK double cream is much higher in fat than any USDA cream (US heavy cream is the closest, under whipping-cream)."
+  },
+  {
+    "req": "cheese/whipping-cream",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "whipping-cream",
+        "fdc_id": 170859,
+        "name": "Whipping cream (US heavy whipping cream)",
+        "state": "as-sold",
+        "aliases": [
+          "heavy cream",
+          "heavy whipping cream"
+        ]
+      },
+      {
+        "key": "whipping-cream-light",
+        "fdc_id": 170858,
+        "name": "Light whipping cream",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Fluid, unwhipped; USDA portions include whipped cup weights."
+  },
+  {
+    "req": "cheese/sour-cream",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sour-cream",
+        "fdc_id": 171257,
+        "name": "Soured cream",
+        "state": "as-sold",
+        "aliases": [
+          "sour cream"
+        ]
+      },
+      {
+        "key": "sour-cream-reduced-fat",
+        "fdc_id": 171256,
+        "name": "Soured cream, reduced-fat",
+        "state": "as-sold",
+        "aliases": [
+          "light soured cream"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "cheese/creme-fraiche",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "creme-fraiche-full-fat-proxy",
+        "fdc_id": 170858,
+        "name": "Crème fraîche, full-fat (proxy: light whipping cream)",
+        "state": "as-sold",
+        "aliases": [
+          "creme fraiche"
+        ]
+      }
+    ],
+    "note": "No crème fraîche in USDA. Full-fat crème fraîche is cultured cream of similar fat content to US light whipping cream. Half-fat crème fraîche is not covered; use the label."
+  },
+  {
+    "req": "cheese/butter",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "butter-salted",
+        "fdc_id": 173410,
+        "name": "Butter, salted",
+        "state": "as-sold",
+        "aliases": [
+          "butter",
+          "butir"
+        ]
+      },
+      {
+        "key": "butter-unsalted",
+        "fdc_id": 173430,
+        "name": "Butter, unsalted",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Foundation butter records (790508, 789828) lack energy values."
+  },
+  {
+    "req": "cheese/ghee",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ghee",
+        "fdc_id": 171314,
+        "name": "Ghee (clarified butter)",
+        "state": "as-sold",
+        "aliases": [
+          "clarified butter"
+        ]
+      }
+    ],
+    "note": "This record has no portions; anhydrous butter oil (173412) is equivalent and lists 1 tbsp = 12.8 g."
+  }
+]

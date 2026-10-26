@@ -1,0 +1,1821 @@
+[
+  {
+    "key": "shake-banana-milkshake",
+    "name": "Banana milkshake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/banana-milkshake"
+    ],
+    "summary": "Whole milk blended with banana and vanilla ice cream.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "milkshake",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-whole",
+        "qty": 250,
+        "unit": "ml",
+        "label": "whole milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ice-cream-vanilla",
+        "qty": 60,
+        "unit": "g",
+        "label": "vanilla ice cream"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "sugar",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "shake-strawberry-milkshake",
+    "name": "Strawberry milkshake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/strawberry-milkshake"
+    ],
+    "summary": "Whole milk blended with fresh strawberries and vanilla ice cream.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "milkshake",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-whole",
+        "qty": 250,
+        "unit": "ml",
+        "label": "whole milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ice-cream-vanilla",
+        "qty": 60,
+        "unit": "g",
+        "label": "vanilla ice cream"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "sugar",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "shake-chocolate-milkshake",
+    "name": "Chocolate milkshake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/chocolate-milkshake"
+    ],
+    "summary": "Whole milk blended with chocolate ice cream and chocolate syrup.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "milkshake",
+      "treat",
+      "chocolate"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-whole",
+        "qty": 250,
+        "unit": "ml",
+        "label": "whole milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ice-cream-chocolate",
+        "qty": 80,
+        "unit": "g",
+        "label": "chocolate ice cream"
+      },
+      {
+        "ref": "item",
+        "ref_key": "syrup-chocolate",
+        "qty": 20,
+        "unit": "g",
+        "label": "chocolate syrup"
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "shake-vanilla-milkshake",
+    "name": "Vanilla milkshake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/vanilla-milkshake"
+    ],
+    "summary": "Whole milk blended with vanilla ice cream.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "milkshake",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-whole",
+        "qty": 250,
+        "unit": "ml",
+        "label": "whole milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ice-cream-vanilla",
+        "qty": 100,
+        "unit": "g",
+        "label": "vanilla ice cream"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "vanilla extract",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": ""
+  },
+  {
+    "key": "shake-banana-whey",
+    "name": "Banana whey shake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/banana-whey-shake"
+    ],
+    "summary": "Semi-skimmed milk blended with whey protein powder and banana.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "protein-powder"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 300,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "protein-powder-whey-generic",
+        "qty": 30,
+        "unit": "g",
+        "label": "whey protein powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Whey protein powder is a generic placeholder (protein-powder-whey-generic): swap it for the exact powder you use. The 30 g is a weight, not a scoop; scoop sizes differ by brand, so weigh yours or use the gram serving on the tub. Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "shake-chocolate-whey",
+    "name": "Chocolate whey shake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/chocolate-whey-shake"
+    ],
+    "summary": "Semi-skimmed milk shaken with chocolate whey protein powder, with extra cocoa if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "shaker or blender"
+    ],
+    "tags": [
+      "shake",
+      "protein-powder",
+      "chocolate"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 300,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "protein-powder-whey-generic",
+        "qty": 30,
+        "unit": "g",
+        "label": "chocolate whey protein powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cocoa-powder-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "cocoa",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Shake or blend the milk and powder (and cocoa, if using) until smooth."
+    ],
+    "notes": "Whey protein powder is a generic placeholder (protein-powder-whey-generic): swap it for the exact powder you use. The 30 g is a weight, not a scoop; scoop sizes differ by brand, so weigh yours or use the gram serving on the tub. Flavoured powders differ in sugar and cocoa content, which is another reason to use your tub's label."
+  },
+  {
+    "key": "shake-vanilla-whey",
+    "name": "Vanilla whey shake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/vanilla-whey-shake"
+    ],
+    "summary": "Semi-skimmed milk shaken with vanilla whey protein powder.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "shaker or blender"
+    ],
+    "tags": [
+      "shake",
+      "protein-powder"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 300,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "protein-powder-whey-generic",
+        "qty": 30,
+        "unit": "g",
+        "label": "vanilla whey protein powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "vanilla-extract-as-sold",
+        "qty": 2,
+        "unit": "g",
+        "label": "vanilla extract",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Shake or blend the milk and powder (and vanilla extract, if using) until smooth."
+    ],
+    "notes": "Whey protein powder is a generic placeholder (protein-powder-whey-generic): swap it for the exact powder you use. The 30 g is a weight, not a scoop; scoop sizes differ by brand, so weigh yours or use the gram serving on the tub."
+  },
+  {
+    "key": "shake-berry-plant-protein",
+    "name": "Berry plant-protein shake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/berry-plant-protein-shake"
+    ],
+    "summary": "Soya drink blended with plant protein powder, frozen blueberries and raspberries.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "protein-powder",
+      "berries"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "soy-drink-unsweetened",
+        "qty": 300,
+        "unit": "g",
+        "label": "soya drink"
+      },
+      {
+        "ref": "item",
+        "ref_key": "soy-protein-isolate-powder",
+        "qty": 30,
+        "unit": "g",
+        "label": "plant protein powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "blueberries-frozen",
+        "qty": 50,
+        "unit": "g",
+        "label": "frozen blueberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "raspberries-frozen",
+        "qty": 50,
+        "unit": "g",
+        "label": "frozen raspberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "banana",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "The plant protein line is a generic placeholder (unflavoured soy protein isolate): swap it for the exact powder you use. The 30 g is a weight, not a scoop; weigh yours or use the gram serving on the tub. The soya drink line is in grams because the catalogue record has no ml density; 300 g is about 300 ml."
+  },
+  {
+    "key": "shake-banana-oat-protein",
+    "name": "Banana oat protein shake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/banana-oat-shake"
+    ],
+    "summary": "Semi-skimmed milk blended with protein powder, banana and rolled oats, with peanut butter if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "protein-powder",
+      "oats"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 250,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "protein-powder-whey-generic",
+        "qty": 30,
+        "unit": "g",
+        "label": "protein powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 40,
+        "unit": "g",
+        "label": "rolled oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peanut-butter-smooth",
+        "qty": 15,
+        "unit": "g",
+        "label": "peanut butter",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Whey protein powder is a generic placeholder (protein-powder-whey-generic): swap it for the exact powder you use. The 30 g is a weight, not a scoop; scoop sizes differ by brand, so weigh yours or use the gram serving on the tub. Fruit lines are edible weight (peeled, stoned or hulled). Leave out the protein powder line for a plain banana oat shake."
+  },
+  {
+    "key": "shake-peanut-butter-banana",
+    "name": "Peanut butter banana shake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/peanut-butter-banana-shake"
+    ],
+    "summary": "Semi-skimmed milk blended with banana and peanut butter, sweetened with honey if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "nut-butter"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 300,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peanut-butter-smooth",
+        "qty": 20,
+        "unit": "g",
+        "label": "peanut butter"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "smoothie-strawberry-yogurt",
+    "name": "Strawberry yogurt smoothie",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/strawberry-yogurt-smoothie"
+    ],
+    "summary": "Strawberries blended with plain yogurt and a splash of milk.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "smoothie",
+      "fruit"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-low-fat",
+        "qty": 150,
+        "unit": "g",
+        "label": "plain yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 100,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "smoothie-mixed-berry",
+    "name": "Mixed berry smoothie",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/mixed-berry-smoothie"
+    ],
+    "summary": "Frozen blueberries, raspberries and blackberries blended with banana, yogurt and apple juice.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "smoothie",
+      "fruit",
+      "berries"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "blueberries-frozen",
+        "qty": 60,
+        "unit": "g",
+        "label": "frozen blueberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "raspberries-frozen",
+        "qty": 60,
+        "unit": "g",
+        "label": "frozen raspberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "blackberries-frozen",
+        "qty": 40,
+        "unit": "g",
+        "label": "frozen blackberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-low-fat",
+        "qty": 100,
+        "unit": "g",
+        "label": "plain yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "juice-apple",
+        "qty": 100,
+        "unit": "ml",
+        "label": "apple juice"
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled). A bag of frozen mixed berries works the same; split its weight across the three berry lines or swap them for one."
+  },
+  {
+    "key": "smoothie-mango-yogurt",
+    "name": "Mango yogurt smoothie",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/mango-yogurt-smoothie"
+    ],
+    "summary": "Ripe mango blended with plain yogurt and milk, with a squeeze of lime if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "smoothie",
+      "fruit"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "mango-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "mango"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-low-fat",
+        "qty": 150,
+        "unit": "g",
+        "label": "plain yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 100,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "lime-juice-fresh",
+        "qty": 10,
+        "unit": "ml",
+        "label": "lime juice",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "smoothie-pineapple-coconut",
+    "name": "Pineapple coconut smoothie",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/pineapple-coconut-smoothie"
+    ],
+    "summary": "Pineapple and banana blended with coconut drink, with a spoonful of coconut milk for richness.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "smoothie",
+      "fruit"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "pineapple-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "pineapple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 60,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coconut-drink-sweetened",
+        "qty": 200,
+        "unit": "ml",
+        "label": "coconut drink"
+      },
+      {
+        "ref": "item",
+        "ref_key": "coconut-milk-tinned",
+        "qty": 40,
+        "unit": "ml",
+        "label": "coconut milk",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "lime-juice-fresh",
+        "qty": 10,
+        "unit": "ml",
+        "label": "lime juice",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled). The coconut drink line is a sweetened, fortified carton drink; swap it for the exact carton you use."
+  },
+  {
+    "key": "shake-banana-coffee",
+    "name": "Banana coffee shake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/banana-coffee-shake"
+    ],
+    "summary": "A cooled espresso blended with milk and banana, with oats or honey if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "coffee"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "espresso",
+        "qty": 60,
+        "unit": "ml",
+        "label": "espresso"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 200,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 20,
+        "unit": "g",
+        "label": "rolled oats",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Let the espresso cool, then blend it with the rest until smooth; pour over ice if you like."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled). The espresso line is a double shot; this shake contains caffeine."
+  },
+  {
+    "key": "shake-chocolate-oat",
+    "name": "Chocolate oat shake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/chocolate-oat-shake"
+    ],
+    "summary": "Semi-skimmed milk blended with rolled oats, cocoa, banana and honey.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "oats",
+      "chocolate"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 300,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 40,
+        "unit": "g",
+        "label": "rolled oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cocoa-powder-as-sold",
+        "qty": 8,
+        "unit": "g",
+        "label": "cocoa"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 10,
+        "unit": "g",
+        "label": "honey"
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "shake-date-milk",
+    "name": "Date milk shake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/date-milk-shake"
+    ],
+    "summary": "Semi-skimmed milk blended with pitted Medjool dates and a pinch of cinnamon.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "dates"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 300,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "dates-medjool",
+        "qty": 72,
+        "unit": "g",
+        "label": "Medjool dates"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 1,
+        "unit": "g",
+        "label": "cinnamon",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Soak the pitted dates in a little of the milk for 10 minutes if they are firm, then blend everything until smooth."
+    ],
+    "notes": "The dates line is pitted weight: about three Medjool dates (24 g each pitted)."
+  },
+  {
+    "key": "smoothie-avocado-cocoa",
+    "name": "Avocado cocoa smoothie",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/avocado-cocoa-smoothie"
+    ],
+    "summary": "Avocado, banana and cocoa blended with milk into a thick chocolate smoothie.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "smoothie",
+      "chocolate"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "avocado-raw",
+        "qty": 70,
+        "unit": "g",
+        "label": "avocado"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 80,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cocoa-powder-as-sold",
+        "qty": 8,
+        "unit": "g",
+        "label": "cocoa"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 250,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 10,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "smoothie-peach-yogurt",
+    "name": "Peach yogurt smoothie",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/peach-yogurt-smoothie"
+    ],
+    "summary": "Ripe peach blended with plain yogurt and milk.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "smoothie",
+      "fruit"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "peach-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "peach"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-low-fat",
+        "qty": 150,
+        "unit": "g",
+        "label": "plain yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 100,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "smoothie-kiwi-apple",
+    "name": "Kiwi apple smoothie",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/kiwi-apple-smoothie"
+    ],
+    "summary": "Kiwi and apple blended with apple juice, with a handful of spinach if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "smoothie",
+      "fruit"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "kiwi-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "kiwi"
+      },
+      {
+        "ref": "item",
+        "ref_key": "apple-raw-with-skin",
+        "qty": 120,
+        "unit": "g",
+        "label": "apple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "juice-apple",
+        "qty": 150,
+        "unit": "ml",
+        "label": "apple juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "spinach-raw",
+        "qty": 30,
+        "unit": "g",
+        "label": "spinach",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled). Two kiwis peeled weigh about 150 g."
+  },
+  {
+    "key": "smoothie-orange-mango",
+    "name": "Orange mango smoothie",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/orange-mango-smoothie"
+    ],
+    "summary": "Mango blended with orange juice, with yogurt for a creamier glass.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "smoothie",
+      "fruit"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "juice-orange",
+        "qty": 200,
+        "unit": "ml",
+        "label": "orange juice"
+      },
+      {
+        "ref": "item",
+        "ref_key": "mango-raw",
+        "qty": 150,
+        "unit": "g",
+        "label": "mango"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-low-fat",
+        "qty": 100,
+        "unit": "g",
+        "label": "plain yogurt",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "smoothie-strawberry-banana",
+    "name": "Strawberry banana smoothie",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/strawberry-banana-smoothie"
+    ],
+    "summary": "Strawberries and banana blended with semi-skimmed milk, with yogurt if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "smoothie",
+      "fruit"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 200,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-low-fat",
+        "qty": 100,
+        "unit": "g",
+        "label": "plain yogurt",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "shake-apple-cinnamon-oat",
+    "name": "Apple cinnamon oat shake",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/apple-cinnamon-oat-shake"
+    ],
+    "summary": "Apple, rolled oats, cinnamon and yogurt blended with semi-skimmed milk.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "oats"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "apple-raw-with-skin",
+        "qty": 120,
+        "unit": "g",
+        "label": "apple"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 30,
+        "unit": "g",
+        "label": "rolled oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 250,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "yogurt-plain-low-fat",
+        "qty": 80,
+        "unit": "g",
+        "label": "plain yogurt"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cinnamon-ground-as-sold",
+        "qty": 1,
+        "unit": "g",
+        "label": "cinnamon"
+      },
+      {
+        "ref": "item",
+        "ref_key": "honey-as-sold",
+        "qty": 7,
+        "unit": "g",
+        "label": "honey",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "The apple line is cored weight with skin."
+  },
+  {
+    "key": "shake-protein-water",
+    "name": "Protein shake with water",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/protein-shake-with-water"
+    ],
+    "summary": "Protein powder shaken with cold water.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "shaker"
+    ],
+    "tags": [
+      "shake",
+      "protein-powder"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 300,
+        "unit": "ml",
+        "label": "water"
+      },
+      {
+        "ref": "item",
+        "ref_key": "protein-powder-whey-generic",
+        "qty": 30,
+        "unit": "g",
+        "label": "protein powder"
+      }
+    ],
+    "method": [
+      "Add the water to the shaker first, then the powder, and shake well."
+    ],
+    "notes": "Whey protein powder is a generic placeholder (protein-powder-whey-generic): swap it for the exact powder you use. The 30 g is a weight, not a scoop; scoop sizes differ by brand, so weigh yours or use the gram serving on the tub."
+  },
+  {
+    "key": "shake-protein-milk",
+    "name": "Protein shake with milk",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/protein-shake-with-milk"
+    ],
+    "summary": "Protein powder shaken with semi-skimmed milk.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "shaker"
+    ],
+    "tags": [
+      "shake",
+      "protein-powder"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 300,
+        "unit": "ml",
+        "label": "milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "protein-powder-whey-generic",
+        "qty": 30,
+        "unit": "g",
+        "label": "protein powder"
+      }
+    ],
+    "method": [
+      "Add the milk to the shaker first, then the powder, and shake well."
+    ],
+    "notes": "Whey protein powder is a generic placeholder (protein-powder-whey-generic): swap it for the exact powder you use. The 30 g is a weight, not a scoop; scoop sizes differ by brand, so weigh yours or use the gram serving on the tub."
+  },
+  {
+    "key": "shake-ready-made-plus-additions",
+    "name": "Ready-made shake with banana and oats",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [
+      "shakes/ready-made-shake-plus-personal-additions"
+    ],
+    "summary": "A bottled ready-to-drink shake blended with your own banana, with oats or peanut butter if you like.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "ready-made"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "protein-shake-muscle-milk-us",
+        "qty": 330,
+        "unit": "ml",
+        "label": "ready-made shake"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 30,
+        "unit": "g",
+        "label": "rolled oats",
+        "optional": true
+      },
+      {
+        "ref": "item",
+        "ref_key": "peanut-butter-smooth",
+        "qty": 15,
+        "unit": "g",
+        "label": "peanut butter",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Pour the ready-made shake into a blender with the banana and any extras and blend until smooth."
+    ],
+    "notes": "The ready-made shake is a product: the line uses a US branded ready-to-drink protein shake only as a reference, so swap it for your bottle's label (and its ml). Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "shake-banana-whey-water",
+    "name": "Banana whey shake with water",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [],
+    "summary": "Whey protein powder and banana blended with cold water instead of milk.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "protein-powder"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "water-tap",
+        "qty": 300,
+        "unit": "ml",
+        "label": "water"
+      },
+      {
+        "ref": "item",
+        "ref_key": "protein-powder-whey-generic",
+        "qty": 30,
+        "unit": "g",
+        "label": "whey protein powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Whey protein powder is a generic placeholder (protein-powder-whey-generic): swap it for the exact powder you use. The 30 g is a weight, not a scoop; scoop sizes differ by brand, so weigh yours or use the gram serving on the tub. Fruit lines are edible weight (peeled, stoned or hulled)."
+  },
+  {
+    "key": "shake-chocolate-whey-oat-drink",
+    "name": "Chocolate whey shake with oat drink",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [],
+    "summary": "Chocolate whey protein powder shaken with unsweetened oat drink.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "shaker or blender"
+    ],
+    "tags": [
+      "shake",
+      "protein-powder",
+      "chocolate"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "oat-drink-unsweetened",
+        "qty": 300,
+        "unit": "g",
+        "label": "oat drink"
+      },
+      {
+        "ref": "item",
+        "ref_key": "protein-powder-whey-generic",
+        "qty": 30,
+        "unit": "g",
+        "label": "chocolate whey protein powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "cocoa-powder-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "cocoa",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Shake or blend the oat drink and powder (and cocoa, if using) until smooth."
+    ],
+    "notes": "Whey protein powder is a generic placeholder (protein-powder-whey-generic): swap it for the exact powder you use. The 30 g is a weight, not a scoop; scoop sizes differ by brand, so weigh yours or use the gram serving on the tub. The oat drink line is in grams because the catalogue record has no ml density; 300 g is about 300 ml."
+  },
+  {
+    "key": "shake-banana-oat-protein-soya",
+    "name": "Banana oat protein shake with soya drink",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [],
+    "summary": "Protein powder, banana and rolled oats blended with unsweetened soya drink.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "protein-powder",
+      "oats"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "soy-drink-unsweetened",
+        "qty": 250,
+        "unit": "g",
+        "label": "soya drink"
+      },
+      {
+        "ref": "item",
+        "ref_key": "protein-powder-whey-generic",
+        "qty": 30,
+        "unit": "g",
+        "label": "protein powder"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oats-rolled-dry",
+        "qty": 40,
+        "unit": "g",
+        "label": "rolled oats"
+      },
+      {
+        "ref": "item",
+        "ref_key": "peanut-butter-smooth",
+        "qty": 15,
+        "unit": "g",
+        "label": "peanut butter",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Whey protein powder is a generic placeholder (protein-powder-whey-generic): swap it for the exact powder you use. The 30 g is a weight, not a scoop; scoop sizes differ by brand, so weigh yours or use the gram serving on the tub. Fruit lines are edible weight (peeled, stoned or hulled). The soya drink line is in grams because the catalogue record has no ml density."
+  },
+  {
+    "key": "smoothie-strawberry-banana-oat-drink",
+    "name": "Strawberry banana smoothie with oat drink",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [],
+    "summary": "Strawberries and banana blended with unsweetened oat drink.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "smoothie",
+      "fruit"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "banana-raw",
+        "qty": 100,
+        "unit": "g",
+        "label": "banana"
+      },
+      {
+        "ref": "item",
+        "ref_key": "oat-drink-unsweetened",
+        "qty": 200,
+        "unit": "g",
+        "label": "oat drink"
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled). The oat drink line is in grams because the catalogue record has no ml density."
+  },
+  {
+    "key": "shake-strawberry-milkshake-semi",
+    "name": "Strawberry milkshake with semi-skimmed milk",
+    "name_mt": null,
+    "family": "shakes",
+    "type": "template",
+    "parent_key": null,
+    "req": [],
+    "summary": "Strawberries and vanilla ice cream blended with semi-skimmed milk.",
+    "servings": 1,
+    "final_weight": null,
+    "prep_min": 5,
+    "cook_min": 0,
+    "equipment": [
+      "blender",
+      "glass"
+    ],
+    "tags": [
+      "shake",
+      "milkshake",
+      "treat"
+    ],
+    "lines": [
+      {
+        "ref": "item",
+        "ref_key": "milk-semi-skimmed",
+        "qty": 250,
+        "unit": "ml",
+        "label": "semi-skimmed milk"
+      },
+      {
+        "ref": "item",
+        "ref_key": "strawberries-raw",
+        "qty": 120,
+        "unit": "g",
+        "label": "strawberries"
+      },
+      {
+        "ref": "item",
+        "ref_key": "ice-cream-vanilla",
+        "qty": 60,
+        "unit": "g",
+        "label": "vanilla ice cream"
+      },
+      {
+        "ref": "item",
+        "ref_key": "sugar-white-as-sold",
+        "qty": 5,
+        "unit": "g",
+        "label": "sugar",
+        "optional": true
+      }
+    ],
+    "method": [
+      "Put everything in a blender and blend until smooth; drink straight away."
+    ],
+    "notes": "Fruit lines are edible weight (peeled, stoned or hulled)."
+  }
+]

@@ -1,0 +1,134 @@
+[
+ {
+  "req": null,
+  "status": "mapped",
+  "records": [
+   {
+    "key": "pine-nuts",
+    "fdc_id": 170591,
+    "name": "Pine nuts",
+    "state": "as-sold",
+    "aliases": [
+     "pine nuts",
+     "pine kernels",
+     "pinoli"
+    ],
+    "category": "nuts"
+   },
+   {
+    "key": "chilli-red-fresh",
+    "fdc_id": 170106,
+    "name": "Red chilli, fresh",
+    "state": "raw",
+    "aliases": [
+     "red chilli",
+     "fresh chilli",
+     "chilli pepper",
+     "chili"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "dill-fresh",
+    "fdc_id": 172233,
+    "name": "Dill, fresh",
+    "state": "raw",
+    "aliases": [
+     "dill",
+     "fresh dill"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "thyme-dried-as-sold",
+    "fdc_id": 170938,
+    "name": "Thyme, dried",
+    "state": "as-sold",
+    "aliases": [
+     "thyme",
+     "dried thyme"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "nutmeg-ground-as-sold",
+    "fdc_id": 171326,
+    "name": "Nutmeg, ground",
+    "state": "as-sold",
+    "aliases": [
+     "nutmeg",
+     "ground nutmeg"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "turmeric-ground-as-sold",
+    "fdc_id": 172231,
+    "name": "Turmeric, ground",
+    "state": "as-sold",
+    "aliases": [
+     "turmeric",
+     "ground turmeric"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "fennel-seeds-as-sold",
+    "fdc_id": 171323,
+    "name": "Fennel seeds",
+    "state": "as-sold",
+    "aliases": [
+     "fennel seeds",
+     "fennel seed"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "chilli-powder-as-sold",
+    "fdc_id": 171319,
+    "name": "Chilli powder",
+    "state": "as-sold",
+    "aliases": [
+     "chilli powder",
+     "chili powder"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "coriander-ground-as-sold",
+    "fdc_id": 170922,
+    "name": "Coriander, ground (seed)",
+    "state": "as-sold",
+    "aliases": [
+     "ground coriander",
+     "coriander seed"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "pasta-shells-large-dry",
+    "fdc_id": 168927,
+    "name": "Large pasta shells (conchiglioni), dry",
+    "state": "dry",
+    "aliases": [
+     "conchiglioni",
+     "large pasta shells",
+     "pasta shells"
+    ],
+    "category": "pasta"
+   },
+   {
+    "key": "cannelloni-tubes-dry",
+    "fdc_id": 168927,
+    "name": "Cannelloni tubes, dry",
+    "state": "dry",
+    "aliases": [
+     "cannelloni",
+     "cannelloni tubes"
+    ],
+    "category": "pasta"
+   }
+  ],
+  "note": "Extra staples for the pasta, bakes and pizza-pies recipes. Large shells and cannelloni tubes are plain durum wheat shapes and share the generic USDA dry pasta formulation (fdc 168927) with the other shapes."
+ }
+]

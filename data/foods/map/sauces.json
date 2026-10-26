@@ -1,0 +1,600 @@
+[
+  {
+    "req": "sauces/olive-oil",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oil-olive",
+        "fdc_id": 171413,
+        "name": "Olive oil",
+        "state": "as-sold",
+        "aliases": [
+          "extra virgin olive oil"
+        ]
+      }
+    ],
+    "note": "SR record covers olive oil generally; Foundation extra virgin record 748608 lacks energy data. Oil is ~884 kcal/100 g, so log small amounts by grams or tsp/tbsp."
+  },
+  {
+    "req": "sauces/sunflower-oil",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oil-sunflower",
+        "fdc_id": 171025,
+        "name": "Sunflower oil",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Standard linoleic sunflower oil. High-oleic version is 172338 if the label says so; energy is the same."
+  },
+  {
+    "req": "sauces/rapeseed-oil",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oil-rapeseed",
+        "fdc_id": 172336,
+        "name": "Rapeseed oil",
+        "state": "as-sold",
+        "aliases": [
+          "canola oil"
+        ]
+      }
+    ],
+    "note": "USDA has no \"rapeseed oil\" record; canola is low-erucic rapeseed oil, which is what UK rapeseed oil is."
+  },
+  {
+    "req": "sauces/vegetable-oil",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oil-vegetable",
+        "fdc_id": 171411,
+        "name": "Vegetable oil (soybean)",
+        "state": "as-sold",
+        "aliases": [
+          "cooking oil"
+        ]
+      }
+    ],
+    "note": "USDA generic vegetable oil is soybean-based. UK \"vegetable oil\" is often 100% rapeseed (use oil-rapeseed if the label says so); energy and total fat are identical, fatty-acid profile differs."
+  },
+  {
+    "req": "sauces/sesame-oil",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oil-sesame",
+        "fdc_id": 171016,
+        "name": "Sesame oil",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sauces/coconut-oil",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "oil-coconut",
+        "fdc_id": 171412,
+        "name": "Coconut oil",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sauces/margarine",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "margarine-80-fat",
+        "fdc_id": 172347,
+        "name": "Margarine, 80% fat",
+        "state": "as-sold",
+        "aliases": [
+          "baking margarine",
+          "block margarine"
+        ]
+      },
+      {
+        "key": "spread-60-fat",
+        "fdc_id": 173582,
+        "name": "Vegetable oil spread, 60% fat",
+        "state": "as-sold",
+        "aliases": [
+          "sunflower spread",
+          "margarine spread"
+        ]
+      },
+      {
+        "key": "spread-light-38-fat",
+        "fdc_id": 171415,
+        "name": "Light spread, 35-39% fat",
+        "state": "as-sold",
+        "aliases": [
+          "low-fat spread"
+        ]
+      }
+    ],
+    "note": "Covers full-fat margarine, standard spread and light spread. Branded spreads (plant sterol, olive) vary; check fat % on the tub."
+  },
+  {
+    "req": "sauces/cooking-spray",
+    "status": "product",
+    "records": [
+      {
+        "key": "cooking-spray-pam-us",
+        "fdc_id": 171430,
+        "name": "Cooking spray, PAM original",
+        "state": "as-sold",
+        "kind": "product",
+        "brand": "PAM",
+        "market": "US"
+      }
+    ],
+    "note": "Only USDA record is US PAM. UK \"1-cal\" sprays are oil-water emulsions with different per-spray grams; use the exact label, and do not treat rounded \"0 kcal per spray\" as zero for heavy use."
+  },
+  {
+    "req": "sauces/mayonnaise",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mayonnaise-regular",
+        "fdc_id": 171009,
+        "name": "Mayonnaise",
+        "state": "as-sold",
+        "aliases": [
+          "mayo"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sauces/light-mayonnaise",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mayonnaise-light",
+        "fdc_id": 173594,
+        "name": "Mayonnaise, light",
+        "state": "as-sold",
+        "aliases": [
+          "reduced-fat mayo",
+          "light mayo"
+        ]
+      }
+    ],
+    "note": "Light mayos vary widely in fat; check the label when known."
+  },
+  {
+    "req": "sauces/ketchup",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ketchup-tomato",
+        "fdc_id": 168556,
+        "name": "Tomato ketchup",
+        "state": "as-sold",
+        "aliases": [
+          "ketchup",
+          "catsup",
+          "tomato sauce (UK table sauce)"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sauces/mustard",
+    "status": "partial",
+    "records": [
+      {
+        "key": "mustard-yellow",
+        "fdc_id": 172234,
+        "name": "Mustard, yellow (prepared)",
+        "state": "as-sold",
+        "aliases": [
+          "American mustard"
+        ]
+      }
+    ],
+    "note": "Only prepared yellow mustard is in USDA; English mustard and Dijon are missing and differ in composition."
+  },
+  {
+    "req": "sauces/barbecue-sauce",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sauce-barbecue",
+        "fdc_id": 174523,
+        "name": "Barbecue sauce",
+        "state": "as-sold",
+        "aliases": [
+          "BBQ sauce"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sauces/hot-sauce",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sauce-hot-pepper",
+        "fdc_id": 174527,
+        "name": "Hot pepper sauce",
+        "state": "as-sold",
+        "aliases": [
+          "chilli sauce (hot)",
+          "Tabasco-style sauce"
+        ]
+      },
+      {
+        "key": "sauce-sriracha",
+        "fdc_id": 171186,
+        "name": "Sriracha",
+        "state": "as-sold",
+        "aliases": [
+          "sriracha hot chilli sauce"
+        ]
+      }
+    ],
+    "note": "Thin vinegar-based hot sauce and thicker sriracha style."
+  },
+  {
+    "req": "sauces/sweet-chilli-sauce",
+    "status": "gap",
+    "records": [],
+    "note": "No sweet chilli sauce in SR Legacy or Foundation (sweet-and-sour and tomato chili sauce are different products). Use the bottle label."
+  },
+  {
+    "req": "sauces/soy-sauce",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "soy-sauce-shoyu",
+        "fdc_id": 174277,
+        "name": "Soy sauce",
+        "state": "as-sold",
+        "aliases": [
+          "shoyu",
+          "light soy sauce"
+        ]
+      },
+      {
+        "key": "soy-sauce-tamari",
+        "fdc_id": 174278,
+        "name": "Tamari (wheat-free soy sauce)",
+        "state": "as-sold",
+        "aliases": [
+          "tamari"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sauces/reduced-salt-soy-sauce",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "soy-sauce-reduced-salt",
+        "fdc_id": 172473,
+        "name": "Soy sauce, reduced salt",
+        "state": "as-sold",
+        "aliases": [
+          "low-sodium soy sauce"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sauces/teriyaki-sauce",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sauce-teriyaki",
+        "fdc_id": 171167,
+        "name": "Teriyaki sauce",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sauces/worcestershire-sauce",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sauce-worcestershire",
+        "fdc_id": 171610,
+        "name": "Worcestershire sauce",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sauces/pesto",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pesto-jar",
+        "fdc_id": 171580,
+        "name": "Pesto, jar (shelf-stable)",
+        "state": "as-sold",
+        "aliases": [
+          "green pesto",
+          "basil pesto"
+        ]
+      },
+      {
+        "key": "pesto-fresh",
+        "fdc_id": 171579,
+        "name": "Pesto, fresh (chilled)",
+        "state": "as-sold",
+        "aliases": [
+          "fresh basil pesto"
+        ]
+      }
+    ],
+    "note": "Basil pesto only; red (sun-dried tomato) pesto is not in USDA."
+  },
+  {
+    "req": "sauces/tomato-passata",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tomato-passata",
+        "fdc_id": 170460,
+        "name": "Tomato passata",
+        "state": "as-sold",
+        "aliases": [
+          "sieved tomatoes",
+          "canned tomato puree (US)"
+        ]
+      }
+    ],
+    "note": "Mapped to US canned tomato puree (no salt added), the closest USDA form to passata. Note: US \"tomato puree\" is passata-like; UK \"tomato purée\" is concentrated paste."
+  },
+  {
+    "req": "sauces/tomato-paste",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tomato-paste",
+        "fdc_id": 170459,
+        "name": "Tomato paste",
+        "state": "as-sold",
+        "aliases": [
+          "tomato purée (UK)",
+          "double concentrate"
+        ]
+      }
+    ],
+    "note": "UK \"tomato purée\" in tubes is this concentrated paste. USDA record is without added salt."
+  },
+  {
+    "req": "sauces/salsa",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "salsa-jar",
+        "fdc_id": 174524,
+        "name": "Salsa (jar)",
+        "state": "as-sold",
+        "aliases": [
+          "salsa dip",
+          "tomato salsa"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sauces/hummus",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "hummus-shop",
+        "fdc_id": 174289,
+        "name": "Hummus",
+        "state": "as-sold",
+        "aliases": [
+          "houmous"
+        ]
+      }
+    ],
+    "note": "Shop-bought hummus. Homemade should be an ingredient-backed recipe."
+  },
+  {
+    "req": "sauces/salad-dressing",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "dressing-vinaigrette",
+        "fdc_id": 171417,
+        "name": "Vinaigrette (oil and vinegar)",
+        "state": "prepared",
+        "aliases": [
+          "French dressing (UK)",
+          "oil and vinegar dressing"
+        ]
+      },
+      {
+        "key": "dressing-italian",
+        "fdc_id": 171019,
+        "name": "Italian dressing",
+        "state": "as-sold"
+      },
+      {
+        "key": "dressing-italian-light",
+        "fdc_id": 171405,
+        "name": "Italian dressing, reduced fat",
+        "state": "as-sold"
+      },
+      {
+        "key": "dressing-french-us",
+        "fdc_id": 171414,
+        "name": "French dressing (US-style, creamy)",
+        "state": "as-sold",
+        "aliases": [
+          "US French dressing"
+        ]
+      },
+      {
+        "key": "dressing-caesar",
+        "fdc_id": 169055,
+        "name": "Caesar dressing",
+        "state": "as-sold"
+      },
+      {
+        "key": "dressing-ranch",
+        "fdc_id": 173592,
+        "name": "Ranch dressing",
+        "state": "as-sold"
+      }
+    ],
+    "note": "UK \"French dressing\" is a vinaigrette; the US French record is the sweet creamy orange style. Vinaigrette record is a USDA home recipe."
+  },
+  {
+    "req": "sauces/balsamic-glaze",
+    "status": "gap",
+    "records": [],
+    "note": "USDA has balsamic vinegar (172241) but no reduced/sweetened glaze, which is much more energy-dense. Use the bottle label."
+  },
+  {
+    "req": "sauces/vinegar",
+    "status": "partial",
+    "records": [
+      {
+        "key": "vinegar-white",
+        "fdc_id": 172237,
+        "name": "White vinegar (distilled)",
+        "state": "as-sold",
+        "aliases": [
+          "spirit vinegar"
+        ]
+      },
+      {
+        "key": "vinegar-cider",
+        "fdc_id": 173469,
+        "name": "Cider vinegar",
+        "state": "as-sold",
+        "aliases": [
+          "apple cider vinegar"
+        ]
+      },
+      {
+        "key": "vinegar-red-wine",
+        "fdc_id": 172240,
+        "name": "Red wine vinegar",
+        "state": "as-sold",
+        "aliases": [
+          "wine vinegar"
+        ]
+      },
+      {
+        "key": "vinegar-balsamic",
+        "fdc_id": 172241,
+        "name": "Balsamic vinegar",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Malt vinegar (the usual UK chip vinegar) is not in USDA."
+  },
+  {
+    "req": "sauces/gravy",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "gravy-granules-brown",
+        "fdc_id": 171588,
+        "name": "Gravy granules, brown (dry)",
+        "state": "dry",
+        "aliases": [
+          "gravy granules",
+          "instant gravy"
+        ]
+      },
+      {
+        "key": "gravy-granules-chicken",
+        "fdc_id": 171567,
+        "name": "Gravy granules, chicken (dry)",
+        "state": "dry"
+      },
+      {
+        "key": "gravy-beef-ready",
+        "fdc_id": 171564,
+        "name": "Beef gravy, ready to serve",
+        "state": "as-sold"
+      },
+      {
+        "key": "gravy-chicken-ready",
+        "fdc_id": 171566,
+        "name": "Chicken gravy, ready to serve",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Granules are dry weight; USDA has no made-up-from-granules record, so log granules by grams used. Keep dry and ready-to-serve separate."
+  },
+  {
+    "req": "sauces/stock",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "stock-cube-chicken",
+        "fdc_id": 171563,
+        "name": "Chicken stock cube (dry)",
+        "state": "dry",
+        "aliases": [
+          "bouillon cube"
+        ]
+      },
+      {
+        "key": "stock-chicken-from-cube",
+        "fdc_id": 174566,
+        "name": "Chicken stock, made from cube",
+        "state": "prepared"
+      },
+      {
+        "key": "stock-cube-beef",
+        "fdc_id": 171561,
+        "name": "Beef stock cube (dry)",
+        "state": "dry"
+      },
+      {
+        "key": "stock-beef-from-cube",
+        "fdc_id": 172923,
+        "name": "Beef stock, made from cube",
+        "state": "prepared"
+      },
+      {
+        "key": "stock-chicken-ready",
+        "fdc_id": 174536,
+        "name": "Chicken stock, ready to use",
+        "state": "as-sold",
+        "aliases": [
+          "chicken broth"
+        ]
+      },
+      {
+        "key": "stock-vegetable-ready",
+        "fdc_id": 171583,
+        "name": "Vegetable stock, ready to use",
+        "state": "as-sold",
+        "aliases": [
+          "vegetable broth"
+        ]
+      }
+    ],
+    "note": "Dry cube and made-up stock are separate records. Vegetable stock cubes and gel stock pots are not in USDA."
+  }
+]

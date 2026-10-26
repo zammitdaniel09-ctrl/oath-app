@@ -1,0 +1,2081 @@
+[
+ {
+  "key": "tuna-pasta-salad",
+  "name": "Tuna pasta salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/tuna-pasta-salad"
+  ],
+  "summary": "Pasta, tuna, sweetcorn and red pepper in a light mayonnaise and yogurt dressing.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 12,
+  "equipment": [
+   "saucepan",
+   "colander",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "fusilli-dry",
+    "qty": 75,
+    "unit": "g",
+    "label": "pasta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 20,
+    "unit": "g",
+    "label": "mayonnaise"
+   },
+   {
+    "ref": "item",
+    "ref_key": "yogurt-greek-low-fat",
+    "qty": 20,
+    "unit": "g",
+    "label": "Greek yogurt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 5,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tuna-canned-brine-light",
+    "qty": 80,
+    "unit": "g",
+    "label": "tuna"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sweetcorn-tinned-drained",
+    "qty": 40,
+    "unit": "g",
+    "label": "sweetcorn"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spring-onion-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "spring onion"
+   }
+  ],
+  "method": [
+   "Cook the pasta in boiling water until just tender, about 10 minutes, then drain and rinse under cold water.",
+   "Mix the mayonnaise, Greek yogurt, lemon juice and black pepper in a bowl.",
+   "Add the drained tuna, sweetcorn, diced red pepper and sliced spring onion with the pasta and toss to coat.",
+   "Eat straight away or chill in a lidded tub for up to 2 days."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "chicken-pasta-salad",
+  "name": "Chicken pasta salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "variant",
+  "parent_key": "tuna-pasta-salad",
+  "req": [
+   "lunches/chicken-pasta-salad"
+  ],
+  "summary": "Pasta, leftover chicken, sweetcorn and red pepper in a light mayonnaise and yogurt dressing.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 12,
+  "equipment": [
+   "saucepan",
+   "colander",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "fusilli-dry",
+    "qty": 75,
+    "unit": "g",
+    "label": "pasta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 20,
+    "unit": "g",
+    "label": "mayonnaise"
+   },
+   {
+    "ref": "item",
+    "ref_key": "yogurt-greek-low-fat",
+    "qty": 20,
+    "unit": "g",
+    "label": "Greek yogurt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 5,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chicken-breast-skinless-roasted",
+    "qty": 80,
+    "unit": "g",
+    "label": "cooked chicken"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sweetcorn-tinned-drained",
+    "qty": 40,
+    "unit": "g",
+    "label": "sweetcorn"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spring-onion-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "spring onion"
+   }
+  ],
+  "method": [
+   "Cook the pasta in boiling water until just tender, about 10 minutes, then drain and rinse under cold water.",
+   "Mix the mayonnaise, Greek yogurt, lemon juice and black pepper in a bowl.",
+   "Add the diced cooked chicken, sweetcorn, diced red pepper and sliced spring onion with the pasta and toss to coat.",
+   "Eat straight away or chill in a lidded tub for up to 2 days."
+  ],
+  "notes": "Variant of tuna pasta salad: leftover cooked chicken replaces the tuna."
+ },
+ {
+  "key": "pesto-pasta-salad",
+  "name": "Pesto pasta salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/pesto-pasta-salad"
+  ],
+  "summary": "Farfalle tossed with pesto, cherry tomatoes, mozzarella and rocket.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 6,
+  "cook_min": 12,
+  "equipment": [
+   "saucepan",
+   "colander",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "farfalle-dry",
+    "qty": 75,
+    "unit": "g",
+    "label": "pasta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 5,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pesto-jar",
+    "qty": 25,
+    "unit": "g",
+    "label": "pesto"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-cherry-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "cherry tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mozzarella-whole-milk",
+    "qty": 40,
+    "unit": "g",
+    "label": "mozzarella"
+   },
+   {
+    "ref": "item",
+    "ref_key": "rocket-raw",
+    "qty": 20,
+    "unit": "g",
+    "label": "rocket"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   }
+  ],
+  "method": [
+   "Cook the pasta until just tender, drain, rinse under cold water and toss with the olive oil.",
+   "Stir through the pesto, then add the halved cherry tomatoes and torn mozzarella.",
+   "Fold in the rocket just before eating and season with black pepper."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "mediterranean-pasta-salad",
+  "name": "Mediterranean pasta salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/mediterranean-pasta-salad"
+  ],
+  "summary": "Penne with sun-dried tomatoes, black olives, capers, red pepper, basil and Parmesan in a balsamic dressing.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 12,
+  "equipment": [
+   "saucepan",
+   "colander",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "penne-dry",
+    "qty": 75,
+    "unit": "g",
+    "label": "pasta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "vinegar-balsamic",
+    "qty": 5,
+    "unit": "ml",
+    "label": "balsamic vinegar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomatoes-sun-dried-oil-drained",
+    "qty": 20,
+    "unit": "g",
+    "label": "sun-dried tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "olives-black",
+    "qty": 25,
+    "unit": "g",
+    "label": "black olives"
+   },
+   {
+    "ref": "item",
+    "ref_key": "capers-drained",
+    "qty": 5,
+    "unit": "g",
+    "label": "capers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "basil-fresh",
+    "qty": 3,
+    "unit": "g",
+    "label": "basil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-hard",
+    "qty": 10,
+    "unit": "g",
+    "label": "Parmesan"
+   }
+  ],
+  "method": [
+   "Cook the pasta until just tender, drain and rinse under cold water.",
+   "Whisk the olive oil, balsamic vinegar and black pepper in a large bowl.",
+   "Add the pasta, chopped sun-dried tomatoes, black olives, capers, diced red pepper, thinly sliced red onion and torn basil, and toss well.",
+   "Shave or grate the Parmesan over the top. Keeps in the fridge for 2 days."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "moroccan-couscous-salad",
+  "name": "Moroccan-style couscous salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/couscous-salad"
+  ],
+  "summary": "Spiced couscous with grated carrot, dried apricots, almonds, spring onion, mint and parsley in lemon and olive oil.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 12,
+  "cook_min": 0,
+  "equipment": [
+   "kettle",
+   "bowl",
+   "grater"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "couscous-dry",
+    "qty": 60,
+    "unit": "g",
+    "label": "couscous"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cumin-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "cumin"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cinnamon-ground-as-sold",
+    "qty": 0.25,
+    "unit": "p:1 tsp",
+    "label": "cinnamon"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 90,
+    "unit": "ml",
+    "label": "boiling water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "carrot-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "carrot"
+   },
+   {
+    "ref": "item",
+    "ref_key": "apricots-dried",
+    "qty": 20,
+    "unit": "g",
+    "label": "dried apricots"
+   },
+   {
+    "ref": "item",
+    "ref_key": "almonds-raw",
+    "qty": 10,
+    "unit": "g",
+    "label": "almonds"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spring-onion-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "spring onions"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mint-fresh",
+    "qty": 3,
+    "unit": "g",
+    "label": "mint"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parsley-fresh",
+    "qty": 5,
+    "unit": "g",
+    "label": "parsley"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 10,
+    "unit": "ml",
+    "label": "lemon juice"
+   }
+  ],
+  "method": [
+   "Put the couscous in a bowl with the cumin, cinnamon and salt, pour over the boiling water, cover and leave for 5 minutes, then fluff with a fork.",
+   "Coarsely grate the carrot, chop the dried apricots and almonds, slice the spring onions and chop the mint and parsley.",
+   "Whisk the olive oil and lemon juice, pour over the couscous and fold everything together."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "bulgur-tabbouleh",
+  "name": "Bulgur tabbouleh salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/bulgur-salad"
+  ],
+  "summary": "A herb-heavy salad of soaked bulgur, parsley, mint, tomato, cucumber and spring onion with lemon.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 15,
+  "cook_min": 0,
+  "equipment": [
+   "kettle",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "bulgur-dry",
+    "qty": 40,
+    "unit": "g",
+    "label": "bulgur"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 80,
+    "unit": "ml",
+    "label": "boiling water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parsley-fresh",
+    "qty": 30,
+    "unit": "g",
+    "label": "parsley"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mint-fresh",
+    "qty": 5,
+    "unit": "g",
+    "label": "mint"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 120,
+    "unit": "g",
+    "label": "tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cucumber-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "cucumber"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spring-onion-raw",
+    "qty": 20,
+    "unit": "g",
+    "label": "spring onions"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 15,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "feta",
+    "qty": 30,
+    "unit": "g",
+    "label": "feta",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Put the bulgur in a bowl, pour over the boiling water, cover and leave for 15 minutes until tender and the water is absorbed.",
+   "Finely chop the parsley, mint, tomatoes, cucumber and spring onions.",
+   "Fluff the bulgur with a fork, add the herbs and vegetables, then dress with the lemon juice, olive oil, salt and black pepper.",
+   "Crumble over feta if you want it more filling. Best eaten within a day."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "quinoa-chickpea-salad",
+  "name": "Quinoa chickpea salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/quinoa-chickpea-salad"
+  ],
+  "summary": "Quinoa and chickpeas with spinach, red pepper and cucumber in a lemon-tahini dressing, topped with pumpkin seeds.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 10,
+  "cook_min": 15,
+  "equipment": [
+   "saucepan",
+   "sieve",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "quinoa-dry",
+    "qty": 50,
+    "unit": "g",
+    "label": "quinoa"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tahini",
+    "qty": 15,
+    "unit": "g",
+    "label": "tahini"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 15,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 0.5,
+    "unit": "p:1 clove",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 15,
+    "unit": "ml",
+    "label": "water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chickpeas-canned-drained",
+    "qty": 80,
+    "unit": "g",
+    "label": "chickpeas"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spinach-raw",
+    "qty": 30,
+    "unit": "g",
+    "label": "spinach"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cucumber-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "cucumber"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pumpkin-seeds",
+    "qty": 10,
+    "unit": "g",
+    "label": "pumpkin seeds"
+   }
+  ],
+  "method": [
+   "Rinse the quinoa and simmer it in plenty of water for 12 to 15 minutes until tender, then drain well in a sieve and leave to cool.",
+   "Whisk the tahini with the lemon juice, crushed garlic, salt and the water to make a pourable dressing.",
+   "Toss the quinoa with the chickpeas, spinach, diced red pepper and cucumber and the sliced red onion.",
+   "Pour over the dressing and scatter with the pumpkin seeds."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "rice-and-bean-salad",
+  "name": "Rice and bean salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/rice-and-bean-salad"
+  ],
+  "summary": "Cold rice with kidney beans, sweetcorn, red pepper, spring onion and coriander in a lime and cumin dressing.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 12,
+  "equipment": [
+   "saucepan",
+   "sieve",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "rice-white-long-grain-dry",
+    "qty": 60,
+    "unit": "g",
+    "label": "rice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lime-juice-fresh",
+    "qty": 15,
+    "unit": "ml",
+    "label": "lime juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cumin-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "cumin"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chilli-flakes-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "chilli flakes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "kidney-beans-canned-drained",
+    "qty": 80,
+    "unit": "g",
+    "label": "kidney beans"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sweetcorn-tinned-drained",
+    "qty": 40,
+    "unit": "g",
+    "label": "sweetcorn"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spring-onion-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "spring onions"
+   },
+   {
+    "ref": "item",
+    "ref_key": "coriander-fresh",
+    "qty": 5,
+    "unit": "g",
+    "label": "coriander"
+   }
+  ],
+  "method": [
+   "Cook the rice in boiling water for 10 to 12 minutes, drain, rinse under cold water and drain well.",
+   "Whisk the lime juice, olive oil, cumin, chilli flakes and salt in a bowl.",
+   "Add the rice, kidney beans, sweetcorn, diced red pepper, sliced spring onions and chopped coriander and toss together.",
+   "Keep it cold in a lidded tub if packing it, and eat within a day."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "greek-salad",
+  "name": "Greek salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/greek-salad"
+  ],
+  "summary": "Tomato, cucumber, green pepper, red onion and olives under a slab of feta, with oregano and olive oil.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 0,
+  "equipment": [
+   "knife",
+   "shallow bowl"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 150,
+    "unit": "g",
+    "label": "tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cucumber-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "cucumber"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-green-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "green pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 30,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "olives-black",
+    "qty": 30,
+    "unit": "g",
+    "label": "olives"
+   },
+   {
+    "ref": "item",
+    "ref_key": "feta",
+    "qty": 60,
+    "unit": "g",
+    "label": "feta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oregano-dried-as-sold",
+    "qty": 0.5,
+    "unit": "p:1 tsp, leaves",
+    "label": "oregano"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 15,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "vinegar-red-wine",
+    "qty": 5,
+    "unit": "ml",
+    "label": "red wine vinegar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-roll-crusty-as-sold",
+    "qty": 50,
+    "unit": "g",
+    "label": "crusty bread",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Cut the tomatoes into wedges, slice the cucumber thickly, cut the green pepper into rings and thinly slice the red onion.",
+   "Put everything in a shallow bowl with the olives and lay the feta on top in one piece.",
+   "Sprinkle with the oregano and black pepper, then drizzle over the olive oil and red wine vinegar.",
+   "Add crusty bread to mop up the juices if you like."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "chicken-caesar-salad",
+  "name": "Chicken Caesar salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/chicken-caesar-salad"
+  ],
+  "summary": "Griddled chicken breast on cos lettuce with Caesar dressing, homemade croutons and shaved Parmesan.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 15,
+  "equipment": [
+   "griddle or frying pan",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "dinner"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "chicken-breast-skinless-raw",
+    "qty": 120,
+    "unit": "g",
+    "label": "chicken breast"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-sourdough-as-sold",
+    "qty": 40,
+    "unit": "g",
+    "label": "bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-cos-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "cos lettuce"
+   },
+   {
+    "ref": "item",
+    "ref_key": "dressing-caesar",
+    "qty": 25,
+    "unit": "g",
+    "label": "Caesar dressing"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-hard",
+    "qty": 15,
+    "unit": "g",
+    "label": "Parmesan"
+   }
+  ],
+  "method": [
+   "Rub the chicken breast with half the olive oil, the salt and black pepper, then griddle or fry for 5 to 6 minutes a side until cooked through. Rest for 5 minutes and slice.",
+   "Cut the bread into cubes, toss with the rest of the olive oil and toast in the pan for 4 to 5 minutes until crisp.",
+   "Tear the cos lettuce into a bowl and toss with the Caesar dressing.",
+   "Top with the chicken, croutons and shaved Parmesan."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "tuna-nicoise-salad",
+  "name": "Tuna salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/tuna-salad"
+  ],
+  "summary": "A Niçoise-style plate of tuna, new potatoes, green beans, egg, tomatoes and olives with a mustard dressing.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 10,
+  "cook_min": 15,
+  "equipment": [
+   "saucepan",
+   "small bowl"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "potato-new-raw",
+    "qty": 120,
+    "unit": "g",
+    "label": "new potatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 1,
+    "unit": "p:1 large",
+    "label": "egg"
+   },
+   {
+    "ref": "item",
+    "ref_key": "green-beans-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "green beans"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "vinegar-red-wine",
+    "qty": 5,
+    "unit": "ml",
+    "label": "red wine vinegar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mustard-yellow",
+    "qty": 3,
+    "unit": "g",
+    "label": "mustard"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-butterhead-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "lettuce"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-cherry-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "cherry tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "olives-black",
+    "qty": 20,
+    "unit": "g",
+    "label": "olives"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tuna-canned-brine-light",
+    "qty": 80,
+    "unit": "g",
+    "label": "tuna"
+   }
+  ],
+  "method": [
+   "Boil the new potatoes for 15 minutes, adding the egg for the last 9 minutes and the green beans for the last 4. Drain, cool the egg in cold water, then peel and quarter it and halve the potatoes.",
+   "Whisk the olive oil, red wine vinegar, mustard and salt to make the dressing.",
+   "Arrange the lettuce, halved cherry tomatoes, potatoes, green beans and olives on a plate, flake the drained tuna over and add the egg.",
+   "Spoon over the dressing just before eating; pack it separately if taking it to work."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "potato-and-egg-salad",
+  "name": "Potato and egg salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/potato-and-egg-salad"
+  ],
+  "summary": "Warm new potatoes and chopped boiled eggs in a mustardy mayonnaise and yogurt dressing with gherkins and spring onion.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 18,
+  "equipment": [
+   "saucepan",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "potato-new-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "new potatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 2,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 20,
+    "unit": "g",
+    "label": "mayonnaise"
+   },
+   {
+    "ref": "item",
+    "ref_key": "yogurt-greek-low-fat",
+    "qty": 20,
+    "unit": "g",
+    "label": "Greek yogurt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mustard-yellow",
+    "qty": 3,
+    "unit": "g",
+    "label": "mustard"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pickled-cucumber-dill",
+    "qty": 25,
+    "unit": "g",
+    "label": "gherkins"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spring-onion-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "spring onions"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chives-fresh",
+    "qty": 2,
+    "unit": "g",
+    "label": "chives",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Boil the new potatoes for 15 to 18 minutes until tender, adding the eggs for the last 9 minutes. Drain, cool the eggs in cold water and peel them.",
+   "Mix the mayonnaise, Greek yogurt, mustard, salt and black pepper in a bowl.",
+   "Halve the potatoes while still warm, chop the eggs, gherkins and spring onions, and fold everything into the dressing.",
+   "Scatter with chives if using. Serve at room temperature or chilled."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "warm-lentil-salad",
+  "name": "Warm lentil salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/lentil-salad"
+  ],
+  "summary": "Green lentils dressed while warm in a mustard vinaigrette, with cherry tomatoes, red pepper, parsley and feta.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 25,
+  "equipment": [
+   "saucepan",
+   "sieve",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "green-lentils-dry",
+    "qty": 60,
+    "unit": "g",
+    "label": "green lentils"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "vinegar-red-wine",
+    "qty": 10,
+    "unit": "ml",
+    "label": "red wine vinegar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mustard-yellow",
+    "qty": 3,
+    "unit": "g",
+    "label": "mustard"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-cherry-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "cherry tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 20,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parsley-fresh",
+    "qty": 8,
+    "unit": "g",
+    "label": "parsley"
+   },
+   {
+    "ref": "item",
+    "ref_key": "feta",
+    "qty": 30,
+    "unit": "g",
+    "label": "feta"
+   }
+  ],
+  "method": [
+   "Rinse the green lentils and simmer them in plenty of unsalted water for 20 to 25 minutes until tender but holding their shape, then drain.",
+   "Whisk the olive oil, red wine vinegar, mustard, salt and black pepper, and toss with the warm lentils so they soak up the dressing.",
+   "Add the halved cherry tomatoes, diced red pepper, finely chopped red onion and parsley.",
+   "Crumble over the feta and eat warm, or chill for a packed lunch."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "chickpea-cucumber-salad",
+  "name": "Chickpea cucumber salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/chickpea-cucumber-salad"
+  ],
+  "summary": "Chickpeas, cucumber, cherry tomatoes and red onion in a cumin-spiced lemon yogurt dressing with mint.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 0,
+  "equipment": [
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "cucumber-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "cucumber"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-cherry-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "cherry tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mint-fresh",
+    "qty": 3,
+    "unit": "g",
+    "label": "mint"
+   },
+   {
+    "ref": "item",
+    "ref_key": "yogurt-plain-low-fat",
+    "qty": 50,
+    "unit": "g",
+    "label": "yogurt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 10,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cumin-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "cumin"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chickpeas-canned-drained",
+    "qty": 120,
+    "unit": "g",
+    "label": "chickpeas"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chilli-flakes-as-sold",
+    "qty": 0.3,
+    "unit": "g",
+    "label": "chilli flakes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-pitta-white-as-sold",
+    "qty": 1,
+    "unit": "p:1 pita, large (6-1/2\" dia)",
+    "label": "pitta",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Dice the cucumber, halve the cherry tomatoes and finely chop the red onion and mint.",
+   "Mix the yogurt with the lemon juice, cumin and salt.",
+   "Toss the chickpeas and vegetables with the dressing, scatter over the mint and chilli flakes, and eat with warm pitta if you like."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "halloumi-salad",
+  "name": "Halloumi salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/halloumi-salad"
+  ],
+  "summary": "Hot fried halloumi on rocket, cherry tomatoes, cucumber and mint with lemon dressing and pomegranate seeds.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 5,
+  "equipment": [
+   "non-stick frying pan",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "halloumi-needs-label",
+    "qty": 80,
+    "unit": "g",
+    "label": "halloumi"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 10,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "rocket-raw",
+    "qty": 30,
+    "unit": "g",
+    "label": "rocket"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-cherry-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "cherry tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cucumber-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "cucumber"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mint-fresh",
+    "qty": 3,
+    "unit": "g",
+    "label": "mint"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pomegranate-raw",
+    "qty": 40,
+    "unit": "g",
+    "label": "pomegranate seeds"
+   }
+  ],
+  "method": [
+   "Cut the halloumi into thick slices and dry-fry in a non-stick pan for 1 to 2 minutes a side until golden.",
+   "Whisk the olive oil, lemon juice and black pepper.",
+   "Toss the rocket, halved cherry tomatoes, sliced cucumber, red onion and mint with the dressing.",
+   "Top with the hot halloumi and scatter over the pomegranate seeds."
+  ],
+  "notes": "Halloumi has no generic source, so its line has no values until you add your pack's label; until then the total is marked incomplete."
+ },
+ {
+  "key": "caprese-salad",
+  "name": "Caprese salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "lunches/caprese-salad"
+  ],
+  "summary": "Sliced tomatoes and mozzarella with basil, olive oil, salt and pepper.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 0,
+  "equipment": [
+   "knife",
+   "plate"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mozzarella-whole-milk",
+    "qty": 100,
+    "unit": "g",
+    "label": "mozzarella"
+   },
+   {
+    "ref": "item",
+    "ref_key": "basil-fresh",
+    "qty": 4,
+    "unit": "g",
+    "label": "basil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "vinegar-balsamic",
+    "qty": 5,
+    "unit": "ml",
+    "label": "balsamic vinegar",
+    "optional": true
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-ciabatta-as-sold",
+    "qty": 50,
+    "unit": "g",
+    "label": "bread",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Slice the tomatoes and mozzarella and arrange them alternately on a plate with the basil leaves.",
+   "Season with the salt and black pepper, drizzle over the olive oil, add a little balsamic vinegar if you like, and have bread on the side if you want it more filling."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "panzanella",
+  "name": "Panzanella",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Tuscan bread salad: day-old ciabatta soaked in the juices of salted tomatoes with cucumber, red onion, capers and basil.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 15,
+  "cook_min": 0,
+  "equipment": [
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bread-ciabatta-as-sold",
+    "qty": 60,
+    "unit": "g",
+    "label": "ciabatta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cucumber-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "cucumber"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "red pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 25,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "capers-drained",
+    "qty": 5,
+    "unit": "g",
+    "label": "capers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "basil-fresh",
+    "qty": 4,
+    "unit": "g",
+    "label": "basil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 15,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "vinegar-red-wine",
+    "qty": 10,
+    "unit": "ml",
+    "label": "red wine vinegar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   }
+  ],
+  "method": [
+   "Chop the tomatoes, put them in a bowl with the salt and leave for 10 minutes so they release their juice.",
+   "Tear the ciabatta into bite-sized pieces; if it is fresh rather than a day old, dry it in a low oven for 10 minutes first.",
+   "Add the ciabatta, diced cucumber and red pepper, thinly sliced red onion, capers and torn basil to the tomatoes.",
+   "Dress with the olive oil, red wine vinegar and black pepper, toss, and leave for 15 minutes so the bread soaks up the juices."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "waldorf-salad",
+  "name": "Waldorf salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Apple, celery, grapes and walnuts in a light mayonnaise and yogurt dressing on cos lettuce.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 10,
+  "cook_min": 0,
+  "equipment": [
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "packed-lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "apple-raw-with-skin",
+    "qty": 120,
+    "unit": "g",
+    "label": "apple"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 5,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "celery-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "celery"
+   },
+   {
+    "ref": "item",
+    "ref_key": "grapes-red-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "grapes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "walnuts",
+    "qty": 20,
+    "unit": "g",
+    "label": "walnuts"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 15,
+    "unit": "g",
+    "label": "mayonnaise"
+   },
+   {
+    "ref": "item",
+    "ref_key": "yogurt-greek-low-fat",
+    "qty": 30,
+    "unit": "g",
+    "label": "Greek yogurt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lettuce-cos-raw",
+    "qty": 50,
+    "unit": "g",
+    "label": "cos lettuce"
+   }
+  ],
+  "method": [
+   "Core and dice the apple and toss it with the lemon juice so it does not brown.",
+   "Slice the celery, halve the grapes and roughly chop the walnuts.",
+   "Mix the mayonnaise, Greek yogurt and black pepper, then fold in the apple, celery, grapes and most of the walnuts.",
+   "Serve on the cos lettuce leaves with the rest of the walnuts scattered over."
+  ],
+  "notes": ""
+ },
+ {
+  "key": "beetroot-goats-cheese-salad",
+  "name": "Beetroot and goat's cheese salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Cooked beetroot and rocket with soft goat's cheese, toasted walnuts and a balsamic and honey dressing.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 3,
+  "equipment": [
+   "small frying pan",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "beetroot-boiled",
+    "qty": 150,
+    "unit": "g",
+    "label": "cooked beetroot"
+   },
+   {
+    "ref": "item",
+    "ref_key": "walnuts",
+    "qty": 15,
+    "unit": "g",
+    "label": "walnuts"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "vinegar-balsamic",
+    "qty": 5,
+    "unit": "ml",
+    "label": "balsamic vinegar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "honey-as-sold",
+    "qty": 3,
+    "unit": "g",
+    "label": "honey"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "rocket-raw",
+    "qty": 40,
+    "unit": "g",
+    "label": "rocket"
+   },
+   {
+    "ref": "item",
+    "ref_key": "goat-cheese-soft",
+    "qty": 50,
+    "unit": "g",
+    "label": "goat's cheese"
+   }
+  ],
+  "method": [
+   "Cut the cooked beetroot into wedges and toast the walnuts in a dry pan for 2 to 3 minutes.",
+   "Whisk the olive oil, balsamic vinegar, honey and black pepper.",
+   "Toss the rocket and beetroot with most of the dressing, crumble over the goat's cheese, scatter with the walnuts and drizzle with the rest."
+  ],
+  "notes": "Uses ready-cooked beetroot (vacuum-packed, not pickled in vinegar)."
+ },
+ {
+  "key": "watermelon-feta-salad",
+  "name": "Watermelon and feta salad",
+  "name_mt": null,
+  "family": "lunches",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Chilled watermelon and cucumber with feta, black olives, red onion, mint and lime.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 0,
+  "equipment": [
+   "knife",
+   "bowl"
+  ],
+  "tags": [
+   "lunch",
+   "no-cook",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "watermelon-raw",
+    "qty": 250,
+    "unit": "g",
+    "label": "watermelon"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cucumber-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "cucumber"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-red-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "red onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "olives-black",
+    "qty": 15,
+    "unit": "g",
+    "label": "black olives"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mint-fresh",
+    "qty": 3,
+    "unit": "g",
+    "label": "mint"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lime-juice-fresh",
+    "qty": 10,
+    "unit": "ml",
+    "label": "lime juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 5,
+    "unit": "ml",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "feta",
+    "qty": 50,
+    "unit": "g",
+    "label": "feta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "p:1 dash",
+    "label": "black pepper"
+   }
+  ],
+  "method": [
+   "Cut the watermelon and cucumber into chunks and thinly slice the red onion.",
+   "Toss with the black olives, torn mint, lime juice and olive oil.",
+   "Crumble the feta over the top and finish with black pepper. Eat cold."
+  ],
+  "notes": ""
+ }
+]

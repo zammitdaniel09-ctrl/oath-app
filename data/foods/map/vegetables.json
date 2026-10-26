@@ -1,0 +1,1019 @@
+[
+  {
+    "req": "vegetables/tomato",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tomato-raw",
+        "fdc_id": 170457,
+        "name": "Tomato",
+        "state": "raw",
+        "aliases": [
+          "tomatoes",
+          "salad tomato",
+          "vine tomatoes",
+          "tadam"
+        ]
+      },
+      {
+        "key": "tomato-cooked",
+        "fdc_id": 170050,
+        "name": "Tomato, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked tomatoes"
+        ]
+      }
+    ],
+    "note": "Red, ripe. Tinned tomatoes, passata and purée are not mapped here."
+  },
+  {
+    "req": "vegetables/cherry-tomato",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "tomato-cherry-raw",
+        "fdc_id": 321360,
+        "name": "Cherry tomatoes",
+        "state": "raw",
+        "aliases": [
+          "cherry tomato",
+          "grape tomatoes",
+          "baby plum tomatoes"
+        ]
+      }
+    ],
+    "note": "No cherry-tomato record; Foundation grape tomatoes (a similar small, sweeter type with per-tomato portions) used as proxy."
+  },
+  {
+    "req": "vegetables/cucumber",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cucumber-raw",
+        "fdc_id": 168409,
+        "name": "Cucumber",
+        "state": "raw",
+        "aliases": [
+          "cucumbers",
+          "ħjar"
+        ]
+      },
+      {
+        "key": "cucumber-peeled-raw",
+        "fdc_id": 169225,
+        "name": "Cucumber, peeled",
+        "state": "raw",
+        "aliases": [
+          "peeled cucumber"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/lettuce",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "lettuce-iceberg-raw",
+        "fdc_id": 169248,
+        "name": "Iceberg lettuce",
+        "state": "raw",
+        "aliases": [
+          "lettuce",
+          "iceberg",
+          "crisphead lettuce",
+          "ħass"
+        ]
+      },
+      {
+        "key": "lettuce-cos-raw",
+        "fdc_id": 169247,
+        "name": "Cos lettuce",
+        "state": "raw",
+        "aliases": [
+          "romaine",
+          "romaine lettuce",
+          "little gem"
+        ]
+      },
+      {
+        "key": "lettuce-butterhead-raw",
+        "fdc_id": 168429,
+        "name": "Butterhead lettuce",
+        "state": "raw",
+        "aliases": [
+          "round lettuce",
+          "boston lettuce",
+          "bibb lettuce"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/rocket",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "rocket-raw",
+        "fdc_id": 169387,
+        "name": "Rocket",
+        "state": "raw",
+        "aliases": [
+          "arugula",
+          "roquette",
+          "wild rocket"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/spinach",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "spinach-raw",
+        "fdc_id": 168462,
+        "name": "Spinach",
+        "state": "raw",
+        "aliases": [
+          "baby spinach",
+          "spinaċi"
+        ]
+      },
+      {
+        "key": "spinach-boiled",
+        "fdc_id": 168463,
+        "name": "Spinach, boiled",
+        "state": "boiled",
+        "aliases": [
+          "cooked spinach"
+        ]
+      },
+      {
+        "key": "spinach-frozen-boiled",
+        "fdc_id": 169288,
+        "name": "Spinach, frozen, boiled",
+        "state": "boiled",
+        "aliases": [
+          "frozen spinach"
+        ]
+      }
+    ],
+    "note": "Boiled records are drained, no salt."
+  },
+  {
+    "req": "vegetables/kale",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "kale-raw",
+        "fdc_id": 168421,
+        "name": "Kale",
+        "state": "raw",
+        "aliases": [
+          "curly kale"
+        ]
+      },
+      {
+        "key": "kale-boiled",
+        "fdc_id": 169238,
+        "name": "Kale, boiled",
+        "state": "boiled",
+        "aliases": [
+          "cooked kale"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/white-cabbage",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cabbage-white-raw",
+        "fdc_id": 169975,
+        "name": "White cabbage",
+        "state": "raw",
+        "aliases": [
+          "cabbage",
+          "green cabbage",
+          "kaboċċa"
+        ]
+      },
+      {
+        "key": "cabbage-white-boiled",
+        "fdc_id": 169976,
+        "name": "White cabbage, boiled",
+        "state": "boiled",
+        "aliases": [
+          "boiled cabbage"
+        ]
+      }
+    ],
+    "note": "USDA common (green/white) cabbage."
+  },
+  {
+    "req": "vegetables/red-cabbage",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cabbage-red-raw",
+        "fdc_id": 169977,
+        "name": "Red cabbage",
+        "state": "raw",
+        "aliases": [
+          "purple cabbage"
+        ]
+      },
+      {
+        "key": "cabbage-red-boiled",
+        "fdc_id": 169978,
+        "name": "Red cabbage, boiled",
+        "state": "boiled"
+      }
+    ],
+    "note": "Braised red cabbage with sugar or vinegar is a recipe."
+  },
+  {
+    "req": "vegetables/broccoli",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "broccoli-raw",
+        "fdc_id": 170379,
+        "name": "Broccoli",
+        "state": "raw",
+        "aliases": [
+          "calabrese",
+          "brokkoli"
+        ]
+      },
+      {
+        "key": "broccoli-boiled",
+        "fdc_id": 169967,
+        "name": "Broccoli, boiled",
+        "state": "boiled",
+        "aliases": [
+          "cooked broccoli",
+          "steamed broccoli"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/cauliflower",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cauliflower-raw",
+        "fdc_id": 169986,
+        "name": "Cauliflower",
+        "state": "raw",
+        "aliases": [
+          "pastard"
+        ]
+      },
+      {
+        "key": "cauliflower-boiled",
+        "fdc_id": 170397,
+        "name": "Cauliflower, boiled",
+        "state": "boiled",
+        "aliases": [
+          "cooked cauliflower"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/carrot",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "carrot-raw",
+        "fdc_id": 170393,
+        "name": "Carrot",
+        "state": "raw",
+        "aliases": [
+          "carrots"
+        ]
+      },
+      {
+        "key": "carrot-boiled",
+        "fdc_id": 170394,
+        "name": "Carrot, boiled",
+        "state": "boiled",
+        "aliases": [
+          "cooked carrots"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/onion",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "onion-raw",
+        "fdc_id": 170000,
+        "name": "Onion",
+        "state": "raw",
+        "aliases": [
+          "onions",
+          "brown onion",
+          "yellow onion",
+          "white onion",
+          "basal"
+        ]
+      },
+      {
+        "key": "onion-boiled",
+        "fdc_id": 170001,
+        "name": "Onion, boiled",
+        "state": "boiled",
+        "aliases": [
+          "cooked onion"
+        ]
+      }
+    ],
+    "note": "Fried onion adds oil; log oil separately."
+  },
+  {
+    "req": "vegetables/red-onion",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "onion-red-raw",
+        "fdc_id": 790577,
+        "name": "Red onion",
+        "state": "raw",
+        "aliases": [
+          "red onions",
+          "purple onion"
+        ]
+      }
+    ],
+    "note": "Foundation record (SR has none). For cooked red onion use onion, boiled (170001)."
+  },
+  {
+    "req": "vegetables/spring-onion",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "spring-onion-raw",
+        "fdc_id": 170005,
+        "name": "Spring onion",
+        "state": "raw",
+        "aliases": [
+          "spring onions",
+          "scallion",
+          "scallions",
+          "green onion",
+          "salad onion"
+        ]
+      }
+    ],
+    "note": "Bulb and green tops."
+  },
+  {
+    "req": "vegetables/garlic",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "garlic-raw",
+        "fdc_id": 169230,
+        "name": "Garlic",
+        "state": "raw",
+        "aliases": [
+          "garlic clove",
+          "garlic cloves",
+          "tewm"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/bell-pepper",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pepper-red-raw",
+        "fdc_id": 170108,
+        "name": "Red pepper",
+        "state": "raw",
+        "aliases": [
+          "bell pepper",
+          "red bell pepper",
+          "red capsicum",
+          "sweet pepper"
+        ]
+      },
+      {
+        "key": "pepper-green-raw",
+        "fdc_id": 170427,
+        "name": "Green pepper",
+        "state": "raw",
+        "aliases": [
+          "green bell pepper",
+          "green capsicum"
+        ]
+      },
+      {
+        "key": "pepper-yellow-raw",
+        "fdc_id": 169383,
+        "name": "Yellow pepper",
+        "state": "raw",
+        "aliases": [
+          "yellow bell pepper",
+          "yellow capsicum"
+        ]
+      }
+    ],
+    "note": "Seeds and stalk excluded. Roasted or fried peppers add oil; log oil separately."
+  },
+  {
+    "req": "vegetables/courgette",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "courgette-raw",
+        "fdc_id": 169291,
+        "name": "Courgette",
+        "state": "raw",
+        "aliases": [
+          "courgettes",
+          "zucchini",
+          "qargħa bagħlija"
+        ]
+      },
+      {
+        "key": "courgette-boiled",
+        "fdc_id": 169292,
+        "name": "Courgette, boiled",
+        "state": "boiled",
+        "aliases": [
+          "boiled zucchini"
+        ]
+      }
+    ],
+    "note": "With skin."
+  },
+  {
+    "req": "vegetables/aubergine",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "aubergine-raw",
+        "fdc_id": 169228,
+        "name": "Aubergine",
+        "state": "raw",
+        "aliases": [
+          "aubergines",
+          "eggplant",
+          "brunġiel"
+        ]
+      },
+      {
+        "key": "aubergine-boiled",
+        "fdc_id": 169229,
+        "name": "Aubergine, boiled",
+        "state": "boiled",
+        "aliases": [
+          "boiled eggplant"
+        ]
+      }
+    ],
+    "note": "Fried aubergine absorbs oil; log oil separately."
+  },
+  {
+    "req": "vegetables/celery",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "celery-raw",
+        "fdc_id": 169988,
+        "name": "Celery",
+        "state": "raw",
+        "aliases": [
+          "celery sticks",
+          "karfus"
+        ]
+      },
+      {
+        "key": "celery-boiled",
+        "fdc_id": 169989,
+        "name": "Celery, boiled",
+        "state": "boiled"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/green-beans",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "green-beans-raw",
+        "fdc_id": 169961,
+        "name": "Green beans",
+        "state": "raw",
+        "aliases": [
+          "french beans",
+          "string beans",
+          "snap beans",
+          "fine beans"
+        ]
+      },
+      {
+        "key": "green-beans-boiled",
+        "fdc_id": 169141,
+        "name": "Green beans, boiled",
+        "state": "boiled",
+        "aliases": [
+          "cooked green beans"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/asparagus",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "asparagus-raw",
+        "fdc_id": 168389,
+        "name": "Asparagus",
+        "state": "raw",
+        "aliases": [
+          "asparagus spears"
+        ]
+      },
+      {
+        "key": "asparagus-boiled",
+        "fdc_id": 168390,
+        "name": "Asparagus, boiled",
+        "state": "boiled",
+        "aliases": [
+          "cooked asparagus"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/beetroot",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "beetroot-raw",
+        "fdc_id": 169145,
+        "name": "Beetroot",
+        "state": "raw",
+        "aliases": [
+          "beets",
+          "beet"
+        ]
+      },
+      {
+        "key": "beetroot-boiled",
+        "fdc_id": 169146,
+        "name": "Beetroot, boiled",
+        "state": "boiled",
+        "aliases": [
+          "cooked beetroot"
+        ]
+      },
+      {
+        "key": "beetroot-pickled-with-liquid",
+        "fdc_id": 170480,
+        "name": "Beetroot, pickled, with liquid",
+        "state": "canned-with-liquid",
+        "aliases": [
+          "pickled beetroot",
+          "pickled beets"
+        ]
+      }
+    ],
+    "note": "No drained pickled-beetroot record."
+  },
+  {
+    "req": "vegetables/pumpkin",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pumpkin-raw",
+        "fdc_id": 168448,
+        "name": "Pumpkin",
+        "state": "raw",
+        "aliases": [
+          "qargħa ħamra"
+        ]
+      },
+      {
+        "key": "pumpkin-boiled",
+        "fdc_id": 168449,
+        "name": "Pumpkin, boiled",
+        "state": "boiled",
+        "aliases": [
+          "cooked pumpkin"
+        ]
+      }
+    ],
+    "note": "Peeled, seeded flesh."
+  },
+  {
+    "req": "vegetables/butternut-squash",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "butternut-squash-raw",
+        "fdc_id": 169295,
+        "name": "Butternut squash",
+        "state": "raw",
+        "aliases": [
+          "butternut",
+          "butternut pumpkin"
+        ]
+      },
+      {
+        "key": "butternut-squash-baked",
+        "fdc_id": 169296,
+        "name": "Butternut squash, baked",
+        "state": "baked",
+        "aliases": [
+          "roasted butternut squash"
+        ]
+      }
+    ],
+    "note": "Peeled, seeded flesh. Baked without fat; roasting oil is separate."
+  },
+  {
+    "req": "vegetables/leek",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "leek-raw",
+        "fdc_id": 169246,
+        "name": "Leek",
+        "state": "raw",
+        "aliases": [
+          "leeks",
+          "kurrat"
+        ]
+      },
+      {
+        "key": "leek-boiled",
+        "fdc_id": 168426,
+        "name": "Leek, boiled",
+        "state": "boiled"
+      }
+    ],
+    "note": "Bulb and lower leaf."
+  },
+  {
+    "req": "vegetables/fennel",
+    "status": "partial",
+    "records": [
+      {
+        "key": "fennel-raw",
+        "fdc_id": 169385,
+        "name": "Fennel bulb",
+        "state": "raw",
+        "aliases": [
+          "fennel",
+          "florence fennel",
+          "bużbież"
+        ]
+      }
+    ],
+    "note": "Raw only; no cooked fennel record."
+  },
+  {
+    "req": "vegetables/radish",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "radish-raw",
+        "fdc_id": 169276,
+        "name": "Radish",
+        "state": "raw",
+        "aliases": [
+          "radishes"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/brussels-sprouts",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "brussels-sprouts-raw",
+        "fdc_id": 170383,
+        "name": "Brussels sprouts",
+        "state": "raw",
+        "aliases": [
+          "sprouts",
+          "brussel sprouts"
+        ]
+      },
+      {
+        "key": "brussels-sprouts-boiled",
+        "fdc_id": 169971,
+        "name": "Brussels sprouts, boiled",
+        "state": "boiled"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/artichoke",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "artichoke-raw",
+        "fdc_id": 169205,
+        "name": "Globe artichoke",
+        "state": "raw",
+        "aliases": [
+          "artichoke",
+          "artichokes",
+          "qaqoċċ"
+        ]
+      },
+      {
+        "key": "artichoke-boiled",
+        "fdc_id": 168386,
+        "name": "Globe artichoke, boiled",
+        "state": "boiled",
+        "aliases": [
+          "boiled artichoke"
+        ]
+      }
+    ],
+    "note": "Edible portion. Jarred artichoke hearts in oil are not covered."
+  },
+  {
+    "req": "vegetables/mushroom",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mushroom-white-raw",
+        "fdc_id": 169251,
+        "name": "Mushrooms, white",
+        "state": "raw",
+        "aliases": [
+          "mushroom",
+          "mushrooms",
+          "button mushrooms",
+          "closed cup mushrooms",
+          "faqqiegħ"
+        ]
+      },
+      {
+        "key": "mushroom-white-boiled",
+        "fdc_id": 169252,
+        "name": "Mushrooms, white, boiled",
+        "state": "boiled"
+      },
+      {
+        "key": "mushroom-chestnut-raw",
+        "fdc_id": 168434,
+        "name": "Chestnut mushrooms",
+        "state": "raw",
+        "aliases": [
+          "crimini",
+          "cremini",
+          "brown mushrooms"
+        ]
+      }
+    ],
+    "note": "Fried mushrooms absorb fat; log oil separately."
+  },
+  {
+    "req": "vegetables/portobello-mushroom",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "portobello-raw",
+        "fdc_id": 169255,
+        "name": "Portobello mushroom",
+        "state": "raw",
+        "aliases": [
+          "portobello",
+          "portabella",
+          "flat mushroom",
+          "large flat mushroom"
+        ]
+      },
+      {
+        "key": "portobello-grilled",
+        "fdc_id": 169243,
+        "name": "Portobello mushroom, grilled",
+        "state": "grilled"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/fresh-ginger",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ginger-root-raw",
+        "fdc_id": 169231,
+        "name": "Ginger, fresh",
+        "state": "raw",
+        "aliases": [
+          "fresh ginger",
+          "ginger root",
+          "root ginger"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/fresh-parsley",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "parsley-fresh",
+        "fdc_id": 170416,
+        "name": "Parsley, fresh",
+        "state": "raw",
+        "aliases": [
+          "parsley",
+          "flat-leaf parsley",
+          "curly parsley",
+          "tursin"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/fresh-basil",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "basil-fresh",
+        "fdc_id": 172232,
+        "name": "Basil, fresh",
+        "state": "raw",
+        "aliases": [
+          "basil",
+          "sweet basil",
+          "ħabaq"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/fresh-mint",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mint-fresh",
+        "fdc_id": 173475,
+        "name": "Mint, fresh",
+        "state": "raw",
+        "aliases": [
+          "mint",
+          "spearmint",
+          "garden mint",
+          "nagħniegħ"
+        ]
+      },
+      {
+        "key": "peppermint-fresh",
+        "fdc_id": 173474,
+        "name": "Peppermint, fresh",
+        "state": "raw",
+        "aliases": [
+          "peppermint"
+        ]
+      }
+    ],
+    "note": "Spearmint is the usual culinary mint."
+  },
+  {
+    "req": "vegetables/fresh-coriander",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "coriander-fresh",
+        "fdc_id": 169997,
+        "name": "Coriander, fresh",
+        "state": "raw",
+        "aliases": [
+          "coriander",
+          "cilantro",
+          "coriander leaves"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/olives",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "olives-green",
+        "fdc_id": 169096,
+        "name": "Green olives",
+        "state": "as-sold",
+        "aliases": [
+          "olives",
+          "green olive",
+          "żebbuġ"
+        ]
+      },
+      {
+        "key": "olives-black",
+        "fdc_id": 169094,
+        "name": "Black olives",
+        "state": "as-sold",
+        "aliases": [
+          "black olive",
+          "ripe olives"
+        ]
+      }
+    ],
+    "note": "Drained fruit. Stuffed or oil-marinated olives differ."
+  },
+  {
+    "req": "vegetables/capers",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "capers-drained",
+        "fdc_id": 172238,
+        "name": "Capers, drained",
+        "state": "canned-drained",
+        "aliases": [
+          "caper",
+          "kappar"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "vegetables/pickled-cucumber",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pickled-cucumber-dill",
+        "fdc_id": 168558,
+        "name": "Pickled cucumber, dill",
+        "state": "as-sold",
+        "aliases": [
+          "dill pickles",
+          "pickles",
+          "gherkins"
+        ]
+      },
+      {
+        "key": "pickled-cucumber-sweet",
+        "fdc_id": 169378,
+        "name": "Pickled cucumber, sweet",
+        "state": "as-sold",
+        "aliases": [
+          "sweet pickles",
+          "sweet gherkins",
+          "bread and butter pickles"
+        ]
+      }
+    ],
+    "note": "Drained."
+  },
+  {
+    "req": "vegetables/sauerkraut",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sauerkraut",
+        "fdc_id": 169279,
+        "name": "Sauerkraut",
+        "state": "canned-with-liquid",
+        "aliases": [
+          "fermented cabbage"
+        ]
+      }
+    ],
+    "note": "Solids and liquid."
+  }
+]

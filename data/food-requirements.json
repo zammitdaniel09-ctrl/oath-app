@@ -1,0 +1,4607 @@
+{
+ "source": "Oath food and recipe content blueprint, 26 Oct 2026",
+ "count": 575,
+ "categories": 26,
+ "items": [
+  {
+   "key": "fruit-everyday/apple",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "apple",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/banana",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "banana",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/orange",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "orange",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/mandarin",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "mandarin",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/clementine",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "clementine",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/pear",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "pear",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/peach",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "peach",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/nectarine",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "nectarine",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/plum",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "plum",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/apricot",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "apricot",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/red-grapes",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "red grapes",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/green-grapes",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "green grapes",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/strawberry",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "strawberry",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/blueberry",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "blueberry",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/raspberry",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "raspberry",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/blackberry",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "blackberry",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/cherry",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "cherry",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/pineapple",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "pineapple",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/mango",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "mango",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/kiwi",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "kiwi",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/watermelon",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "watermelon",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/cantaloupe",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "cantaloupe",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/honeydew-melon",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "honeydew melon",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/lemon",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "lemon",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/lime",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "lime",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/grapefruit",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "grapefruit",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-everyday/avocado",
+   "category": "fruit-everyday",
+   "categoryLabel": "Fresh fruit: everyday",
+   "priority": 1,
+   "name": "avocado",
+   "handling": "Edible portion; whole/pieces by supported weight; peeled or unpeeled where relevant; pits, cores and rind excluded from edible grams."
+  },
+  {
+   "key": "fruit-wider/pomegranate",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "pomegranate",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/fig",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "fig",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/fresh-date",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "fresh date",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/persimmon",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "persimmon",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/papaya",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "papaya",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/passion-fruit",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "passion fruit",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/guava",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "guava",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/lychee",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "lychee",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/dragon-fruit",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "dragon fruit",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/prickly-pear",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "prickly pear",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/blackcurrant",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "blackcurrant",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/redcurrant",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "redcurrant",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/gooseberry",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "gooseberry",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/cranberry",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "cranberry",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/mulberry",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "mulberry",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/coconut-flesh",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "coconut flesh",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/plantain",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "plantain",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/cooking-apple",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "cooking apple",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/sour-cherry",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "sour cherry",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-wider/pomelo",
+   "category": "fruit-wider",
+   "categoryLabel": "Fruit: wider and seasonal",
+   "priority": 1,
+   "name": "pomelo",
+   "handling": "Fresh versus dried and sweetened; seasonal aliases; do not equate coconut flesh, coconut milk and coconut water."
+  },
+  {
+   "key": "fruit-preserved/raisins",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "raisins",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/sultanas",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "sultanas",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/dried-dates",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "dried dates",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/dried-figs",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "dried figs",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/dried-apricots",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "dried apricots",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/prunes",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "prunes",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/dried-mango",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "dried mango",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/dried-cranberries",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "dried cranberries",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/banana-chips",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "banana chips",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/apple-chips",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "apple chips",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/frozen-berries",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "frozen berries",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/frozen-mango",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "frozen mango",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/tinned-peaches-in-juice",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "tinned peaches in juice",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/tinned-peaches-in-syrup",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "tinned peaches in syrup",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/tinned-pineapple-in-juice",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "tinned pineapple in juice",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/tinned-fruit-cocktail",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "tinned fruit cocktail",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/applesauce",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "applesauce",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/fruit-puree",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "fruit puree",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/fruit-compote",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "fruit compote",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "fruit-preserved/candied-peel",
+   "category": "fruit-preserved",
+   "categoryLabel": "Fruit: preserved and prepared",
+   "priority": 1,
+   "name": "candied peel",
+   "handling": "Specify added sweetening when known, syrup versus juice, drained versus with liquid; source each form separately."
+  },
+  {
+   "key": "bread/white-sliced-bread",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "white sliced bread",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/wholemeal-sliced-bread",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "wholemeal sliced bread",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/seeded-bread",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "seeded bread",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/sourdough-bread",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "sourdough bread",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/rye-bread",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "rye bread",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/baguette",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "baguette",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/bread-roll",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "bread roll",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/ciabatta",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "ciabatta",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/focaccia",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "focaccia",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/pita",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "pita",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/naan",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "naan",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/tortilla-wrap",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "tortilla wrap",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/wholemeal-wrap",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "wholemeal wrap",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/bagel",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "bagel",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/english-muffin",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "English muffin",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/crumpet",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "crumpet",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/brioche",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "brioche",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/burger-bun",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "burger bun",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/hot-dog-bun",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "hot dog bun",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/crispbread",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "crispbread",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/breadsticks",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "breadsticks",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/breadcrumbs",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "breadcrumbs",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/garlic-bread",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "garlic bread",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/croissant",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "croissant",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "bread/pain-au-chocolat",
+   "category": "bread",
+   "categoryLabel": "Bread, wraps and everyday bakery",
+   "priority": 1,
+   "name": "pain au chocolat",
+   "handling": "Slice/piece weights are source- or user-specific. Toasting is not an arbitrary calorie multiplier; butter/oil belongs in components."
+  },
+  {
+   "key": "maltese/maltese-bread-hobz-tal-malti",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "Maltese bread / ħobż tal-Malti",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/ftira-bread",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "ftira bread",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/galletti",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "galletti",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/bigilla",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "bigilla",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/kunserva",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "kunserva",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/gbejna-fresh",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "ġbejna fresh",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/gbejna-dried",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "ġbejna dried",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/gbejna-peppered",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "ġbejna peppered",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/maltese-sausage-zalzett",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "Maltese sausage / zalzett",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/pastizz-with-ricotta",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "pastizz with ricotta",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/pastizz-with-peas",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "pastizz with peas",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/qassata-with-ricotta",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "qassata with ricotta",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/qassata-with-peas",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "qassata with peas",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/qassata-with-spinach",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "qassata with spinach",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/imqaret",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "imqaret",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/qaghaq-tal-ghasel",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "qagħaq tal-għasel",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/maltese-style-ravjul",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "Maltese-style ravjul",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "maltese/maltese-style-caponata",
+   "category": "maltese",
+   "categoryLabel": "Maltese breads, dairy and snack foods",
+   "priority": 1,
+   "name": "Maltese-style caponata",
+   "handling": "Distinguish packaged/labelled products, generic bakery estimates and ingredient-backed recipes. Bread ftira, filled ftira and Gozitan baked ftira are separate concepts."
+  },
+  {
+   "key": "grains/white-long-grain-rice",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "white long-grain rice",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/brown-rice",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "brown rice",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/basmati-rice",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "basmati rice",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/jasmine-rice",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "jasmine rice",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/arborio-rice",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "arborio rice",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/parboiled-rice",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "parboiled rice",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/wild-rice",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "wild rice",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/sushi-rice",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "sushi rice",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/quinoa",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "quinoa",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/couscous",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "couscous",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/wholewheat-couscous",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "wholewheat couscous",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/bulgur",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "bulgur",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/pearl-barley",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "pearl barley",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/millet",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "millet",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/buckwheat",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "buckwheat",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/polenta",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "polenta",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/semolina",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "semolina",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/farro",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "farro",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/freekeh",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "freekeh",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "grains/pearl-couscous",
+   "category": "grains",
+   "categoryLabel": "Rice, grains and cereals for meals",
+   "priority": 1,
+   "name": "pearl couscous",
+   "handling": "Dry and cooked source records; cooked with water versus additions; do not silently map prepared sachets to plain grains."
+  },
+  {
+   "key": "pasta/spaghetti",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "spaghetti",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/penne",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "penne",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/fusilli",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "fusilli",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/macaroni",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "macaroni",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/farfalle",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "farfalle",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/lasagne-sheets",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "lasagne sheets",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/orzo",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "orzo",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/wholewheat-pasta",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "wholewheat pasta",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/egg-tagliatelle",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "egg tagliatelle",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/fresh-pasta",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "fresh pasta",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/filled-ravioli",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "filled ravioli",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/tortellini",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "tortellini",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/potato-gnocchi",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "potato gnocchi",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/rice-noodles",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "rice noodles",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/egg-noodles",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "egg noodles",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/udon-noodles",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "udon noodles",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/soba-noodles",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "soba noodles",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/instant-noodle-block",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "instant noodle block",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/instant-noodle-seasoning-sachet",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "instant noodle seasoning sachet",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/vermicelli",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "vermicelli",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/wonton-wrappers",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "wonton wrappers",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "pasta/rice-paper",
+   "category": "pasta",
+   "categoryLabel": "Pasta, noodles and dumpling bases",
+   "priority": 1,
+   "name": "rice paper",
+   "handling": "Shapes can share a valid underlying formulation without inflating generic-food counts. Dry/fresh/cooked and filled/unfilled distinctions are explicit."
+  },
+  {
+   "key": "cereals/rolled-oats",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "rolled oats",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/quick-oats",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "quick oats",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/steel-cut-oats",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "steel-cut oats",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/oat-bran",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "oat bran",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/wheat-bran",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "wheat bran",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/plain-muesli",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "plain muesli",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/fruit-muesli",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "fruit muesli",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/granola",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "granola",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/cornflakes",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "cornflakes",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/bran-flakes",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "bran flakes",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/wheat-biscuits",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "wheat biscuits",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/puffed-rice-cereal",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "puffed rice cereal",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/puffed-wheat-cereal",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "puffed wheat cereal",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/chocolate-cereal",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "chocolate cereal",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/honey-cereal",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "honey cereal",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "cereals/rice-porridge-grain",
+   "category": "cereals",
+   "categoryLabel": "Breakfast cereals and grains",
+   "priority": 1,
+   "name": "rice porridge grain",
+   "handling": "Plain cereal is separate from cereal with milk. Brand formulations, fortification, nuts and sweeteners require real data."
+  },
+  {
+   "key": "starches/white-potato",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "white potato",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/new-potato",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "new potato",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/sweet-potato",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "sweet potato",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/yam",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "yam",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/cassava",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "cassava",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/sweetcorn-kernels",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "sweetcorn kernels",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/corn-on-the-cob",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "corn on the cob",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/green-peas",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "green peas",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/chestnuts",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "chestnuts",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/frozen-oven-chips",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "frozen oven chips",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/frozen-hash-browns",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "frozen hash browns",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/potato-croquettes",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "potato croquettes",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/instant-mash-powder",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "instant mash powder",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/ready-made-mashed-potato",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "ready-made mashed potato",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "starches/potato-waffle",
+   "category": "starches",
+   "categoryLabel": "Potatoes and other starches",
+   "priority": 1,
+   "name": "potato waffle",
+   "handling": "Raw/boiled/baked source states; skin, cob and other inedible material; fries/roast/mash use source-prepared records or measured recipe additions."
+  },
+  {
+   "key": "vegetables/tomato",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "tomato",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/cherry-tomato",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "cherry tomato",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/cucumber",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "cucumber",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/lettuce",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "lettuce",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/rocket",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "rocket",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/spinach",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "spinach",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/kale",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "kale",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/white-cabbage",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "white cabbage",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/red-cabbage",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "red cabbage",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/broccoli",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "broccoli",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/cauliflower",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "cauliflower",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/carrot",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "carrot",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/onion",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "onion",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/red-onion",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "red onion",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/spring-onion",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "spring onion",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/garlic",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "garlic",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/bell-pepper",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "bell pepper",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/courgette",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "courgette",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/aubergine",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "aubergine",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/celery",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "celery",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/green-beans",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "green beans",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/asparagus",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "asparagus",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/beetroot",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "beetroot",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/pumpkin",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "pumpkin",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/butternut-squash",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "butternut squash",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/leek",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "leek",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/fennel",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "fennel",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/radish",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "radish",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/brussels-sprouts",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "Brussels sprouts",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/artichoke",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "artichoke",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/mushroom",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "mushroom",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/portobello-mushroom",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "portobello mushroom",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/fresh-ginger",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "fresh ginger",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/fresh-parsley",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "fresh parsley",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/fresh-basil",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "fresh basil",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/fresh-mint",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "fresh mint",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/fresh-coriander",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "fresh coriander",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/olives",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "olives",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/capers",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "capers",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/pickled-cucumber",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "pickled cucumber",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "vegetables/sauerkraut",
+   "category": "vegetables",
+   "categoryLabel": "Vegetables, mushrooms and herbs",
+   "priority": 2,
+   "name": "sauerkraut",
+   "handling": "Raw/cooked/frozen/canned as appropriate, drained pickled/brined items, and sauce/oil additions separate."
+  },
+  {
+   "key": "legumes/chickpeas",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "chickpeas",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/kidney-beans",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "kidney beans",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/black-beans",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "black beans",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/cannellini-beans",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "cannellini beans",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/butter-beans",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "butter beans",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/haricot-beans",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "haricot beans",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/borlotti-beans",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "borlotti beans",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/broad-beans",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "broad beans",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/red-lentils",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "red lentils",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/green-lentils",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "green lentils",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/brown-lentils",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "brown lentils",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/split-peas",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "split peas",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/edamame",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "edamame",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/firm-tofu",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "firm tofu",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/silken-tofu",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "silken tofu",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/tempeh",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "tempeh",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/seitan",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "seitan",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/textured-vegetable-protein",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "textured vegetable protein",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/baked-beans-in-tomato-sauce",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "baked beans in tomato sauce",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/plant-mince",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "plant mince",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "legumes/plant-burger",
+   "category": "legumes",
+   "categoryLabel": "Beans, lentils and plant proteins",
+   "priority": 2,
+   "name": "plant burger",
+   "handling": "Dry/cooked/canned/drained; salted liquids; firm/silken tofu and branded substitutes are not interchangeable."
+  },
+  {
+   "key": "meat/chicken-breast",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "chicken breast",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/chicken-thigh",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "chicken thigh",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/chicken-drumstick",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "chicken drumstick",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/chicken-wing",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "chicken wing",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/whole-chicken",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "whole chicken",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/turkey-breast",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "turkey breast",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/turkey-mince",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "turkey mince",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/beef-steak",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "beef steak",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/beef-mince",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "beef mince",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/stewing-beef",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "stewing beef",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/beef-liver",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "beef liver",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/pork-loin",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "pork loin",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/pork-chop",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "pork chop",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/pork-mince",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "pork mince",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/lamb-chop",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "lamb chop",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/lamb-mince",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "lamb mince",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/rabbit",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "rabbit",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/duck-breast",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "duck breast",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/bacon",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "bacon",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/cooked-ham",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "cooked ham",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/roast-turkey-slices",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "roast turkey slices",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/salami",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "salami",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/chorizo",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "chorizo",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/frankfurter",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "frankfurter",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/pork-sausage",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "pork sausage",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/chicken-sausage",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "chicken sausage",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/meatballs",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "meatballs",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/breaded-chicken-nuggets",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "breaded chicken nuggets",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "meat/breaded-chicken-strips",
+   "category": "meat",
+   "categoryLabel": "Meat, poultry and deli foods",
+   "priority": 2,
+   "name": "breaded chicken strips",
+   "handling": "Cut, fat percentage, raw/cooked, skin/bone and breading distinctions; specify recipe versus branded prepared food."
+  },
+  {
+   "key": "fish/salmon",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "salmon",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/fresh-tuna",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "fresh tuna",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/canned-tuna-in-water",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "canned tuna in water",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/canned-tuna-in-brine",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "canned tuna in brine",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/canned-tuna-in-oil",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "canned tuna in oil",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/cod",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "cod",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/haddock",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "haddock",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/hake",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "hake",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/sea-bass",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "sea bass",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/sea-bream",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "sea bream",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/sardines",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "sardines",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/mackerel",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "mackerel",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/trout",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "trout",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/anchovy",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "anchovy",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/swordfish",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "swordfish",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/mahi-mahi-lampuki",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "mahi-mahi / lampuki",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/prawns",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "prawns",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/mussels",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "mussels",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/squid",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "squid",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/octopus",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "octopus",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/crab",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "crab",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/fish-fingers",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "fish fingers",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/smoked-salmon",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "smoked salmon",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "fish/canned-sardines-in-tomato-sauce",
+   "category": "fish",
+   "categoryLabel": "Fish and seafood",
+   "priority": 2,
+   "name": "canned sardines in tomato sauce",
+   "handling": "Species/preparation, bones/shells, oil/brine/water, drained versus contents; no automatic assumption all packing oil is consumed."
+  },
+  {
+   "key": "dairy/whole-egg",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "whole egg",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/egg-white",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "egg white",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/egg-yolk",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "egg yolk",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/whole-milk",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "whole milk",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/semi-skimmed-milk",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "semi-skimmed milk",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/skimmed-milk",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "skimmed milk",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/lactose-free-milk",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "lactose-free milk",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/evaporated-milk",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "evaporated milk",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/sweetened-condensed-milk",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "sweetened condensed milk",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/plain-yogurt",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "plain yogurt",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/fruit-yogurt",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "fruit yogurt",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/greek-style-yogurt",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "Greek-style yogurt",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/strained-greek-yogurt",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "strained Greek yogurt",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/skyr",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "skyr",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/kefir",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "kefir",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/drinking-yogurt",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "drinking yogurt",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/custard",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "custard",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/chocolate-milk",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "chocolate milk",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "dairy/ready-to-drink-protein-milk",
+   "category": "dairy",
+   "categoryLabel": "Eggs, milk and yogurt",
+   "priority": 2,
+   "name": "ready-to-drink protein milk",
+   "handling": "Fat percentage, sweetening and fortification; size-specific edible egg weights; drinks per 100 ml where labelled."
+  },
+  {
+   "key": "cheese/cheddar",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "cheddar",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/mozzarella",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "mozzarella",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/feta",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "feta",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/parmesan",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "Parmesan",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/ricotta",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "ricotta",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/cottage-cheese",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "cottage cheese",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/cream-cheese",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "cream cheese",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/halloumi",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "halloumi",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/goat-cheese",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "goat cheese",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/blue-cheese",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "blue cheese",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/brie",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "brie",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/mascarpone",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "mascarpone",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/processed-cheese-slices",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "processed cheese slices",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/cream",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "cream",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/whipping-cream",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "whipping cream",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/sour-cream",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "sour cream",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/creme-fraiche",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "crème fraîche",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/butter",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "butter",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "cheese/ghee",
+   "category": "cheese",
+   "categoryLabel": "Cheese, cream and dairy ingredients",
+   "priority": 2,
+   "name": "ghee",
+   "handling": "Actual fat/moisture formulation; distinguish fresh/dried cheeses and cooking additions."
+  },
+  {
+   "key": "plant-drinks/unsweetened-soy-drink",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "unsweetened soy drink",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/sweetened-soy-drink",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "sweetened soy drink",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/unsweetened-oat-drink",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "unsweetened oat drink",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/sweetened-oat-drink",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "sweetened oat drink",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/unsweetened-almond-drink",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "unsweetened almond drink",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/sweetened-almond-drink",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "sweetened almond drink",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/coconut-drinking-beverage",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "coconut drinking beverage",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/tinned-coconut-milk",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "tinned coconut milk",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/coconut-cream",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "coconut cream",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/rice-drink",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "rice drink",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/pea-protein-drink",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "pea protein drink",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/barista-oat-drink",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "barista oat drink",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/soy-yogurt",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "soy yogurt",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/coconut-yogurt",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "coconut yogurt",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/plant-cream",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "plant cream",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "plant-drinks/plant-cheese",
+   "category": "plant-drinks",
+   "categoryLabel": "Plant drinks and alternatives",
+   "priority": 2,
+   "name": "plant cheese",
+   "handling": "Drinking coconut beverage is not tinned coconut milk. Use exact product nutrition and basis where possible."
+  },
+  {
+   "key": "nuts/almond",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "almond",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/walnut",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "walnut",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/cashew",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "cashew",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/pistachio",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "pistachio",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/peanut",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "peanut",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/hazelnut",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "hazelnut",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/pecan",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "pecan",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/brazil-nut",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "Brazil nut",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/macadamia-nut",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "macadamia nut",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/mixed-nuts",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "mixed nuts",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/chia-seeds",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "chia seeds",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/flaxseed",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "flaxseed",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/pumpkin-seeds",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "pumpkin seeds",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/sunflower-seeds",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "sunflower seeds",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/sesame-seeds",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "sesame seeds",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/hemp-seeds",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "hemp seeds",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/peanut-butter",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "peanut butter",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/almond-butter",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "almond butter",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/cashew-butter",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "cashew butter",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/tahini",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "tahini",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "nuts/chocolate-hazelnut-spread",
+   "category": "nuts",
+   "categoryLabel": "Nuts, seeds and spreads",
+   "priority": 2,
+   "name": "chocolate hazelnut spread",
+   "handling": "Raw/roasted/salted/coated; nut-only versus sweetened spreads; portions and tablespoons need gram mappings."
+  },
+  {
+   "key": "sauces/olive-oil",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "olive oil",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/sunflower-oil",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "sunflower oil",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/rapeseed-oil",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "rapeseed oil",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/vegetable-oil",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "vegetable oil",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/sesame-oil",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "sesame oil",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/coconut-oil",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "coconut oil",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/margarine",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "margarine",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/cooking-spray",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "cooking spray",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/mayonnaise",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "mayonnaise",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/light-mayonnaise",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "light mayonnaise",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/ketchup",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "ketchup",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/mustard",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "mustard",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/barbecue-sauce",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "barbecue sauce",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/hot-sauce",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "hot sauce",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/sweet-chilli-sauce",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "sweet chilli sauce",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/soy-sauce",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "soy sauce",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/reduced-salt-soy-sauce",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "reduced-salt soy sauce",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/teriyaki-sauce",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "teriyaki sauce",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/worcestershire-sauce",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "Worcestershire sauce",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/pesto",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "pesto",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/tomato-passata",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "tomato passata",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/tomato-paste",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "tomato paste",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/salsa",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "salsa",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/hummus",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "hummus",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/salad-dressing",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "salad dressing",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/balsamic-glaze",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "balsamic glaze",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/vinegar",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "vinegar",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/gravy",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "gravy",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "sauces/stock",
+   "category": "sauces",
+   "categoryLabel": "Oils, sauces and savoury extras",
+   "priority": 2,
+   "name": "stock",
+   "handling": "Small amounts still loggable. Zero on a rounded tiny-serving label is not a basis for declaring an entire bottle calorie-free."
+  },
+  {
+   "key": "baking/plain-flour",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "plain flour",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/self-raising-flour",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "self-raising flour",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/bread-flour",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "bread flour",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/wholemeal-flour",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "wholemeal flour",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/cornflour",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "cornflour",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/chickpea-flour",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "chickpea flour",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/almond-flour",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "almond flour",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/rice-flour",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "rice flour",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/sugar",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "sugar",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/brown-sugar",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "brown sugar",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/icing-sugar",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "icing sugar",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/honey",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "honey",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/maple-syrup",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "maple syrup",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/golden-syrup",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "golden syrup",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/jam",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "jam",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/marmalade",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "marmalade",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/cocoa-powder",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "cocoa powder",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/baking-chocolate",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "baking chocolate",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/yeast",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "yeast",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/baking-powder",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "baking powder",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/bicarbonate-of-soda",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "bicarbonate of soda",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/salt",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "salt",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/black-pepper",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "black pepper",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/paprika",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "paprika",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/cumin",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "cumin",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/curry-powder",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "curry powder",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/cinnamon",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "cinnamon",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/chilli-flakes",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "chilli flakes",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/dried-oregano",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "dried oregano",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/garlic-powder",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "garlic powder",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/stock-cube",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "stock cube",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/vanilla-extract",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "vanilla extract",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "baking/non-sugar-sweetener",
+   "category": "baking",
+   "categoryLabel": "Baking, seasoning and sweet additions",
+   "priority": 2,
+   "name": "non-sugar sweetener",
+   "handling": "Source-specific units and values; salt/sodium handled once; do not count a garnish automatically as zero or invent nutrient completeness."
+  },
+  {
+   "key": "savoury-snacks/potato-crisps",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "potato crisps",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/flavoured-crisps",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "flavoured crisps",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/tortilla-chips",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "tortilla chips",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/corn-snacks",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "corn snacks",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/pretzels",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "pretzels",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/savoury-crackers",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "savoury crackers",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/cheese-crackers",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "cheese crackers",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/rice-cakes",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "rice cakes",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/corn-cakes",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "corn cakes",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/salted-popcorn",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "salted popcorn",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/sweet-popcorn",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "sweet popcorn",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/caramel-popcorn",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "caramel popcorn",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/roasted-chickpeas",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "roasted chickpeas",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/seasoned-nuts",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "seasoned nuts",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/pork-scratchings",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "pork scratchings",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/mini-cheese-snack",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "mini cheese snack",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/snack-sausage",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "snack sausage",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "savoury-snacks/savoury-snack-mix",
+   "category": "savoury-snacks",
+   "categoryLabel": "Savoury packaged snacks",
+   "priority": 1,
+   "name": "savoury snack mix",
+   "handling": "Actual flavour, bag/inner-pack weight, partial bag and shared portions. A multipack outer barcode must not imply the whole outer pack was eaten."
+  },
+  {
+   "key": "sweet-snacks/milk-chocolate",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "milk chocolate",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/dark-chocolate",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "dark chocolate",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/white-chocolate",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "white chocolate",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/chocolate-bar",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "chocolate bar",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/chocolate-wafer",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "chocolate wafer",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/chocolate-biscuits",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "chocolate biscuits",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/digestive-biscuits",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "digestive biscuits",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/shortbread",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "shortbread",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/cookies",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "cookies",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/cereal-bar",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "cereal bar",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/granola-bar",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "granola bar",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/protein-bar",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "protein bar",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/flapjack",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "flapjack",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/muffin",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "muffin",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/doughnut",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "doughnut",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/sponge-cake",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "sponge cake",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/brownie",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "brownie",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/cheesecake",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "cheesecake",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/ice-cream",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "ice cream",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/ice-lolly",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "ice lolly",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/sorbet",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "sorbet",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/jelly-sweets",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "jelly sweets",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/marshmallows",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "marshmallows",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/fruit-snack-bar",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "fruit snack bar",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/jelly-dessert",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "jelly dessert",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "sweet-snacks/rice-pudding",
+   "category": "sweet-snacks",
+   "categoryLabel": "Sweet snacks, bars and desserts",
+   "priority": 1,
+   "name": "rice pudding",
+   "handling": "By piece/portion with declared weight, packaged versus recipe; do not treat a protein label or no-added-sugar claim as a complete nutrient profile."
+  },
+  {
+   "key": "soft-drinks/tap-water",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "tap water",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/still-bottled-water",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "still bottled water",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/sparkling-water",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "sparkling water",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/flavoured-water",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "flavoured water",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/orange-juice",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "orange juice",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/apple-juice",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "apple juice",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/pineapple-juice",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "pineapple juice",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/grape-juice",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "grape juice",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/juice-drink",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "juice drink",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/fruit-nectar",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "fruit nectar",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/squash-concentrate",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "squash concentrate",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/prepared-squash",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "prepared squash",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/lemonade",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "lemonade",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/regular-cola",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "regular cola",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/zero-sugar-cola",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "zero-sugar cola",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/regular-orange-soda",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "regular orange soda",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/zero-sugar-orange-soda",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "zero-sugar orange soda",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/lemon-lime-soda",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "lemon-lime soda",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/tonic-water",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "tonic water",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/sugar-free-tonic-water",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "sugar-free tonic water",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/iced-tea",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "iced tea",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/ready-made-smoothie",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "ready-made smoothie",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/coconut-water",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "coconut water",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "soft-drinks/malt-drink",
+   "category": "soft-drinks",
+   "categoryLabel": "Water, juices and soft drinks",
+   "priority": 1,
+   "name": "malt drink",
+   "handling": "Native ml-based labels; concentrate versus prepared dilution; flavours and regular/diet/zero versions remain explicit."
+  },
+  {
+   "key": "coffee-tea/espresso",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "espresso",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/double-espresso",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "double espresso",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/filter-coffee",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "filter coffee",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/instant-coffee",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "instant coffee",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/decaf-coffee",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "decaf coffee",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/americano",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "americano",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/cappuccino",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "cappuccino",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/latte",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "latte",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/flat-white",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "flat white",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/iced-latte",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "iced latte",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/mocha",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "mocha",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/black-tea",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "black tea",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/green-tea",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "green tea",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/herbal-tea",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "herbal tea",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/iced-coffee",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "iced coffee",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/hot-chocolate",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "hot chocolate",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/matcha-latte",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "matcha latte",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/chai-latte",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "chai latte",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/coffee-syrup",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "coffee syrup",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "coffee-tea/whipped-cream-topping",
+   "category": "coffee-tea",
+   "categoryLabel": "Coffee, tea and café drinks",
+   "priority": 1,
+   "name": "whipped cream topping",
+   "handling": "Configurable milk, sugar, syrup, shots and sizes. Caffeine is sourced or explicitly estimated/unknown; do not assume zero for decaf or tea."
+  },
+  {
+   "key": "energy-shakes/regular-energy-drink",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "regular energy drink",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/sugar-free-energy-drink",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "sugar-free energy drink",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/energy-shot",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "energy shot",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/powdered-energy-drink",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "powdered energy drink",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/sports-drink",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "sports drink",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/zero-sugar-sports-drink",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "zero-sugar sports drink",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/electrolyte-powder",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "electrolyte powder",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/isotonic-drink",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "isotonic drink",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/whey-protein-concentrate",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "whey protein concentrate",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/whey-isolate",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "whey isolate",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/casein-protein-powder",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "casein protein powder",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/plant-protein-blend",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "plant protein blend",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/mass-gainer-powder",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "mass-gainer powder",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/meal-replacement-powder",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "meal-replacement powder",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/ready-to-drink-protein-shake",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "ready-to-drink protein shake",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/ready-made-milkshake",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "ready-made milkshake",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/smoothie-base-mix",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "smoothie base mix",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "energy-shakes/milkshake-syrup",
+   "category": "energy-shakes",
+   "categoryLabel": "Energy drinks, sports drinks and shakes",
+   "priority": 1,
+   "name": "milkshake syrup",
+   "handling": "Match exact label, flavour, market, serving and package size. Powder grams and prepared nutrition must never be mixed or counted twice."
+  },
+  {
+   "key": "alcohol/beer",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "beer",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/non-alcoholic-beer",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "non-alcoholic beer",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/cider",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "cider",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/red-wine",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "red wine",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/white-wine",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "white wine",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/rose-wine",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "rosé wine",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/sparkling-wine",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "sparkling wine",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/vodka",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "vodka",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/gin",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "gin",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/rum",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "rum",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/whisky",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "whisky",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/liqueur",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "liqueur",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/premixed-cocktail",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "premixed cocktail",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "alcohol/alcohol-free-cocktail",
+   "category": "alcohol",
+   "categoryLabel": "Other drinks: optional catalogue coverage",
+   "priority": 3,
+   "name": "alcohol-free cocktail",
+   "handling": "Catalogue breadth only; Daniel has not said that he drinks alcohol. Use exact recipe/label, volume and ABV when known."
+  },
+  {
+   "key": "convenience/frozen-plain-vegetables",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "frozen plain vegetables",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/frozen-vegetables-in-sauce",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "frozen vegetables in sauce",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/frozen-pizza",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "frozen pizza",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/chilled-ready-meal",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "chilled ready meal",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/frozen-ready-meal",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "frozen ready meal",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/ready-made-soup",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "ready-made soup",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/canned-soup",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "canned soup",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/canned-pasta",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "canned pasta",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/instant-soup-powder",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "instant soup powder",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/ready-made-sandwich",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "ready-made sandwich",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/prepared-salad",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "prepared salad",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/sushi-pack",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "sushi pack",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/sausage-roll",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "sausage roll",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/quiche",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "quiche",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/spring-roll",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "spring roll",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/dumpling",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "dumpling",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/burger",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "burger",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/takeaway-pizza",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "takeaway pizza",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/kebab",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "kebab",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  },
+  {
+   "key": "convenience/chips-from-takeaway",
+   "category": "convenience",
+   "categoryLabel": "Frozen, convenience and prepared foods",
+   "priority": 2,
+   "name": "chips from takeaway",
+   "handling": "Generic takeaway estimates are clearly marked; branded products use actual labels; homemade versions use ingredient-backed recipes."
+  }
+ ]
+}

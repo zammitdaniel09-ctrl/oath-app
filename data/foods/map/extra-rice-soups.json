@@ -1,0 +1,259 @@
+[
+ {
+  "req": null,
+  "status": "mapped",
+  "records": [
+   {
+    "key": "fish-sauce",
+    "fdc_id": 174531,
+    "name": "Fish sauce",
+    "state": "as-sold",
+    "aliases": [
+     "nam pla",
+     "nuoc mam"
+    ],
+    "category": "sauces"
+   },
+   {
+    "key": "oyster-sauce",
+    "fdc_id": 174529,
+    "name": "Oyster sauce",
+    "state": "as-sold",
+    "aliases": [],
+    "category": "sauces"
+   },
+   {
+    "key": "miso-paste",
+    "fdc_id": 172442,
+    "name": "Miso paste",
+    "state": "as-sold",
+    "aliases": [
+     "miso"
+    ],
+    "category": "sauces"
+   },
+   {
+    "key": "beansprouts-raw",
+    "fdc_id": 169957,
+    "name": "Beansprouts (mung bean sprouts)",
+    "state": "raw",
+    "aliases": [
+     "bean sprouts",
+     "mung bean sprouts"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "pak-choi-raw",
+    "fdc_id": 170390,
+    "name": "Pak choi",
+    "state": "raw",
+    "aliases": [
+     "bok choy",
+     "pak choy"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "mangetout-raw",
+    "fdc_id": 170010,
+    "name": "Mangetout and sugar snap peas",
+    "state": "raw",
+    "aliases": [
+     "snow peas",
+     "sugar snap peas",
+     "mange tout",
+     "snap peas"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "chilli-red-fresh",
+    "fdc_id": 170106,
+    "name": "Red chilli, fresh",
+    "state": "raw",
+    "aliases": [
+     "fresh chilli",
+     "red chili"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "turmeric-ground-as-sold",
+    "fdc_id": 172231,
+    "name": "Turmeric, ground",
+    "state": "as-sold",
+    "aliases": [
+     "turmeric"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "bay-leaves-dried-as-sold",
+    "fdc_id": 170917,
+    "name": "Bay leaves, dried",
+    "state": "as-sold",
+    "aliases": [
+     "bay leaf"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "cloves-ground-as-sold",
+    "fdc_id": 171321,
+    "name": "Cloves, ground",
+    "state": "as-sold",
+    "aliases": [
+     "cloves"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "nutmeg-ground-as-sold",
+    "fdc_id": 171326,
+    "name": "Nutmeg, ground",
+    "state": "as-sold",
+    "aliases": [
+     "nutmeg"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "cardamom-ground-as-sold",
+    "fdc_id": 170919,
+    "name": "Cardamom",
+    "state": "as-sold",
+    "aliases": [
+     "ground cardamom",
+     "cardamom pods"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "thyme-dried-as-sold",
+    "fdc_id": 170938,
+    "name": "Thyme, dried",
+    "state": "as-sold",
+    "aliases": [
+     "dried thyme"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "chilli-powder-as-sold",
+    "fdc_id": 171319,
+    "name": "Chilli powder",
+    "state": "as-sold",
+    "aliases": [
+     "chili powder"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "coriander-ground-as-sold",
+    "fdc_id": 170922,
+    "name": "Coriander, ground (seed)",
+    "state": "as-sold",
+    "aliases": [
+     "ground coriander",
+     "coriander seed"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "rosemary-fresh",
+    "fdc_id": 173473,
+    "name": "Rosemary, fresh",
+    "state": "raw",
+    "aliases": [
+     "rosemary"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "chives-fresh",
+    "fdc_id": 169994,
+    "name": "Chives, fresh",
+    "state": "raw",
+    "aliases": [
+     "chives"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "dill-fresh",
+    "fdc_id": 172233,
+    "name": "Dill, fresh",
+    "state": "raw",
+    "aliases": [
+     "dill"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "swede-raw",
+    "fdc_id": 168454,
+    "name": "Swede",
+    "state": "raw",
+    "aliases": [
+     "rutabaga"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "parsnip-raw",
+    "fdc_id": 170417,
+    "name": "Parsnip",
+    "state": "raw",
+    "aliases": [
+     "parsnips"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "gruyere",
+    "fdc_id": 171242,
+    "name": "Gruyère",
+    "state": "as-sold",
+    "aliases": [
+     "gruyere"
+    ],
+    "category": "cheese"
+   },
+   {
+    "key": "instant-noodles-dry",
+    "fdc_id": 171177,
+    "name": "Instant noodles with flavour sachet, dry",
+    "state": "dry",
+    "aliases": [
+     "instant ramen",
+     "ramen noodles",
+     "noodle block"
+    ],
+    "category": "convenience"
+   },
+   {
+    "key": "fish-stock-homemade",
+    "fdc_id": 172885,
+    "name": "Fish stock, home-made",
+    "state": "prepared",
+    "aliases": [
+     "fish broth"
+    ],
+    "liquid": true,
+    "category": "sauces"
+   },
+   {
+    "key": "water-tap",
+    "fdc_id": 173647,
+    "name": "Tap water",
+    "state": "as-sold",
+    "aliases": [
+     "water"
+    ],
+    "liquid": true,
+    "category": "soft-drinks"
+   }
+  ]
+ }
+]

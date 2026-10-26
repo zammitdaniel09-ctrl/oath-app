@@ -1,0 +1,270 @@
+[
+  {
+    "req": "energy-shakes/regular-energy-drink",
+    "status": "product",
+    "records": [
+      {
+        "key": "energy-drink-red-bull-us",
+        "fdc_id": 173210,
+        "name": "Red Bull (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Red Bull",
+        "market": "US"
+      },
+      {
+        "key": "energy-drink-monster-us",
+        "fdc_id": 171935,
+        "name": "Monster Energy (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Monster",
+        "market": "US"
+      },
+      {
+        "key": "energy-drink-rockstar-us",
+        "fdc_id": 171937,
+        "name": "Rockstar (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Rockstar",
+        "market": "US"
+      }
+    ],
+    "note": "Energy drinks need the exact can label (flavour and market matter). USDA records are US formulations, included only as branded references."
+  },
+  {
+    "req": "energy-shakes/sugar-free-energy-drink",
+    "status": "product",
+    "records": [
+      {
+        "key": "energy-drink-red-bull-sf-us",
+        "fdc_id": 171870,
+        "name": "Red Bull Sugarfree (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Red Bull",
+        "market": "US"
+      },
+      {
+        "key": "energy-drink-monster-low-carb-us",
+        "fdc_id": 173162,
+        "name": "Monster Lo-Carb (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Monster",
+        "market": "US"
+      },
+      {
+        "key": "energy-drink-rockstar-sf-us",
+        "fdc_id": 171938,
+        "name": "Rockstar Sugar Free (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Rockstar",
+        "market": "US"
+      }
+    ],
+    "note": "Sugar-free cans still carry caffeine; use the exact label. USDA records are US formulations."
+  },
+  {
+    "req": "energy-shakes/energy-shot",
+    "status": "product",
+    "records": [],
+    "note": "No energy shot in USDA; use the exact label (caffeine per shot)."
+  },
+  {
+    "req": "energy-shakes/powdered-energy-drink",
+    "status": "product",
+    "records": [],
+    "note": "No USDA record; use the label and keep powder grams separate from prepared drink."
+  },
+  {
+    "req": "energy-shakes/sports-drink",
+    "status": "product",
+    "records": [
+      {
+        "key": "sports-drink-powerade-us",
+        "fdc_id": 175108,
+        "name": "Powerade lemon-lime (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Powerade",
+        "market": "US"
+      },
+      {
+        "key": "sports-drink-gatorade-us",
+        "fdc_id": 173660,
+        "name": "Gatorade (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Gatorade",
+        "market": "US"
+      }
+    ],
+    "note": "USDA has no unbranded sports drink; only US Powerade and Gatorade. Market formulations differ, so use the bottle label."
+  },
+  {
+    "req": "energy-shakes/zero-sugar-sports-drink",
+    "status": "product",
+    "records": [
+      {
+        "key": "sports-drink-powerade-zero-us",
+        "fdc_id": 171923,
+        "name": "Powerade Zero (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Powerade",
+        "market": "US"
+      }
+    ],
+    "note": "Only US Powerade Zero in USDA; use the exact label."
+  },
+  {
+    "req": "energy-shakes/electrolyte-powder",
+    "status": "product",
+    "records": [
+      {
+        "key": "electrolyte-powder-gatorade-us",
+        "fdc_id": 173659,
+        "name": "Gatorade drink powder, orange (US)",
+        "state": "dry",
+        "kind": "product",
+        "brand": "Gatorade",
+        "market": "US"
+      }
+    ],
+    "note": "Only a US sugared sports-drink powder exists; most electrolyte sachets/tablets are low or zero sugar. Use the label and do not double count powder and prepared drink."
+  },
+  {
+    "req": "energy-shakes/isotonic-drink",
+    "status": "product",
+    "records": [],
+    "note": "Isotonic drinks are sports drinks; USDA only has the US branded records listed under sports drink. Use the bottle label."
+  },
+  {
+    "req": "energy-shakes/whey-protein-concentrate",
+    "status": "product",
+    "records": [
+      {
+        "key": "protein-powder-whey-generic",
+        "fdc_id": 173180,
+        "name": "Whey protein powder (generic)",
+        "state": "dry"
+      }
+    ],
+    "note": "Protein powders vary by brand and flavour; use the tub label. USDA generic whey powder is included only as a fallback estimate."
+  },
+  {
+    "req": "energy-shakes/whey-isolate",
+    "status": "product",
+    "records": [],
+    "note": "Use the tub label. USDA \"Whey protein powder isolate\" (173177) is far below a typical isolate in protein and appears to be a flavoured product, so it is not used."
+  },
+  {
+    "req": "energy-shakes/casein-protein-powder",
+    "status": "product",
+    "records": [],
+    "note": "No casein powder in USDA; use the tub label."
+  },
+  {
+    "req": "energy-shakes/plant-protein-blend",
+    "status": "product",
+    "records": [],
+    "note": "No plant protein blend in USDA (only soy-based powder 173181 and soy isolate); use the tub label."
+  },
+  {
+    "req": "energy-shakes/mass-gainer-powder",
+    "status": "product",
+    "records": [],
+    "note": "No mass gainer in USDA; use the tub label."
+  },
+  {
+    "req": "energy-shakes/meal-replacement-powder",
+    "status": "product",
+    "records": [
+      {
+        "key": "meal-replacement-slimfast-powder-us",
+        "fdc_id": 173172,
+        "name": "SlimFast shake mix powder (US)",
+        "state": "dry",
+        "kind": "product",
+        "brand": "SlimFast",
+        "market": "US"
+      }
+    ],
+    "note": "Use the exact label; US SlimFast powder is a branded reference only. Keep powder and prepared shake separate."
+  },
+  {
+    "req": "energy-shakes/ready-to-drink-protein-shake",
+    "status": "product",
+    "records": [
+      {
+        "key": "protein-shake-muscle-milk-us",
+        "fdc_id": 174814,
+        "name": "Muscle Milk ready-to-drink (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Muscle Milk",
+        "market": "US"
+      }
+    ],
+    "note": "Use the exact bottle label; US Muscle Milk is a branded reference only."
+  },
+  {
+    "req": "energy-shakes/ready-made-milkshake",
+    "status": "product",
+    "records": [],
+    "note": "Bottled milkshakes need the label. USDA \"Milk shakes, thick\" (170883/170884) are thick fast-food style shakes, not bottled flavoured milk."
+  },
+  {
+    "req": "energy-shakes/smoothie-base-mix",
+    "status": "product",
+    "records": [],
+    "note": "No USDA record; use the label."
+  },
+  {
+    "req": "energy-shakes/milkshake-syrup",
+    "status": "partial",
+    "records": [
+      {
+        "key": "syrup-chocolate",
+        "fdc_id": 174117,
+        "name": "Chocolate syrup",
+        "state": "as-sold",
+        "aliases": [
+          "chocolate milkshake syrup"
+        ]
+      },
+      {
+        "key": "milkshake-powder-chocolate",
+        "fdc_id": 174159,
+        "name": "Chocolate milkshake powder (dry)",
+        "state": "dry",
+        "aliases": [
+          "chocolate milk powder"
+        ]
+      },
+      {
+        "key": "milkshake-powder-strawberry",
+        "fdc_id": 174869,
+        "name": "Strawberry milkshake powder (dry)",
+        "state": "dry",
+        "aliases": [
+          "strawberry milk powder"
+        ]
+      }
+    ],
+    "note": "Chocolate syrup and milkshake powders covered; strawberry, banana and other syrups are missing. Milk logged separately."
+  }
+]

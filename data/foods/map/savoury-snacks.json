@@ -1,0 +1,398 @@
+[
+  {
+    "req": "savoury-snacks/potato-crisps",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "crisps-ready-salted",
+        "fdc_id": 169677,
+        "name": "Crisps, ready salted",
+        "state": "as-sold",
+        "aliases": [
+          "potato chips",
+          "plain crisps"
+        ]
+      },
+      {
+        "key": "crisps-reduced-fat",
+        "fdc_id": 169683,
+        "name": "Crisps, reduced fat",
+        "state": "as-sold",
+        "aliases": [
+          "lighter crisps"
+        ]
+      },
+      {
+        "key": "crisps-stackable",
+        "fdc_id": 168853,
+        "name": "Stackable crisps (from dried potato)",
+        "state": "as-sold",
+        "aliases": [
+          "tube crisps"
+        ]
+      }
+    ],
+    "note": "Log by bag weight; multipack outer barcodes must not imply the whole outer pack."
+  },
+  {
+    "req": "savoury-snacks/flavoured-crisps",
+    "status": "partial",
+    "records": [
+      {
+        "key": "crisps-cheese",
+        "fdc_id": 169682,
+        "name": "Crisps, cheese flavour",
+        "state": "as-sold",
+        "aliases": [
+          "cheese crisps"
+        ]
+      },
+      {
+        "key": "crisps-bbq",
+        "fdc_id": 167962,
+        "name": "Crisps, barbecue flavour",
+        "state": "as-sold",
+        "aliases": [
+          "BBQ crisps"
+        ]
+      },
+      {
+        "key": "crisps-sour-cream-onion",
+        "fdc_id": 167963,
+        "name": "Crisps, sour cream and onion",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Salt and vinegar, prawn cocktail and other UK flavours are missing; use pack labels for those."
+  },
+  {
+    "req": "savoury-snacks/tortilla-chips",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tortilla-chips-salted",
+        "fdc_id": 173143,
+        "name": "Tortilla chips, salted",
+        "state": "as-sold",
+        "aliases": [
+          "corn chips"
+        ]
+      },
+      {
+        "key": "tortilla-chips-cheese",
+        "fdc_id": 167559,
+        "name": "Tortilla chips, cheese flavour",
+        "state": "as-sold",
+        "aliases": [
+          "nacho cheese tortilla chips"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "savoury-snacks/corn-snacks",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "corn-puffs-cheese",
+        "fdc_id": 167949,
+        "name": "Corn puffs, cheese flavour",
+        "state": "as-sold",
+        "aliases": [
+          "cheese puffs",
+          "cheesy corn snacks"
+        ]
+      },
+      {
+        "key": "corn-chips-plain",
+        "fdc_id": 167537,
+        "name": "Corn chips, plain",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Generic extruded corn snacks; branded shapes vary in fat."
+  },
+  {
+    "req": "savoury-snacks/pretzels",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pretzels-salted",
+        "fdc_id": 167555,
+        "name": "Pretzels, salted",
+        "state": "as-sold",
+        "aliases": [
+          "hard pretzels"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "savoury-snacks/savoury-crackers",
+    "status": "partial",
+    "records": [
+      {
+        "key": "crackers-butter",
+        "fdc_id": 174982,
+        "name": "Butter crackers",
+        "state": "as-sold",
+        "aliases": [
+          "round snack crackers"
+        ]
+      },
+      {
+        "key": "crackers-water-biscuits",
+        "fdc_id": 171856,
+        "name": "Water biscuits",
+        "state": "as-sold",
+        "aliases": [
+          "water crackers"
+        ]
+      },
+      {
+        "key": "crackers-saltine",
+        "fdc_id": 172746,
+        "name": "Saltine crackers",
+        "state": "as-sold",
+        "aliases": [
+          "soda crackers"
+        ]
+      },
+      {
+        "key": "crackers-crispbread-rye",
+        "fdc_id": 172739,
+        "name": "Rye crispbread",
+        "state": "as-sold",
+        "aliases": [
+          "crispbread"
+        ]
+      },
+      {
+        "key": "crackers-wholewheat",
+        "fdc_id": 172749,
+        "name": "Wholewheat crackers",
+        "state": "as-sold"
+      }
+    ],
+    "note": "UK cream crackers and oatcakes have no generic USDA record (only Latin American branded cream crackers); use labels."
+  },
+  {
+    "req": "savoury-snacks/cheese-crackers",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "crackers-cheese",
+        "fdc_id": 174975,
+        "name": "Cheese crackers",
+        "state": "as-sold",
+        "aliases": [
+          "cheese biscuits"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "savoury-snacks/rice-cakes",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "rice-cakes-plain",
+        "fdc_id": 170250,
+        "name": "Rice cakes, plain",
+        "state": "as-sold",
+        "aliases": [
+          "puffed rice cakes"
+        ]
+      },
+      {
+        "key": "rice-cakes-mini",
+        "fdc_id": 168107,
+        "name": "Mini rice cakes",
+        "state": "as-sold",
+        "aliases": [
+          "rice crackers"
+        ]
+      }
+    ],
+    "note": "Chocolate or yoghurt-coated rice cakes need the label."
+  },
+  {
+    "req": "savoury-snacks/corn-cakes",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "corn-cakes",
+        "fdc_id": 168857,
+        "name": "Corn cakes",
+        "state": "as-sold",
+        "aliases": [
+          "corn thins"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "savoury-snacks/salted-popcorn",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "popcorn-salted",
+        "fdc_id": 170247,
+        "name": "Popcorn, salted (oil-popped)",
+        "state": "as-sold"
+      },
+      {
+        "key": "popcorn-air-popped",
+        "fdc_id": 167959,
+        "name": "Popcorn, air-popped",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "savoury-snacks/sweet-popcorn",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "popcorn-sweet-proxy",
+        "fdc_id": 167552,
+        "name": "Sweet popcorn (caramel-coated proxy)",
+        "state": "as-sold",
+        "aliases": [
+          "sugar-coated popcorn"
+        ]
+      }
+    ],
+    "note": "USDA has no sugar-coated \"sweet\" popcorn; caramel-coated popcorn without nuts is the closest proxy. Use the pack label when known."
+  },
+  {
+    "req": "savoury-snacks/caramel-popcorn",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "popcorn-caramel",
+        "fdc_id": 167552,
+        "name": "Caramel popcorn",
+        "state": "as-sold",
+        "aliases": [
+          "toffee popcorn"
+        ]
+      },
+      {
+        "key": "popcorn-caramel-peanuts",
+        "fdc_id": 167551,
+        "name": "Caramel popcorn with peanuts",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "savoury-snacks/roasted-chickpeas",
+    "status": "gap",
+    "records": [],
+    "note": "No roasted chickpea snack in USDA. Use the pack label; homemade can be a recipe from canned chickpeas (173800) plus oil."
+  },
+  {
+    "req": "savoury-snacks/seasoned-nuts",
+    "status": "partial",
+    "records": [
+      {
+        "key": "mixed-nuts-roasted-salted",
+        "fdc_id": 168599,
+        "name": "Mixed nuts, dry roasted, salted",
+        "state": "as-sold"
+      },
+      {
+        "key": "peanuts-roasted-salted",
+        "fdc_id": 174262,
+        "name": "Peanuts, dry roasted, salted",
+        "state": "as-sold",
+        "aliases": [
+          "salted peanuts"
+        ]
+      },
+      {
+        "key": "cashews-roasted-salted",
+        "fdc_id": 169421,
+        "name": "Cashews, dry roasted, salted",
+        "state": "as-sold"
+      },
+      {
+        "key": "almonds-honey-roasted",
+        "fdc_id": 168592,
+        "name": "Almonds, honey roasted",
+        "state": "as-sold"
+      }
+    ],
+    "note": "Salted and honey-roasted covered; chilli, wasabi and coated nuts are missing."
+  },
+  {
+    "req": "savoury-snacks/pork-scratchings",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "pork-scratchings-proxy",
+        "fdc_id": 167961,
+        "name": "Pork scratchings (pork rind proxy)",
+        "state": "as-sold",
+        "aliases": [
+          "pork crackling snack",
+          "pork rinds"
+        ]
+      }
+    ],
+    "note": "USDA has US puffed pork rinds, not UK scratchings, which keep more fat; use the pack label when known."
+  },
+  {
+    "req": "savoury-snacks/mini-cheese-snack",
+    "status": "product",
+    "records": [],
+    "note": "Ambiguous branded item (cheese-flavoured biscuit bites or mini cheese portions); needs the exact product label."
+  },
+  {
+    "req": "savoury-snacks/snack-sausage",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "meat-snack-stick",
+        "fdc_id": 168850,
+        "name": "Smoked meat snack stick",
+        "state": "as-sold",
+        "aliases": [
+          "beef stick",
+          "snack salami stick"
+        ]
+      },
+      {
+        "key": "pepperoni-sliced",
+        "fdc_id": 174575,
+        "name": "Pepperoni",
+        "state": "as-sold"
+      }
+    ],
+    "note": "US beef snack stick and pepperoni as proxies; pork snack salami sticks differ. Use the pack label when known."
+  },
+  {
+    "req": "savoury-snacks/savoury-snack-mix",
+    "status": "partial",
+    "records": [
+      {
+        "key": "snack-mix-rice-crackers",
+        "fdc_id": 167958,
+        "name": "Rice cracker snack mix",
+        "state": "as-sold",
+        "aliases": [
+          "oriental snack mix",
+          "Japanese rice cracker mix"
+        ]
+      }
+    ],
+    "note": "Only the rice-cracker mix is in USDA; Bombay mix and pretzel/cracker mixes are missing."
+  }
+]

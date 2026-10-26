@@ -1,0 +1,3986 @@
+[
+ {
+  "key": "hobz-biz-zejt",
+  "name": "Maltese bread with tomato, olive oil and tuna",
+  "name_mt": "Ħobż biż-żejt",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/hobz-biz-zejt"
+  ],
+  "summary": "Thick slices of Maltese bread spread with tomato paste, rubbed with tomato and oil, and topped with tuna, olives and capers.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 0,
+  "equipment": [
+   "bread knife",
+   "chopping board"
+  ],
+  "tags": [
+   "maltese",
+   "lunch",
+   "no-cook",
+   "snack"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "hobz-tal-malti-as-sold",
+    "qty": 100,
+    "unit": "g",
+    "label": "Maltese bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 10,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "tomato"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tuna-canned-oil-light",
+    "qty": 60,
+    "unit": "g",
+    "label": "tuna"
+   },
+   {
+    "ref": "item",
+    "ref_key": "olives-black",
+    "qty": 15,
+    "unit": "g",
+    "label": "olives"
+   },
+   {
+    "ref": "item",
+    "ref_key": "capers-drained",
+    "qty": 5,
+    "unit": "g",
+    "label": "capers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 20,
+    "unit": "g",
+    "label": "onion",
+    "optional": true
+   },
+   {
+    "ref": "item",
+    "ref_key": "mint-fresh",
+    "qty": 1,
+    "unit": "g",
+    "label": "mint"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 0.3,
+    "unit": "g",
+    "label": "pepper"
+   }
+  ],
+  "method": [
+   "Cut the Maltese bread into two thick slices, or split a small loaf.",
+   "Spread the tomato paste over the cut sides, rub them with the halved tomato and drizzle over the olive oil.",
+   "Top with the drained tuna, olives, capers and the sliced onion if using, then season with salt, pepper and torn mint."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label. Bigilla or ġbejna are common extras; add them as lines if you use them. Tuna is light tuna in oil, drained; swap for tuna in brine if that is what you use."
+ },
+ {
+  "key": "tuna-ftira",
+  "name": "Tuna-filled ftira",
+  "name_mt": "Ftira biż-żejt",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/tuna-filled-ftira"
+  ],
+  "summary": "A Maltese ftira split and filled with tuna, tomato, olives and capers, dressed with olive oil.",
+  "servings": 1,
+  "final_weight": null,
+  "prep_min": 8,
+  "cook_min": 0,
+  "equipment": [
+   "bread knife",
+   "chopping board"
+  ],
+  "tags": [
+   "maltese",
+   "lunch",
+   "no-cook",
+   "snack"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "ftira-bread-as-sold",
+    "qty": 120,
+    "unit": "g",
+    "label": "ftira"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tuna-canned-oil-light",
+    "qty": 90,
+    "unit": "g",
+    "label": "tuna"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "tomato"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 5,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "olives-black",
+    "qty": 15,
+    "unit": "g",
+    "label": "olives"
+   },
+   {
+    "ref": "item",
+    "ref_key": "capers-drained",
+    "qty": 5,
+    "unit": "g",
+    "label": "capers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 20,
+    "unit": "g",
+    "label": "onion",
+    "optional": true
+   },
+   {
+    "ref": "item",
+    "ref_key": "cannellini-beans-canned-drained",
+    "qty": 30,
+    "unit": "g",
+    "label": "beans",
+    "optional": true
+   },
+   {
+    "ref": "item",
+    "ref_key": "mayonnaise-regular",
+    "qty": 10,
+    "unit": "g",
+    "label": "mayonnaise",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Split the ftira and drizzle the cut sides with the olive oil.",
+   "Slice the tomato and lay it on the base, then add the drained tuna, olives and capers.",
+   "Add the sliced onion, the beans or a thin layer of mayonnaise if you like, close and press lightly."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. The ftira bread is replaceable with another actual bread, such as ħobż tal-Malti or a crusty roll: swap the bread line rather than editing its weight. Tuna is light tuna in oil, drained (90 g); swap for tuna in brine if that is what you use."
+ },
+ {
+  "key": "ftira-ghawdxija",
+  "name": "Gozitan baked ftira with potato, tomato and anchovies",
+  "name_mt": "Ftira Għawdxija",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/gozitan-baked-ftira"
+  ],
+  "summary": "A thin yeasted dough baked in a tray under sliced potato, tomato, onion, anchovies, olives and capers.",
+  "servings": 6,
+  "final_weight": null,
+  "prep_min": 30,
+  "cook_min": 40,
+  "equipment": [
+   "mixing bowl",
+   "large baking tray",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "gozo",
+   "baked",
+   "batch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "flour-strong-white-bread-as-sold",
+    "qty": 400,
+    "unit": "g",
+    "label": "bread flour"
+   },
+   {
+    "ref": "item",
+    "ref_key": "yeast-dried-active-as-sold",
+    "qty": 5,
+    "unit": "g",
+    "label": "yeast"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 6,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 260,
+    "unit": "ml",
+    "label": "water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 45,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "potato-white-raw",
+    "qty": 300,
+    "unit": "g",
+    "label": "potatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 250,
+    "unit": "g",
+    "label": "tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 120,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "anchovies-canned-oil-drained",
+    "qty": 40,
+    "unit": "g",
+    "label": "anchovies"
+   },
+   {
+    "ref": "item",
+    "ref_key": "olives-black",
+    "qty": 50,
+    "unit": "g",
+    "label": "olives"
+   },
+   {
+    "ref": "item",
+    "ref_key": "capers-drained",
+    "qty": 15,
+    "unit": "g",
+    "label": "capers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "gbejna-needs-label",
+    "qty": 120,
+    "unit": "g",
+    "label": "ġbejna",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Mix the bread flour, yeast, salt and water with a spoonful of the olive oil into a soft dough, knead for 8 minutes and leave to rise for about an hour.",
+   "Slice the potatoes very thinly, slice the tomatoes and onion, and toss them with most of the remaining olive oil and the pepper.",
+   "Stretch the dough into a large oiled tray and cover it with the potatoes, tomatoes, onion, anchovies, olives and capers; drizzle with the last of the oil.",
+   "Bake at 220 °C for 35 to 40 minutes until the potatoes are tender and the base is crisp, then cut into 6.",
+   "If using ġbejna, slice it over the topping before baking."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Gozitan ftira is also made with ġbejniet, ricotta or Maltese sausage on top; ġbejna (Maltese cheeselet) is a product with no catalogue record, so it is left out here; add your own ġbejna as an extra line from its label. Ġbejna is an optional line: no generic source has it, so it has no values until you add your pack's label, and choosing it makes the total incomplete."
+ },
+ {
+  "key": "pastizzi-ricotta",
+  "name": "Ricotta pastizzi",
+  "name_mt": "Pastizzi tal-irkotta",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/ricotta-pastizzi"
+  ],
+  "summary": "Flaky pastry diamonds filled with seasoned ricotta and baked until puffed. Makes 12; one serving is one pastizz.",
+  "servings": 12,
+  "final_weight": null,
+  "prep_min": 35,
+  "cook_min": 30,
+  "equipment": [
+   "mixing bowl",
+   "rolling pin",
+   "baking tray",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "pastry",
+   "baked",
+   "snack",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "puff-pastry-raw",
+    "qty": 480,
+    "unit": "g",
+    "label": "puff pastry"
+   },
+   {
+    "ref": "item",
+    "ref_key": "ricotta-whole-milk",
+    "qty": 360,
+    "unit": "g",
+    "label": "ricotta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 1,
+    "unit": "p:1 large",
+    "label": "egg"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 2,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "pepper"
+   }
+  ],
+  "method": [
+   "Mix the ricotta with the egg, salt and pepper until smooth.",
+   "Roll the puff pastry thinly, roll it up tightly into a log and cut it into 12 rounds; flatten each round into an oval with your fingers so the layers fan out.",
+   "Put a spoonful of filling in the middle of each, fold the pastry over and pinch the top into the classic diamond shape.",
+   "Bake at 200 °C for 25 to 30 minutes until puffed and golden."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Pastizzeriji use their own laminated dough rich in fat, and sizes vary a lot; this home version uses ready-made puff pastry, so a bakery pastizz may differ. Weigh one to compare."
+ },
+ {
+  "key": "pastizzi-pea",
+  "name": "Pea pastizzi",
+  "name_mt": "Pastizzi tal-piżelli",
+  "family": "maltese",
+  "type": "variant",
+  "parent_key": "pastizzi-ricotta",
+  "req": [
+   "maltese/pea-pastizzi"
+  ],
+  "summary": "Flaky pastry diamonds filled with spiced mushy peas and onion. Makes 12; one serving is one pastizz.",
+  "servings": 12,
+  "final_weight": null,
+  "prep_min": 35,
+  "cook_min": 40,
+  "equipment": [
+   "saucepan",
+   "rolling pin",
+   "baking tray",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "pastry",
+   "baked",
+   "snack",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "puff-pastry-raw",
+    "qty": 480,
+    "unit": "g",
+    "label": "puff pastry"
+   },
+   {
+    "ref": "item",
+    "ref_key": "peas-frozen",
+    "qty": 350,
+    "unit": "g",
+    "label": "peas"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "curry-powder-as-sold",
+    "qty": 4,
+    "unit": "g",
+    "label": "curry powder"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 10,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 2,
+    "unit": "g",
+    "label": "salt"
+   }
+  ],
+  "method": [
+   "Soften the chopped onion in the olive oil, add the peas, curry powder, tomato paste, salt and a splash of water and cook for 10 minutes, then mash roughly and leave to cool.",
+   "Roll, cut and shape the puff pastry as for ricotta pastizzi, filling each of the 12 with the pea mixture.",
+   "Bake at 200 °C for 25 to 30 minutes until puffed and golden."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Some pea fillings also include corned beef or anchovies; add them as lines if you use them. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label."
+ },
+ {
+  "key": "qassatat-ricotta",
+  "name": "Ricotta qassatat",
+  "name_mt": "Qassatat tal-irkotta",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/ricotta-qassatat"
+  ],
+  "summary": "Open-topped shortcrust pies gathered around a ricotta, egg and parmesan filling. Makes 8.",
+  "servings": 8,
+  "final_weight": null,
+  "prep_min": 40,
+  "cook_min": 35,
+  "equipment": [
+   "mixing bowl",
+   "rolling pin",
+   "baking tray",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "pastry",
+   "baked",
+   "snack",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "flour-plain-white-as-sold",
+    "qty": 300,
+    "unit": "g",
+    "label": "plain flour"
+   },
+   {
+    "ref": "item",
+    "ref_key": "butter-unsalted",
+    "qty": 140,
+    "unit": "g",
+    "label": "butter"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 60,
+    "unit": "ml",
+    "label": "cold water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 3,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "ricotta-whole-milk",
+    "qty": 400,
+    "unit": "g",
+    "label": "ricotta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 1,
+    "unit": "p:1 large",
+    "label": "egg"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-grated",
+    "qty": 20,
+    "unit": "g",
+    "label": "parmesan"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parsley-fresh",
+    "qty": 5,
+    "unit": "g",
+    "label": "parsley"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "pepper"
+   }
+  ],
+  "method": [
+   "Rub the butter into the plain flour with most of the salt, then add the cold water to make a dough; chill for 20 minutes.",
+   "Mix the ricotta, egg, parmesan, chopped parsley, pepper and the rest of the salt.",
+   "Roll the pastry out and cut 8 rounds of about 14 cm; pile the filling in the centre of each and gather the edges up around it, leaving the top open.",
+   "Bake at 190 °C for 30 to 35 minutes until golden."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. The pastry here is a plain butter shortcrust; bakeries often use margarine or lard and a richer dough."
+ },
+ {
+  "key": "qassatat-pea",
+  "name": "Pea qassatat",
+  "name_mt": "Qassatat tal-piżelli",
+  "family": "maltese",
+  "type": "variant",
+  "parent_key": "qassatat-ricotta",
+  "req": [
+   "maltese/pea-qassatat"
+  ],
+  "summary": "Open-topped shortcrust pies filled with spiced peas and onion. Makes 8.",
+  "servings": 8,
+  "final_weight": null,
+  "prep_min": 40,
+  "cook_min": 45,
+  "equipment": [
+   "saucepan",
+   "mixing bowl",
+   "rolling pin",
+   "baking tray",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "pastry",
+   "baked",
+   "snack",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "flour-plain-white-as-sold",
+    "qty": 300,
+    "unit": "g",
+    "label": "plain flour"
+   },
+   {
+    "ref": "item",
+    "ref_key": "butter-unsalted",
+    "qty": 140,
+    "unit": "g",
+    "label": "butter"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 60,
+    "unit": "ml",
+    "label": "cold water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 4,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "peas-frozen",
+    "qty": 400,
+    "unit": "g",
+    "label": "peas"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "curry-powder-as-sold",
+    "qty": 4,
+    "unit": "g",
+    "label": "curry powder"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 10,
+    "unit": "g",
+    "label": "tomato paste"
+   }
+  ],
+  "method": [
+   "Rub the butter into the plain flour with half the salt, add the cold water to make a dough and chill for 20 minutes.",
+   "Soften the onion in the olive oil, add the peas, curry powder, tomato paste and the rest of the salt with a splash of water, cook for 10 minutes and mash roughly; cool.",
+   "Roll the pastry, cut 8 rounds of about 14 cm, pile the pea filling in the centre and gather the edges up around it.",
+   "Bake at 190 °C for 30 to 35 minutes until golden."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label."
+ },
+ {
+  "key": "qassatat-spinach",
+  "name": "Spinach qassatat with anchovies and olives",
+  "name_mt": "Qassatat tal-ispinaċi",
+  "family": "maltese",
+  "type": "variant",
+  "parent_key": "qassatat-ricotta",
+  "req": [
+   "maltese/spinach-qassatat"
+  ],
+  "summary": "Open-topped shortcrust pies filled with garlicky spinach, anchovies and olives. Makes 8.",
+  "servings": 8,
+  "final_weight": null,
+  "prep_min": 40,
+  "cook_min": 45,
+  "equipment": [
+   "frying pan",
+   "mixing bowl",
+   "rolling pin",
+   "baking tray",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "pastry",
+   "baked",
+   "snack"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "flour-plain-white-as-sold",
+    "qty": 300,
+    "unit": "g",
+    "label": "plain flour"
+   },
+   {
+    "ref": "item",
+    "ref_key": "butter-unsalted",
+    "qty": 140,
+    "unit": "g",
+    "label": "butter"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 60,
+    "unit": "ml",
+    "label": "cold water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 2,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spinach-raw",
+    "qty": 500,
+    "unit": "g",
+    "label": "spinach"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 6,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 15,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "anchovies-canned-oil-drained",
+    "qty": 20,
+    "unit": "g",
+    "label": "anchovies"
+   },
+   {
+    "ref": "item",
+    "ref_key": "olives-black",
+    "qty": 40,
+    "unit": "g",
+    "label": "olives"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tuna-canned-oil-light",
+    "qty": 80,
+    "unit": "g",
+    "label": "tuna",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Rub the butter into the plain flour with the salt, add the cold water to make a dough and chill for 20 minutes.",
+   "Soften the onion and garlic in the olive oil, add the spinach and cook until wilted and dry, then stir in the chopped anchovies, olives, pepper and the tuna if using; cool.",
+   "Roll the pastry, cut 8 rounds of about 14 cm, pile the spinach filling in the centre and gather the edges up around it.",
+   "Bake at 190 °C for 30 to 35 minutes until golden."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Spinach fillings vary: some use tuna instead of anchovies, some add ricotta."
+ },
+ {
+  "key": "timpana",
+  "name": "Baked macaroni in a pastry case",
+  "name_mt": "Timpana",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/timpana"
+  ],
+  "summary": "Macaroni in a rich beef and pork tomato sauce, bound with egg and parmesan and baked inside shortcrust with a puff pastry lid.",
+  "servings": 10,
+  "final_weight": null,
+  "prep_min": 45,
+  "cook_min": 110,
+  "equipment": [
+   "large pan",
+   "saucepan",
+   "deep 26 cm tin",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "pastry",
+   "baked",
+   "festive",
+   "batch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "shortcrust-pastry-raw",
+    "qty": 300,
+    "unit": "g",
+    "label": "shortcrust pastry"
+   },
+   {
+    "ref": "item",
+    "ref_key": "puff-pastry-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "puff pastry"
+   },
+   {
+    "ref": "item",
+    "ref_key": "macaroni-dry",
+    "qty": 400,
+    "unit": "g",
+    "label": "macaroni"
+   },
+   {
+    "ref": "item",
+    "ref_key": "beef-mince-15-fat-raw",
+    "qty": 300,
+    "unit": "g",
+    "label": "beef mince"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pork-mince-regular-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "pork mince"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 150,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 10,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 20,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 70,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomatoes-tinned-chopped",
+    "qty": 400,
+    "unit": "g",
+    "label": "chopped tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chicken-liver-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "chicken livers",
+    "optional": true
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 4,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-grated",
+    "qty": 60,
+    "unit": "g",
+    "label": "parmesan"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bay-leaves-dried-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "bay leaf"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 5,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   }
+  ],
+  "method": [
+   "Soften the onion and garlic in the olive oil, add the beef mince and pork mince and brown well, then stir in the chopped chicken livers if using.",
+   "Add the tomato paste, chopped tomatoes, bay leaf, salt and pepper and simmer for about 40 minutes into a thick sauce.",
+   "Boil the macaroni for half its usual time, drain and mix it with the sauce, the parmesan and the beaten eggs, keeping a little egg back for glazing.",
+   "Line the tin with the shortcrust pastry, fill with the macaroni, cover with the puff pastry lid, seal the edges and brush with the reserved egg.",
+   "Bake at 190 °C for about 1 hour until deep golden, then rest for 15 minutes before cutting into 10."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label. Chicken livers are optional and left out of the totals unless chosen."
+ },
+ {
+  "key": "imqarrun-il-forn",
+  "name": "Baked macaroni with meat sauce and egg",
+  "name_mt": "Imqarrun il-forn",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/imqarrun-il-forn"
+  ],
+  "summary": "Penne in a beef and tomato sauce with a touch of curry powder, bound with egg and parmesan and baked until crisp on top.",
+  "servings": 6,
+  "final_weight": null,
+  "prep_min": 20,
+  "cook_min": 85,
+  "equipment": [
+   "large pan",
+   "saucepan",
+   "ovenproof dish",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "pasta",
+   "baked",
+   "batch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "penne-dry",
+    "qty": 500,
+    "unit": "g",
+    "label": "pasta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "beef-mince-15-fat-raw",
+    "qty": 400,
+    "unit": "g",
+    "label": "beef mince"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 150,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 10,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 20,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 70,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomatoes-tinned-chopped",
+    "qty": 400,
+    "unit": "g",
+    "label": "chopped tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "curry-powder-as-sold",
+    "qty": 2,
+    "unit": "g",
+    "label": "curry powder"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bay-leaves-dried-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "bay leaf"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 5,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 4,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-grated",
+    "qty": 70,
+    "unit": "g",
+    "label": "parmesan"
+   }
+  ],
+  "method": [
+   "Soften the onion and garlic in the olive oil, add the beef mince and brown it well.",
+   "Stir in the tomato paste, chopped tomatoes, curry powder, bay leaf, salt and pepper and simmer for 30 to 40 minutes.",
+   "Boil the pasta for 3 minutes less than the packet time and drain.",
+   "Mix the pasta with the sauce, the beaten eggs and most of the parmesan, spread it in an oiled dish and scatter the rest of the parmesan on top.",
+   "Bake at 190 °C for 40 to 45 minutes until crisp on top, then cut into 6."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label. Many families mix pork with the beef, or use rigatoni instead of penne."
+ },
+ {
+  "key": "ross-il-forn",
+  "name": "Baked rice with mince and egg",
+  "name_mt": "Ross il-forn",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/ross-il-forn"
+  ],
+  "summary": "Rice baked in a beef and pork tomato sauce with stock, egg and parmesan, coloured golden with turmeric.",
+  "servings": 6,
+  "final_weight": null,
+  "prep_min": 20,
+  "cook_min": 70,
+  "equipment": [
+   "large pan",
+   "ovenproof dish",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "rice",
+   "baked",
+   "batch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "rice-white-long-grain-dry",
+    "qty": 400,
+    "unit": "g",
+    "label": "rice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "beef-mince-15-fat-raw",
+    "qty": 250,
+    "unit": "g",
+    "label": "beef mince"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pork-mince-regular-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "pork mince"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 150,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 8,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 20,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 60,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomatoes-tinned-chopped",
+    "qty": 400,
+    "unit": "g",
+    "label": "chopped tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "turmeric-ground-as-sold",
+    "qty": 2,
+    "unit": "g",
+    "label": "turmeric"
+   },
+   {
+    "ref": "item",
+    "ref_key": "stock-chicken-from-cube",
+    "qty": 700,
+    "unit": "g",
+    "label": "stock"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 4,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-grated",
+    "qty": 50,
+    "unit": "g",
+    "label": "parmesan"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 3,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   }
+  ],
+  "method": [
+   "Soften the onion and garlic in the olive oil, add the beef mince and pork mince and brown well.",
+   "Stir in the tomato paste, chopped tomatoes, turmeric, salt and pepper and simmer for 15 minutes.",
+   "Stir in the uncooked rice and the hot stock, then the beaten eggs and half the parmesan, and pour into an ovenproof dish.",
+   "Scatter over the rest of the parmesan and bake at 180 °C for 45 to 50 minutes until the rice is tender and the top is golden."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label. Some cooks colour the rice with saffron instead of turmeric; the difference in the totals is negligible."
+ },
+ {
+  "key": "bigilla",
+  "name": "Broad bean dip with garlic and chilli",
+  "name_mt": "Bigilla",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/bigilla"
+  ],
+  "summary": "Dried broad beans cooked soft and mashed with garlic, olive oil, chilli, lemon and fresh herbs.",
+  "servings": 6,
+  "final_weight": null,
+  "prep_min": 15,
+  "cook_min": 120,
+  "equipment": [
+   "large saucepan",
+   "masher or blender"
+  ],
+  "tags": [
+   "maltese",
+   "dip",
+   "meat-free",
+   "batch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "broad-beans-dry",
+    "qty": 250,
+    "unit": "g",
+    "label": "dried broad beans"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 12,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 40,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chilli-flakes-as-sold",
+    "qty": 2,
+    "unit": "g",
+    "label": "chilli"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 15,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parsley-fresh",
+    "qty": 10,
+    "unit": "g",
+    "label": "parsley"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mint-fresh",
+    "qty": 3,
+    "unit": "g",
+    "label": "mint"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 3,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "pepper"
+   }
+  ],
+  "method": [
+   "Soak the dried broad beans overnight in plenty of cold water, then drain.",
+   "Cover with fresh water and simmer for 1.5 to 2 hours until very soft; drain, keeping a cup of the cooking water.",
+   "Mash or blend the beans with the crushed garlic, olive oil, chilli, lemon juice, salt and pepper, loosening with a little cooking water.",
+   "Stir in the chopped parsley and mint and serve at room temperature."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Bigilla is traditionally made with ful ta' Ġirba, a small dark broad bean (tic bean); the catalogue has generic dried broad beans, so this uses those. The olive oil drives most of the energy."
+ },
+ {
+  "key": "minestra",
+  "name": "Thick Maltese vegetable soup",
+  "name_mt": "Minestra",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/minestra"
+  ],
+  "summary": "A thick soup of pumpkin, potato, kohlrabi, cauliflower, cabbage and other vegetables, finished with small pasta.",
+  "servings": 6,
+  "final_weight": null,
+  "prep_min": 25,
+  "cook_min": 60,
+  "equipment": [
+   "large saucepan"
+  ],
+  "tags": [
+   "maltese",
+   "soup",
+   "meat-free",
+   "batch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 30,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 150,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 8,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "celery-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "celery"
+   },
+   {
+    "ref": "item",
+    "ref_key": "carrot-raw",
+    "qty": 150,
+    "unit": "g",
+    "label": "carrot"
+   },
+   {
+    "ref": "item",
+    "ref_key": "potato-white-raw",
+    "qty": 300,
+    "unit": "g",
+    "label": "potato"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pumpkin-raw",
+    "qty": 400,
+    "unit": "g",
+    "label": "pumpkin"
+   },
+   {
+    "ref": "item",
+    "ref_key": "kohlrabi-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "kohlrabi"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cauliflower-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "cauliflower"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cabbage-white-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "cabbage"
+   },
+   {
+    "ref": "item",
+    "ref_key": "courgette-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "courgette"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 40,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "stock-vegetable-ready",
+    "qty": 1200,
+    "unit": "g",
+    "label": "vegetable stock"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 4,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cannellini-beans-canned-drained",
+    "qty": 200,
+    "unit": "g",
+    "label": "beans",
+    "optional": true
+   },
+   {
+    "ref": "item",
+    "ref_key": "macaroni-dry",
+    "qty": 100,
+    "unit": "g",
+    "label": "small pasta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-grated",
+    "qty": 30,
+    "unit": "g",
+    "label": "parmesan",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Soften the onion, garlic, celery and carrot in the olive oil for 10 minutes.",
+   "Add the diced potato, pumpkin, kohlrabi, cauliflower, cabbage and courgette with the tomato paste, vegetable stock, salt and pepper.",
+   "Simmer for 40 minutes, mashing some of the pumpkin and potato against the pan to thicken; add the beans now if using.",
+   "Stir in the small pasta and cook for 10 minutes more; serve with parmesan if you like."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label. The mix of vegetables follows the season; swap lines for what you actually used."
+ },
+ {
+  "key": "aljotta",
+  "name": "Garlicky fish soup with rice",
+  "name_mt": "Aljotta",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/aljotta"
+  ],
+  "summary": "A light tomato and garlic fish broth with white fish, a little rice, mint, marjoram and lemon.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 15,
+  "cook_min": 40,
+  "equipment": [
+   "large saucepan"
+  ],
+  "tags": [
+   "maltese",
+   "soup",
+   "fish"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 30,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 20,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomatoes-tinned-chopped",
+    "qty": 400,
+    "unit": "g",
+    "label": "tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 15,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bay-leaves-dried-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "bay leaf"
+   },
+   {
+    "ref": "item",
+    "ref_key": "marjoram-dried-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "marjoram"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 1200,
+    "unit": "ml",
+    "label": "water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cod-raw",
+    "qty": 500,
+    "unit": "g",
+    "label": "white fish"
+   },
+   {
+    "ref": "item",
+    "ref_key": "rice-white-long-grain-dry",
+    "qty": 60,
+    "unit": "g",
+    "label": "rice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mint-fresh",
+    "qty": 5,
+    "unit": "g",
+    "label": "mint"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 30,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 4,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   }
+  ],
+  "method": [
+   "Soften the onion and garlic in the olive oil without letting them brown.",
+   "Add the tomatoes, tomato paste, bay leaf, marjoram and water, bring to the boil and simmer for 10 minutes.",
+   "Add the white fish in large pieces and poach for 8 to 10 minutes, then lift it out, remove any skin and bones and flake it.",
+   "Add the rice to the broth and simmer for 12 to 15 minutes, then return the fish with the chopped mint, lemon juice, salt and pepper."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Use any firm white fish; the fish line is edible fillet. Cooks often simmer fish heads for the broth and discard them, which adds little to the totals."
+ },
+ {
+  "key": "kusksu",
+  "name": "Pasta beads with broad beans, peas and egg",
+  "name_mt": "Kusksu",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/kusksu"
+  ],
+  "summary": "A thick spring soup of small pasta beads with broad beans and peas in a light tomato broth, topped with poached eggs.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 15,
+  "cook_min": 35,
+  "equipment": [
+   "large saucepan with lid"
+  ],
+  "tags": [
+   "maltese",
+   "soup",
+   "meat-free",
+   "lent"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 20,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 120,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 6,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 40,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "broad-beans-fresh-raw",
+    "qty": 300,
+    "unit": "g",
+    "label": "broad beans"
+   },
+   {
+    "ref": "item",
+    "ref_key": "peas-frozen",
+    "qty": 150,
+    "unit": "g",
+    "label": "peas"
+   },
+   {
+    "ref": "item",
+    "ref_key": "stock-vegetable-ready",
+    "qty": 1000,
+    "unit": "g",
+    "label": "vegetable stock"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 3,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pearl-couscous-dry",
+    "qty": 200,
+    "unit": "g",
+    "label": "kusksu pasta beads"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 4,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "ricotta-whole-milk",
+    "qty": 120,
+    "unit": "g",
+    "label": "ricotta",
+    "optional": true
+   },
+   {
+    "ref": "item",
+    "ref_key": "gbejna-needs-label",
+    "qty": 160,
+    "unit": "g",
+    "label": "ġbejna",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Soften the onion and garlic in the olive oil, then stir in the tomato paste.",
+   "Add the podded broad beans, peas and vegetable stock, season with salt and pepper and simmer for 10 minutes.",
+   "Stir in the kusksu pasta beads and simmer for 10 to 12 minutes, stirring now and then, until tender and the soup is thick.",
+   "Crack the eggs into the soup, cover and poach for 4 minutes; serve with a spoonful of ricotta if you like.",
+   "If using ġbejna, put one in each bowl and ladle the hot kusksu over it."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Maltese kusksu pasta beads have no catalogue record, so this uses pearl couscous, the closest dry wheat pasta bead; swap for your pack's label if you have it. Ġbejna is an optional line: no generic source has it, so it has no values until you add your pack's label, and choosing it makes the total incomplete. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label."
+ },
+ {
+  "key": "soppa-tal-armla",
+  "name": "Widow's soup with ricotta and egg",
+  "name_mt": "Soppa tal-armla",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/soppa-tal-armla"
+  ],
+  "summary": "A pale soup of cauliflower, kohlrabi, potato, peas and spinach, finished with poached eggs and ricotta.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 20,
+  "cook_min": 40,
+  "equipment": [
+   "large saucepan with lid"
+  ],
+  "tags": [
+   "maltese",
+   "soup",
+   "meat-free",
+   "lent"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 20,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 120,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 6,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cauliflower-raw",
+    "qty": 300,
+    "unit": "g",
+    "label": "cauliflower"
+   },
+   {
+    "ref": "item",
+    "ref_key": "kohlrabi-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "kohlrabi"
+   },
+   {
+    "ref": "item",
+    "ref_key": "potato-white-raw",
+    "qty": 250,
+    "unit": "g",
+    "label": "potato"
+   },
+   {
+    "ref": "item",
+    "ref_key": "carrot-raw",
+    "qty": 120,
+    "unit": "g",
+    "label": "carrot"
+   },
+   {
+    "ref": "item",
+    "ref_key": "stock-vegetable-ready",
+    "qty": 1200,
+    "unit": "g",
+    "label": "vegetable stock"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 3,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "peas-frozen",
+    "qty": 150,
+    "unit": "g",
+    "label": "peas"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spinach-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "spinach"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 4,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "ricotta-whole-milk",
+    "qty": 200,
+    "unit": "g",
+    "label": "ricotta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "gbejna-needs-label",
+    "qty": 160,
+    "unit": "g",
+    "label": "ġbejna",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Soften the onion and garlic in the olive oil.",
+   "Add the cauliflower, kohlrabi, potato and carrot, cut into chunks, with the vegetable stock, salt and pepper, and simmer for 25 minutes.",
+   "Add the peas and spinach and cook for 5 minutes.",
+   "Crack in the eggs and poach for 4 minutes, then add spoonfuls of ricotta and warm through before serving.",
+   "If using ġbejna, add one to each bowl with the egg and ricotta."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Ġbejna is an optional line: no generic source has it, so it has no values until you add your pack's label, and choosing it makes the total incomplete."
+ },
+ {
+  "key": "qarabaghli-mimli",
+  "name": "Stuffed round courgettes",
+  "name_mt": "Qarabagħli mimli",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/stuffed-qarabaghli"
+  ],
+  "summary": "Round courgettes hollowed out and filled with beef mince, their own flesh, egg, parmesan and breadcrumbs, baked in tomato.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 30,
+  "cook_min": 75,
+  "equipment": [
+   "frying pan",
+   "mixing bowl",
+   "roasting dish",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "baked",
+   "vegetables"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "courgette-raw",
+    "qty": 800,
+    "unit": "g",
+    "label": "courgettes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "beef-mince-15-fat-raw",
+    "qty": 300,
+    "unit": "g",
+    "label": "beef mince"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 100,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 6,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 20,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 30,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 1,
+    "unit": "p:1 large",
+    "label": "egg"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-grated",
+    "qty": 30,
+    "unit": "g",
+    "label": "parmesan"
+   },
+   {
+    "ref": "item",
+    "ref_key": "breadcrumbs-dried-plain-as-sold",
+    "qty": 30,
+    "unit": "g",
+    "label": "breadcrumbs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parsley-fresh",
+    "qty": 5,
+    "unit": "g",
+    "label": "parsley"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 3,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomatoes-tinned-chopped",
+    "qty": 200,
+    "unit": "g",
+    "label": "chopped tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "potato-white-raw",
+    "qty": 400,
+    "unit": "g",
+    "label": "potatoes",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Cut the tops off the courgettes and scoop out the insides, keeping the scooped flesh and chopping it.",
+   "Soften the onion and garlic in the olive oil, add the beef mince and brown it, then add the chopped courgette flesh and tomato paste and cook for 10 minutes; cool slightly.",
+   "Mix in the egg, parmesan, breadcrumbs, parsley, salt and pepper and fill the courgettes, replacing the tops.",
+   "Stand them in a dish with the chopped tomatoes, add the potatoes in chunks around them if using, and bake at 180 °C for 50 to 60 minutes."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Qarabagħli are round marrows; the catalogue has courgette, which is the same vegetable. A meat-free filling of ricotta, ġbejna, egg and parsley is also common. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label."
+ },
+ {
+  "key": "patata-l-forn",
+  "name": "Maltese baked potatoes with onion and fennel seeds",
+  "name_mt": "Patata l-forn",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/patata-l-forn"
+  ],
+  "summary": "Sliced potatoes and onion baked in stock with olive oil, garlic and fennel seeds until tender and golden on top.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 15,
+  "cook_min": 75,
+  "equipment": [
+   "roasting dish",
+   "foil",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "baked",
+   "side",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "potato-white-raw",
+    "qty": 1000,
+    "unit": "g",
+    "label": "potatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 8,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "fennel-seeds-as-sold",
+    "qty": 3,
+    "unit": "g",
+    "label": "fennel seeds"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 40,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 4,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "stock-vegetable-ready",
+    "qty": 300,
+    "unit": "g",
+    "label": "stock"
+   }
+  ],
+  "method": [
+   "Slice the potatoes and onion thinly and toss them with the garlic, fennel seeds, olive oil, salt and pepper.",
+   "Layer in a roasting dish, pour over the stock, cover with foil and bake at 190 °C for 40 minutes.",
+   "Uncover and bake for 30 to 40 minutes more until tender and golden on top."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Often baked under a joint of pork or lamb so the potatoes catch the juices, which adds fat not counted here. Vegetable stock is used; swap for chicken stock if you prefer."
+ },
+ {
+  "key": "stuffat-tal-fenek",
+  "name": "Rabbit stew",
+  "name_mt": "Stuffat tal-fenek",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/rabbit-stew-stuffat-tal-fenek"
+  ],
+  "summary": "Rabbit marinated in red wine, garlic and bay, then stewed in tomato with potatoes, carrot and peas.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 25,
+  "cook_min": 110,
+  "equipment": [
+   "bowl for marinating",
+   "large heavy pan with lid"
+  ],
+  "tags": [
+   "maltese",
+   "stew",
+   "festive"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "rabbit-raw",
+    "qty": 700,
+    "unit": "g",
+    "label": "rabbit"
+   },
+   {
+    "ref": "item",
+    "ref_key": "wine-red",
+    "qty": 200,
+    "unit": "ml",
+    "label": "red wine"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 15,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bay-leaves-dried-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "bay leaves"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 30,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 40,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomatoes-tinned-chopped",
+    "qty": 400,
+    "unit": "g",
+    "label": "chopped tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 5,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "potato-white-raw",
+    "qty": 500,
+    "unit": "g",
+    "label": "potatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "carrot-raw",
+    "qty": 120,
+    "unit": "g",
+    "label": "carrot"
+   },
+   {
+    "ref": "item",
+    "ref_key": "peas-frozen",
+    "qty": 200,
+    "unit": "g",
+    "label": "peas"
+   }
+  ],
+  "method": [
+   "Marinate the rabbit pieces with the red wine, crushed garlic and bay leaves for a few hours or overnight.",
+   "Lift out the rabbit, pat it dry and brown it in the olive oil, then add the onion and cook until soft.",
+   "Pour in the marinade with the tomato paste, chopped tomatoes, salt and pepper, cover and simmer gently for 1 hour.",
+   "Add the potatoes, carrot and peas and cook for 30 to 40 minutes more until the rabbit is tender."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. The rabbit line is edible meat, without bone; weigh what you can or adjust it. The wine line counts the wine as poured. The sauce is often served first over spaghetti; log that separately. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label."
+ },
+ {
+  "key": "ravjul",
+  "name": "Ricotta ravioli in tomato sauce",
+  "name_mt": "Ravjul",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/ricotta-ravjul"
+  ],
+  "summary": "Large homemade ravioli filled with ricotta, parmesan and parsley, served in a simple tomato sauce.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 60,
+  "cook_min": 25,
+  "equipment": [
+   "mixing bowl",
+   "rolling pin or pasta machine",
+   "large saucepan",
+   "small saucepan"
+  ],
+  "tags": [
+   "maltese",
+   "pasta",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "flour-plain-white-as-sold",
+    "qty": 250,
+    "unit": "g",
+    "label": "flour"
+   },
+   {
+    "ref": "item",
+    "ref_key": "semolina-dry",
+    "qty": 50,
+    "unit": "g",
+    "label": "semolina"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 3,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 30,
+    "unit": "ml",
+    "label": "water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "ricotta-whole-milk",
+    "qty": 400,
+    "unit": "g",
+    "label": "ricotta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 1,
+    "unit": "p:1 large",
+    "label": "egg for the filling"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-grated",
+    "qty": 40,
+    "unit": "g",
+    "label": "parmesan"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parsley-fresh",
+    "qty": 10,
+    "unit": "g",
+    "label": "parsley"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 3,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 20,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 6,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-passata",
+    "qty": 500,
+    "unit": "g",
+    "label": "passata"
+   },
+   {
+    "ref": "item",
+    "ref_key": "basil-fresh",
+    "qty": 5,
+    "unit": "g",
+    "label": "basil",
+    "optional": true
+   },
+   {
+    "ref": "item",
+    "ref_key": "gbejna-needs-label",
+    "qty": 100,
+    "unit": "g",
+    "label": "ġbejna",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Mix the flour, semolina, eggs and water into a firm dough, knead for 8 minutes and rest it, covered, for 30 minutes.",
+   "Mix the ricotta, egg for the filling, parmesan, chopped parsley, salt and pepper.",
+   "Roll the dough thinly, dot it with spoonfuls of filling, cover with a second sheet, press around each mound and cut into large squares.",
+   "For the sauce, soften the onion and garlic in the olive oil, add the passata and simmer for 15 minutes.",
+   "Boil the ravjul in plenty of water for 4 to 5 minutes, drain and serve with the sauce and torn basil if using.",
+   "If using ġbejna, crumble it into the ricotta filling before filling the ravjul."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Gozitan ravjul are often filled with ġbejna instead of, or as well as, ricotta. Ġbejna is an optional line: no generic source has it, so it has no values until you add your pack's label, and choosing it makes the total incomplete."
+ },
+ {
+  "key": "imqaret",
+  "name": "Date-filled fried pastries",
+  "name_mt": "Imqaret",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/imqaret"
+  ],
+  "summary": "Diamond-shaped pastries filled with spiced date paste and deep-fried until golden. Makes 16.",
+  "servings": 16,
+  "final_weight": null,
+  "prep_min": 45,
+  "cook_min": 30,
+  "equipment": [
+   "mixing bowl",
+   "saucepan",
+   "rolling pin",
+   "deep pan for frying"
+  ],
+  "tags": [
+   "maltese",
+   "sweet",
+   "fried",
+   "festa"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "flour-plain-white-as-sold",
+    "qty": 300,
+    "unit": "g",
+    "label": "flour"
+   },
+   {
+    "ref": "item",
+    "ref_key": "margarine-80-fat",
+    "qty": 60,
+    "unit": "g",
+    "label": "margarine"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sugar-white-as-sold",
+    "qty": 20,
+    "unit": "g",
+    "label": "sugar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 160,
+    "unit": "ml",
+    "label": "water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "dates-deglet-noor-dried",
+    "qty": 300,
+    "unit": "g",
+    "label": "dates"
+   },
+   {
+    "ref": "item",
+    "ref_key": "orange-peel-raw",
+    "qty": 5,
+    "unit": "g",
+    "label": "orange zest"
+   },
+   {
+    "ref": "item",
+    "ref_key": "anise-seeds-as-sold",
+    "qty": 2,
+    "unit": "g",
+    "label": "aniseed"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cloves-ground-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "cloves"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-sunflower",
+    "qty": 70,
+    "unit": "g",
+    "label": "sunflower oil"
+   }
+  ],
+  "method": [
+   "Rub the margarine into the flour and sugar, then add enough of the water to make a soft dough; rest for 30 minutes.",
+   "Simmer the chopped dates with the orange zest, aniseed, cloves and the rest of the water, mashing to a thick paste; cool.",
+   "Roll the dough into a long strip, lay a sausage of date filling along it, fold over to enclose and cut on the diagonal into 16 diamonds.",
+   "Deep-fry a few at a time in hot sunflower oil until golden and drain on kitchen paper; the oil line counts only what the pastries absorb."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Many cooks add anisette liqueur to the filling; it has no catalogue record, so aniseed is used instead. The frying oil line (70 g) is an estimate of what 16 pastries absorb, not the oil in the pan."
+ },
+ {
+  "key": "torta-tal-lampuki",
+  "name": "Lampuki fish pie",
+  "name_mt": "Torta tal-lampuki",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/lampuki-pie"
+  ],
+  "summary": "Shortcrust pie of lampuki with spinach, peas, olives, capers and mint in a little tomato.",
+  "servings": 8,
+  "final_weight": null,
+  "prep_min": 45,
+  "cook_min": 60,
+  "equipment": [
+   "frying pan",
+   "pie dish",
+   "rolling pin",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "pastry",
+   "fish",
+   "baked"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "shortcrust-pastry-raw",
+    "qty": 600,
+    "unit": "g",
+    "label": "shortcrust pastry"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mahi-mahi-raw",
+    "qty": 700,
+    "unit": "g",
+    "label": "lampuki"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 4,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 30,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 10,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 40,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "spinach-raw",
+    "qty": 300,
+    "unit": "g",
+    "label": "spinach"
+   },
+   {
+    "ref": "item",
+    "ref_key": "peas-frozen",
+    "qty": 150,
+    "unit": "g",
+    "label": "peas"
+   },
+   {
+    "ref": "item",
+    "ref_key": "olives-black",
+    "qty": 60,
+    "unit": "g",
+    "label": "olives"
+   },
+   {
+    "ref": "item",
+    "ref_key": "capers-drained",
+    "qty": 20,
+    "unit": "g",
+    "label": "capers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "mint-fresh",
+    "qty": 5,
+    "unit": "g",
+    "label": "mint"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 15,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 1,
+    "unit": "p:1 large",
+    "label": "egg"
+   }
+  ],
+  "method": [
+   "Season the lampuki fillets with salt and pepper and fry briefly in half the olive oil until just cooked, then flake into large pieces, discarding skin and bones.",
+   "Soften the onion and garlic in the rest of the olive oil, add the tomato paste, spinach, peas, olives, capers and chopped mint and cook until the spinach wilts; cool, then fold in the fish and lemon juice.",
+   "Line a pie dish with two thirds of the shortcrust pastry, add the filling, cover with the rest, seal and brush with the beaten egg.",
+   "Bake at 190 °C for 45 to 50 minutes until golden."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Lampuki is mahi-mahi (dorado), in season from late August to December; the line is edible fillet. Some versions use cauliflower instead of spinach. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label."
+ },
+ {
+  "key": "qaghaq-tal-ghasel",
+  "name": "Treacle rings",
+  "name_mt": "Qagħaq tal-għasel",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [
+   "maltese/qaghaq-tal-ghasel"
+  ],
+  "summary": "Christmas pastry rings filled with a dark, spiced treacle, semolina and citrus filling. Makes 12.",
+  "servings": 12,
+  "final_weight": null,
+  "prep_min": 60,
+  "cook_min": 40,
+  "equipment": [
+   "mixing bowl",
+   "saucepan",
+   "whisk",
+   "baking trays",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "sweet",
+   "baked",
+   "christmas"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "flour-plain-white-as-sold",
+    "qty": 400,
+    "unit": "g",
+    "label": "flour"
+   },
+   {
+    "ref": "item",
+    "ref_key": "margarine-80-fat",
+    "qty": 100,
+    "unit": "g",
+    "label": "margarine"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sugar-white-as-sold",
+    "qty": 150,
+    "unit": "g",
+    "label": "sugar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-yolk-raw",
+    "qty": 2,
+    "unit": "p:1 large",
+    "label": "egg yolks"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 400,
+    "unit": "ml",
+    "label": "water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "molasses-as-sold",
+    "qty": 300,
+    "unit": "g",
+    "label": "treacle"
+   },
+   {
+    "ref": "item",
+    "ref_key": "orange-peel-raw",
+    "qty": 10,
+    "unit": "g",
+    "label": "orange zest"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-peel-raw",
+    "qty": 5,
+    "unit": "g",
+    "label": "lemon zest"
+   },
+   {
+    "ref": "item",
+    "ref_key": "anise-seeds-as-sold",
+    "qty": 3,
+    "unit": "g",
+    "label": "aniseed"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cloves-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "cloves"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cinnamon-ground-as-sold",
+    "qty": 2,
+    "unit": "g",
+    "label": "cinnamon"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cocoa-powder-as-sold",
+    "qty": 10,
+    "unit": "g",
+    "label": "cocoa"
+   },
+   {
+    "ref": "item",
+    "ref_key": "semolina-dry",
+    "qty": 100,
+    "unit": "g",
+    "label": "semolina"
+   },
+   {
+    "ref": "item",
+    "ref_key": "candied-peel",
+    "qty": 50,
+    "unit": "g",
+    "label": "candied peel"
+   },
+   {
+    "ref": "item",
+    "ref_key": "marmalade-orange-as-sold",
+    "qty": 50,
+    "unit": "g",
+    "label": "marmalade"
+   }
+  ],
+  "method": [
+   "Rub the margarine into the flour with a third of the sugar, add the egg yolks and enough cold water to make a firm dough; rest for 30 minutes.",
+   "Heat the treacle with the rest of the water and sugar, the orange zest, lemon zest, aniseed, cloves, cinnamon and cocoa; whisk in the semolina and cook, stirring, until very thick.",
+   "Stir in the candied peel and marmalade and leave the filling to cool and firm, ideally overnight.",
+   "Roll the dough into 12 long strips, lay a rope of filling along each, wrap the pastry over and join into rings; cut small slits around the top so the filling shows.",
+   "Bake at 180 °C for 20 to 25 minutes until pale golden."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Despite the name (għasel means honey), most modern versions use black treacle; the catalogue has no black treacle record, so it is estimated as molasses, which is close in composition. Some families add honey too."
+ },
+ {
+  "key": "kapunata",
+  "name": "Maltese aubergine and pepper stew",
+  "name_mt": "Kapunata",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Aubergine and peppers fried in olive oil, then simmered with tomato, capers, olives and basil.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 20,
+  "cook_min": 40,
+  "equipment": [
+   "large frying pan or sauté pan"
+  ],
+  "tags": [
+   "maltese",
+   "vegetables",
+   "side",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "aubergine-raw",
+    "qty": 500,
+    "unit": "g",
+    "label": "aubergine"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pepper-red-raw",
+    "qty": 300,
+    "unit": "g",
+    "label": "peppers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 50,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 10,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomatoes-tinned-chopped",
+    "qty": 400,
+    "unit": "g",
+    "label": "tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 20,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "capers-drained",
+    "qty": 20,
+    "unit": "g",
+    "label": "capers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "olives-green",
+    "qty": 50,
+    "unit": "g",
+    "label": "olives"
+   },
+   {
+    "ref": "item",
+    "ref_key": "vinegar-red-wine",
+    "qty": 15,
+    "unit": "ml",
+    "label": "vinegar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 3,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "black pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "basil-fresh",
+    "qty": 5,
+    "unit": "g",
+    "label": "basil"
+   }
+  ],
+  "method": [
+   "Cut the aubergine and peppers into chunks and fry them in the olive oil until soft and coloured; lift them out.",
+   "Soften the onion and garlic in the same pan, then add the tomatoes and tomato paste and simmer for 10 minutes.",
+   "Return the vegetables with the capers, olives, vinegar, salt and black pepper and simmer for 15 minutes more; finish with torn basil."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. The olive oil drives most of the energy; aubergine soaks it up, so weigh what you use. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label."
+ },
+ {
+  "key": "bragjoli",
+  "name": "Beef olives",
+  "name_mt": "Braġjoli",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Thin beef slices rolled around a pork, bacon and egg stuffing and braised in red wine and tomato.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 40,
+  "cook_min": 100,
+  "equipment": [
+   "cling film",
+   "mixing bowl",
+   "cocktail sticks or string",
+   "heavy pan with lid"
+  ],
+  "tags": [
+   "maltese",
+   "stew",
+   "festive"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "beef-sirloin-steak-lean-raw",
+    "qty": 500,
+    "unit": "g",
+    "label": "beef slices"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pork-mince-regular-raw",
+    "qty": 150,
+    "unit": "g",
+    "label": "pork mince"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bacon-streaky-raw",
+    "qty": 60,
+    "unit": "g",
+    "label": "bacon"
+   },
+   {
+    "ref": "item",
+    "ref_key": "breadcrumbs-dried-plain-as-sold",
+    "qty": 30,
+    "unit": "g",
+    "label": "breadcrumbs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parsley-fresh",
+    "qty": 10,
+    "unit": "g",
+    "label": "parsley"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 6,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-grated",
+    "qty": 20,
+    "unit": "g",
+    "label": "parmesan"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-boiled",
+    "qty": 2,
+    "unit": "p:1 large",
+    "label": "hard-boiled eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 20,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 150,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "wine-red",
+    "qty": 150,
+    "unit": "ml",
+    "label": "red wine"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 30,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomatoes-tinned-chopped",
+    "qty": 400,
+    "unit": "g",
+    "label": "chopped tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bay-leaves-dried-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "bay leaf"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 3,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   }
+  ],
+  "method": [
+   "Beat the beef slices thin between sheets of cling film.",
+   "Mix the pork mince with the chopped bacon, breadcrumbs, parsley, garlic and parmesan, spread it over the slices, lay a quarter of the hard-boiled eggs on each, roll up and secure with cocktail sticks or string.",
+   "Brown the rolls in the olive oil, add the onion and soften it, then pour in the red wine and let it bubble.",
+   "Add the tomato paste, chopped tomatoes, bay leaf, salt and pepper, cover and simmer for 1 to 1.5 hours until tender."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Topside is the usual cut but has no catalogue record, so lean sirloin is used. Peas are often added near the end; add them as a line if you do. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label."
+ },
+ {
+  "key": "froga-tat-tarja",
+  "name": "Vermicelli omelette",
+  "name_mt": "Froġa tat-tarja",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Boiled vermicelli bound with egg, parmesan and parsley and fried into a thick omelette.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 10,
+  "cook_min": 25,
+  "equipment": [
+   "saucepan",
+   "mixing bowl",
+   "non-stick frying pan",
+   "plate for turning"
+  ],
+  "tags": [
+   "maltese",
+   "pasta",
+   "eggs",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "vermicelli-wheat-dry",
+    "qty": 200,
+    "unit": "g",
+    "label": "vermicelli"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 6,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parmesan-grated",
+    "qty": 50,
+    "unit": "g",
+    "label": "parmesan"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parsley-fresh",
+    "qty": 10,
+    "unit": "g",
+    "label": "parsley"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 2,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "ricotta-whole-milk",
+    "qty": 100,
+    "unit": "g",
+    "label": "ricotta",
+    "optional": true
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 30,
+    "unit": "g",
+    "label": "olive oil"
+   }
+  ],
+  "method": [
+   "Boil the vermicelli until just tender, drain and leave to cool slightly.",
+   "Beat the eggs with the parmesan, chopped parsley, salt and pepper, plus the ricotta if using, then mix in the vermicelli.",
+   "Heat the olive oil in a frying pan, add the mixture and cook gently for 8 to 10 minutes until set underneath.",
+   "Turn it over using a plate and cook for 5 minutes more, then cut into wedges."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family."
+ },
+ {
+  "key": "kawlata",
+  "name": "Cabbage and pork soup",
+  "name_mt": "Kawlata",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "A hearty winter soup of pork, cabbage, kohlrabi, pumpkin and potato with white beans.",
+  "servings": 6,
+  "final_weight": null,
+  "prep_min": 25,
+  "cook_min": 75,
+  "equipment": [
+   "large heavy saucepan"
+  ],
+  "tags": [
+   "maltese",
+   "soup",
+   "batch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "pork-loin-lean-fat-raw",
+    "qty": 400,
+    "unit": "g",
+    "label": "pork"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 15,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 150,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 8,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cabbage-white-raw",
+    "qty": 600,
+    "unit": "g",
+    "label": "cabbage"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cauliflower-raw",
+    "qty": 300,
+    "unit": "g",
+    "label": "cauliflower"
+   },
+   {
+    "ref": "item",
+    "ref_key": "kohlrabi-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "kohlrabi"
+   },
+   {
+    "ref": "item",
+    "ref_key": "carrot-raw",
+    "qty": 150,
+    "unit": "g",
+    "label": "carrot"
+   },
+   {
+    "ref": "item",
+    "ref_key": "potato-white-raw",
+    "qty": 400,
+    "unit": "g",
+    "label": "potato"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pumpkin-raw",
+    "qty": 300,
+    "unit": "g",
+    "label": "pumpkin"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 30,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 1500,
+    "unit": "ml",
+    "label": "water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 5,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cannellini-beans-canned-drained",
+    "qty": 200,
+    "unit": "g",
+    "label": "beans"
+   }
+  ],
+  "method": [
+   "Brown the pork, cut into chunks, in the olive oil, then add the onion and garlic and soften.",
+   "Add the chopped cabbage, cauliflower, kohlrabi, carrot, potato and pumpkin with the tomato paste, water, salt and pepper.",
+   "Simmer for about 1 hour until the pork is tender and the vegetables are soft, then add the beans and heat through."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Kawlata is usually made with Maltese sausage (zalzett tal-Malti) and pork ribs; the sausage is a product with no catalogue record, so this uses pork loin. Add your sausage as a line from its label if you use it. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label."
+ },
+ {
+  "key": "stuffat-tal-qarnit",
+  "name": "Octopus stew",
+  "name_mt": "Stuffat tal-qarnit",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Octopus simmered slowly in red wine and tomato with olives, capers and potatoes.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 20,
+  "cook_min": 90,
+  "equipment": [
+   "large heavy pan with lid"
+  ],
+  "tags": [
+   "maltese",
+   "stew",
+   "seafood"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "octopus-raw",
+    "qty": 1000,
+    "unit": "g",
+    "label": "octopus"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 30,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 10,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "wine-red",
+    "qty": 150,
+    "unit": "ml",
+    "label": "red wine"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 30,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomatoes-tinned-chopped",
+    "qty": 400,
+    "unit": "g",
+    "label": "chopped tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "olives-black",
+    "qty": 60,
+    "unit": "g",
+    "label": "olives"
+   },
+   {
+    "ref": "item",
+    "ref_key": "capers-drained",
+    "qty": 15,
+    "unit": "g",
+    "label": "capers"
+   },
+   {
+    "ref": "item",
+    "ref_key": "bay-leaves-dried-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "bay leaf"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 2,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 1,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "potato-white-raw",
+    "qty": 500,
+    "unit": "g",
+    "label": "potatoes"
+   }
+  ],
+  "method": [
+   "Cut the cleaned octopus into chunks, and soften the onion and garlic in the olive oil.",
+   "Add the octopus and cook until it releases its liquid, then pour in the red wine and let it bubble.",
+   "Add the tomato paste, chopped tomatoes, olives, capers, bay leaf, salt and pepper, cover and simmer for 45 minutes.",
+   "Add the potatoes in chunks and simmer for 30 minutes more until the octopus and potatoes are tender."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. The octopus line is cleaned raw octopus. Some cooks add walnuts or raisins; add them as lines if you do. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label."
+ },
+ {
+  "key": "pudina-tal-hobz",
+  "name": "Maltese bread pudding with cocoa and sultanas",
+  "name_mt": "Pudina tal-ħobż",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Stale Maltese bread soaked in milk and baked with eggs, sugar, cocoa, sultanas, peel and orange zest. Cuts into 12.",
+  "servings": 12,
+  "final_weight": null,
+  "prep_min": 75,
+  "cook_min": 60,
+  "equipment": [
+   "large bowl",
+   "baking tin",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "sweet",
+   "baked",
+   "batch"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "hobz-tal-malti-as-sold",
+    "qty": 500,
+    "unit": "g",
+    "label": "stale bread"
+   },
+   {
+    "ref": "item",
+    "ref_key": "milk-whole",
+    "qty": 600,
+    "unit": "ml",
+    "label": "milk"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 3,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sugar-white-as-sold",
+    "qty": 150,
+    "unit": "g",
+    "label": "sugar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cocoa-powder-as-sold",
+    "qty": 25,
+    "unit": "g",
+    "label": "cocoa"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cinnamon-ground-as-sold",
+    "qty": 3,
+    "unit": "g",
+    "label": "cinnamon"
+   },
+   {
+    "ref": "item",
+    "ref_key": "orange-peel-raw",
+    "qty": 6,
+    "unit": "g",
+    "label": "orange zest"
+   },
+   {
+    "ref": "item",
+    "ref_key": "vanilla-extract-as-sold",
+    "qty": 5,
+    "unit": "g",
+    "label": "vanilla"
+   },
+   {
+    "ref": "item",
+    "ref_key": "butter-unsalted",
+    "qty": 50,
+    "unit": "g",
+    "label": "butter"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sultanas",
+    "qty": 100,
+    "unit": "g",
+    "label": "sultanas"
+   },
+   {
+    "ref": "item",
+    "ref_key": "candied-peel",
+    "qty": 50,
+    "unit": "g",
+    "label": "candied peel"
+   },
+   {
+    "ref": "item",
+    "ref_key": "almonds-raw",
+    "qty": 40,
+    "unit": "g",
+    "label": "almonds",
+    "optional": true
+   }
+  ],
+  "method": [
+   "Tear the stale bread into pieces and soak it in the milk for at least 1 hour, then mash with a fork.",
+   "Beat in the eggs, sugar, cocoa, cinnamon, orange zest, vanilla and most of the melted butter.",
+   "Stir in the sultanas, candied peel and chopped almonds if using, and spread in a tin greased with the rest of the butter.",
+   "Bake at 180 °C for 50 minutes to 1 hour until firm, then cool before cutting into 12."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family."
+ },
+ {
+  "key": "kannoli-tal-irkotta",
+  "name": "Ricotta-filled fried pastry tubes",
+  "name_mt": "Kannoli tal-irkotta",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Crisp fried pastry tubes filled with sweetened ricotta, chocolate and candied peel. Makes 12.",
+  "servings": 12,
+  "final_weight": null,
+  "prep_min": 90,
+  "cook_min": 20,
+  "equipment": [
+   "mixing bowl",
+   "rolling pin",
+   "metal kannoli tubes",
+   "deep pan for frying",
+   "piping bag"
+  ],
+  "tags": [
+   "maltese",
+   "sweet",
+   "fried",
+   "festive"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "flour-plain-white-as-sold",
+    "qty": 250,
+    "unit": "g",
+    "label": "flour"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sugar-white-as-sold",
+    "qty": 20,
+    "unit": "g",
+    "label": "sugar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cocoa-powder-as-sold",
+    "qty": 5,
+    "unit": "g",
+    "label": "cocoa"
+   },
+   {
+    "ref": "item",
+    "ref_key": "butter-unsalted",
+    "qty": 30,
+    "unit": "g",
+    "label": "butter"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 1,
+    "unit": "p:1 large",
+    "label": "egg"
+   },
+   {
+    "ref": "item",
+    "ref_key": "vinegar-white",
+    "qty": 15,
+    "unit": "ml",
+    "label": "vinegar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 50,
+    "unit": "ml",
+    "label": "water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-sunflower",
+    "qty": 60,
+    "unit": "g",
+    "label": "sunflower oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "ricotta-whole-milk",
+    "qty": 500,
+    "unit": "g",
+    "label": "ricotta"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sugar-icing-as-sold",
+    "qty": 100,
+    "unit": "g",
+    "label": "icing sugar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "chocolate-dark-45-59",
+    "qty": 50,
+    "unit": "g",
+    "label": "chocolate"
+   },
+   {
+    "ref": "item",
+    "ref_key": "candied-peel",
+    "qty": 40,
+    "unit": "g",
+    "label": "candied peel"
+   }
+  ],
+  "method": [
+   "Mix the flour, sugar, cocoa and butter, then add the egg, vinegar and enough of the water for a firm dough; rest for 1 hour.",
+   "Roll very thinly, cut into 10 cm rounds and wrap each loosely around a metal tube, sealing with a dab of water.",
+   "Deep-fry in hot sunflower oil until crisp and blistered, slide off the tubes and cool; the oil line counts only what the shells absorb.",
+   "Beat the ricotta with most of the icing sugar, fold in the chopped chocolate and candied peel, pipe into the shells just before serving and dust with the rest of the icing sugar."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. The frying oil line (60 g) is an estimate of what 12 shells absorb. Kannoli are often finished with glacé cherries or chopped pistachios; add them as lines if used."
+ },
+ {
+  "key": "kwarezimal",
+  "name": "Lenten almond and spice biscuits",
+  "name_mt": "Kwareżimal",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Chewy biscuits of ground almonds, brown sugar, cocoa, spice and citrus zest, glazed with honey and pistachios. Makes 12.",
+  "servings": 12,
+  "final_weight": null,
+  "prep_min": 20,
+  "cook_min": 20,
+  "equipment": [
+   "mixing bowl",
+   "baking tray",
+   "pastry brush",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "sweet",
+   "baked",
+   "lent"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "flour-almond-as-sold",
+    "qty": 200,
+    "unit": "g",
+    "label": "ground almonds"
+   },
+   {
+    "ref": "item",
+    "ref_key": "flour-plain-white-as-sold",
+    "qty": 150,
+    "unit": "g",
+    "label": "flour"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sugar-brown-soft-as-sold",
+    "qty": 150,
+    "unit": "g",
+    "label": "brown sugar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cocoa-powder-as-sold",
+    "qty": 10,
+    "unit": "g",
+    "label": "cocoa"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cinnamon-ground-as-sold",
+    "qty": 3,
+    "unit": "g",
+    "label": "cinnamon"
+   },
+   {
+    "ref": "item",
+    "ref_key": "cloves-ground-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "cloves"
+   },
+   {
+    "ref": "item",
+    "ref_key": "orange-peel-raw",
+    "qty": 8,
+    "unit": "g",
+    "label": "orange zest"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-peel-raw",
+    "qty": 4,
+    "unit": "g",
+    "label": "lemon zest"
+   },
+   {
+    "ref": "item",
+    "ref_key": "honey-as-sold",
+    "qty": 60,
+    "unit": "g",
+    "label": "honey"
+   },
+   {
+    "ref": "item",
+    "ref_key": "water-tap",
+    "qty": 60,
+    "unit": "ml",
+    "label": "water"
+   },
+   {
+    "ref": "item",
+    "ref_key": "pistachios-raw",
+    "qty": 30,
+    "unit": "g",
+    "label": "pistachios"
+   }
+  ],
+  "method": [
+   "Mix the ground almonds, flour, brown sugar, cocoa, cinnamon, cloves, orange zest and lemon zest.",
+   "Add half the honey and enough of the water to make a stiff dough.",
+   "Shape into flat logs about 2 cm thick, cut into 12 bars and bake at 180 °C for 20 minutes.",
+   "Brush the warm biscuits with the rest of the honey and scatter with the chopped pistachios."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Traditionally made without eggs or fat for Lent. Some recipes use orange blossom water in place of plain water."
+ },
+ {
+  "key": "biskuttini-tal-lewz",
+  "name": "Almond biscuits",
+  "name_mt": "Biskuttini tal-lewż",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Soft, chewy biscuits of ground almonds, icing sugar and egg white, each topped with a whole almond. Makes 24.",
+  "servings": 24,
+  "final_weight": null,
+  "prep_min": 20,
+  "cook_min": 15,
+  "equipment": [
+   "mixing bowl",
+   "baking trays",
+   "baking paper",
+   "oven"
+  ],
+  "tags": [
+   "maltese",
+   "sweet",
+   "baked"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "flour-almond-as-sold",
+    "qty": 200,
+    "unit": "g",
+    "label": "ground almonds"
+   },
+   {
+    "ref": "item",
+    "ref_key": "sugar-icing-as-sold",
+    "qty": 200,
+    "unit": "g",
+    "label": "icing sugar"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-white-raw",
+    "qty": 2,
+    "unit": "p:1 large",
+    "label": "egg whites"
+   },
+   {
+    "ref": "item",
+    "ref_key": "almonds-raw",
+    "qty": 24,
+    "unit": "p:1 almond",
+    "label": "whole almonds"
+   }
+  ],
+  "method": [
+   "Mix the ground almonds and icing sugar, then add the egg whites a little at a time to make a soft, sticky paste.",
+   "Roll into 24 small balls, set them on a lined tray and press one of the whole almonds into each.",
+   "Bake at 180 °C for 12 to 15 minutes until just coloured, then cool on the tray."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Most recipes add almond essence, which has no catalogue record and is left out; the amount is too small to change the totals much. Lemon zest is a common addition."
+ },
+ {
+  "key": "fazola-bajda",
+  "name": "White beans with garlic and parsley",
+  "name_mt": "Fażola bajda bit-tewm u t-tursin",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "White beans dressed with garlic, parsley, olive oil and lemon, served as a starter or side.",
+  "servings": 4,
+  "final_weight": null,
+  "prep_min": 10,
+  "cook_min": 0,
+  "equipment": [
+   "bowl"
+  ],
+  "tags": [
+   "maltese",
+   "side",
+   "no-cook",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "cannellini-beans-canned-drained",
+    "qty": 480,
+    "unit": "g",
+    "label": "white beans"
+   },
+   {
+    "ref": "item",
+    "ref_key": "garlic-raw",
+    "qty": 10,
+    "unit": "g",
+    "label": "garlic"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parsley-fresh",
+    "qty": 15,
+    "unit": "g",
+    "label": "parsley"
+   },
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 30,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "lemon-juice-fresh",
+    "qty": 10,
+    "unit": "ml",
+    "label": "lemon juice"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 2,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 0.5,
+    "unit": "g",
+    "label": "pepper"
+   }
+  ],
+  "method": [
+   "Rinse and drain the white beans and put them in a bowl.",
+   "Add the crushed garlic, chopped parsley, olive oil, lemon juice, salt and pepper, toss well and leave for 30 minutes before serving."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Uses tinned cannellini beans, drained; dried beans cooked at home work the same way."
+ },
+ {
+  "key": "balbuljata",
+  "name": "Scrambled eggs with tomato and onion",
+  "name_mt": "Balbuljata",
+  "family": "maltese",
+  "type": "base",
+  "parent_key": null,
+  "req": [],
+  "summary": "Eggs gently scrambled into softened onion and tomato.",
+  "servings": 2,
+  "final_weight": null,
+  "prep_min": 5,
+  "cook_min": 12,
+  "equipment": [
+   "frying pan"
+  ],
+  "tags": [
+   "maltese",
+   "eggs",
+   "breakfast",
+   "meat-free"
+  ],
+  "lines": [
+   {
+    "ref": "item",
+    "ref_key": "oil-olive",
+    "qty": 10,
+    "unit": "g",
+    "label": "olive oil"
+   },
+   {
+    "ref": "item",
+    "ref_key": "onion-raw",
+    "qty": 80,
+    "unit": "g",
+    "label": "onion"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-raw",
+    "qty": 200,
+    "unit": "g",
+    "label": "tomatoes"
+   },
+   {
+    "ref": "item",
+    "ref_key": "tomato-paste",
+    "qty": 10,
+    "unit": "g",
+    "label": "tomato paste"
+   },
+   {
+    "ref": "item",
+    "ref_key": "egg-whole-raw",
+    "qty": 4,
+    "unit": "p:1 large",
+    "label": "eggs"
+   },
+   {
+    "ref": "item",
+    "ref_key": "salt-table",
+    "qty": 1,
+    "unit": "g",
+    "label": "salt"
+   },
+   {
+    "ref": "item",
+    "ref_key": "black-pepper-ground-as-sold",
+    "qty": 0.3,
+    "unit": "g",
+    "label": "pepper"
+   },
+   {
+    "ref": "item",
+    "ref_key": "parsley-fresh",
+    "qty": 5,
+    "unit": "g",
+    "label": "parsley"
+   }
+  ],
+  "method": [
+   "Soften the chopped onion in the olive oil, add the chopped tomatoes and tomato paste and cook for 5 minutes.",
+   "Pour in the beaten eggs and stir gently over a low heat until just set; season with salt and pepper and scatter with parsley."
+  ],
+  "notes": "Original home-style adaptation written for Oath: not one authentic formula and not a bakery's, snack bar's or restaurant's nutrition. Traditional versions vary from family to family. Kunserva is a branded Maltese product, so this uses generic tomato paste; swap in your jar if you know its label."
+ }
+]

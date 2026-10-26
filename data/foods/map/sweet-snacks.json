@@ -1,0 +1,501 @@
+[
+  {
+    "req": "sweet-snacks/milk-chocolate",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chocolate-milk-bar",
+        "fdc_id": 167587,
+        "name": "Milk chocolate",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/dark-chocolate",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chocolate-dark-45-59",
+        "fdc_id": 170271,
+        "name": "Dark chocolate, 45-59% cocoa",
+        "state": "as-sold",
+        "aliases": [
+          "plain chocolate"
+        ]
+      },
+      {
+        "key": "chocolate-dark-60-69",
+        "fdc_id": 170272,
+        "name": "Dark chocolate, 60-69% cocoa",
+        "state": "as-sold"
+      },
+      {
+        "key": "chocolate-dark-70-85",
+        "fdc_id": 170273,
+        "name": "Dark chocolate, 70-85% cocoa",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/white-chocolate",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chocolate-white",
+        "fdc_id": 167571,
+        "name": "White chocolate",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/chocolate-bar",
+    "status": "product",
+    "records": [],
+    "note": "Filled/countline chocolate bars are branded and market-specific (UK and US recipes differ); use the exact wrapper label. Plain bars map to milk, dark or white chocolate."
+  },
+  {
+    "req": "sweet-snacks/chocolate-wafer",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "wafer-chocolate-covered",
+        "fdc_id": 174088,
+        "name": "Chocolate-covered wafer",
+        "state": "as-sold",
+        "aliases": [
+          "chocolate wafer bar",
+          "wafer fingers"
+        ]
+      }
+    ],
+    "note": "Generic chocolate-covered sugar wafer; branded wafer bars vary."
+  },
+  {
+    "req": "sweet-snacks/chocolate-biscuits",
+    "status": "partial",
+    "records": [
+      {
+        "key": "biscuits-chocolate-coated",
+        "fdc_id": 174958,
+        "name": "Chocolate-coated biscuits",
+        "state": "as-sold",
+        "aliases": [
+          "chocolate-covered biscuits"
+        ]
+      },
+      {
+        "key": "biscuits-chocolate-sandwich",
+        "fdc_id": 172718,
+        "name": "Chocolate sandwich biscuits, cream filled",
+        "state": "as-sold",
+        "aliases": [
+          "chocolate cream biscuits",
+          "sandwich cookies"
+        ]
+      }
+    ],
+    "note": "Chocolate-coated record is graham-style (US); chocolate digestives, chocolate oat biscuits and other UK types need labels."
+  },
+  {
+    "req": "sweet-snacks/digestive-biscuits",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "biscuits-digestive-proxy",
+        "fdc_id": 174957,
+        "name": "Digestive-style biscuits (graham cracker proxy)",
+        "state": "as-sold",
+        "aliases": [
+          "digestives",
+          "graham crackers"
+        ]
+      }
+    ],
+    "note": "USDA has no digestive biscuit; US graham crackers are the closest wholemeal sweet biscuit but are leaner than typical digestives. Use the pack label when known."
+  },
+  {
+    "req": "sweet-snacks/shortbread",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "shortbread",
+        "fdc_id": 174967,
+        "name": "Shortbread",
+        "state": "as-sold",
+        "aliases": [
+          "shortbread biscuits",
+          "shortbread fingers"
+        ]
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/cookies",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cookies-chocolate-chip",
+        "fdc_id": 172716,
+        "name": "Chocolate chip cookies",
+        "state": "as-sold",
+        "aliases": [
+          "choc chip biscuits"
+        ]
+      },
+      {
+        "key": "cookies-chocolate-chip-soft",
+        "fdc_id": 172717,
+        "name": "Chocolate chip cookies, soft-baked",
+        "state": "as-sold"
+      },
+      {
+        "key": "cookies-oatmeal",
+        "fdc_id": 172725,
+        "name": "Oat cookies",
+        "state": "as-sold",
+        "aliases": [
+          "oatmeal cookies"
+        ]
+      }
+    ],
+    "note": "US \"cookies\" = UK biscuits; these are shop-bought. Bakery cookies vary a lot by size."
+  },
+  {
+    "req": "sweet-snacks/cereal-bar",
+    "status": "product",
+    "records": [],
+    "note": "Cereal bars are branded and vary widely (fruit-filled, chewy, coated); USDA only has unspecified US bars. Use the exact label. Granola bars have generic records."
+  },
+  {
+    "req": "sweet-snacks/granola-bar",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "granola-bar-crunchy",
+        "fdc_id": 167542,
+        "name": "Granola bar, crunchy",
+        "state": "as-sold",
+        "aliases": [
+          "hard granola bar"
+        ]
+      },
+      {
+        "key": "granola-bar-chewy",
+        "fdc_id": 167954,
+        "name": "Granola bar, chewy",
+        "state": "as-sold",
+        "aliases": [
+          "soft granola bar"
+        ]
+      },
+      {
+        "key": "granola-bar-chewy-choc-chip",
+        "fdc_id": 169674,
+        "name": "Granola bar, chewy, chocolate chip",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/protein-bar",
+    "status": "product",
+    "records": [],
+    "note": "Protein bars are exact branded products; a protein claim is not a full profile. Use the wrapper label."
+  },
+  {
+    "req": "sweet-snacks/flapjack",
+    "status": "recipe",
+    "records": [],
+    "note": "No flapjack in USDA. Homemade: ingredient-backed recipe (oats, butter, syrup, sugar). Packaged: use the label."
+  },
+  {
+    "req": "sweet-snacks/muffin",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "muffin-blueberry",
+        "fdc_id": 172765,
+        "name": "Blueberry muffin",
+        "state": "as-sold",
+        "aliases": [
+          "muffin"
+        ]
+      }
+    ],
+    "note": "Shop-bought sweet muffin. Chocolate muffins are not in USDA; English muffins are bread, not this."
+  },
+  {
+    "req": "sweet-snacks/doughnut",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "doughnut-ring-glazed",
+        "fdc_id": 172758,
+        "name": "Doughnut, glazed ring",
+        "state": "as-sold",
+        "aliases": [
+          "donut",
+          "glazed doughnut"
+        ]
+      },
+      {
+        "key": "doughnut-jam",
+        "fdc_id": 172759,
+        "name": "Doughnut, jam filled",
+        "state": "as-sold",
+        "aliases": [
+          "jam donut",
+          "jelly doughnut"
+        ]
+      },
+      {
+        "key": "doughnut-cake-sugared",
+        "fdc_id": 174992,
+        "name": "Doughnut, cake-type, sugared",
+        "state": "as-sold"
+      },
+      {
+        "key": "doughnut-chocolate-iced",
+        "fdc_id": 174991,
+        "name": "Doughnut, chocolate iced",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/sponge-cake",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sponge-cake",
+        "fdc_id": 172706,
+        "name": "Sponge cake",
+        "state": "as-sold",
+        "aliases": [
+          "plain sponge"
+        ]
+      }
+    ],
+    "note": "Plain sponge only. Victoria sponge with jam and buttercream should be a recipe or label."
+  },
+  {
+    "req": "sweet-snacks/brownie",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "brownie",
+        "fdc_id": 172713,
+        "name": "Chocolate brownie",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/cheesecake",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cheesecake",
+        "fdc_id": 172711,
+        "name": "Cheesecake",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/ice-cream",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ice-cream-vanilla",
+        "fdc_id": 167575,
+        "name": "Ice cream, vanilla",
+        "state": "as-sold"
+      },
+      {
+        "key": "ice-cream-chocolate",
+        "fdc_id": 168809,
+        "name": "Ice cream, chocolate",
+        "state": "as-sold"
+      },
+      {
+        "key": "ice-cream-strawberry",
+        "fdc_id": 168810,
+        "name": "Ice cream, strawberry",
+        "state": "as-sold"
+      },
+      {
+        "key": "ice-cream-vanilla-light",
+        "fdc_id": 167572,
+        "name": "Ice cream, vanilla, light",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/ice-lolly",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ice-lolly-water",
+        "fdc_id": 168813,
+        "name": "Ice lolly",
+        "state": "as-sold",
+        "aliases": [
+          "popsicle",
+          "water ice lolly"
+        ]
+      },
+      {
+        "key": "ice-lolly-fruit-juice",
+        "fdc_id": 169632,
+        "name": "Fruit juice ice lolly",
+        "state": "as-sold",
+        "aliases": [
+          "fruit bar"
+        ]
+      },
+      {
+        "key": "ice-lolly-sugar-free",
+        "fdc_id": 168132,
+        "name": "Ice lolly, sugar-free",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/sorbet",
+    "status": "estimate",
+    "records": [
+      {
+        "key": "sorbet-proxy",
+        "fdc_id": 169638,
+        "name": "Sorbet (water ice proxy)",
+        "state": "as-sold",
+        "aliases": [
+          "water ice"
+        ]
+      }
+    ],
+    "note": "USDA has no sorbet; lime water ice is the closest dairy-free frozen dessert. Orange sherbet (167577) contains dairy. Use the tub label when known."
+  },
+  {
+    "req": "sweet-snacks/jelly-sweets",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sweets-jelly",
+        "fdc_id": 167989,
+        "name": "Jelly sweets",
+        "state": "as-sold",
+        "aliases": [
+          "gummy sweets",
+          "gummies",
+          "gumdrops"
+        ]
+      },
+      {
+        "key": "sweets-jelly-beans",
+        "fdc_id": 167991,
+        "name": "Jelly beans",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/marshmallows",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "marshmallows",
+        "fdc_id": 167995,
+        "name": "Marshmallows",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "sweet-snacks/fruit-snack-bar",
+    "status": "partial",
+    "records": [
+      {
+        "key": "fruit-leather-roll",
+        "fdc_id": 167541,
+        "name": "Fruit leather roll",
+        "state": "as-sold",
+        "aliases": [
+          "fruit roll",
+          "fruit strip"
+        ]
+      },
+      {
+        "key": "fruit-leather-pieces",
+        "fdc_id": 167540,
+        "name": "Fruit leather pieces",
+        "state": "as-sold",
+        "aliases": [
+          "fruit snacks"
+        ]
+      }
+    ],
+    "note": "Fruit leather covered; date-and-nut bars and other pressed fruit bars are missing."
+  },
+  {
+    "req": "sweet-snacks/jelly-dessert",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "jelly-dessert",
+        "fdc_id": 169596,
+        "name": "Jelly (dessert), made up",
+        "state": "prepared",
+        "aliases": [
+          "jelly",
+          "gelatin dessert",
+          "Jell-O"
+        ]
+      },
+      {
+        "key": "jelly-dessert-sugar-free",
+        "fdc_id": 169598,
+        "name": "Jelly (dessert), sugar-free, made up",
+        "state": "prepared",
+        "aliases": [
+          "sugar-free jelly"
+        ]
+      }
+    ],
+    "note": "UK \"jelly\" = US gelatin dessert (not jam). Made-up weight, not crystals."
+  },
+  {
+    "req": "sweet-snacks/rice-pudding",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "rice-pudding-ready",
+        "fdc_id": 168782,
+        "name": "Rice pudding, ready to eat",
+        "state": "as-sold",
+        "aliases": [
+          "creamed rice"
+        ]
+      }
+    ],
+    "note": "Canned/pot rice pudding. Homemade should be a recipe."
+  }
+]

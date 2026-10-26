@@ -1,0 +1,174 @@
+[
+ {
+  "req": null,
+  "status": "mapped",
+  "records": [
+   {
+    "key": "turmeric-ground-as-sold",
+    "fdc_id": 172231,
+    "name": "Turmeric, ground",
+    "state": "as-sold",
+    "aliases": [
+     "turmeric",
+     "ground turmeric"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "coriander-ground-as-sold",
+    "fdc_id": 170922,
+    "name": "Coriander, ground (seed)",
+    "state": "as-sold",
+    "aliases": [
+     "ground coriander",
+     "coriander seed"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "chilli-powder-as-sold",
+    "fdc_id": 171319,
+    "name": "Chilli powder",
+    "state": "as-sold",
+    "aliases": [
+     "chili powder",
+     "mild chilli powder"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "thyme-dried-as-sold",
+    "fdc_id": 170938,
+    "name": "Thyme, dried",
+    "state": "as-sold",
+    "aliases": [
+     "dried thyme",
+     "sagħtar"
+    ],
+    "category": "baking"
+   },
+   {
+    "key": "thyme-fresh",
+    "fdc_id": 173470,
+    "name": "Thyme, fresh",
+    "state": "raw",
+    "aliases": [
+     "fresh thyme"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "rosemary-fresh",
+    "fdc_id": 173473,
+    "name": "Rosemary, fresh",
+    "state": "raw",
+    "aliases": [
+     "fresh rosemary",
+     "klin"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "dill-fresh",
+    "fdc_id": 172233,
+    "name": "Dill, fresh",
+    "state": "raw",
+    "aliases": [
+     "dill",
+     "dill weed"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "chives-fresh",
+    "fdc_id": 169994,
+    "name": "Chives, fresh",
+    "state": "raw",
+    "aliases": [
+     "chives"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "shallot-raw",
+    "fdc_id": 170499,
+    "name": "Shallot",
+    "state": "raw",
+    "aliases": [
+     "shallots",
+     "eschalot"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "chilli-red-fresh",
+    "fdc_id": 170106,
+    "name": "Red chilli, fresh",
+    "state": "raw",
+    "aliases": [
+     "fresh chilli",
+     "red chilli",
+     "chili pepper"
+    ],
+    "category": "vegetables"
+   },
+   {
+    "key": "oyster-sauce",
+    "fdc_id": 174529,
+    "name": "Oyster sauce",
+    "state": "as-sold",
+    "aliases": [
+     "oyster sauce"
+    ],
+    "category": "sauces"
+   },
+   {
+    "key": "chicken-mince-raw",
+    "fdc_id": 171116,
+    "name": "Chicken mince, raw",
+    "state": "raw",
+    "aliases": [
+     "ground chicken",
+     "minced chicken"
+    ],
+    "category": "meat"
+   },
+   {
+    "key": "lamb-leg-lean-fat-raw",
+    "fdc_id": 174374,
+    "name": "Lamb leg, lean and fat (1/8\" fat trim), raw",
+    "state": "raw",
+    "aliases": [
+     "diced lamb",
+     "lamb leg",
+     "leg of lamb"
+    ],
+    "category": "meat"
+   },
+   {
+    "key": "salmon-pink-canned-drained",
+    "fdc_id": 173724,
+    "name": "Salmon, pink, canned, drained (skin and bones removed)",
+    "state": "canned-drained",
+    "aliases": [
+     "tinned salmon",
+     "canned salmon",
+     "pink salmon"
+    ],
+    "category": "fish"
+   },
+   {
+    "key": "tortilla-corn-as-sold",
+    "fdc_id": 175036,
+    "name": "Corn tortillas",
+    "state": "as-sold",
+    "aliases": [
+     "corn tortilla",
+     "taco tortillas"
+    ],
+    "category": "bread"
+   }
+  ],
+  "note": "Herbs, spices and cuts for the chicken, meat, fish and vegetarian recipes, not on the blueprint list."
+ }
+]

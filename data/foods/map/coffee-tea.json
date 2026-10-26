@@ -1,0 +1,338 @@
+[
+  {
+    "req": "coffee-tea/espresso",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "espresso",
+        "fdc_id": 171891,
+        "name": "Espresso",
+        "state": "prepared",
+        "aliases": [
+          "short black"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Restaurant-prepared espresso; USDA caffeine value kept."
+  },
+  {
+    "req": "coffee-tea/double-espresso",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "espresso-double",
+        "fdc_id": 171891,
+        "name": "Espresso, double",
+        "state": "prepared",
+        "aliases": [
+          "doppio"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Same USDA espresso record; a double is two shots by volume."
+  },
+  {
+    "req": "coffee-tea/filter-coffee",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "coffee-filter",
+        "fdc_id": 171890,
+        "name": "Filter coffee, black",
+        "state": "prepared",
+        "aliases": [
+          "brewed coffee",
+          "drip coffee",
+          "cafetiere coffee"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Brewed coffee; USDA caffeine value kept. Milk and sugar logged separately."
+  },
+  {
+    "req": "coffee-tea/instant-coffee",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "coffee-instant-made",
+        "fdc_id": 174130,
+        "name": "Instant coffee, made with water",
+        "state": "prepared",
+        "liquid": true
+      },
+      {
+        "key": "coffee-instant-granules",
+        "fdc_id": 171893,
+        "name": "Instant coffee granules (dry)",
+        "state": "dry",
+        "aliases": [
+          "coffee granules"
+        ]
+      }
+    ],
+    "note": "Granules and made-up coffee are separate; do not log both for one cup."
+  },
+  {
+    "req": "coffee-tea/decaf-coffee",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "coffee-decaf-filter",
+        "fdc_id": 171889,
+        "name": "Decaf filter coffee",
+        "state": "prepared",
+        "liquid": true
+      },
+      {
+        "key": "espresso-decaf",
+        "fdc_id": 174125,
+        "name": "Decaf espresso",
+        "state": "prepared",
+        "liquid": true
+      },
+      {
+        "key": "coffee-decaf-instant-made",
+        "fdc_id": 171894,
+        "name": "Decaf instant coffee, made with water",
+        "state": "prepared",
+        "liquid": true
+      }
+    ],
+    "note": "USDA decaf records keep their small non-zero caffeine values."
+  },
+  {
+    "req": "coffee-tea/americano",
+    "status": "recipe",
+    "records": [],
+    "note": "No americano record. Build from espresso shots (171891) plus hot water; milk added separately."
+  },
+  {
+    "req": "coffee-tea/cappuccino",
+    "status": "recipe",
+    "records": [],
+    "note": "No cappuccino in SR Legacy/Foundation. Build from espresso (171891) plus steamed milk of the chosen type; size sets milk volume."
+  },
+  {
+    "req": "coffee-tea/latte",
+    "status": "recipe",
+    "records": [],
+    "note": "No latte in SR Legacy/Foundation. Build from espresso (171891) plus steamed milk; syrups added separately."
+  },
+  {
+    "req": "coffee-tea/flat-white",
+    "status": "recipe",
+    "records": [],
+    "note": "No flat white record. Build from espresso (usually a double, 171891) plus steamed milk."
+  },
+  {
+    "req": "coffee-tea/iced-latte",
+    "status": "recipe",
+    "records": [],
+    "note": "No iced latte record. Build from espresso (171891) plus cold milk; ice adds nothing."
+  },
+  {
+    "req": "coffee-tea/mocha",
+    "status": "partial",
+    "records": [
+      {
+        "key": "mocha-instant-powder",
+        "fdc_id": 174135,
+        "name": "Instant mocha mix (dry)",
+        "state": "dry"
+      },
+      {
+        "key": "mocha-iced-bottled",
+        "fdc_id": 174119,
+        "name": "Iced mocha, bottled",
+        "state": "as-sold",
+        "liquid": true
+      }
+    ],
+    "note": "Instant mix and bottled iced mocha are covered; a café mocha should be a recipe (espresso, milk, chocolate sauce)."
+  },
+  {
+    "req": "coffee-tea/black-tea",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tea-black",
+        "fdc_id": 173227,
+        "name": "Black tea",
+        "state": "prepared",
+        "aliases": [
+          "tea",
+          "builder's tea",
+          "English breakfast tea"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "tea-black-decaf",
+        "fdc_id": 174871,
+        "name": "Black tea, decaf",
+        "state": "prepared",
+        "liquid": true
+      }
+    ],
+    "note": "Brewed without milk; USDA caffeine values kept (decaf is not zero). Milk logged separately."
+  },
+  {
+    "req": "coffee-tea/green-tea",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tea-green",
+        "fdc_id": 171917,
+        "name": "Green tea",
+        "state": "prepared",
+        "liquid": true
+      },
+      {
+        "key": "tea-green-decaf",
+        "fdc_id": 171910,
+        "name": "Green tea, decaf",
+        "state": "prepared",
+        "liquid": true
+      }
+    ],
+    "note": ""
+  },
+  {
+    "req": "coffee-tea/herbal-tea",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tea-herbal-chamomile",
+        "fdc_id": 174156,
+        "name": "Chamomile tea",
+        "state": "prepared",
+        "liquid": true
+      },
+      {
+        "key": "tea-herbal",
+        "fdc_id": 173232,
+        "name": "Herbal tea",
+        "state": "prepared",
+        "aliases": [
+          "fruit tea",
+          "peppermint tea",
+          "infusion"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "tea-hibiscus",
+        "fdc_id": 171946,
+        "name": "Hibiscus tea",
+        "state": "prepared",
+        "liquid": true
+      }
+    ],
+    "note": "USDA lists caffeine as zero for these herbal records."
+  },
+  {
+    "req": "coffee-tea/iced-coffee",
+    "status": "partial",
+    "records": [
+      {
+        "key": "iced-coffee-bottled",
+        "fdc_id": 171880,
+        "name": "Iced coffee, bottled, with milk, sweetened",
+        "state": "as-sold",
+        "aliases": [
+          "ready-to-drink coffee"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Bottled milk-based iced coffee covered; café iced coffee should be a recipe (brewed coffee or espresso, milk, syrup)."
+  },
+  {
+    "req": "coffee-tea/hot-chocolate",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "hot-chocolate-powder",
+        "fdc_id": 174122,
+        "name": "Hot chocolate powder (dry)",
+        "state": "dry",
+        "aliases": [
+          "drinking chocolate",
+          "cocoa mix"
+        ]
+      },
+      {
+        "key": "hot-chocolate-water",
+        "fdc_id": 174123,
+        "name": "Hot chocolate, made with water",
+        "state": "prepared",
+        "liquid": true
+      },
+      {
+        "key": "hot-chocolate-milk",
+        "fdc_id": 171277,
+        "name": "Hot chocolate, made with milk",
+        "state": "prepared",
+        "aliases": [
+          "hot cocoa"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "hot-chocolate-light-water",
+        "fdc_id": 175092,
+        "name": "Hot chocolate, light, made with water",
+        "state": "prepared",
+        "aliases": [
+          "low-calorie hot chocolate"
+        ],
+        "liquid": true
+      }
+    ],
+    "note": "Powder and made-up drink are separate records. The milk version is a USDA homemade record with whole milk."
+  },
+  {
+    "req": "coffee-tea/matcha-latte",
+    "status": "recipe",
+    "records": [],
+    "note": "No matcha in USDA. Build from milk plus the matcha powder label (many café powders are pre-sweetened)."
+  },
+  {
+    "req": "coffee-tea/chai-latte",
+    "status": "recipe",
+    "records": [],
+    "note": "No chai latte in USDA. Build from milk plus the chai powder or syrup label."
+  },
+  {
+    "req": "coffee-tea/coffee-syrup",
+    "status": "product",
+    "records": [],
+    "note": "Flavoured coffee syrups (regular and sugar-free) are not in USDA; use the bottle label per pump/ml."
+  },
+  {
+    "req": "coffee-tea/whipped-cream-topping",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "whipped-cream-aerosol",
+        "fdc_id": 170860,
+        "name": "Whipped cream, aerosol",
+        "state": "as-sold",
+        "aliases": [
+          "squirty cream",
+          "spray cream"
+        ]
+      },
+      {
+        "key": "whipped-topping-aerosol",
+        "fdc_id": 170867,
+        "name": "Whipped topping, non-dairy, aerosol",
+        "state": "as-sold"
+      }
+    ],
+    "note": ""
+  }
+]
