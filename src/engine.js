@@ -35,6 +35,7 @@ export const DEFAULT_SETTINGS = {
   dailyLossCap: 50,
   alerts: 'both',
   ownerName: 'Daniel',
+  faceIdLock: true,
 };
 
 export async function getSettings() {

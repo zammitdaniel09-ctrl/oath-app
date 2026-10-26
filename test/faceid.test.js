@@ -8,6 +8,10 @@ import os from 'node:os';
 import path from 'node:path';
 import EmbeddedPostgres from 'embedded-postgres';
 import { isoCBOR } from '@simplewebauthn/server/helpers';
+import { DateTime } from 'luxon';
+
+let clock = DateTime.utc();
+const later = (minutes) => { clock = clock.plus({ minutes }); };
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'oath-faceid-pg-'));
 fs.chmodSync(dir, 0o777);
@@ -37,6 +41,8 @@ before(async () => {
   process.env.SETUP_CODE = 'setup-code-for-tests-123';
   delete process.env.RAILWAY_PUBLIC_DOMAIN;
   delete process.env.PUBLIC_HOST;
+  const time = await import('../src/time.js');
+  time.setClock(() => clock);
   dbmod = await import('../src/db.js');
   dbmod.connect();
   await dbmod.migrate();
@@ -146,9 +152,62 @@ test('logging in with Face ID opens a session; a replay and a missing Face ID ch
   assert.equal((await call('GET', '/api/today')).status, 401);
 });
 
-test('removing the passkey turns Face ID login off; the password still works', async () => {
+async function faceIdLogin(counter) {
+  const options = (await call('POST', '/api/passkey/login/options', {})).data;
+  return call('POST', '/api/passkey/login', { response: assertion(options, { counter }) });
+}
+
+test('Face ID only: the password alone is refused, and works with the recovery code', async () => {
+  assert.equal((await call('GET', '/api/session')).data.faceIdOnly, true);
+  // Failed attempts count toward the lockout (five in 15 minutes), so a success comes between them.
+  const alone = await call('POST', '/api/login', { password: 'long-enough-pass' });
+  assert.equal(alone.status, 403);
+  assert.match(alone.data.error, /Face ID only/);
+  const ok = await call('POST', '/api/login', { password: 'long-enough-pass', recovery: process.env.SETUP_CODE });
+  assert.equal(ok.status, 200);
+  assert.equal((await call('GET', '/api/today')).status, 200);
+  const wrong = await call('POST', '/api/login', { password: 'long-enough-pass', recovery: 'not-the-code' });
+  assert.equal(wrong.status, 403);
+  assert.equal((await call('GET', '/api/today')).status, 200, 'a failed attempt does not end the open session');
+});
+
+test('Face ID only: opening the app locks the session, and Face ID unlocks it', async () => {
+  assert.equal((await call('POST', '/api/lock', {})).status, 200);
+  assert.equal((await call('GET', '/api/today')).status, 401, 'nothing is readable while locked');
+  const s = (await call('GET', '/api/session')).data;
+  assert.equal(s.authed, false);
+  assert.equal(s.locked, true);
+  assert.equal((await faceIdLogin(10)).status, 200);
+  assert.equal((await call('GET', '/api/today')).status, 200);
+});
+
+test('Face ID only: a session stays open while used and locks after 5 idle minutes', async () => {
+  later(4);
+  assert.equal((await call('GET', '/api/today')).status, 200, 'used within 5 minutes');
+  later(4);
+  assert.equal((await call('GET', '/api/today')).status, 200, 'each request keeps it open');
+  later(6);
+  assert.equal((await call('GET', '/api/today')).status, 401, 'idle for 6 minutes: locked');
+  assert.equal((await faceIdLogin(11)).status, 200);
+  assert.equal((await call('GET', '/api/today')).status, 200);
+});
+
+test('turning the lock off makes the password work alone and stops locking', async () => {
+  assert.equal((await call('PATCH', '/api/settings', { faceIdLock: false })).status, 200);
+  assert.equal((await call('GET', '/api/session')).data.faceIdOnly, false);
+  later(30);
+  assert.equal((await call('GET', '/api/today')).status, 200, 'no idle lock');
+  await call('POST', '/api/logout', {});
   assert.equal((await call('POST', '/api/login', { password: 'long-enough-pass' })).status, 200);
+  assert.equal((await call('PATCH', '/api/settings', { faceIdLock: true })).status, 200);
+});
+
+test('removing the last passkey ends Face ID only, so the password works alone again', async () => {
   const [key] = (await call('GET', '/api/passkeys')).data.passkeys;
   assert.equal((await call('DELETE', `/api/passkeys/${encodeURIComponent(key.id)}`)).status, 200);
-  assert.equal((await call('GET', '/api/session')).data.faceId, false);
+  const s = (await call('GET', '/api/session')).data;
+  assert.equal(s.faceId, false);
+  assert.equal(s.faceIdOnly, false);
+  await call('POST', '/api/logout', {});
+  assert.equal((await call('POST', '/api/login', { password: 'long-enough-pass' })).status, 200);
 });

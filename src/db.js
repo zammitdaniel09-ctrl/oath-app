@@ -183,6 +183,7 @@ alter table completions add column if not exists comeback boolean not null defau
 alter table tasks add column if not exists goal_id int;
 alter table tasks add column if not exists node_id int;
 alter table coach_messages add column if not exists failed boolean not null default false;
+alter table sessions add column if not exists unlocked_until timestamptz;
 create table if not exists passkeys (
   id text primary key,
   public_key bytea not null,

@@ -1067,7 +1067,32 @@ function viewSettings() {
 
 // ---------- Gate ----------
 
-function renderLogin() {
+// The way in. With Face ID only, it is a lock screen that starts Face ID by itself, with the
+// password and recovery code tucked away for the day Face ID is lost. Otherwise it is the password,
+// with Face ID offered once a passkey exists.
+function renderLogin(session = null) {
+  if (!session) {
+    api('GET', '/api/session').then((s) => renderLogin(s)).catch(() => renderLogin({}));
+    return;
+  }
+  rememberLockMode(session.faceIdOnly);
+  if (session.faceIdOnly) {
+    $app.innerHTML = `<div class="gate">
+      <div class="wordmark">Oath</div>
+      <p>${session.locked ? 'Locked. ' : ''}Look at your iPhone to open it, <em class="serif">Daniel</em>.</p>
+      <div id="faceid-slot"><button class="btn chrome big wide" type="button" data-action="faceid-login">${icon('faceid')}Open with Face ID</button></div>
+      <p class="note bad" id="gate-error" hidden></p>
+      <details class="recover"><summary>Lost Face ID?</summary>
+        <form data-form="login">
+          <label class="field"><span>Password</span><input class="input" type="password" name="password" autocomplete="current-password" required></label>
+          <label class="field"><span>Recovery code (SETUP_CODE in Railway)</span><input class="input" name="recovery" autocomplete="off" required></label>
+          <div class="form-actions"><button class="btn primary big wide" type="submit">Open with password</button></div>
+        </form></details>
+    </div>`;
+    const btn = document.querySelector('[data-action="faceid-login"]');
+    if (btn) faceIdLogin(btn, { auto: true });
+    return;
+  }
   $app.innerHTML = `<div class="gate">
     <div class="wordmark">Oath</div>
     <p>Welcome back, <em class="serif">Daniel</em>. Log in to see today.</p>
@@ -1077,7 +1102,16 @@ function renderLogin() {
       <div class="form-actions"><button class="btn primary big wide" type="submit">Log in</button></div>
       <p class="note bad" id="gate-error" hidden></p>
     </form></div>`;
-  prepareFaceIdLogin();
+  if (session.faceId) prepareFaceIdLogin();
+}
+
+// Remembered on the phone so a launch without signal does not show a cached day past the lock.
+function rememberLockMode(on) {
+  state.faceIdOnly = Boolean(on);
+  try { localStorage.setItem('oath.faceIdOnly', on ? '1' : '0'); } catch { /* storage unavailable */ }
+}
+function lockModeRemembered() {
+  try { return localStorage.getItem('oath.faceIdOnly') === '1'; } catch { return false; }
 }
 hooks.onUnauthed = renderLogin;
 
@@ -1339,28 +1373,35 @@ const fresh = (pre) => pre && Date.now() - pre.at < 4 * 60000;
 async function prepareFaceIdLogin() {
   if (!window.PublicKeyCredential) return;
   try {
-    const s = await api('GET', '/api/session');
-    if (!s.faceId) return;
     state.faceIdLogin = { options: await api('POST', '/api/passkey/login/options', {}), at: Date.now() };
     const slot = document.getElementById('faceid-slot');
-    if (slot) {
+    if (slot && !slot.querySelector('[data-action="faceid-login"]')) {
       slot.innerHTML = `<button class="btn chrome big wide" type="button" data-action="faceid-login">${icon('faceid')}Log in with Face ID</button>
         <p class="note">Or use your password.</p>`;
     }
   } catch { /* the password still works */ }
 }
 
-async function faceIdLogin(el) {
+// auto: started by the app as it opens rather than by a tap. iOS allows that for the first Face ID
+// request after a page loads; if it refuses, the button stays for a tap, with no error shown.
+async function faceIdLogin(el, { auto = false } = {}) {
+  if (!window.PublicKeyCredential) {
+    gateError('This browser cannot use Face ID. Open Oath from the Home Screen on your iPhone.');
+    return;
+  }
   el.disabled = true;
   try {
     const pre = fresh(state.faceIdLogin) ? state.faceIdLogin : { options: await api('POST', '/api/passkey/login/options', {}) };
     state.faceIdLogin = null;
     const cred = await navigator.credentials.get({ publicKey: getOptions(pre.options) });
     await api('POST', '/api/passkey/login', { response: credentialJSON(cred) });
+    location.hash = location.hash || '#/today';
     await go();
     resyncPush();
   } catch (err) {
-    gateError(err.name === 'NotAllowedError' ? 'Face ID was cancelled. Try again, or use your password.' : err.message);
+    if (!(auto && err.name === 'NotAllowedError')) {
+      gateError(err.name === 'NotAllowedError' ? 'Face ID was cancelled. Tap to try again.' : err.message);
+    }
     el.disabled = false;
     prepareFaceIdLogin();
   }
@@ -1392,11 +1433,16 @@ function faceIdCard() {
   const rows = keys.map((k) => `<div class="li li-plain"><span class="li-body"><span class="li-title">${esc(k.device || 'Device')}</span>
       <span class="li-sub">Added ${fmtDay(String(k.createdAt).slice(0, 10))}${k.lastUsed ? `, last used ${ago(k.lastUsed)}` : ', not used yet'}</span></span>
       <button class="btn tinted small" data-action="faceid-remove" data-id="${esc(k.id)}">Remove</button></div>`).join('');
-  const text = keys.length
-    ? 'These devices log in with your face. The password still works everywhere.'
-    : 'Log in with your face instead of typing the password. Your iPhone keeps the key; Oath only stores its public half.';
+  const lockOn = state.settings?.faceIdLock !== false;
+  const text = !keys.length
+    ? 'Open Oath with your face. Your iPhone keeps the key; Oath only stores its public half.'
+    : lockOn ? 'Oath opens with Face ID only, every time. Without Face ID, the password needs the recovery code (SETUP_CODE in Railway).'
+      : 'These devices can log in with your face. The password also works on its own.';
+  const lock = keys.length
+    ? `<label class="check"><input type="checkbox" data-action="faceid-lock"${lockOn ? ' checked' : ''}> Face ID every time Oath opens</label>`
+    : '';
   return settingsCard('faceid', 'Face ID', `<p class="muted">${text}</p>
-    ${rows ? `<div class="group flush">${rows}</div>` : ''}
+    ${rows ? `<div class="group flush">${rows}</div>` : ''}${lock}
     <div class="form-actions"><button class="btn primary" data-action="faceid-add">${icon('faceid')}${keys.length ? 'Add this device too' : 'Turn on Face ID'}</button></div>`);
 }
 
@@ -1600,6 +1646,17 @@ $app.addEventListener('click', async (e) => {
     await faceIdLogin(el);
   } else if (a === 'faceid-add') {
     await faceIdAdd(el);
+  } else if (a === 'faceid-lock') {
+    const on = el.checked;
+    const r = await act(() => api('PATCH', '/api/settings', { faceIdLock: on }),
+      on ? 'Oath now opens with Face ID only.' : 'Face ID lock is off. The password works on its own again.');
+    if (r) {
+      state.settings = r;
+      rememberLockMode(on && (state.passkeys || []).length > 0);
+      render();
+    } else {
+      el.checked = !on;
+    }
   } else if (a === 'faceid-remove') {
     if (!confirm('Remove Face ID login for this device? The password keeps working.')) return;
     if (await act(() => api('DELETE', `/api/passkeys/${encodeURIComponent(el.dataset.id)}`), 'Face ID removed for that device.')) {
@@ -1817,8 +1874,18 @@ setInterval(() => {
   if (document.visibilityState === 'visible' && state.route === 'today' && state.today && !state.sheet && !state.dirty && !document.activeElement?.matches('input, textarea, select')) refreshToday().catch(() => {});
 }, 60000);
 
+// Back after more than a minute away: with Face ID only, start over, which locks and asks again.
+// A fresh page load also lets iOS start Face ID without a tap.
+let hiddenAt = 0;
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState !== 'visible') return;
+  if (document.visibilityState === 'hidden') {
+    hiddenAt = Date.now();
+    return;
+  }
+  if (state.faceIdOnly && hiddenAt && Date.now() - hiddenAt > 60000 && document.querySelector('.tabbar')) {
+    location.reload();
+    return;
+  }
   navigator.serviceWorker?.getRegistration().then((reg) => reg?.update()).catch(() => {});
   if (document.querySelector('.tabbar') && !state.sheet && !state.dirty && !document.activeElement?.matches('input, textarea, select')) go();
 });
@@ -1868,11 +1935,22 @@ async function boot() {
         $app.innerHTML = '<div class="gate"><div class="wordmark">Oath</div><p>Open the setup link you were given to choose your password.</p></div>';
         return;
       }
-      return renderLogin();
+      return renderLogin(s);
     }
+    // Face ID only: every time the app opens, it locks its own session first and asks for Face ID.
+    if (s.faceIdOnly) {
+      await api('POST', '/api/lock', {}).catch(() => {});
+      return renderLogin({ ...s, authed: false, locked: true });
+    }
+    rememberLockMode(false);
     await go();
     resyncPush();
   } catch (err) {
+    if (err.status === 0 && lockModeRemembered()) {
+      $app.innerHTML = `<div class="gate"><div class="wordmark">Oath</div><p>Offline. Oath needs a connection to check Face ID.</p>
+        <div class="form-actions"><button class="btn primary" data-action="retry">Retry</button></div></div>`;
+      return;
+    }
     const c = err.status === 0 ? cachedToday() : null;
     if (c) {
       parseHash();

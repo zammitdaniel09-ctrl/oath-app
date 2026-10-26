@@ -937,6 +937,9 @@ select.input {
 .setup-err { margin: 0; padding: 0 16px 14px 58px; }
 #faceid-slot .btn { margin-top: 20px; }
 #faceid-slot .note { text-align: center; }
+.gate .recover { margin-top: 28px; }
+.gate .recover summary { cursor: pointer; text-align: center; font-size: 14px; color: var(--text-3); list-style: none; }
+.gate .recover summary::-webkit-details-marker { display: none; }
 .banner .btn { flex: none; }
 
 /* ---------- iPad and desktop ---------- */

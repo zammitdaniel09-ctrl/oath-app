@@ -67,9 +67,22 @@ const idParam = (c) => {
 app.get('/healthz', (c) => c.text('ok'));
 
 // ---------- Session ----------
-app.get('/api/session', async (c) => c.json({
-  authed: await auth.isAuthed(c), setupDone: await auth.ownerExists(), faceId: (await passkeys.passkeyCount()) > 0,
-}));
+app.get('/api/session', async (c) => {
+  const authed = await auth.isAuthed(c);
+  const faceIdOnly = await auth.faceIdOnly();
+  return c.json({
+    authed,
+    setupDone: await auth.ownerExists(),
+    faceId: (await passkeys.passkeyCount()) > 0,
+    faceIdOnly,
+    locked: faceIdOnly && !authed && (await auth.hasSession(c)),
+  });
+});
+// The app locks its own session on every open, so Face ID is asked for each time.
+app.post('/api/lock', async (c) => {
+  await auth.lockSession(c);
+  return c.json({ ok: true });
+});
 // Face ID login, before there is a session.
 app.post('/api/passkey/login/options', async (c) => c.json(await passkeys.loginOptions(c)));
 app.post('/api/passkey/login', async (c) => {
@@ -132,7 +145,11 @@ api.get('/setup-status', async (c) => c.json(await setupStatus()));
 // ---------- Face ID ----------
 api.get('/passkeys', async (c) => c.json({ passkeys: await passkeys.listPasskeys() }));
 api.post('/passkey/register/options', async (c) => c.json(await passkeys.registrationOptions(c)));
-api.post('/passkey/register', async (c) => c.json(await passkeys.registerPasskey(c, await body(c))));
+api.post('/passkey/register', async (c) => {
+  const r = await passkeys.registerPasskey(c, await body(c));
+  await auth.unlockSession(c);
+  return c.json(r);
+});
 api.delete('/passkeys/:id', async (c) => c.json(await passkeys.removePasskey(c.req.param('id'))));
 api.post('/tokens', async (c) => c.json(await createToken((await body(c)).label)));
 api.delete('/tokens', async (c) => c.json(await revokeTokens()));
@@ -283,6 +300,10 @@ api.patch('/settings', async (c) => {
   if (b.timezone !== undefined) {
     if (!IANAZone.isValidZone(b.timezone)) throw new engine.RuleError('Unknown time zone.');
     patch.timezone = b.timezone;
+  }
+  if (b.faceIdLock !== undefined) {
+    if (typeof b.faceIdLock !== 'boolean') throw new engine.RuleError('Face ID lock is on or off.');
+    patch.faceIdLock = b.faceIdLock;
   }
   return c.json(await engine.saveSettings(patch));
 });
