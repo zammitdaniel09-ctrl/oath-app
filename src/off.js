@@ -7,6 +7,9 @@ import { db, getKV, setKV, logEvent } from './db.js';
 import { upsertItem, shapeItem, itemByKey } from './food.js';
 
 const BASE = 'https://world.openfoodfacts.org';
+// Name and country searches go to Open Food Facts' search service; the main site now refuses
+// anonymous searches, while single-product reads by barcode still work there.
+const SEARCH = 'https://search.openfoodfacts.org/search';
 const UA = `Oath/1.0 (personal food diary; ${process.env.PUBLIC_URL || 'https://oath-app-production-41c7.up.railway.app'})`;
 const FIELDS = [
   'code', 'product_name', 'product_name_en', 'product_name_mt', 'generic_name', 'brands', 'quantity', 'product_quantity', 'product_quantity_unit',
@@ -78,7 +81,7 @@ export function mapProduct(p) {
   const nm = p.nutriments || {};
   const name = (p.product_name_en || p.product_name || p.generic_name || '').trim();
   if (!name) return null;
-  const brand = String(p.brands || '').split(',')[0].trim() || null;
+  const brand = (Array.isArray(p.brands) ? p.brands[0] : String(p.brands || '').split(',')[0])?.trim() || null;
   const pack = parseQuantity(p.quantity) || (num(p.product_quantity) ? { size: num(p.product_quantity), unit: isVol(String(p.product_quantity_unit || '').toLowerCase()) ? 'ml' : 'g' } : null);
   const servingQty = num(p.serving_quantity);
   const servingUnit = String(p.serving_quantity_unit || '').toLowerCase();
@@ -129,6 +132,16 @@ export function mapProduct(p) {
 
 // ---------- Calls ----------
 
+function searchUrl(q, { page = 1, limit = 20, popular = false } = {}) {
+  const u = new URL(SEARCH);
+  u.searchParams.set('q', q);
+  u.searchParams.set('page', String(page));
+  u.searchParams.set('page_size', String(limit));
+  u.searchParams.set('fields', FIELDS);
+  if (popular) u.searchParams.set('sort_by', '-unique_scans_n');
+  return u.toString();
+}
+
 // One barcode: the catalogue first, then Open Food Facts once, cached either way.
 export async function productByBarcode(barcode, { refresh = false } = {}) {
   const code = String(barcode || '').replace(/\D/g, '');
@@ -149,12 +162,13 @@ export async function productByBarcode(barcode, { refresh = false } = {}) {
 }
 
 // A name search on Open Food Facts; results with a name are cached as products.
-export async function searchOff(q, { limit = 20 } = {}) {
-  const terms = String(q || '').trim().slice(0, 80);
-  if (!terms) return [];
-  const data = await getJson('search', `${BASE}/cgi/search.pl?search_terms=${encodeURIComponent(terms)}&search_simple=1&action=process&json=1&page_size=${limit}&fields=${FIELDS}`);
+export async function searchOff(text, { limit = 20 } = {}) {
+  // Plain words only: the service reads Lucene syntax, so its operators are stripped.
+  const words = String(text || '').slice(0, 80).replace(/[+\-&|!(){}[\]^"~*?:\\/]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!words) return [];
+  const data = await getJson('search', searchUrl(words, { limit }));
   const out = [];
-  for (const p of data?.products || []) {
+  for (const p of data?.hits || []) {
     const m = mapProduct(p);
     if (m) out.push(shapeItem(await upsertItem(m)));
   }
@@ -185,9 +199,9 @@ export async function importMalta({ pages = 60, brandPages = 2, log = () => {} }
     return n;
   };
   while (!state.maltaDone && used < pages) {
-    const data = await getJson('search', `${BASE}/api/v2/search?countries_tags_en=malta&page_size=100&page=${state.malta}&sort_by=unique_scans_n&fields=${FIELDS}`);
+    const data = await getJson('search', searchUrl('countries_tags:"en:malta"', { page: state.malta, limit: 100, popular: true }));
     used += 1;
-    const products = data?.products || [];
+    const products = data?.hits || [];
     const n = await save(products);
     log(`malta page ${state.malta}: ${products.length} products, ${n} saved`);
     if (products.length < 100) state.maltaDone = true;
@@ -198,9 +212,9 @@ export async function importMalta({ pages = 60, brandPages = 2, log = () => {} }
     const page = state.brands[brand] || 1;
     if (page > brandPages || used >= pages) continue;
     for (let p = page; p <= brandPages && used < pages; p += 1) {
-      const data = await getJson('search', `${BASE}/api/v2/search?brands_tags=${brand}&page_size=100&page=${p}&sort_by=unique_scans_n&fields=${FIELDS}`);
+      const data = await getJson('search', searchUrl(`brands_tags:"${brand}"`, { page: p, limit: 100, popular: true }));
       used += 1;
-      const products = data?.products || [];
+      const products = data?.hits || [];
       const n = await save(products);
       log(`${brand} page ${p}: ${products.length} products, ${n} saved`);
       state.brands[brand] = products.length < 100 ? brandPages + 1 : p + 1;

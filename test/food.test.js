@@ -51,9 +51,12 @@ async function fakeOff(url) {
   const reply = (status, body) => ({ ok: status === 200, status, json: async () => body });
   const prod = url.match(/\/product\/(\d+)\.json/);
   if (prod) return OFF.has(prod[1]) ? reply(200, { status: 1, product: OFF.get(prod[1]) }) : reply(404, { status: 0 });
-  const terms = decodeURIComponent((url.match(/search_terms=([^&]+)/) || [])[1] || '').toLowerCase();
-  const words = terms.split(/\s+/).filter(Boolean);
-  return reply(200, { products: [...OFF.values()].filter((p) => words.every((w) => `${p.brands} ${p.product_name}`.toLowerCase().includes(w))) });
+  // The search service: plain words, or field:"value" filters.
+  const q = (new URL(url).searchParams.get('q') || '').toLowerCase();
+  const field = q.match(/^(\w+):"([^"]+)"$/);
+  const words = field ? [] : q.split(/\s+/).filter(Boolean);
+  const hits = [...OFF.values()].filter((p) => (field ? (p[field[1]] || []).includes(field[2]) : words.every((w) => `${p.brands} ${p.product_name}`.toLowerCase().includes(w))));
+  return reply(200, { hits });
 }
 
 // A stand-in for the Anthropic client.
@@ -241,6 +244,20 @@ test('8 and 10: exact energy drinks and soft drinks by brand, never conflated; h
   const d = await day();
   assert.ok(d.total.missing.caffeine >= 1);
   assert.ok(d.drinksMl >= 625);
+});
+
+test('the Malta import saves products once, resumes where it stopped, and never duplicates', async () => {
+  const count = async () => (await dbmod.db()`select count(*)::int as n from food_items where source = 'off'`)[0].n;
+  const first = await off.importMalta({ pages: 30, brandPages: 1 });
+  const after = await count();
+  assert.ok(first.calls > 0);
+  assert.ok(after >= 5);
+  const again = await off.importMalta({ pages: 30, brandPages: 1 });
+  assert.equal(again.calls, 0, 'a finished import makes no more calls');
+  assert.equal(await count(), after);
+  const [kinnie] = await dbmod.db()`select market, brand, pack from food_items where barcode = '5000000000011'`;
+  assert.equal(kinnie.market, 'Malta');
+  assert.equal(kinnie.pack.size, 330);
 });
 
 test('9: an unknown imported drink is added from its label and found by barcode next time', async () => {
