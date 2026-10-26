@@ -15,7 +15,7 @@ const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'oath-pg-'));
 fs.chmodSync(dir, 0o777);
 const pg = new EmbeddedPostgres({
   databaseDir: path.join(dir, 'data'), user: 'postgres', password: 'test', port: 54345,
-  persistent: false, createPostgresUser: true, onLog: () => {}, onError: () => {},
+  persistent: false, createPostgresUser: process.platform !== 'win32', initdbFlags: ['--encoding=UTF8', '--locale=C'], onLog: () => {}, onError: () => {},
 });
 
 let app; let runOnce; let cookie = ''; let dbmod; let time;
@@ -49,7 +49,8 @@ before(async () => {
 
 after(async () => {
   await dbmod.close();
-  await pg.stop();
+  // Windows can keep the data folder locked after stopping; a leftover temp folder is harmless.
+  await pg.stop().catch((err) => { if (process.platform !== 'win32') throw err; });
 });
 
 test('a 00:00 deadline falls at the end of the day, across the clock change', () => {

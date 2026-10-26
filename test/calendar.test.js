@@ -25,7 +25,7 @@ const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'oath-calendar-pg-'));
 fs.chmodSync(dir, 0o777);
 const pg = new EmbeddedPostgres({
   databaseDir: path.join(dir, 'data'), user: 'postgres', password: 'test', port: 54342,
-  persistent: false, createPostgresUser: true, onLog: () => {}, onError: () => {},
+  persistent: false, createPostgresUser: process.platform !== 'win32', initdbFlags: ['--encoding=UTF8', '--locale=C'], onLog: () => {}, onError: () => {},
 });
 
 // ---------- A local calendar server ----------
@@ -122,7 +122,8 @@ after(async () => {
   await dbmod.close();
   for (const s of sockets) s.destroy();
   await new Promise((resolve) => server.close(resolve));
-  await pg.stop();
+  // Windows can keep the data folder locked after stopping; a leftover temp folder is harmless.
+  await pg.stop().catch((err) => { if (process.platform !== 'win32') throw err; });
 });
 
 async function reset(iso = '2026-10-12T08:00') {
