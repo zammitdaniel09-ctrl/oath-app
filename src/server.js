@@ -8,7 +8,7 @@ import * as auth from './auth.js';
 import * as engine from './engine.js';
 import { buildToday, buildPlan, buildLedger, buildReview } from './state.js';
 import * as goals from './goals.js';
-import { captureTask, createToken, revokeTokens, tokenCount, tokenValid, doneByText, nextSay } from './capture.js';
+import { captureTask, createToken, revokeTokens, tokenCount, tokenValid, refusedKeyReason, doneByText, nextSay } from './capture.js';
 import { prepareReview, finishReview } from './review.js';
 import { db } from './db.js';
 import { vapidKeys, saveSubscription, removeSubscription, sendPush, subscriptionCount } from './push.js';
@@ -106,7 +106,7 @@ app.post('/api/logout', async (c) => {
 const shortcut = new Hono();
 shortcut.use('*', async (c, next) => {
   if (!(await tokenValid(c.req.header('authorization'))) && !(await auth.isAuthed(c))) {
-    const reason = c.req.header('authorization') ? 'The key was not accepted.' : 'No key was sent in the Authorization header.';
+    const reason = c.req.header('authorization') ? refusedKeyReason(c.req.header('authorization')) : 'No key was sent in the Authorization header.';
     await noteIngestError(c.req.path, 401, reason).catch(() => {});
     return c.json({ error: 'Bad token.', say: 'Oath did not accept the token. Make a new one in Oath settings.' }, 401);
   }

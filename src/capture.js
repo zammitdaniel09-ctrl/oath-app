@@ -59,13 +59,37 @@ export async function tokenCount() {
   return n;
 }
 
-// "Bearer oath_..." as documented, or the bare key: a missing "Bearer " is the easiest mistake to
-// make while typing a header on a phone.
+// The key as people actually paste it into an app on a phone: with or without "Bearer", a stray
+// colon or quotes, and the first letter capitalised by iOS. Keys are made as "oath_" plus 32
+// URL-safe characters, so the prefix can safely be put back in lower case.
+const KEY_LENGTH = 37;
+function keyFrom(header) {
+  const v = String(header || '').trim()
+    .replace(/^["']+|["']+$/g, '')
+    .replace(/^bearer\s*:?\s*/i, '')
+    .replace(/^["']+|["']+$/g, '')
+    .trim();
+  const m = /^oath_([A-Za-z0-9_-]+)$/i.exec(v);
+  return m ? `oath_${m[1]}` : null;
+}
+
 export async function tokenValid(header) {
-  const m = /^(?:Bearer\s+)?(oath_\S+)$/i.exec(String(header || '').trim());
-  if (!m) return false;
-  const rows = await db()`update api_tokens set last_used = ${nowUTC().toJSDate()} where token_hash = ${sha256(m[1])} returning 1`;
+  const key = keyFrom(header);
+  if (!key) return false;
+  const rows = await db()`update api_tokens set last_used = ${nowUTC().toJSDate()} where token_hash = ${sha256(key)} returning 1`;
   return rows.length > 0;
+}
+
+// Why a key was refused, for the setup list: its shape, never the key itself.
+export function refusedKeyReason(header) {
+  const key = keyFrom(header);
+  if (!key) {
+    return `The Authorization header did not hold an Oath key (it should start "oath_"; it was ${String(header || '').trim().length} characters).`;
+  }
+  if (key.length !== KEY_LENGTH) {
+    return `The key in the header is ${key.length} characters; Oath keys are ${KEY_LENGTH}. Part of it is missing or extra: copy it again.`;
+  }
+  return 'The key in the header is the right shape but is not one Oath made, or it was turned off. Make a new key and copy it again.';
 }
 
 // ---------- Siri phrases ----------

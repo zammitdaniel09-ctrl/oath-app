@@ -197,12 +197,22 @@ test('a Shortcuts key works with or without "Bearer ", and failures show up in t
   assert.equal((await bare('GET', '/api/shortcut/next', { authorization: `Bearer ${token}` })).status, 200);
   assert.equal((await bare('GET', '/api/shortcut/next', { authorization: token })).status, 200);
   assert.equal((await bare('GET', '/api/shortcut/next', { authorization: ` ${token} ` })).status, 200, 'stray spaces are fine');
+  // What iOS and copy-paste do to a pasted key: a capital first letter, a colon, quotes.
+  const capital = `O${token.slice(1)}`;
+  assert.equal((await bare('GET', '/api/shortcut/next', { authorization: capital })).status, 200, 'iOS capitalised the O');
+  assert.equal((await bare('GET', '/api/shortcut/next', { authorization: `Bearer: ${token}` })).status, 200);
+  assert.equal((await bare('GET', '/api/shortcut/next', { authorization: `"${token}"` })).status, 200);
+  assert.equal((await bare('GET', '/api/shortcut/next', { authorization: `${token.slice(0, -1)}X` })).status, 401, 'a different key is still refused');
 
   setLocal('2026-10-14T12:00');
   assert.equal((await bare('POST', '/api/shortcut/health', { authorization: 'Bearer oath_wrong', json: { steps: 100 } })).status, 401);
   let s = (await call('GET', '/api/setup-status')).data;
   assert.equal(s.ingestError.status, 401);
-  assert.equal(s.ingestError.reason, 'The key was not accepted.');
+  assert.match(s.ingestError.reason, /10 characters; Oath keys are 37/);
+  await bare('POST', '/api/shortcut/health', { authorization: `oath_${'x'.repeat(32)}`, json: { steps: 100 } });
+  assert.match((await call('GET', '/api/setup-status')).data.ingestError.reason, /right shape but is not one Oath made/);
+  await bare('POST', '/api/shortcut/health', { authorization: 'Token abc', json: { steps: 100 } });
+  assert.match((await call('GET', '/api/setup-status')).data.ingestError.reason, /did not hold an Oath key/);
 
   setLocal('2026-10-14T12:01');
   const notJson = await bare('POST', '/api/shortcut/health', { authorization: token, body: 'steps=100', type: 'text/plain' });
