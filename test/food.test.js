@@ -499,3 +499,109 @@ test('coach: finds and logs food with a receipt, and removing an entry waits for
   await post(`/api/coach/pending/${pend.reply.pending[0].id}`, { confirm: true });
   assert.ok((await dbmod.db()`select deleted_at from food_log where id = ${e.id}`)[0].deleted_at);
 });
+
+test('describe: typed words become catalogue matches with estimated amounts; a food with no record keeps a rough estimate', async () => {
+  const typed = scripted([said({ kind: 'meal', summary: 'A banana and a wrap', question: null, items: [
+    { name: 'Banana', search: 'banana', amount: 1, unit: 'piece', confidence: 'high', kcal: 105, protein: 1.3, carbs: 27, fat: 0.4 },
+    { name: 'Zzqx mystery wrap', search: 'zzqx wrap', amount: 300, unit: 'g', confidence: 'low', kcal: 640, protein: 32, carbs: 70, fat: null },
+  ] })]);
+  coach.setCoachClient(typed);
+  const r = await post('/api/food/describe', { text: 'a banana and a zzqx mystery wrap' });
+  assert.equal(r.kind, 'meal');
+  assert.equal(r.source, 'text');
+  assert.equal(r.items[0].match.key, 'banana-raw');
+  assert.match(r.items[0].unit, /^p:1 medium/);
+  assert.equal(r.items[0].qty, 1);
+  assert.ok(r.items.every((x) => x.estimate));
+  assert.equal(r.items[1].match, null);
+  assert.deepEqual(r.items[1].guess, { kcal: 640, protein: 32, carbs: 70, fat: null, amount: 300, unit: 'g' });
+  const req = typed.requests[0];
+  assert.equal(req.output_config.format.type, 'json_schema');
+  assert.ok(req.output_config.format.schema.properties.items.items.properties.kcal, 'every item carries a rough estimate');
+  assert.equal(req.messages[0].content.length, 1);
+  assert.equal(req.messages[0].content[0].type, 'text');
+  assert.equal(req.messages[0].content[0].text, 'a banana and a zzqx mystery wrap');
+
+  coach.setCoachClient(scripted([said({ kind: 'unclear', summary: '', items: [], question: null })]));
+  const not = await post('/api/food/describe', { text: 'my car keys' });
+  assert.equal(not.kind, 'unclear');
+  assert.match(not.question, /food or drink/);
+  coach.setCoachClient(scripted([said({ kind: 'unclear', summary: '', items: [], question: 'Which pastizzi, ricotta or peas?' })]));
+  assert.equal((await post('/api/food/describe', { text: 'pastizzi' })).question, 'Which pastizzi, ricotta or peas?');
+  assert.equal((await call('POST', '/api/food/describe', { text: '   ' })).status, 400);
+});
+
+test('quick add: an estimate is marked as one and keeps its rough amount; unknown macros stay unknown', async () => {
+  const q = await post('/api/food/quick', { id: id(), name: 'Zzqx mystery wrap', kcal: 640, protein: 32, carbs: 70, estimate: true, amount: 'about 300 g', slot: 'lunch' });
+  assert.equal(q.entry.kind, 'quick');
+  assert.equal(q.entry.estimate, true);
+  assert.equal(q.entry.amountText, 'about 300 g');
+  assert.equal(q.entry.nutrients.fat, null);
+  const plain = await post('/api/food/quick', { id: id(), name: 'Biscuit', kcal: 80 });
+  assert.equal(plain.entry.estimate, false);
+  const d = await day();
+  assert.equal(d.entries.find((e) => e.id === q.entry.id).estimate, true);
+  assert.ok(d.estimates >= 1);
+});
+
+test('history: gaps stay gaps, averages use logged days only, incomplete days are flagged, the period before is compared', async () => {
+  setLocal('2027-03-10T20:00');
+  const qa = (date, time, over) => post('/api/food/quick', { id: id(), date, time, ...over });
+  const full = (kcal, protein) => ({ kcal, protein, carbs: 100, sugars: 20, fat: 40, fibre: 8, salt: 1, caffeine: 0 });
+  await qa('2027-03-05', '08:00', { name: 'Porridge', ...full(400, 15) });
+  await qa('2027-03-05', '19:00', { name: 'Dinner', ...full(1400, 60) });
+  const gone = await qa('2027-03-06', '12:00', { name: 'Deleted later', ...full(900, 30) });
+  assert.equal((await call('DELETE', `/api/food/log/${gone.entry.id}`)).status, 200);
+  await qa('2027-03-07', '12:00', { name: 'Party food', kcal: 1800 });
+  await qa('2027-03-09', '08:00', { name: 'Porridge', ...full(400, 15) });
+  await qa('2027-03-09', '13:00', { name: 'Lunch', ...full(1600, 85) });
+  await qa('2027-03-10', '08:30', { name: 'Espresso', ...full(2, 0.1), caffeine: 80, ml: 30 });
+  await qa('2027-03-10', '15:10', { name: 'Mystery can', kcal: 120, ml: 330 });
+  await qa('2027-03-01', '12:00', { name: 'Big day', ...full(2500, 100) });
+
+  const h = await get('/api/food/history?days=7');
+  assert.equal(h.days, 7);
+  assert.deepEqual([h.from, h.to, h.prevFrom, h.prevTo], ['2027-03-04', '2027-03-10', '2027-02-25', '2027-03-03']);
+  assert.deepEqual(h.series.map((d) => d.date), ['2027-03-04', '2027-03-05', '2027-03-06', '2027-03-07', '2027-03-08', '2027-03-09', '2027-03-10']);
+  const on = (date) => h.series.find((d) => d.date === date);
+  for (const gap of ['2027-03-04', '2027-03-06', '2027-03-08']) {
+    assert.equal(on(gap).logged, false, gap);
+    assert.equal(on(gap).kcal, null, `${gap} is a gap, not zero`);
+    assert.equal(on(gap).incomplete, false);
+  }
+  assert.equal(on('2027-03-05').kcal, 1800);
+  assert.equal(on('2027-03-05').incomplete, false);
+  assert.equal(on('2027-03-07').incomplete, true);
+  assert.equal(on('2027-03-07').protein, null);
+  assert.equal(on('2027-03-10').drinksMl, 360);
+  // Today is drawn but not averaged: (1800 + 1800 + 2000) / 3 logged days.
+  assert.equal(h.loggedDays, 3);
+  near(h.avg.kcal, 5600 / 3, 0.01);
+  near(h.avg.protein, (75 + 100) / 2, 0.01);
+  assert.equal(h.avg.missing.protein, 1, 'one averaged day had no protein value');
+  assert.equal(h.avg.missing.kcal, undefined);
+  assert.equal(h.prev.loggedDays, 1);
+  assert.equal(h.prev.avg.kcal, 2500);
+  assert.deepEqual(h.top[0], { name: 'Porridge', kind: 'quick', count: 2 });
+  assert.ok(!h.top.some((x) => x.name === 'Deleted later'));
+  // Today by hour: known caffeine is counted, a drink with no caffeine value is counted apart.
+  assert.equal(h.chosen.date, '2027-03-10');
+  assert.equal(h.chosen.today, true);
+  assert.equal(h.chosen.hours.caffeine[8], 80);
+  assert.equal(h.chosen.hours.caffeineUnknown[15], 1);
+  assert.equal(h.chosen.hours.caffeine[15], 0);
+  assert.equal(h.chosen.hours.drinksMl[15], 330);
+  assert.equal(h.chosen.caffeine, 80);
+  assert.equal(h.chosen.missing.caffeine, 1);
+
+  const past = await get('/api/food/history?days=7&date=2027-03-09');
+  assert.equal(past.chosen.date, '2027-03-09');
+  assert.equal(past.chosen.today, false);
+  assert.equal(past.chosen.kcal, 2000);
+  const month = await get('/api/food/history?days=30');
+  assert.equal(month.series.length, 30);
+  assert.equal(month.prevTo, '2027-02-08');
+  assert.equal((await get('/api/food/history?days=13')).days, 7);
+  assert.equal((await call('GET', '/api/food/history?date=nope')).status, 400);
+  setLocal('2026-11-02T12:30');
+});

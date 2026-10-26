@@ -1,1 +1,222 @@
 /* Food tab: charts, trends and the photo / text first capture. Loaded after app.css. */
+
+/* Macro colours: one step of teal, amber and violet, checked for colour-blind separation on the dark
+   card. Unknown energy is always striped, never a colour of its own. */
+:root {
+  --f-protein: #1fa37a;
+  --f-carbs: #bf8a12;
+  --f-fat: #8a6cf0;
+  --f-unknown: #5f6572;
+  --f-bar: rgba(201, 206, 214, 0.42);
+  --f-bar-prev: rgba(201, 206, 214, 0.3);
+  --f-caf: var(--blaze);
+  --f-drink: rgba(201, 206, 214, 0.5);
+}
+.m-protein { --m: var(--f-protein); }
+.m-carbs { --m: var(--f-carbs); }
+.m-fat { --m: var(--f-fat); }
+.m-unknown { --m: var(--f-unknown); }
+
+/* ---------- Capture: snap it or type it ---------- */
+
+.fcap { display: grid; gap: 10px; margin-top: 10px; }
+.fcap-snap {
+  position: relative; display: grid; grid-template-columns: 52px minmax(0, 1fr); align-items: center; gap: 14px;
+  min-height: 84px; padding: 14px 18px; border-radius: var(--r-card); cursor: pointer; color: #fff;
+  background: linear-gradient(160deg, var(--merlot-hi), var(--merlot) 55%, #a30400);
+  box-shadow: 0 14px 34px -18px rgba(225, 6, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform var(--t-ctl) var(--ease);
+}
+.fcap-snap:active { transform: scale(0.985); }
+.fcap-snap:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
+.fcap-ic { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; background: rgba(255, 255, 255, 0.16); }
+.fcap-ic .ic { width: 28px; height: 28px; }
+.fcap-words { display: grid; gap: 2px; min-width: 0; }
+.fcap-words b { font-size: 1.1875rem; font-weight: 740; letter-spacing: -0.015em; line-height: 1.2; }
+.fcap-words small { font-size: 0.875rem; color: rgba(255, 255, 255, 0.84); }
+.fcap-type { padding: 14px 14px 14px 18px; border-radius: var(--r-card); background: var(--card); box-shadow: var(--rim); }
+.fcap-q { display: block; margin-bottom: 10px; font-size: 1.1875rem; font-weight: 740; letter-spacing: -0.015em; line-height: 1.2; }
+.fcap-row { display: grid; grid-template-columns: minmax(0, 1fr) 44px; align-items: end; gap: 10px; }
+.fcap-row textarea { min-height: 52px; resize: none; }
+.fcap-row .icon-btn { background: var(--silver); color: var(--on-silver); box-shadow: 0 8px 22px -14px rgba(237, 241, 247, 0.5); }
+.fcap-more { display: flex; flex-wrap: wrap; gap: 8px; }
+.fcap-more .btn { flex: 1 1 auto; }
+.fcap + .food-date { margin-top: 18px; }
+
+/* ---------- The day: ring, macros, one line for the rest ---------- */
+
+.fday { margin-top: 10px; }
+.fday-main { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 18px; }
+.fring { position: relative; flex: none; }
+.fring svg { display: block; width: 100%; height: 100%; }
+.fr-track { stroke: var(--fill-2); }
+.fr-seg { stroke: var(--m, var(--f-unknown)); }
+.fh-bg { fill: rgba(255, 255, 255, 0.03); }
+.fh-line { fill: #8a909c; }
+.fh-line.caf { fill: var(--f-caf); }
+.fring-c { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; line-height: 1.1; text-align: center; }
+.fring-c b { font-size: 1.5rem; font-weight: 780; letter-spacing: -0.03em; }
+.fring-c small { font-size: 0.75rem; font-weight: 600; color: var(--text-2); }
+.fmac { display: grid; gap: 8px; margin: 0; min-width: 0; }
+.fmac-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-bottom: 7px; box-shadow: 0 1px 0 var(--line-soft); }
+.fmac-row:last-child { padding-bottom: 0; box-shadow: none; }
+.fmac dt { display: inline-flex; align-items: center; gap: 8px; min-width: 0; font-size: 0.875rem; font-weight: 600; color: var(--text-2); }
+.fmac dd { margin: 0; font-size: 1.0625rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fmac dd small { margin-left: 6px; font-size: 0.75rem; font-weight: 600; color: var(--text-3); }
+.fdot { display: inline-block; flex: none; width: 10px; height: 10px; border-radius: 3px; background: var(--m); }
+.fdot.m-unknown { background: repeating-linear-gradient(45deg, #8a909c 0 1.6px, transparent 1.6px 4px); box-shadow: inset 0 0 0 1px #8a909c; }
+.fday-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin-top: 14px; font-size: 0.875rem; color: var(--text-2); }
+.fday-line + .fday-line { margin-top: 6px; }
+.fday-line b { font-weight: 680; color: var(--text); font-variant-numeric: tabular-nums; }
+.fday-line .ic { width: 16px; height: 16px; margin-right: -8px; color: var(--chrome-c); }
+.fday-line .tag { margin: 0 0 0 auto; }
+.fday .note.incomplete { margin-top: 12px; }
+
+/* A meal's share of the day, split by macro. */
+.fmeal { height: 6px; margin: -4px 2px 0; border-radius: 3px; background: var(--fill); overflow: hidden; }
+.fmeal-bar { display: flex; gap: 2px; height: 100%; }
+.fmeal-bar i { display: block; min-width: 2px; background: var(--m); }
+.fmeal-bar i.m-unknown { background: repeating-linear-gradient(45deg, #8a909c 0 1.6px, transparent 1.6px 4px); }
+.fmeal + .group { margin-top: 10px; }
+
+/* The review of a photographed or typed meal: amount and kcal on the right, tag and remove side by side. */
+.photo-item .li-side { display: grid; grid-template-columns: auto auto; align-items: center; justify-items: end; gap: 4px 6px; }
+.photo-item .li-side b { grid-column: 1 / -1; white-space: nowrap; }
+.photo-item .li-side .tag { margin: 0; }
+.photo-item .li-side .icon-btn { grid-column: 2; }
+.photo-item .photo-amount { grid-column: 1 / -1; margin-top: 0; }
+
+/* The link to Trends. */
+.ftrend { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 14px 16px; }
+.ftrend-bars { display: block; overflow: visible; }
+.ftrend-words { display: grid; gap: 2px; min-width: 0; }
+.ftrend-words b { font-size: 1.25rem; font-weight: 740; letter-spacing: -0.02em; }
+.ftrend-words b small { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0; color: var(--text-2); }
+
+/* ---------- Charts ---------- */
+
+.fx-svg { display: block; overflow: visible; }
+.fx-bar { fill: var(--f-bar); }
+.fx-bar.sel { fill: var(--silver); }
+.fx-bar.inc { stroke: rgba(201, 206, 214, 0.75); stroke-width: 1; }
+.fx-bar.inc.sel { stroke: var(--silver); stroke-width: 1.5; }
+.fx-gap { fill: none; stroke: var(--text-3); stroke-width: 1; stroke-dasharray: 2 2; }
+.fx-avg { stroke: var(--text-2); stroke-width: 1; stroke-dasharray: 4 4; }
+.fx-base { stroke: var(--line); stroke-width: 1; }
+.fx-val {
+  font-family: var(--font); font-size: 11px; font-weight: 650; fill: var(--text-3); font-variant-numeric: tabular-nums;
+  paint-order: stroke; stroke: var(--card); stroke-width: 4px; stroke-linejoin: round;
+}
+.fx-val.sel { fill: var(--text); }
+.fx-plot, .fc-plot { position: relative; }
+.fx-hits { position: absolute; inset: 0; display: grid; }
+.fx-hits button { min-width: 0; margin: 0; padding: 0; border: 0; border-radius: 6px; background: transparent; cursor: pointer; }
+.fx-hits button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+@media (hover: hover) { .fx-hits button:hover { background: var(--fill); } }
+.fx-axis { display: flex; justify-content: space-between; gap: 4px; margin-top: 8px; font-size: 0.6875rem; color: var(--text-3); }
+.fx-axis.cols { display: grid; text-align: center; }
+.fx-axis span { min-width: 0; overflow: hidden; white-space: nowrap; }
+.fx-axis .is-today { font-weight: 700; color: var(--text); }
+.fx-keys { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; font-size: 0.75rem; color: var(--text-3); }
+.fx-keys.top { margin: -4px 0 4px; }
+.fx-keys span, .fcard-side span { white-space: nowrap; }
+.fk { display: inline-block; width: 12px; height: 10px; margin-right: 6px; border-radius: 3px; vertical-align: -1px; }
+.fk-inc { background: repeating-linear-gradient(45deg, rgba(201, 206, 214, 0.6) 0 1.6px, transparent 1.6px 4px); box-shadow: inset 0 0 0 1px rgba(201, 206, 214, 0.75); }
+.fk-gap { height: 2px; border-radius: 0; vertical-align: 3px; background: repeating-linear-gradient(90deg, var(--text-3) 0 2px, transparent 2px 4px); }
+.fk-avg { width: 14px; height: 0; border-radius: 0; vertical-align: 3px; border-top: 1px dashed var(--text-2); }
+.fk-now { background: var(--silver); }
+.fk-prev { background: var(--f-bar-prev); }
+.fk-caf { background: var(--f-caf); }
+.fk-drink { background: var(--f-drink); }
+.fk-unk { background: repeating-linear-gradient(45deg, var(--f-caf) 0 1.6px, transparent 1.6px 4px); box-shadow: inset 0 0 0 1px var(--f-caf); }
+
+/* ---------- Trends ---------- */
+
+.ftr-span { margin-top: 6px; }
+.ftr-span button { flex: 0 0 auto; min-width: 82px; white-space: nowrap; }
+.ftr-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 14px; }
+.fcard { margin-top: 0; padding: 16px 18px; min-width: 0; }
+.fcard-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 14px; }
+.fcard-head h2 { font-size: 1.0625rem; font-weight: 680; letter-spacing: -0.01em; }
+.fcard-side { display: inline-flex; flex-wrap: wrap; gap: 4px 12px; font-size: 0.8125rem; color: var(--text-2); }
+.fcard-side b { font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+
+.fsplit { display: flex; flex-wrap: wrap; justify-content: space-around; gap: 12px; }
+.fsplit-ring { display: grid; justify-items: center; gap: 8px; margin: 0; }
+.fsplit-ring figcaption { font-size: 0.8125rem; font-weight: 600; color: var(--text-2); }
+.fsplit .fring-c b { font-size: 1.125rem; }
+.fsplit-table { width: 100%; margin-top: 14px; border-collapse: collapse; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+.fsplit-table th, .fsplit-table td { padding: 7px 0; text-align: right; border-top: 1px solid var(--line-soft); }
+.fsplit-table thead th { padding-top: 0; border-top: 0; font-size: 0.75rem; font-weight: 600; color: var(--text-3); }
+.fsplit-table tbody th { text-align: left; font-weight: 600; color: var(--text-2); }
+.fsplit-table td { width: 26%; font-weight: 700; }
+.fsplit-table .fdot { margin-right: 8px; vertical-align: -1px; }
+
+.fcmp-row { display: grid; grid-template-columns: 72px minmax(0, 1fr) 58px; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line-soft); }
+.fcmp-label { display: grid; font-size: 0.875rem; font-weight: 620; line-height: 1.2; }
+.fcmp-label small { font-size: 0.6875rem; font-weight: 600; color: var(--text-3); }
+.fcmp-bars { display: grid; gap: 4px; min-width: 0; }
+.fcmp-bar { display: flex; align-items: center; gap: 6px; height: 14px; min-width: 0; }
+.fcmp-bar i { display: block; flex: none; width: calc((100% - 54px) * var(--f)); min-width: 2px; height: 8px; border-radius: 4px; }
+.fcmp-bar.cur i { background: var(--silver); }
+.fcmp-bar.prev i { background: var(--f-bar-prev); }
+.fcmp-bar b { font-size: 0.75rem; font-weight: 650; color: var(--text-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fcmp-bar.cur b { color: var(--text); }
+.fcmp-delta { justify-self: end; display: inline-flex; align-items: center; gap: 4px; font-size: 0.8125rem; font-weight: 700; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.fcmp-delta i { width: 0; height: 0; border-left: 4.5px solid transparent; border-right: 4.5px solid transparent; }
+.fcmp-delta.up i { border-bottom: 7px solid currentColor; }
+.fcmp-delta.down i { border-top: 7px solid currentColor; }
+.fcmp-delta.none { color: var(--text-3); }
+
+.fc-bar { fill: var(--f-caf); }
+.fc-unk { stroke: var(--f-caf); stroke-width: 1; }
+.fd-bar { fill: var(--f-drink); }
+.fc-now { stroke: var(--text-2); stroke-width: 1; stroke-dasharray: 2 3; }
+.fc-axis { display: flex; justify-content: space-between; margin-top: 6px; font-family: var(--mono); font-size: 0.6875rem; color: var(--text-3); }
+
+.ftop { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.ftop li { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 36px; align-items: center; gap: 10px; font-size: 0.9375rem; }
+.ftop-name { overflow: hidden; font-weight: 580; text-overflow: ellipsis; white-space: nowrap; }
+.ftop-bar { height: 8px; border-radius: 4px; background: var(--fill); overflow: hidden; }
+.ftop-bar i { display: block; width: calc(100% * var(--f)); height: 100%; border-radius: 4px; background: var(--chrome-c); }
+.ftop b { font-size: 0.875rem; font-weight: 700; text-align: right; color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+/* ---------- First view only: bars grow, rings turn in. Transform and opacity only. ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .f-enter .fx-bar, .f-enter .fc-bar { transform-box: fill-box; transform-origin: 50% 100%; animation: f-rise 560ms var(--ease) both; }
+  .f-enter .fd-bar { transform-box: fill-box; transform-origin: 50% 0; animation: f-rise 560ms var(--ease) both; }
+  .f-enter .fring svg { animation: f-turn 640ms var(--ease) both; }
+  .f-enter .fmeal-bar, .f-enter .ftop-bar i, .f-enter .fcmp-bar i { transform-origin: left center; animation: f-grow 560ms var(--ease) both; }
+  .f-enter .fx-val { animation: f-fade 360ms 280ms var(--ease) both; }
+}
+@keyframes f-rise { from { transform: scaleY(0); } }
+@keyframes f-grow { from { transform: scaleX(0); } }
+@keyframes f-turn { from { opacity: 0; transform: rotate(-50deg) scale(0.94); } }
+@keyframes f-fade { from { opacity: 0; } }
+
+/* ---------- Sizes ---------- */
+
+@media (max-width: 380px) {
+  .fcap-snap { grid-template-columns: 46px minmax(0, 1fr); gap: 12px; min-height: 76px; padding: 12px 14px; }
+  .fcap-ic { width: 46px; height: 46px; border-radius: 14px; }
+  .fcap-type { padding: 12px 12px 12px 14px; }
+  .fday-main { gap: 14px; }
+  .fday .fring { width: 100px !important; height: 100px !important; }
+  .fday .fring-c b { font-size: 1.25rem; }
+  .fmac dd { font-size: 1rem; }
+  .ftrend { grid-template-columns: 84px minmax(0, 1fr) auto; gap: 12px; }
+  .ftrend-bars { width: 84px; }
+  .fcard { padding: 14px; }
+  .fcmp-row { grid-template-columns: 60px minmax(0, 1fr) 50px; gap: 8px; }
+  .ftop li { gap: 8px; }
+}
+
+@media (max-width: 360px) {
+  .fmac dd small { display: none; }
+}
+
+@media (min-width: 900px) {
+  .ftr-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .ftr-energy.wide { grid-column: 1 / -1; }
+}

@@ -1,6 +1,6 @@
 // Goals and their mind maps. Outline first on iPhone (the research is clear that canvases are the
 // weakest way to edit maps on a phone); the map view gives the overview and works best on iPad.
-import { state, esc, api, act, toast, fmtDay, bar, strengthChip, haptic, DAY_NAMES, form2obj, localToday, icon, pageHead, miniRing } from './ui.js';
+import { state, esc, api, act, toast, fmtDay, bar, strengthChip, haptic, DAY_NAMES, form2obj, localToday, icon, pageHead, miniRing, emptyState } from './ui.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 export function initGoals(c) { ctx = c; }
@@ -47,7 +47,7 @@ function goalCard(g) {
 
 export function viewGoals() {
   const goals = state.goals;
-  if (!goals) return ctx.shell('<p class="muted">Loading</p>');
+  if (!goals) return ctx.shell(`${pageHead('Goals')}<div class="skeleton"><i></i><i></i><i class="short"></i></div>`);
   const active = goals.filter((g) => g.status === 'active');
   const closed = goals.filter((g) => g.status !== 'active');
   const behind = active.filter((g) => g.pace?.state === 'behind').length;
@@ -55,9 +55,12 @@ export function viewGoals() {
     <div class="split"><div>
     <section class="section">
       ${active.length ? `<div class="goal-list">${active.map(goalCard).join('')}</div>`
-        : `<div class="card empty-goal"><h3>What are you working towards?</h3>
-            <p class="muted" style="margin-top:6px">A goal gets a number or a set of steps, a date, and the obstacle you expect. Then you break it down in a map, and any branch can become a habit or a task. Progress rolls back up on its own.</p>
-            <div class="form-actions"><a class="btn primary" href="#/goals/new">Set your first goal</a></div></div>`}
+        : emptyState({
+          icon: 'goals',
+          title: 'What are you working towards?',
+          text: 'A goal gets a number or a set of steps, a date, and the obstacle you expect. Break it down in a map, and any branch can become a habit or a task. Progress rolls back up on its own.',
+          actions: '<a class="btn primary" href="#/goals/new">Set your first goal</a>',
+        })}
     </section>
     ${closed.length ? `<section class="section"><div class="gh"><h2>Closed</h2></div><div class="goal-list">${closed.map(goalCard).join('')}</div></section>` : ''}
   </div><aside>
@@ -313,7 +316,9 @@ function sheet(tree) {
 
 export function viewGoal() {
   const d = state.goal;
-  if (!d || d.goal.id !== Number(state.param)) return ctx.shell('<p class="muted">Loading</p>');
+  if (!d || d.goal.id !== Number(state.param)) {
+    return ctx.shell(`<a class="back" href="#/goals">${icon('back')}Goals</a><div class="skeleton"><i class="short"></i><i></i><i></i></div>`);
+  }
   const g = d.goal;
   if (state.editingGoal) {
     return ctx.shell(`${pageHead('Edit goal')}<div class="narrow"><div class="card">${goalForm(g)}</div></div>`);
@@ -323,11 +328,11 @@ export function viewGoal() {
     <a class="back" href="#/goals">${icon('back')}Goals</a>
     <h1 class="goal-h">${esc(g.title)}</h1>
     <div class="goal-progress">
-      <span class="goal-big">${g.pct === null ? '' : `${g.pct}<small>%</small>`}</span>
+      <span class="goal-big" data-count="goal-${g.id}">${g.pct === null ? '' : `${g.pct}<small>%</small>`}</span>
       <span class="goal-sub">${closed ? (g.status === 'done' ? 'Achieved' : 'Dropped') : esc(g.label)}${g.targetDate ? `<br>${!closed && g.daysLeft >= 0 ? `By ${fmtDay(g.targetDate)}` : dueText(g)}` : ''}</span>
       ${!closed && g.targetDate && g.daysLeft >= 0 ? `<span class="goal-countdown"><b>${g.daysLeft}</b><span>${g.daysLeft === 1 ? 'day' : 'days'} left</span></span>` : ''}
     </div>
-    <div class="goal-bar${g.pace ? ` pace-${g.pace.state}` : ''}">${bar(g.pct, 'big')}${g.pace ? `<i class="pace-mark" style="left:${g.pace.expected}%" title="Even pace: ${g.pace.expected}%"></i>` : ''}</div>
+    <div class="goal-bar${g.pace ? ` pace-${g.pace.state}` : ''}">${bar(g.pct, 'big', `goal-${g.id}`)}${g.pace ? `<i class="pace-mark" style="left:${g.pace.expected}%" title="Even pace: ${g.pace.expected}%"></i>` : ''}</div>
     ${g.pace ? `<p class="pace-line">${paceChip(g)}<span>An even pace would be at ${g.pace.expected}% today.</span></p>` : ''}
     ${!closed && g.nextStep ? `<div class="card next-step">
       <p class="eyebrow">${icon('bolt')}Next step</p>

@@ -5,11 +5,12 @@
 // diary lines keep a frozen copy of what was logged, and food never touches HP.
 import crypto from 'node:crypto';
 import { Hono } from 'hono';
+import { DateTime } from 'luxon';
 import { db, logEvent } from './db.js';
 import { nowUTC, addDays, validDate, validTime } from './time.js';
 import { localNow, RuleError } from './engine.js';
 import {
-  KEYS, NUTRIENT, norm, scale, total, line, recipeTotals, shareOf, batchPortion, batchLeft, unknown, round, amountText, unitsFor, resolve, show,
+  KEYS, NUTRIENT, norm, scale, total, complete, line, recipeTotals, shareOf, batchPortion, batchLeft, unknown, round, amountText, unitsFor, resolve, show,
 } from '../public/nutrition.js';
 
 // ---------- Schema ----------
@@ -538,6 +539,8 @@ export async function logFood(input, source = 'you') {
 }
 
 // Calories and whatever macros are known, kept in the diary only and never added to the catalogue.
+// `estimate` marks numbers that are a rough guess (a typed meal with no catalogue match); `amount`
+// is a short note of how much, such as "about 300 g".
 export async function quickAdd(input, source = 'you') {
   const again = await existingEntry(input.id);
   if (again) return again;
@@ -558,10 +561,11 @@ export async function quickAdd(input, source = 'you') {
     ...place,
     kind: 'quick',
     name: clean(input.name, 120) || 'Quick add',
-    amount_text: ml ? `${ml} ml` : '',
+    amount_text: clean(input.amount, 60) || (ml ? `${ml} ml` : ''),
     ml,
     liquid: Boolean(ml),
     nutrients,
+    estimate: Boolean(input.estimate),
     source,
     note: input.note,
   });
@@ -661,6 +665,103 @@ export async function foodDay(date) {
     drinksMl: round(entries.filter((e) => e.liquid && e.ml).reduce((a, e) => a + e.ml, 0), 0),
     estimates: entries.filter((e) => e.estimate).length,
     plans: plans.filter((p) => !p.loggedId),
+  };
+}
+
+// ---------- History: the Trends screen ----------
+
+const HISTORY_KEYS = ['kcal', 'protein', 'carbs', 'sugars', 'fat', 'fibre', 'salt', 'caffeine'];
+export const HISTORY_SPANS = [7, 30, 90];
+
+// One day's totals. A day with nothing logged is a gap: every value null, never zero. `incomplete`
+// means some lines had no value for a core nutrient, so those totals are floors.
+function dayStats(date, list) {
+  if (!list.length) {
+    return { date, logged: false, entries: 0, ...Object.fromEntries(HISTORY_KEYS.map((k) => [k, null])), drinksMl: null, incomplete: false, estimates: 0 };
+  }
+  const t = total(list.map((e) => e.nutrients));
+  const missing = Object.fromEntries(HISTORY_KEYS.filter((k) => t.missing?.[k]).map((k) => [k, t.missing[k]]));
+  return {
+    date,
+    logged: true,
+    entries: list.length,
+    ...Object.fromEntries(HISTORY_KEYS.map((k) => [k, t[k] === null ? null : round(t[k], 2)])),
+    drinksMl: round(list.filter((e) => e.liquid && e.ml).reduce((a, e) => a + e.ml, 0), 0),
+    incomplete: !complete(t),
+    estimates: list.filter((e) => e.estimate).length,
+    ...(Object.keys(missing).length ? { missing } : {}),
+  };
+}
+
+// Averages over the days that have logs only. A nutrient's `missing` count is how many of those days
+// were unknown or partial for it, so the screen can mark the average as a floor.
+function periodAverages(days) {
+  const logged = days.filter((d) => d.logged);
+  const avg = {};
+  const missing = {};
+  for (const k of [...HISTORY_KEYS, 'drinksMl']) {
+    const vals = logged.filter((d) => d[k] !== null).map((d) => d[k]);
+    avg[k] = vals.length ? round(vals.reduce((a, v) => a + v, 0) / vals.length, 2) : null;
+    const m = logged.filter((d) => d[k] === null || d.missing?.[k]).length;
+    if (m) missing[k] = m;
+  }
+  if (Object.keys(missing).length) avg.missing = missing;
+  return { loggedDays: logged.length, avg };
+}
+
+// Per-day totals for the last `days` days (7, 30 or 90) ending today, averages over logged days and
+// the same for the period before, the most logged foods, and caffeine and drinks by hour for one day.
+// Today is still going, so it is drawn but left out of the averages.
+export async function foodHistory({ days = 7, date = null } = {}) {
+  const span = HISTORY_SPANS.includes(Number(days)) ? Number(days) : 7;
+  const { today, tz } = await localNow();
+  const from = addDays(today, -(span - 1), tz);
+  const prevFrom = addDays(from, -span, tz);
+  const prevTo = addDays(from, -1, tz);
+  if (date && !validDate(String(date))) throw new RuleError('Bad date.');
+  const chosen = date && String(date) <= today ? String(date) : today;
+  const lo = chosen < prevFrom ? chosen : prevFrom;
+  const rows = await db()`select date, at, kind, ref_key, name, nutrients, liquid, ml, estimate from food_log
+    where deleted_at is null and date >= ${lo} and date <= ${today} order by at, created_at`;
+  const byDate = new Map();
+  for (const r of rows) byDate.set(r.date, [...(byDate.get(r.date) || []), r]);
+  const run = (start, n) => Array.from({ length: n }, (_, i) => {
+    const d = addDays(start, i, tz);
+    return dayStats(d, byDate.get(d) || []);
+  });
+  const series = run(from, span);
+  const prevSeries = run(prevFrom, span);
+  const current = periodAverages(series.filter((d) => d.date !== today));
+  const prev = periodAverages(prevSeries);
+
+  // Most logged: catalogue foods and recipes by record, everything else by name.
+  const counts = new Map();
+  for (const r of rows.filter((x) => x.date >= from)) {
+    const key = ['item', 'recipe'].includes(r.kind) && r.ref_key ? `${r.kind}:${r.ref_key}` : `name:${norm(r.name)}`;
+    const c = counts.get(key) || { name: r.name, kind: r.kind, count: 0 };
+    c.count += 1;
+    c.name = r.name;
+    counts.set(key, c);
+  }
+  const top = [...counts.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)).slice(0, 6);
+
+  // The chosen day by local hour. A drink with no caffeine value is counted apart, not as zero.
+  const dayRows = byDate.get(chosen) || [];
+  const hours = { caffeine: Array(24).fill(0), caffeineUnknown: Array(24).fill(0), drinksMl: Array(24).fill(0) };
+  for (const r of dayRows) {
+    const h = DateTime.fromJSDate(new Date(r.at)).setZone(tz).hour;
+    const caf = r.nutrients?.caffeine;
+    if (typeof caf === 'number') hours.caffeine[h] = round(hours.caffeine[h] + caf, 1);
+    else if (r.liquid) hours.caffeineUnknown[h] += 1;
+    if (r.liquid && r.ml) hours.drinksMl[h] = round(hours.drinksMl[h] + r.ml, 0);
+  }
+  return {
+    days: span, today, from, to: today, prevFrom, prevTo,
+    series,
+    ...current,
+    prev,
+    top,
+    chosen: { ...dayStats(chosen, dayRows), today: chosen === today, hours },
   };
 }
 
@@ -1193,7 +1294,7 @@ export async function foodForCoach(date) {
   if (!d.entries.length) return `Food ${d.today ? 'today' : d.date}: nothing logged.`;
   const lines = [`Food ${d.today ? 'today' : d.date}, as he logged it (a "+" means some items have no value for that nutrient, so it is a floor; "—" means unknown). Food never affects HP, and you never set or invent targets for it: ${totalsText(d.total)}; drinks ${d.drinksMl} ml.`];
   for (const e of d.entries) {
-    lines.push(`  entry ${e.id} | ${e.slot} | ${e.name}${e.brand ? ` (${e.brand})` : ''}${e.amountText ? `, ${e.amountText}` : ''} | ${show(e.nutrients, 'kcal')}${e.estimate ? ' | amount estimated from a photo' : ''}`);
+    lines.push(`  entry ${e.id} | ${e.slot} | ${e.name}${e.brand ? ` (${e.brand})` : ''}${e.amountText ? `, ${e.amountText}` : ''} | ${show(e.nutrients, 'kcal')}${e.estimate ? ' | estimated from a photo or a typed description' : ''}`);
   }
   return lines.join('\n');
 }
@@ -1210,6 +1311,7 @@ async function jsonBody(c) {
 
 export const foodApi = new Hono();
 foodApi.get('/food/day', async (c) => c.json(await foodDay(c.req.query('date'))));
+foodApi.get('/food/history', async (c) => c.json(await foodHistory({ days: c.req.query('days'), date: c.req.query('date') })));
 foodApi.get('/food/search', async (c) => c.json({ items: await searchFoods(c.req.query('q'), { liquid: c.req.query('drinks') === '1' ? true : null }) }));
 foodApi.get('/food/recent', async (c) => c.json({ items: await recentFoods({ liquid: c.req.query('drinks') === '1' ? true : null }) }));
 foodApi.get('/food/items/:key', async (c) => c.json(await getFood({ key: c.req.param('key') })));

@@ -7,9 +7,13 @@
 //   record. Only the amounts are estimated, and they are flagged as estimates until he changes them.
 // - Anything else: he is asked what it is.
 // The photo itself is never stored.
+//
+// "What did you eat?" works the same way from typed words: each food is matched to a record with an
+// estimated amount. A food with no record carries a rough estimate of its own, so it can still be
+// logged as a quick add marked as an estimate.
 import { logEvent } from './db.js';
 import { RuleError } from './engine.js';
-import { readStructured } from './coach.js';
+import { readStructured, aiEnabled } from './coach.js';
 import { searchFoods } from './food.js';
 import { productByBarcode } from './off.js';
 import { resolve, round } from '../public/nutrition.js';
@@ -20,6 +24,15 @@ const maybe = (s) => ({ anyOf: [s, { type: 'null' }] });
 const obj = (properties) => ({ type: 'object', additionalProperties: false, required: Object.keys(properties), properties });
 
 const LABEL_KEYS = ['kcal', 'kj', 'protein', 'carbs', 'sugars', 'fat', 'satfat', 'fibre', 'salt', 'caffeine_mg'];
+
+// One food on a plate or in a typed meal: what it is, words to find it, and an estimated amount.
+const MEAL_ITEM = {
+  name: STR,
+  search: STR,
+  amount: NUM,
+  unit: { type: 'string', enum: ['g', 'ml', 'piece'] },
+  confidence: { type: 'string', enum: ['low', 'medium', 'high'] },
+};
 
 export const PHOTO_SCHEMA = obj({
   kind: { type: 'string', enum: ['barcode', 'label', 'packet', 'meal', 'unclear'] },
@@ -40,16 +53,7 @@ export const PHOTO_SCHEMA = obj({
     serving_label: maybe(STR),
     ...Object.fromEntries(LABEL_KEYS.map((k) => [k, maybe(NUM)])),
   })),
-  items: {
-    type: 'array',
-    items: obj({
-      name: STR,
-      search: STR,
-      amount: NUM,
-      unit: { type: 'string', enum: ['g', 'ml', 'piece'] },
-      confidence: { type: 'string', enum: ['low', 'medium', 'high'] },
-    }),
-  },
+  items: { type: 'array', items: obj(MEAL_ITEM) },
   question: maybe(STR),
 });
 
@@ -195,4 +199,51 @@ export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg
     return { kind: 'meal', summary: read.summary, items };
   }
   return { kind: 'unclear', summary: read.summary, question: read.question || 'What is it?' };
+}
+
+// ---------- "What did you eat?" ----------
+
+export const TEXT_SCHEMA = obj({
+  kind: { type: 'string', enum: ['meal', 'unclear'] },
+  summary: STR,
+  items: {
+    type: 'array',
+    items: obj({ ...MEAL_ITEM, kcal: NUM, protein: maybe(NUM), carbs: maybe(NUM), fat: maybe(NUM) }),
+  },
+  question: maybe(STR),
+});
+
+const TEXT_SYSTEM = `You read what Daniel typed into Oath, a personal food diary used in Malta, and list what he ate or drank using the schema.
+
+kind:
+- "meal": the text says what he ate or drank. List each separate food or drink in items: name in plain UK English, search as 2 to 4 generic words that would find it in a food database (for example "egg boiled", "bread white toasted", "chips fried", "coffee flat white", "chicken kebab"), and your best estimate of the amount: grams for food, ml for drinks, or "piece" with a count for whole countable things like an egg, a slice of bread or a banana. Use any amount he gives; otherwise assume one typical portion in Malta. A dish is one item unless he lists its parts (a kebab and chips are two items; a ham sandwich is one). Include butter, oil, sugar or sauces he mentions as their own items.
+  For each item also give a rough estimate for that whole amount: kcal, and protein, carbs and fat in grams. These are only a fallback for foods missing from the database, so keep them typical. Use null for a macro you cannot estimate.
+- "unclear": the text is not food or drink, or you cannot tell what he had. Put one short, friendly question in question.
+
+summary is one short line, such as "Eggs on toast and a flat white". Never judge the food or call it good or bad.`;
+
+// A rough number from the reading, or null when it is missing or not believable.
+const roughly = (v, max) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= max ? round(v, 1) : null);
+
+export async function readFoodText({ text } = {}) {
+  const words = String(text ?? '').replace(/\s+/g, ' ').trim();
+  if (!words) throw new RuleError('Type what you ate first.');
+  if (words.length > 600) throw new RuleError('That is a lot at once. Type one meal at a time.');
+  if (!aiEnabled()) throw new RuleError('Working out a typed meal needs the AI key, which is not set on the server.', 503);
+  const read = await readStructured({ system: TEXT_SYSTEM, schema: TEXT_SCHEMA, content: [{ type: 'text', text: words }], maxTokens: 4000 });
+  const unclear = (question) => ({ kind: 'unclear', source: 'text', summary: read.summary || '', question });
+  if (read.refused) return unclear('I could not read that as food. What did you have?');
+  await logEvent('food_text', { kind: read.kind, items: read.items?.length || 0 });
+  if (read.kind !== 'meal' || !read.items?.length) {
+    return unclear(read.question || 'That does not read like food or drink. Try something like "two eggs on toast and a flat white".');
+  }
+  const items = [];
+  for (const est of read.items.slice(0, 12)) {
+    const m = await matchMealItem(est);
+    items.push({
+      ...m,
+      guess: { kcal: roughly(est.kcal, 5000), protein: roughly(est.protein, 400), carbs: roughly(est.carbs, 800), fat: roughly(est.fat, 400), amount: roughly(est.amount, 5000), unit: est.unit },
+    });
+  }
+  return { kind: 'meal', source: 'text', summary: read.summary, items };
 }

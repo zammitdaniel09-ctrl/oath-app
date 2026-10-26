@@ -15,6 +15,7 @@ const review = () => import('./review.js');
 const health = () => import('./health.js');
 const settings = () => import('./settings.js');
 const food = () => import('./food.js');
+const foodPhoto = () => import('./food-photo.js');
 
 export const PENDING_MINUTES = 30;
 
@@ -85,20 +86,90 @@ async function findItems({ query = '', kind = 'all', include_closed = false }) {
   return out.length ? out.join('\n') : 'Nothing matches.';
 }
 
+// ---------- Food from a loose description ----------
+
+const MEAL_SLOTS = ['breakfast', 'lunch', 'dinner', 'snacks', 'drinks'];
+const ESTIMATE_UNITS = ['g', 'ml', 'piece'];
+const given = (x) => x !== undefined && x !== null && x !== '';
+
+// The amount a receipt shows for an estimate: the weight or volume that went into the diary.
+function roughly(entry) {
+  const useMl = given(entry.ml) && (entry.liquid || !given(entry.grams));
+  const value = useMl ? entry.ml : entry.grams;
+  return given(value) ? `~${Math.round(Number(value))} ${useMl ? 'ml' : 'g'}` : entry.amountText;
+}
+const kcalText = (kcal) => (given(kcal) ? `${Math.round(Number(kcal))} kcal` : 'energy unknown');
+
+// "Had a kebab and chips": each item is matched to a catalogue record and logged with its amount
+// flagged as an estimate. An item with no record, no usable amount, or a record with no energy value
+// becomes a quick add of the coach's own calorie estimate instead. One receipt per item; the detail
+// (entry ids, slot, the record used) goes to the model only, so it can say what it assumed.
+async function logFoodEstimate({ items, slot, date, time }) {
+  const list = Array.isArray(items) ? items.filter((x) => x && (x.name || x.search)).slice(0, 12) : [];
+  if (!list.length) throw new RuleError('Give at least one item he ate or drank.');
+  const f = await food();
+  const { matchMealItem } = await foodPhoto();
+  const when = pick({ slot, date, time }, ['slot', 'date', 'time']);
+  const receipts = [];
+  const detail = [];
+  for (const it of list) {
+    const name = String(it.name || it.search).trim().slice(0, 120);
+    const unit = ESTIMATE_UNITS.includes(it.unit) ? it.unit : 'g';
+    const amount = Number(it.amount) > 0 ? Number(it.amount) : null;
+    const guess = given(it.kcal_estimate) && Number(it.kcal_estimate) >= 0 ? Number(it.kcal_estimate) : null;
+    const count = unit === 'piece' && amount > 1 ? ` x${Number(amount.toFixed(2))}` : '';
+    try {
+      const m = amount ? await matchMealItem({ name, search: String(it.search || name), amount, unit, confidence: 'medium' }) : null;
+      const record = m?.match || null;
+      const noEnergy = record && !given(record.nutrients?.kcal);
+      let entry = null;
+      if (record && Number(m.qty) > 0 && !(noEnergy && guess !== null)) {
+        try {
+          ({ entry } = await f.logFood({ key: record.key, qty: m.qty, unit: m.unit, ...when, estimate: true }, 'coach'));
+        } catch (err) {
+          // An amount the record cannot take falls back to the calorie estimate, when there is one.
+          if (!(err instanceof RuleError) || guess === null) throw err;
+        }
+      }
+      if (entry) {
+        receipts.push({ ok: true, text: `Logged ${name}${count} ${roughly(entry)} (estimate, ${kcalText(entry.nutrients?.kcal)})` });
+        detail.push(`${name}: entry ${entry.id}, ${entry.slot} on ${entry.date}, catalogue record "${entry.name}"`);
+        continue;
+      }
+      if (guess === null) {
+        receipts.push({ ok: false, text: `Could not log ${name}: ${record ? 'no usable amount' : 'nothing like it in the catalogue'}. Send it again with a kcal_estimate` });
+        continue;
+      }
+      const size = !amount ? '' : unit === 'piece' ? count : ` ~${Math.round(amount)} ${unit}`;
+      // The assumed size stays on the diary entry, so he can see what the calories stand for.
+      const howMuch = !amount ? '' : unit === 'piece' ? `${Number(amount.toFixed(2))} ${amount === 1 ? 'piece' : 'pieces'}` : `about ${Math.round(amount)} ${unit}`;
+      const { entry: q } = await f.quickAdd({
+        name, kcal: guess, estimate: true, ...when, ...(howMuch ? { amount: howMuch } : {}), ...(unit === 'ml' && amount ? { ml: amount } : {}),
+      }, 'coach');
+      receipts.push({ ok: true, text: `Logged ${name}${size} as a quick add (estimate, ${kcalText(q.nutrients?.kcal)})` });
+      detail.push(`${name}: entry ${q.id}, ${q.slot} on ${q.date}, quick add${record ? '' : ', no catalogue match'}`);
+    } catch (err) {
+      if (!(err instanceof RuleError)) console.error('coach food estimate failed', name, err);
+      receipts.push({ ok: false, text: `Could not log ${name}: ${err instanceof RuleError ? err.message : 'unexpected error'}` });
+    }
+  }
+  return { receipts, detail: detail.length ? `Diary entries, all flagged as estimates: ${detail.join('; ')}` : '' };
+}
+
 // ---------- The tools ----------
-// run returns the receipt shown under the coach's reply. confirm, when present, returns the line
-// Daniel confirms; the tool then waits instead of acting.
+// run returns the receipt shown under the coach's reply (or several, see receiptsOf). confirm, when
+// present, returns the line Daniel confirms; the tool then waits instead of acting.
 
 const TOOLS = {
   find_items: {
-    description: 'Look up tasks, habits, goals, goal steps and recent misses with their ids. Use it whenever you need an id you do not have.',
+    description: 'Look up tasks, habits, goals, goal steps and recent misses with their ids. Use it whenever you need an id you do not have, then act on the clear best match instead of asking which one he meant. Ask only if two matches are genuinely different things.',
     properties: { query: S('Words from the title; empty lists everything'), kind: E(['all', 'task', 'habit', 'goal', 'step', 'miss']), include_closed: B('Include done tasks, archived habits and closed goals') },
     read: true,
     run: findItems,
   },
 
   add_task: {
-    description: 'Add a task. hard=true makes it cost HP if not done by the deadline; a hard task needs a due_date and a first_step (the very first physical action).',
+    description: 'Add a task. hard=true makes it cost HP if not done by the deadline; a hard task needs a due_date and a first_step (the very first physical action; if he gave none, write the obvious one yourself and say so).',
     properties: { title: S(), due_date: DATE, deadline: TIME, hard: B(), first_step: S(), estimate_min: I('Estimated minutes'), goal_id: I(), goal: S('Goal title, if no goal_id'), notes: S() },
     required: ['title'],
     async run(input) {
@@ -227,7 +298,7 @@ const TOOLS = {
 
   take_oath: {
     description: 'Take today\'s oath for him: his one thing (an open habit or task due today) and when and where he will do it.',
-    properties: { focus_kind: E(['habit', 'task']), focus_id: I(), intention: S('When and where, in his words') },
+    properties: { focus_kind: E(['habit', 'task']), focus_id: I(), intention: S('When and where. Use his words; if he gave no time or place, pick the likely one from the item (its deadline or cue) and say so') },
     required: ['focus_kind', 'focus_id', 'intention'],
     async run({ focus_kind: kind, focus_id: id, intention }) {
       await (await drive()).commitDay({ focusKind: kind, focusId: Number(id), intention });
@@ -265,7 +336,7 @@ const TOOLS = {
   },
   close_day: {
     description: 'Close the day with his rating (1 to 5), what got in the way, one win and tomorrow\'s one thing.',
-    properties: { rating: I('1 to 5'), blocker: S(), win: S(), tomorrow: S('Tomorrow\'s one thing, when and where') },
+    properties: { rating: I('1 to 5. If he describes the day without a number, pick the one that fits and say so'), blocker: S(), win: S(), tomorrow: S('Tomorrow\'s one thing, when and where') },
     required: ['rating'],
     async run(input) {
       await (await drive()).reflect(input);
@@ -465,7 +536,7 @@ const TOOLS = {
   // ---------- Food: logging only, never targets, never HP ----------
   search_food: {
     read: true,
-    description: 'Find foods, drinks, saved meals and recipes in Oath\'s catalogue before logging. Returns keys, names, state (raw, cooked, dry, drained) and the units each accepts. Pick the record whose state matches what he ate (cooked rice, not dry, if he ate it cooked).',
+    description: 'Find foods, drinks, saved meals and recipes in Oath\'s catalogue, for when he names an exact product, a saved meal or a recipe, or asks what is there. For loose descriptions ("a kebab and chips") skip this and use log_food_estimate. Returns keys, names, state (raw, cooked, dry, drained) and the units each accepts. Pick the record whose state matches what he ate (cooked rice, not dry, if he ate it cooked).',
     properties: { query: S('A few words, e.g. "banana", "monster zero", "white rice"'), drinks: B('Only drinks') },
     required: ['query'],
     async run({ query, drinks = false }) {
@@ -476,13 +547,13 @@ const TOOLS = {
       const out = items.map((i) => `food ${i.key} | ${i.name}${i.brand ? ` (${i.brand}${i.market ? `, ${i.market}` : ''})` : ''} | ${i.state || ''} | ${i.kind} | ${i.nutrients.kcal ?? '?'} kcal per 100 ${i.basis} | units: ${i.units.map((u) => u.unit).join(', ')}`);
       for (const m of meals) out.push(`saved meal #${m.id} "${m.name}" (${m.kind})`);
       for (const r of recipes) out.push(`recipe ${r.key} "${r.name}" | serves ${r.servings}`);
-      return out.length ? out.join('\n') : 'Nothing found. Ask him for the label (a photo in the Food tab) or quick add the calories he gives you.';
+      return out.length ? out.join('\n') : 'Nothing found. Log it anyway with log_food_estimate and your own calorie estimate, and mention that a photo of the label in the Food tab makes it exact next time.';
     },
   },
   log_food: {
-    description: 'Log an amount of one catalogue food or drink. unit is "g", "ml", "serving", "pack", "each" (one of a multipack), "whole" (weighed with peel), or "p:<portion label>" exactly as search_food lists it. Only log what he says he ate or drank.',
+    description: 'Log an exact amount of one catalogue food or drink he names, with a key from search_food. unit is "g", "ml", "serving", "pack", "each" (one of a multipack), "whole" (weighed with peel), or "p:<portion label>" exactly as search_food lists it. Only log what he says he ate or drank. For loose descriptions use log_food_estimate instead.',
     properties: {
-      key: S('From search_food'), qty: N('How many of the unit'), unit: S(), slot: E(['breakfast', 'lunch', 'dinner', 'snacks', 'drinks']),
+      key: S('From search_food'), qty: N('How many of the unit'), unit: S(), slot: E(MEAL_SLOTS),
       date: DATE, time: TIME,
     },
     required: ['key', 'qty', 'unit'],
@@ -490,6 +561,29 @@ const TOOLS = {
       const { entry } = await (await food()).logFood(input, 'coach');
       return `Logged ${entry.name}, ${entry.amountText} (${entry.nutrients.kcal === null ? 'energy unknown' : `${Math.round(entry.nutrients.kcal)} kcal`})`;
     },
+  },
+  log_food_estimate: {
+    description: 'Log food and drink he describes loosely ("had a kebab and chips", "two slices of pizza and a coke", "a big bowl of pasta"). Prefer this over search_food + log_food whenever he does not give an exact product and amount; keep log_food for exact items he names with amounts. Never ask him for grams: use a typical portion for each item and say what you assumed in a few words. One item per food or drink; list sides, sauces and drinks separately. Each item is matched to the closest catalogue record and logged as an estimate he can edit in the Food tab. Give kcal_estimate on every item: anything the catalogue lacks is then logged as a quick add of your estimate instead of being dropped. Leave slot, date and time out to use now, or set them from what he said.',
+    properties: {
+      items: {
+        type: 'array',
+        description: 'What he ate or drank, one entry per food or drink',
+        items: {
+          type: 'object',
+          properties: {
+            name: S('Plain UK English, as he would say it, e.g. "chicken kebab", "chips", "Coca-Cola"'),
+            search: S('2 to 4 generic words that would find it in a food database, e.g. "chicken kebab", "chips fried", "cola", "pizza cheese"'),
+            amount: N('A typical portion, in the unit'),
+            unit: E(ESTIMATE_UNITS, 'g for food, ml for drinks, piece for whole countable things (a slice, an egg, a banana)'),
+            kcal_estimate: N('Your best calorie estimate for the whole amount'),
+          },
+          required: ['name', 'search', 'amount', 'unit'],
+        },
+      },
+      slot: E(MEAL_SLOTS), date: DATE, time: TIME,
+    },
+    required: ['items'],
+    run: logFoodEstimate,
   },
   quick_add_food: {
     description: 'Log calories (and any macros he gives) without a catalogue record, when he only knows the numbers. Kept in the diary only.',
@@ -551,8 +645,12 @@ export const TOOL_DEFS = Object.entries(TOOLS).map(([name, t]) => ({
   input_schema: { type: 'object', properties: t.properties, ...(t.required ? { required: t.required } : {}) },
 }));
 
+// A tool's run returns one receipt line, or { receipts: [{ ok, text }], detail } when it does one
+// thing per item. detail goes back to the model only, never under the reply.
+const receiptsOf = (out) => (Array.isArray(out?.receipts) ? out.receipts : [{ ok: true, text: String(out) }]);
+
 // Runs one tool call. ctx collects receipts and pending confirmations for the reply.
-// Returns { content, isError } for the tool_result.
+// Returns { content, isError } for the tool_result; it is an error only when nothing worked.
 export async function runTool(name, input, ctx = { actions: [], pending: [] }) {
   const t = TOOLS[name];
   if (!t) return { content: `Unknown tool ${name}.`, isError: true };
@@ -565,12 +663,17 @@ export async function runTool(name, input, ctx = { actions: [], pending: [] }) {
         return { content: `Not done yet. It waits for Daniel to tap Confirm under your reply: "${summary}". Tell him what it will do; do not say it is done.`, isError: false };
       }
     }
-    const text = await t.run(input);
+    const out = await t.run(input);
+    const receipts = receiptsOf(out);
     if (!t.read) {
-      ctx.actions.push({ ok: true, text });
-      await logEvent('coach_action', { tool: name, text });
+      for (const r of receipts) {
+        ctx.actions.push(r);
+        if (r.ok) await logEvent('coach_action', { tool: name, text: r.text });
+      }
     }
-    return { content: text, isError: false };
+    if (!out?.receipts) return { content: String(out), isError: false };
+    const content = [...receipts.map((r) => (r.ok ? r.text : `Failed: ${r.text}`)), out.detail].filter(Boolean).join('\n');
+    return { content, isError: !receipts.some((r) => r.ok) };
   } catch (err) {
     const why = err instanceof RuleError ? err.message : 'unexpected error';
     if (!(err instanceof RuleError)) console.error('coach tool failed', name, err);
@@ -597,7 +700,7 @@ export async function resolvePendingAction(id, confirm) {
     return { status: 'cancelled', text: `Cancelled: ${p.summary}.` };
   }
   try {
-    const text = await TOOLS[p.tool].run(p.input);
+    const text = receiptsOf(await TOOLS[p.tool].run(p.input)).map((r) => r.text).join('; ');
     await db()`update coach_pending set status = 'done', resolved_at = now(), outcome = ${text} where id = ${p.id}`;
     await logEvent('coach_action', { tool: p.tool, text, confirmed: true });
     return { status: 'done', text };

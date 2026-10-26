@@ -1,5 +1,6 @@
 // The coach running the app: tools reach the same functions as the buttons, rules still refuse,
-// destructive actions wait for a tap, receipts are kept, and the game rules can be configured.
+// destructive actions wait for a tap, receipts are kept, the game rules can be configured, and food
+// described loosely is logged as estimates instead of interrogated.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -71,6 +72,8 @@ before(async () => {
   await dbmod.migrate();
   ({ app } = await import('../src/server.js'));
   coach = await import('../src/coach.js');
+  // The food catalogue, so estimated items have records to match.
+  await (await import('../src/food-seed.js')).seedFood({ force: true });
   const s = await call('POST', '/api/setup', { code: process.env.SETUP_CODE, password: 'long-enough-pass' });
   assert.equal(s.status, 200);
 });
@@ -193,4 +196,110 @@ test('game rules: bounded, consistent, and a lower max HP lowers current HP', as
   const t = (await call('GET', '/api/today')).data;
   assert.equal(t.game.hp, 80);
   await call('PATCH', '/api/settings', { maxHp: 100, repeatMultiplier: 1.5, pardonsPerMonth: 2 });
+});
+
+// ---------- Food from a loose description ----------
+
+const coachFood = (name) => dbmod.db()`select * from food_log where source = 'coach' and deleted_at is null and name = ${name} order by created_at desc`;
+
+test('coach: food described loosely is matched and logged as estimates, one receipt per item, the rest as quick adds', async () => {
+  const c = turn([use('log_food_estimate', {
+    slot: 'lunch',
+    items: [
+      { name: 'white rice', search: 'white rice cooked', amount: 180, unit: 'g', kcal_estimate: 230 },
+      { name: 'banana', search: 'banana', amount: 1, unit: 'piece', kcal_estimate: 105 },
+      { name: 'zorblax party bake', search: 'zorblax bake', amount: 150, unit: 'g', kcal_estimate: 420 },
+    ],
+  })], 'Logged it for lunch: a plate of rice, a banana and a slice of that bake.');
+  coach.setCoachClient(c);
+  const r = await call('POST', '/api/coach', { text: 'had rice, a banana and some of zorblax bake for lunch' });
+  assert.equal(r.status, 200, JSON.stringify(r.data));
+  const receipts = r.data.reply.actions;
+  assert.equal(receipts.length, 3, 'one receipt per item');
+  assert.ok(receipts.every((a) => a.ok), JSON.stringify(receipts));
+  assert.match(receipts[0].text, /^Logged white rice ~180 g \(estimate, \d+ kcal\)$/);
+  assert.match(receipts[1].text, /^Logged banana ~\d+ g \(estimate, 105 kcal\)$/);
+  assert.equal(receipts[2].text, 'Logged zorblax party bake ~150 g as a quick add (estimate, 420 kcal)');
+
+  // Matched items are catalogue entries with their amounts flagged as estimates.
+  const [rice] = await dbmod.db()`select * from food_log where source = 'coach' and kind = 'item' and ref_key like 'rice%' order by created_at desc limit 1`;
+  assert.ok(rice, 'the rice was logged against a catalogue record');
+  assert.equal(rice.estimate, true);
+  assert.equal(rice.slot, 'lunch');
+  assert.equal(rice.grams, 180);
+  assert.equal(rice.date, '2026-11-02');
+  const [banana] = await dbmod.db()`select * from food_log where source = 'coach' and kind = 'item' and ref_key = 'banana-raw' order by created_at desc limit 1`;
+  assert.equal(banana.estimate, true);
+  assert.match(banana.unit, /^p:1 medium/);
+  assert.equal(Math.round(banana.nutrients.kcal), 105);
+
+  // An item the catalogue lacks is a quick add of the coach's estimate, never dropped.
+  const [bake] = await coachFood('zorblax party bake');
+  assert.equal(bake.kind, 'quick');
+  assert.equal(bake.nutrients.kcal, 420);
+  assert.equal(bake.estimate, true);
+  assert.equal(bake.amount_text, 'about 150 g');
+  assert.equal(bake.slot, 'lunch');
+
+  // The model hears the receipts plus the entry ids and the records used, so it can say what it assumed.
+  const [res] = lastResults(c);
+  assert.equal(res.is_error, undefined);
+  assert.match(res.content, /^Logged white rice ~180 g/);
+  assert.ok(res.content.includes(`entry ${banana.id}, lunch on 2026-11-02, catalogue record "${banana.name}"`), res.content);
+  assert.ok(res.content.includes(`entry ${bake.id}, lunch on 2026-11-02, quick add, no catalogue match`), res.content);
+});
+
+test('coach: an unmatched drink with an estimate is a quick add in ml; without one it fails loudly and nothing is logged', async () => {
+  const c = turn([use('log_food_estimate', {
+    items: [
+      { name: 'zorblax fizz', search: 'zorblax fizz', amount: 330, unit: 'ml', kcal_estimate: 140 },
+      { name: 'zorblax crunch', search: 'zorblax crunch', amount: 40, unit: 'g' },
+      { name: 'halloumi', search: 'halloumi', amount: 80, unit: 'g', kcal_estimate: 260 },
+    ],
+  })], 'Logged the fizz at about 140 kcal.');
+  coach.setCoachClient(c);
+  const r = await call('POST', '/api/coach', { text: 'a can of zorblax fizz, a zorblax crunch and some halloumi' });
+  const [fizz, crunch, halloumi] = r.data.reply.actions;
+  // A record with no energy value on file (a placeholder waiting for a label) loses to the coach's estimate.
+  assert.deepEqual(halloumi, { ok: true, text: 'Logged halloumi ~80 g as a quick add (estimate, 260 kcal)' });
+  assert.deepEqual(fizz, { ok: true, text: 'Logged zorblax fizz ~330 ml as a quick add (estimate, 140 kcal)' });
+  assert.equal(crunch.ok, false);
+  assert.match(crunch.text, /^Could not log zorblax crunch: nothing like it in the catalogue\. Send it again with a kcal_estimate$/);
+  const [row] = await coachFood('zorblax fizz');
+  assert.equal(row.ml, 330);
+  assert.equal(row.estimate, true);
+  assert.equal(row.amount_text, 'about 330 ml');
+  assert.equal(row.slot, 'drinks', 'a drink with no slot given goes to drinks');
+  assert.equal((await coachFood('zorblax crunch')).length, 0);
+  const [res] = lastResults(c);
+  assert.equal(res.is_error, undefined, 'one item worked, so the call is not an error');
+  assert.match(res.content, /\nFailed: Could not log zorblax crunch/);
+  assert.match(res.content, /halloumi: entry [\w-]+, \w+ on 2026-11-02, quick add(;|$)/, 'the placeholder record was found, and the estimate used');
+
+  // Nothing logged at all is an error result, so the model retries with an estimate.
+  const c2 = turn([use('log_food_estimate', { items: [{ name: 'zorblax crunch', search: 'zorblax crunch', amount: 40, unit: 'g' }] })]);
+  coach.setCoachClient(c2);
+  await call('POST', '/api/coach', { text: 'and another crunch' });
+  assert.equal(lastResults(c2)[0].is_error, true);
+});
+
+test('coach: the persona is warm and assumes, and the estimate tool is offered with typical portions', async () => {
+  const c = scripted([reply('end_turn', [words('Morning! Let us get the gym in before nine.')])]);
+  coach.setCoachClient(c);
+  await call('POST', '/api/coach', { text: 'morning' });
+  const persona = c.requests[0].system.split('\n\nCurrent data:')[0];
+  assert.ok(!/ruthless|drill-sergeant/i.test(persona), 'the rough framing is gone');
+  assert.ok(!persona.includes('—'), 'no em dashes');
+  assert.match(persona, /Assume and act/);
+  assert.match(persona, /Ask at most one short question/);
+  assert.match(persona, /Food never touches HP/);
+  assert.match(persona, /Never ask him for grams/);
+  assert.match(persona, /Never claim \(no evidence\)/);
+  const tools = Object.fromEntries(c.requests[0].tools.map((t) => [t.name, t]));
+  const est = tools.log_food_estimate;
+  assert.ok(est, 'log_food_estimate is offered');
+  assert.deepEqual(est.input_schema.required, ['items']);
+  assert.deepEqual(est.input_schema.properties.items.items.properties.unit.enum, ['g', 'ml', 'piece']);
+  assert.match(est.description, /Never ask him for grams/);
+  assert.match(tools.find_items.description, /act on the clear best match/);
 });

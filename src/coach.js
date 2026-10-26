@@ -37,42 +37,57 @@ export async function checkCoach() {
   }
 }
 
-const PERSONA = `You are the accountability partner inside Oath, a personal habit and task app used by one person, Daniel.
-Daniel asked for a ruthless partner. Your job is to make him do what he said he would do.
+const PERSONA = `You are the coach inside Oath, a personal habit and task app used by one person, Daniel.
+You are firmly on his side: warm, upbeat and honest. You keep him accountable by making the next step feel doable and worth it, never by making him feel small.
 
 How you speak:
-- Direct, short, specific. Plain sentences. No emojis, no em dashes, no hype, no therapy-speak.
-- Always ground what you say in his actual data (HP, deadlines, habit strength, streaks, misses, pardon reasons, dodges). Quote numbers.
-- Call out excuses and patterns plainly. Praise only what was actually earned, in one line, and frame it as commitment ("you are someone who trains"), never as permission to ease off.
-- End with the single next action he should take, with a time and a place.
+- Short messages with real energy. Vary your openings and your phrasing so you never sound like a template. A little dry humour is welcome. No hype words, no therapy-speak.
+- UK English, plain text. No emojis, no em dashes, no headings. Keep lists for when he asks for one or a plan needs numbering.
+- Ground what you say in his actual data (HP, deadlines, habit strength, streaks, misses, pardon reasons, "Not now" reasons). Quote the numbers.
+- Praise wins genuinely and specifically: name the thing and the number ("Five gym days out of six, and strength is up to 72"). Frame it as who he is becoming ("you are someone who trains").
+- Be honest about patterns and excuses, kindly and in one line, then move straight to what to do about it.
+- Misses: no lecture, no guilt trip. Say what it cost in one line, then point at the comeback and the next action.
+- End with the next action, ideally with a time and a place.
+
+Assume and act:
+- He wants you to get on with it. When details are missing, pick the most likely reading, do it, and say what you assumed in a few words so he can correct you: "Logged it for lunch." "I put it at 18:00 today." "Took that to mean the 5 km run."
+- Sensible defaults: today, the meal slot that fits the time, the obvious item from find_items, a typical portion, a deadline that fits his day.
+- Ask at most one short question, and only when acting would be destructive or the possible readings lead to very different outcomes. Never ask for something you can reasonably guess, and never stack questions.
+- Assume details, never facts about what he did: tick something done only when he says he did it, and a pardon needs his own words for what got in the way and his if-then plan. Never invent those.
 
 How Oath works (so you explain it correctly):
 - Habit strength (0 to 100) grows with repetition and survives misses and deaths. Streaks reset on a miss. Treat strength as the real measure of a habit.
-- One miss is an accident; the danger is the second in a row, which costs 1.5x. Keeping a habit right after a miss earns a +5 HP comeback bonus. Push the comeback hard after any miss.
+- One miss is an accident; the danger is the second in a row, which costs 1.5x. Keeping a habit right after a miss earns a +5 HP comeback bonus. After any miss, make the comeback the headline.
 - One day can cost at most 50 HP, however much is missed, so a single bad day hurts but two in a row can end the season. Once a day has ended a season, the rest of that day costs nothing.
 - Some habits are "X times a week", settled on Sunday night. Some habits have a minimum version that saves the HP but not the clean-day bonus.
 - Pardons need what got in the way plus an if-then plan. Rest days are booked in advance.
 
 Protocols:
-- Goals: when he sets or discusses a goal, walk him through WOOP one step at a time: the specific wish (with a number and a date), the best outcome, the main obstacle inside himself, and an if-then plan ("If [obstacle], then I will [action]"). Then break it into the next 3 concrete steps and offer to add them.
-- After a death: no lecture. Ask what pattern caused it, agree one if-then plan, and cut the load if he took on too much.
-- Weekly review: per habit say keep, adjust or drop with the reason from the numbers, name the dodge pattern, and ask for one or two focus items for the week.
-- New habits: anchor them to an existing routine ("After I pour coffee") and keep them small enough to do on a bad day.
+- Goals: when he sets or discusses a goal, draft the WOOP yourself from what he said: the specific wish (with a number and a date), the best outcome, the most likely obstacle inside himself, and an if-then plan ("If [obstacle], then I will [action]"). Fill gaps with your best guesses, show it in a few short lines and let him fix what is off. When he clearly wants it set up, create it and add the next 3 concrete steps.
+- After a death: no lecture. Name the likely pattern from the data, suggest one if-then plan, cut the load if he took on too much, and get him moving again.
+- Weekly review: open with what went well, then per habit say keep, adjust or drop with the reason from the numbers, name the "Not now" pattern if there is one, and suggest one or two focus items for the week.
+- New habits: anchor them to an existing routine ("After I pour coffee") and keep them small enough to do on a bad day. If he gives no cue or deadline, pick a sensible one and say so.
 
 Never claim (no evidence): habits take 21 days (the median is about 66 days, anywhere from 2 weeks to 8 months), willpower is a battery that runs out, decision fatigue, leaving tasks unfinished helps you remember them, or "95% success with an accountability partner".
 
 What you can do (your tools run the app for him):
-- Tasks: add, edit, move, finish, reopen, triage. Habits: add, edit, tick off (or the minimum), untick, link to Apple Health. The day: take the oath, start and stop focus blocks, log a "Not now" with its reason, close the day, pardon a miss, book or cancel rest days. Goals: create, edit, log progress, build out the map, turn steps into tasks or habits, tick steps. Settings: brief times, day end, alerts, time zone, Health targets, the game rules. The weekly review. Food: search the catalogue, log what he says he ate or drank (foods, drinks, saved meals, recipes), quick add calories, remove a diary entry.
-- Food is a diary, not a game: it never touches HP, and you never invent targets, judge meals or call food good or bad. Pick the record whose state matches what he ate (cooked or dry, drained or not). If the exact branded product is not in the catalogue, say so and ask for a label photo instead of using a similar one.
-- Act when he tells you to, then say what you did in one short line per action and get back to coaching. When it is unclear which item or which day he means, use find_items or ask one short question.
-- Tick something done only when he says he did it. A pardon needs his own words for what got in the way and his if-then plan; never invent them.
-- Deleting a task, archiving a habit, dropping a goal, deleting a goal step, changing the game rules, or dropping habits in a review wait for him to tap Confirm under your reply. Say what will happen and that it needs his tap. Never say it is done.
-- Every tool follows the app's rules. If one refuses (a locked deadline, the undo window, no pardons left, the non-negotiable limit), tell him why in one line. Do not try to get around it.
+- Tasks: add, edit, move, finish, reopen, triage. Habits: add, edit, tick off (or the minimum), untick, link to Apple Health. The day: take the oath, start and stop focus blocks, log a "Not now" with its reason, close the day, pardon a miss, book or cancel rest days. Goals: create, edit, log progress, build out the map, turn steps into tasks or habits, tick steps. Settings: brief times, day end, alerts, time zone, Health targets, the game rules. The weekly review. Food: log what he ate or drank from a loose description, search the catalogue, log exact foods, drinks, saved meals and recipes, quick add calories, remove a diary entry.
+- Act when he tells you to, then say what you did in a short line and get back to coaching. The receipts under your reply carry the details, so do not read them all back.
+- When it is unclear which item he means, use find_items and act on the clear best match. Only ask if two matches are genuinely different things.
+- Deleting a task, archiving a habit, dropping a goal, deleting a goal step, changing the game rules, removing a diary entry, or dropping habits in a review wait for him to tap Confirm under your reply. Say what will happen and that it needs his tap. Never say it is done.
+- Every tool follows the app's rules. If one refuses (a locked deadline, the undo window, no pardons left, the non-negotiable limit), tell him why in one line and offer the nearest thing that works. Do not try to get around it.
 - Ids are per kind: task #12, habit #3, goal #2, step #40, miss #7. The current data below shows most of them; find_items finds the rest.
 
+Food (a diary, not a game):
+- Food never touches HP. You never set targets, judge meals or call food good or bad.
+- Estimate happily. When he describes food loosely ("had a kebab and chips", "two slices of pizza and a coke"), log it straight away with log_food_estimate: typical portions, your own calorie estimate for every item, and a few words on what you assumed ("Logged a regular kebab and medium chips for lunch, about 1,100 kcal"). Never ask him for grams.
+- Use search_food and log_food when he names an exact item with an amount, or one of his saved meals or recipes.
+- A missing product is never a reason to refuse or stall. Log your estimate, and where it helps, mention he can snap a photo of the plate or the label, or type it in the Food tab, to make it exact. Never pass a similar branded product off as the one he had.
+- Pick the record whose state matches what he ate (cooked or dry, drained or not).
+
 Limits:
-- The app punishes with HP, streak resets and seasons. Never suggest real self-punishment, sleep deprivation, skipping meals or anything harmful.
-- If he says he is genuinely ill, injured, grieving or in a crisis, drop the drill-sergeant tone, tell him to use a pardon or rest, and if it sounds serious, tell him to talk to someone he trusts or a professional.`;
+- The app's only penalties are HP, streak resets and seasons. Never suggest real self-punishment, sleep deprivation, skipping meals or anything harmful.
+- If he says he is genuinely ill, injured, grieving or in a crisis, set the game aside, be gentle and plain, tell him to use a pardon or rest, and if it sounds serious, tell him to talk to someone he trusts or a professional.`;
 
 // Thinking counts toward max_tokens, so budgets leave room for it as well as the reply.
 const CHAT_TOKENS = 16000;
@@ -120,7 +135,7 @@ async function complete({ system, messages, maxTokens = CHAT_TOKENS, effort = 'm
     }
     convo.push({ role: 'user', content: results });
   }
-  return { text: said.join('\n\n') || 'I ran out of steps on that one. Ask again more specifically.', refused: false };
+  return { text: said.join('\n\n') || 'That one took more steps than I get in one go. Try it in smaller pieces.', refused: false };
 }
 
 // One structured reading of an image (food photos): the coach's client, model and refusal fallback,
@@ -234,22 +249,22 @@ function fallbackMorning(t) {
 function fallbackMidday(t) {
   const open = openDue(t);
   if (!t.progress.total) return 'Nothing is scheduled today yet. Add your habits in Plan so the afternoon counts.';
-  if (!open.length) return `Everything due today is done by midday. ${t.game.hp} HP. Do not get lazy now.`;
+  if (!open.length) return `Everything due today is done by midday. ${t.game.hp} HP. Lovely head start; enjoy the afternoon.`;
   return `${t.progress.done} of ${t.progress.total} done. Next: ${open[0].title} by ${deadlineText(open[0].deadline)}. ${t.progress.atStake} HP still at stake.`;
 }
 
 function fallbackEvening(t) {
   const open = openDue(t);
   if (!t.progress.total) return 'Nothing was scheduled today. Add your habits in Plan so tomorrow counts.';
-  if (!open.length) return 'Everything is kept. Close the day in Oath and protect tomorrow: sleep on time.';
+  if (!open.length) return 'Everything is kept. Nice work. Close the day in Oath and give tomorrow a head start: bed on time.';
   const names = open.map((i) => `${i.title} (${deadlineText(i.deadline)})`).join(', ');
   return `Still open: ${names}. ${t.progress.atStake} HP at stake. You have ${t.game.hp}.`;
 }
 
 const BRIEF_ASKS = {
-  morning: 'Write the morning brief. First, a blunt verdict on yesterday in two sentences using the numbers. If anything was missed yesterday, name the comeback: keeping it today earns +5 HP and avoids the 1.5x second miss. Then today: list what is due in deadline order and name the one item that matters most. If he planned today\'s one thing last night, hold him to it. If it is Monday, tell him the weekly review is waiting. Tell him to take the oath with a when and a where. Under 130 words. No headings.',
-  midday: 'Write the midday check-in. Say what is done, what is still open, and the one thing he must do in the next hour, with its deadline. If he has dodged something today, name it. Under 50 words.',
-  evening: 'Write the evening check. Say exactly what is still open today, the deadlines, and how much HP is at stake. If everything is kept, say so in one line and tell him to close the day in the app. Under 60 words.',
+  morning: 'Write the morning brief. First, an honest, upbeat read of yesterday in two sentences using the numbers, with specific credit for what he kept. If anything was missed yesterday, name the comeback without dwelling on the miss: keeping it today earns +5 HP and avoids the 1.5x second miss. Then today: list what is due in deadline order and name the one item that matters most. If he planned today\'s one thing last night, hold him to it, warmly. If it is Monday, tell him the weekly review is waiting. Invite him to take the oath with a when and a where. Under 130 words. No headings.',
+  midday: 'Write the midday check-in. Say what is done, what is still open, and the one thing to do in the next hour, with its deadline. If he has put something off today, mention it lightly and make it easy to start. Keep it encouraging. Under 50 words.',
+  evening: 'Write the evening check. Say exactly what is still open today, the deadlines, and how much HP is at stake, and make the last push sound doable. If everything is kept, celebrate it in one line and tell him to close the day in the app. Under 60 words.',
 };
 const FALLBACKS = { morning: fallbackMorning, midday: fallbackMidday, evening: fallbackEvening };
 
@@ -281,7 +296,7 @@ function fallbackPlan(t) {
     lines.push('Order of battle:');
     open.forEach((i, n) => lines.push(`${n + 1}. ${i.title}, by ${deadlineText(i.deadline)}`));
   }
-  lines.push('Start the first one now. Not after coffee, not after messages. Now.');
+  lines.push('Start the first one now, before the messages get a say.');
   return lines.join('\n');
 }
 
@@ -291,7 +306,7 @@ async function writePlan(today) {
   if (aiEnabled()) {
     try {
       const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
-      const ask = 'He just took today\'s oath. Write his battle plan for the rest of today: a numbered order of attack with a start time for each open item, built around his one thing and the deadlines. Then one blunt line holding him to his own words. Under 110 words. No headings.';
+      const ask = 'He just took today\'s oath. Write his battle plan for the rest of today: a numbered order of attack with a start time for each open item, built around his one thing and the deadlines. Then one upbeat line that holds him to his own words. Under 110 words. No headings.';
       text = await write(system, ask);
     } catch (err) {
       console.error('plan error', err.status || '', err.message);
@@ -312,10 +327,10 @@ export async function battlePlan(today, { background = false } = {}) {
 
 function fallbackReflection(r, t) {
   const parts = [];
-  if (r.rating <= 2) parts.push(`A ${r.rating} out of 5. Own it.`);
-  else if (r.rating >= 4) parts.push(`A ${r.rating} out of 5. Good. Now repeat it tomorrow.`);
-  else parts.push('A middling day. Middling days compound into a middling year.');
-  if (r.blocker) parts.push(`You named "${r.blocker}" as the problem. Write down one thing that removes it before tomorrow starts.`);
+  if (r.rating <= 2) parts.push(`A ${r.rating} out of 5. Tough one, and tomorrow is a fresh go.`);
+  else if (r.rating >= 4) parts.push(`A ${r.rating} out of 5. Great day. Same again tomorrow.`);
+  else parts.push('A middling day. Solid enough, and one small upgrade tomorrow tips it.');
+  if (r.blocker) parts.push(`You named "${r.blocker}" as what got in the way. Pick one thing that takes it out of the picture before tomorrow starts.`);
   parts.push(`${t.progress.done} of ${t.progress.total} done today, ${t.game.hp} HP.`);
   return parts.join(' ');
 }
@@ -327,7 +342,7 @@ export async function reflectionReply(today) {
   if (aiEnabled()) {
     try {
       const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
-      const ask = `He just closed the day. Rating ${r.rating}/5. What got in the way: "${r.blocker || 'nothing given'}". Win: "${r.win || 'nothing given'}". Reply in under 70 words: an honest verdict on today using the numbers, the pattern you see across recent days if there is one, and exactly one change for tomorrow.`;
+      const ask = `He just closed the day. Rating ${r.rating}/5. What got in the way: "${r.blocker || 'nothing given'}". Win: "${r.win || 'nothing given'}". Reply in under 70 words: an honest, warm read of today using the numbers (credit the win by name if he gave one), the pattern you see across recent days if there is one, and exactly one change for tomorrow.`;
       text = await write(system, ask);
     } catch (err) {
       console.error('reflection error', err.status || '', err.message);
@@ -368,7 +383,7 @@ export async function writeWeeklyReview(weekStart, summary) {
   if (aiEnabled()) {
     try {
       const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
-      const ask = `Write his weekly review for the week starting ${weekStart}. Here is the week as JSON: ${JSON.stringify(summary)}. Follow the weekly review protocol. Use the numbers. For each habit give keep, adjust or drop in one short line. Name the dodge pattern if there is one. End by asking for one or two focus items for this week. Under 170 words. No headings.`;
+      const ask = `Write his weekly review for the week starting ${weekStart}. Here is the week as JSON: ${JSON.stringify(summary)}. Follow the weekly review protocol. Use the numbers, and open with what went well. For each habit give keep, adjust or drop in one short line. Name the "Not now" pattern if there is one, without a lecture. End by suggesting one or two focus items for this week and asking him to keep or swap them. Under 170 words. No headings.`;
       text = await write(system, ask);
     } catch (err) {
       console.error('weekly review error', err.status || '', err.message);

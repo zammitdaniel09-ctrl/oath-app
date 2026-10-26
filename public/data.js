@@ -1,7 +1,7 @@
 // The Dashboard: Apple Health, business sites, calendars and the way into the weekly review.
 import {
   state, esc, api, act, toast, fmtDay, bar, icon, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago,
-  miniRing, barChart, sparkline, localToday, keyBlock, form2obj, haptic, safeColor,
+  miniRing, barChart, sparkline, localToday, keyBlock, form2obj, haptic, safeColor, emptyState,
 } from './ui.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
@@ -274,7 +274,7 @@ function calendarSection(d) {
   const manageOpen = !d.feeds.length || state.query?.get('section') === 'calendars';
   return `<section class="section" id="calendars"><div class="gh"><h2>Uni and calendar</h2>${d.feeds.length ? `<button class="gh-link" data-action="cal-sync">${icon('sync')}Sync now</button>` : ''}</div>
     ${nextEvent(d.events)}
-    ${upcoming ? `<div class="card agenda">${upcoming}</div>` : d.feeds.length ? '<div class="card muted">Nothing in the next 7 days.</div>' : ''}
+    ${upcoming ? `<div class="card agenda">${upcoming}</div>` : d.feeds.length ? emptyState({ icon: 'calendar', title: 'A clear week', text: 'Nothing on your calendars in the next 7 days.', small: true }) : ''}
     <details class="card disclosure manage-cal"${manageOpen ? ' open' : ''}>
     <summary>${icon('calendar')}Manage calendars<span class="summary-count">${d.feeds.length} connected</span></summary>
     ${feeds ? `<div class="group flush">${feeds}</div>` : ''}
@@ -352,7 +352,7 @@ function seasonSection(s) {
     <div class="gh"><h2>Season ${g.season}</h2><span class="gh-count">Day ${s.seasonDay}${g.deaths ? `, ${g.deaths} ${g.deaths === 1 ? 'death' : 'deaths'} so far` : ''}</span></div>
     <div class="card season-card${g.hp <= 30 ? ' low' : ''}">
       <div class="season-top">
-        <div class="season-hp"><b>${g.hp}</b><span>of ${g.maxHp} HP</span></div>
+        <div class="season-hp"><b data-count="season-hp">${g.hp}</b><span>of ${g.maxHp} HP</span></div>
         <dl class="season-stats">
           <div><dt>This week</dt><dd><b>${w.cleanDays}</b> clean ${w.cleanDays === 1 ? 'day' : 'days'} of ${w.judgedDays}</dd></div>
           <div><dt>Pardons</dt><dd><b>${g.pardonsLeft}</b> left this month</dd></div>

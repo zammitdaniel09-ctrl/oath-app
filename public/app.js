@@ -3,8 +3,9 @@ import {
   $app, state, hooks, esc, ApiError, api, toast, react, act, form2obj, fmtClock, fmtDay, left, daysBetween, fmtMin,
   DAY_NAMES, scheduleText, CHECK, isStandalone, isIOS, haptic, bar, strengthChip, localToday, localNowHM,
   icon, rings, drawRings, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago, miniRing, keyBlock, rememberKey, safeColor,
-  urgency, URGENCY, brandMark,
+  urgency, URGENCY, brandMark, emptyState,
 } from './ui.js';
+import * as motion from './motion.js';
 import { parseCapture } from './parse.js';
 import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
 import { initData, loadDashboard, viewDashboard, dataClick, dataSubmit, AUTO_LABELS, autoValue } from './data.js';
@@ -30,14 +31,23 @@ function shell(inner) {
   // The Today tab carries a count of what is still open, so the next tick is never out of mind.
   const open = state.today?.progress?.open || 0;
   const badge = (id) => (id === 'today' && open ? `<b class="tab-badge"><span class="sr">, </span>${open}<span class="sr"> open</span></b>` : '');
-  const link = ([id, label, ic], extra = '') => `<a href="#/${id}" class="tab${extra}"${active === id || (extra && state.route === id) ? ' aria-current="page"' : ''}><span class="tab-ic">${icon(ic)}${badge(id)}</span><span>${label}</span></a>`;
+  // The selected tab carries a pill, which slides over from the last one (motion.js).
+  const link = ([id, label, ic], extra = '') => {
+    const on = active === id || (extra && state.route === id);
+    const pill = on && (!extra || wide) ? '<span class="tab-pill" aria-hidden="true"></span>' : '';
+    return `<a href="#/${id}" class="tab${extra}"${on ? ' aria-current="page"' : ''}><span class="tab-ic">${pill}${icon(ic)}${badge(id)}</span><span>${label}</span></a>`;
+  };
   const nav = TABS.map((t) => link(t)).join('');
   const more = WIDE_EXTRA.map((t) => link(t, ' wide-only')).join('');
-  $app.innerHTML = `<main class="page page-${state.route}">${inner}</main>
+  const m = motion.beforeShell();
+  // The compact bar the large title condenses into on scroll. Decorative: the h1 stays the heading.
+  const topbar = `<div class="topbar${m.condensed ? ' on' : ''}" aria-hidden="true"><a class="topbar-back" tabindex="-1" hidden></a><button type="button" class="topbar-title" tabindex="-1"></button></div>`;
+  $app.innerHTML = `${topbar}<main class="page page-${state.route}">${inner}</main>
     <nav class="tabbar" aria-label="Sections"><div class="tabbar-brand wide-only">${brandMark(30)}<span>Oath</span></div>${nav}${more}</nav>
     ${sheetHtml()}`;
   document.body.classList.toggle('sheet-open', Boolean(state.sheet || state.sheetNode || state.foodSheet));
   drawRings();
+  motion.afterShell(m);
 }
 
 function skeleton(title) {
@@ -88,7 +98,7 @@ function habitRow(i, t) {
       : '';
     // A fixed habit's row warms up as its deadline nears.
     const heat = i.flexible ? '' : ` u-${urgency(i.dueAt)}" data-due="${i.dueAt}`;
-    return `<button class="${cls}${heat}" data-action="keep" data-id="${i.id}">
+    return `<button class="${cls}${heat}" data-action="keep" data-id="${i.id}" data-key="h${i.id}">
       <span class="chk">${CHECK}</span>
       <span class="li-body"><span class="li-title">${relapse}${esc(i.title)}</span>
         <span class="li-sub">${cue}${when}${rulesNote}</span>${autoLine(i, t)}</span>
@@ -109,7 +119,7 @@ function habitRow(i, t) {
   } else if (i.status === 'pardoned') {
     meta = 'Pardoned. Streak kept, HP restored.';
   }
-  return `<div class="${cls}">
+  return `<div class="${cls}" data-key="h${i.id}">
     <span class="chk">${CHECK}</span>
     <span class="li-body"><span class="li-title">${esc(i.title)}</span><span class="li-sub">${meta}</span></span>
     ${side}
@@ -152,7 +162,7 @@ function taskRow(k, t) {
   if (k.status === 'open') {
     const l = k.heavy && k.dueAt && k.dueDate === t.today ? left(k.dueAt) : null;
     const heat = k.dueAt && k.dueDate === t.today ? ` u-${urgency(k.dueAt)}" data-due="${k.dueAt}` : '';
-    return `<button class="${cls}${heat}" data-action="task-done" data-id="${k.id}">
+    return `<button class="${cls}${heat}" data-action="task-done" data-id="${k.id}" data-key="t${k.id}">
       <span class="chk">${CHECK}</span>
       <span class="li-body"><span class="li-title">${tag}${esc(k.title)}</span>
         <span class="li-sub">${due}${l ? `, <span class="${l.cls}" data-left="${k.dueAt}">${l.text}</span>` : ''}${extras ? `, ${extras}` : ''}</span>
@@ -171,7 +181,7 @@ function taskRow(k, t) {
     meta = 'Pardoned.';
     actions = `<button class="btn tinted small" data-action="task-done" data-id="${k.id}">Mark done</button>`;
   }
-  return `<div class="${cls}">
+  return `<div class="${cls}" data-key="t${k.id}">
     <span class="chk">${CHECK}</span>
     <span class="li-body"><span class="li-title">${tag}${esc(k.title)}</span><span class="li-sub">${meta}</span></span>
     <span class="li-side"></span>
@@ -237,10 +247,10 @@ function ringsCard(t) {
   return `<section class="card rings-card${lowHp ? ' low' : ''}${ticked ? ' ticked' : ''}">
     <div class="rings-hero">
       ${rings([{ pct: hpPct, cls: 'r-hp' }, { pct: dayPct, cls: 'r-day' }, { pct: third.pct, cls: 'r-move' }], 200)}
-      <div class="rings-center" aria-hidden="true"><b>${g.hp}</b><span>HP</span></div>
+      <div class="rings-center" aria-hidden="true"><b data-count="hp">${g.hp}</b><span>HP</span></div>
     </div>
     <div class="legend">
-      <div class="lg r-hp${lowHp ? ' low' : ''}"><span class="lg-label">HP</span><span class="lg-val">${g.hp}<small>/${g.maxHp}</small></span><span class="lg-sub">Season ${g.season}, day ${seasonDay}</span></div>
+      <div class="lg r-hp${lowHp ? ' low' : ''}"><span class="lg-label">HP</span><span class="lg-val" data-count="hp-legend">${g.hp}<small>/${g.maxHp}</small></span><span class="lg-sub">Season ${g.season}, day ${seasonDay}</span></div>
       <div class="lg r-day"><span class="lg-label">Today</span><span class="lg-val">${t.progress.done}<small>/${total}</small></span><span class="lg-sub">${total ? (t.progress.atStake ? `${t.progress.atStake} HP still at stake` : 'Nothing left at stake') : 'Nothing due today'}</span></div>
       <div class="lg r-move"><span class="lg-label">${third.label}</span><span class="lg-val">${third.val}<small>${third.of}</small></span><span class="lg-sub">${third.sub}</span></div>
     </div>
@@ -266,6 +276,34 @@ function oathView(t) {
       <button type="submit" class="btn chrome big">Take the oath</button>
     </form>
   </section>`;
+}
+
+// "Not now" needs a reason. The same form serves Up next and a row swiped to the left.
+function dodgeForm(n) {
+  const chips = REASONS.map((r) => `<label class="chip"><input type="radio" name="reason" value="${esc(r)}"><span>${esc(r)}</span></label>`).join('');
+  return `${n.minimum ? `<button class="btn primary big wide" data-action="keep-minimum" data-id="${n.id}">Do the minimum now: ${esc(n.minimum)}</button>
+      <p class="note">The minimum saves the HP and the streak. It does not earn the clean-day bonus.</p>` : ''}
+    <form data-form="defer" data-kind="${n.kind}" data-id="${n.id}">
+      <fieldset class="chips"><legend>Why not now</legend>${chips}</fieldset>
+      <label class="field"><span>Or in your own words</span><input class="input" name="own" maxlength="300" autocomplete="off"></label>
+      ${n.kind === 'task' && !n.heavy ? '<label class="check"><input type="checkbox" name="move"> Move it to tomorrow</label>' : `<p class="note">${n.kind === 'habit' ? 'Habits cannot be moved.' : 'Hard tasks cannot be moved.'} The deadline stays ${n.deadline || '23:59'}.</p>`}
+      <div class="now-actions">
+        <button class="btn tinted" type="submit">Log it</button>
+        <button class="btn tinted" type="button" data-action="dodge-cancel">Back, I will do it</button>
+      </div>
+    </form>`;
+}
+
+// The item behind a swiped row, in the shape dodgeForm wants.
+function dodgeItem(ref) {
+  const t = state.today;
+  if (!t || !ref) return null;
+  if (ref.kind === 'habit') {
+    const i = t.items.find((x) => x.id === ref.id && x.status === 'open');
+    return i && { kind: 'habit', id: i.id, title: i.title, minimum: i.minimum, heavy: i.heavy, deadline: i.deadline };
+  }
+  const k = [...t.tasks, ...t.anytime].find((x) => x.id === ref.id && x.status === 'open');
+  return k && { kind: 'task', id: k.id, title: k.title, heavy: k.heavy, deadline: k.deadline };
 }
 
 function nowPanel(t) {
@@ -299,23 +337,11 @@ function nowPanel(t) {
   else if (n.dueAt) metaParts.push(`Due ${dueLabel(n.deadline)}`);
   else metaParts.push('No deadline');
   if (n.heavy) metaParts.push(`${n.penalty} HP at stake`);
-  const isTask = n.kind === 'task';
   if (state.dodging && state.dodging.kind === n.kind && state.dodging.id === n.id) {
-    const chips = REASONS.map((r) => `<label class="chip"><input type="radio" name="reason" value="${esc(r)}"><span>${esc(r)}</span></label>`).join('');
     return `<section class="card now dodging">
       <p class="eyebrow">Not now?</p>
       <h2 class="now-title">${esc(n.title)}</h2>
-      ${n.minimum ? `<button class="btn primary big wide" data-action="keep-minimum" data-id="${n.id}">Do the minimum now: ${esc(n.minimum)}</button>
-        <p class="note">The minimum saves the HP and the streak. It does not earn the clean-day bonus.</p>` : ''}
-      <form data-form="defer" data-kind="${n.kind}" data-id="${n.id}">
-        <fieldset class="chips"><legend>Why not now</legend>${chips}</fieldset>
-        <label class="field"><span>Or in your own words</span><input class="input" name="own" maxlength="300" autocomplete="off"></label>
-        ${isTask && !n.heavy ? '<label class="check"><input type="checkbox" name="move"> Move it to tomorrow</label>' : `<p class="note">${n.kind === 'habit' ? 'Habits cannot be moved.' : 'Hard tasks cannot be moved.'} The deadline stays ${n.deadline || '23:59'}.</p>`}
-        <div class="now-actions">
-          <button class="btn tinted" type="submit">Log it</button>
-          <button class="btn tinted" type="button" data-action="dodge-cancel">Back, I will do it</button>
-        </div>
-      </form>
+      ${dodgeForm(n)}
     </section>`;
   }
   const durs = DURATIONS.map((d) => `<button type="button" class="${state.focusMinutes === d ? 'on' : ''}" data-action="dur" data-min="${d}" aria-pressed="${state.focusMinutes === d}">${d}</button>`).join('');
@@ -330,13 +356,13 @@ function nowPanel(t) {
   const p = t.progress;
   const heat = n.dueAt ? ` u-${urgency(n.dueAt)}" data-due="${n.dueAt}` : ' u-calm';
   const toGo = p.total - p.done;
-  return `<section class="card now${n.isFocus ? ' is-focus' : ''}${n.missedLast ? ' relapse' : ''}${heat}">
+  return `<section class="card now${n.isFocus ? ' is-focus' : ''}${n.missedLast ? ' relapse' : ''}${heat}" data-next="${n.kind}:${n.id}">
     <div class="now-top"><p class="eyebrow">${icon(n.isFocus ? 'focus' : 'bolt')}${label}</p>${l ? `<span class="now-left ${l.cls}" data-left="${n.dueAt}">${l.text}</span>` : ''}</div>
     <h2 class="now-title">${esc(n.title)}</h2>
     <p class="now-meta">${metaParts.join(', ')}</p>
     ${sub.length ? `<p class="now-cue">${sub.join('<br>')}</p>` : ''}
     <div class="now-progress">
-      <div class="np-bar" aria-hidden="true"><i style="width:${p.total ? Math.round((p.done / p.total) * 100) : 0}%"></i></div>
+      <div class="np-bar" aria-hidden="true"><i data-grow="day" style="width:${p.total ? Math.round((p.done / p.total) * 100) : 0}%"></i></div>
       <span><b>${p.done} of ${p.total}</b> done · ${toGo} to go${p.atStake ? ` · <b class="np-hp">${p.atStake} HP</b> at stake` : ''}</span>
     </div>
     <div class="now-actions">
@@ -558,21 +584,31 @@ function nextDock(t) {
   const n = t.next;
   if (!n || t.focus) return '';
   const l = n.dueAt ? left(n.dueAt) : null;
-  return `<div class="next-dock u-${urgency(n.dueAt)}"${n.dueAt ? ` data-due="${n.dueAt}"` : ''} id="next-dock" role="region" aria-label="Up next" hidden>
+  // A redraw keeps the dock where it was, so it never blinks out and back in after a tick.
+  return `<div class="next-dock u-${urgency(n.dueAt)}"${n.dueAt ? ` data-due="${n.dueAt}"` : ''} id="next-dock" role="region" aria-label="Up next" data-next="${n.kind}:${n.id}"${dockShown ? '' : ' hidden'}>
     <span class="dock-text"><span class="dock-label">Up next</span><b>${esc(n.title)}</b>${l ? `<span class="dock-left ${l.cls}" data-left="${n.dueAt}">${l.text}</span>` : ''}</span>
     <button class="btn chrome small" data-action="now-done" data-kind="${n.kind}" data-id="${n.id}">${icon('check')}Done</button>
   </div>`;
 }
 
 let nowWatcher = null;
+let dockShown = false;
 function watchNow() {
   nowWatcher?.disconnect();
   nowWatcher = null;
   const card = document.querySelector('.page-today .now');
   const dock = document.getElementById('next-dock');
-  if (!card || !dock || !('IntersectionObserver' in window)) return;
+  if (!card || !dock || !('IntersectionObserver' in window)) {
+    dockShown = false;
+    return;
+  }
   // Shown only once the card has scrolled up and away, never while it is still below the fold.
-  nowWatcher = new IntersectionObserver(([e]) => { dock.hidden = e.isIntersecting || e.boundingClientRect.top > 0; });
+  nowWatcher = new IntersectionObserver(([e]) => {
+    if (!card.isConnected) return; // the card was drawn over: the new one has its own watcher
+    const show = !(e.isIntersecting || e.boundingClientRect.top > 0);
+    if (show !== dockShown || show === dock.hidden) motion.dock(dock, show);
+    dockShown = show;
+  });
   nowWatcher.observe(card);
 }
 
@@ -853,7 +889,7 @@ function viewPlan() {
     <div class="pane-habits">
       <section class="section"><div class="gh"><h2>Habits</h2><button class="gh-link" data-action="sheet" data-kind="habit">New habit</button></div>
         ${budgetNote(p.settings)}
-        ${habits || `<div class="card empty"><h3>No habits yet</h3><p class="muted">Start with two or three, each tied to something you already do every day.</p><div class="form-actions"><button class="btn primary" data-action="sheet" data-kind="habit">Add the first habit</button></div></div>`}
+        ${habits || emptyState({ icon: 'plan', title: 'No habits yet', text: 'Start with two or three, each tied to something you already do every day.', actions: '<button class="btn primary" data-action="sheet" data-kind="habit">Add the first habit</button>' })}
       </section>
       ${restCard(p)}
     </div>
@@ -876,7 +912,7 @@ function sheetHtml() {
   if (s.kind === 'coach') {
     title = 'Coach';
     const said = `<div class="msg user"><span class="msg-text">${esc(s.text)}</span></div>`;
-    body = `<div class="chat coach-sheet">${said}${s.reply ? coachMessage(s.reply) : '<div class="msg assistant typing" aria-label="The coach is writing"><i></i><i></i><i></i></div>'}</div>
+    body = `<div class="chat coach-sheet">${said}${s.reply ? coachMessage(s.reply) : TYPING}</div>
       <div class="form-actions"><a class="btn tinted" href="#/coach">${icon('coach')}Open the chat</a><button class="btn plain" type="button" data-action="sheet-dismiss">Close</button></div>`;
   } else if (s.kind === 'habit') {
     const h = s.id ? state.plan?.habits.find((x) => x.id === s.id) : null;
@@ -886,6 +922,11 @@ function sheetHtml() {
     const k = s.id ? state.plan?.tasks.find((x) => x.id === s.id) : null;
     title = k ? 'Edit task' : 'New task';
     body = taskForm(k);
+  } else if (s.kind === 'dodge') {
+    const n = dodgeItem(s.ref);
+    if (!n) return '';
+    title = 'Not now?';
+    body = `<div class="dodge-sheet"><p class="dodge-title">${esc(n.title)}</p>${dodgeForm(n)}</div>`;
   } else {
     return '';
   }
@@ -911,11 +952,19 @@ function coachMessage(m) {
   return `<div class="msg ${m.role}"><span class="msg-text">${esc(m.text)}</span>${receipts}${pending}${m.at ? `<time>${fmtClock(m.at)}</time>` : ''}</div>`;
 }
 
+// The coach thinking: three dots in a bubble of its own.
+const TYPING = '<div class="msg assistant typing" role="status"><span class="sr">The coach is writing</span><i></i><i></i><i></i></div>';
+
+// One tap for the things most often asked.
+const QUICK = ['What\'s next?', 'Plan my day', 'How am I doing?', 'Log food'];
+
 function viewCoach() {
   const c = state.coach;
   if (!c) return shell(skeleton('Coach'));
   const msgs = c.messages.map(coachMessage).join('');
   const ask = state.query.get('ask') || '';
+  const empty = emptyState({ icon: 'coach', title: 'Talk to your coach', text: 'Ask for a plan, report a slip, or say what you are avoiding. It sees your HP, deadlines, habit strength, goals, calendar, Apple Health, dodges and pardon reasons.' });
+  const quick = QUICK.map((q) => `<button type="button" class="qchip" data-action="coach-quick" data-text="${esc(q)}"${state.sending ? ' disabled' : ''}>${esc(q)}</button>`).join('');
   shell(`${pageHead('Coach', { over: c.aiEnabled ? 'Claude, with your whole day in view' : 'Offline', actions: iconLink('#/settings', 'settings', 'Settings') })}
       ${c.aiEnabled ? '' : '<div class="banner warn">The coach is offline. It needs an Anthropic API key in the app\'s Railway variables. Briefs still arrive with plain numbers until then.</div>'}
       <div class="brief-buttons">
@@ -923,15 +972,17 @@ function viewCoach() {
         <button class="btn tinted small" data-action="brief" data-kind="midday">${icon('clock')}Midday check</button>
         <button class="btn tinted small" data-action="brief" data-kind="evening">${icon('moon')}Evening check</button>
       </div>
-      <div class="chat" id="chat">${msgs || '<p class="muted chat-empty">Ask for a plan, report a slip, or tell it what you are avoiding. It sees your HP, deadlines, habit strength, goals, calendar, Apple Health, dodges and pardon reasons.</p>'}
-        ${state.sending ? '<div class="msg assistant typing"><i></i><i></i><i></i></div>' : ''}</div>
-      <form class="composer" data-form="coach">
-        <label class="sr" for="coach-text">Message</label>
-        <textarea id="coach-text" class="input" name="text" rows="1" maxlength="4000" placeholder="Message the coach" required>${esc(ask)}</textarea>
-        <button class="btn primary send" type="submit" aria-label="Send"${state.sending ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
-      </form>`);
-  const chat = document.getElementById('chat');
-  if (chat) chat.lastElementChild?.scrollIntoView({ block: 'end' });
+      <div class="chat" id="chat">${msgs || empty}${state.sending ? TYPING : ''}</div>
+      <div class="composer-dock">
+        <div class="quick-replies" role="group" aria-label="Quick replies">${quick}</div>
+        <form class="composer" data-form="coach">
+          <label class="sr" for="coach-text">Message</label>
+          <textarea id="coach-text" class="input" name="text" rows="1" maxlength="4000" placeholder="Message the coach" required>${esc(ask)}</textarea>
+          <button class="btn primary send" type="submit" aria-label="Send"${state.sending ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+        </form>
+      </div>`);
+  // The chat ends at the composer, so the newest message sits just above it.
+  motion.chatToEnd();
 }
 
 // ---------- Review ----------
@@ -1008,7 +1059,7 @@ function viewReview() {
       <section class="section"><div class="gh"><h2>This week so far</h2></div><div class="card">${weekStats(r.thisWeek)}</div></section>
       ${stale ? `<section class="section"><div class="gh"><h2>Clear the backlog</h2><span class="gh-count">${r.stale.length}</span></div><div class="card triage">${stale}</div></section>` : ''}
       <section class="section"><div class="gh"><h2>Habit strength</h2></div>
-        ${strengthRows ? `<div class="group">${strengthRows}</div>` : '<div class="card muted">No habits yet.</div>'}
+        ${strengthRows ? `<div class="group">${strengthRows}</div>` : emptyState({ icon: 'plan', title: 'No habits yet', text: 'Strength builds with every repetition once you add one.', small: true })}
       </section>
       <section class="section"><div class="gh"><h2>HP, last 30 days</h2></div><div class="card">${hpBars(days, 30)}</div></section>
     </div><aside>
@@ -1187,37 +1238,237 @@ function viewSettings() {
 
 // ---------- Gate ----------
 
-// The face of Oath: the mark, the chrome wordmark and the promise.
-function brandLockup() {
-  return `<div class="brand-lockup">${brandMark(76, 'gate-mark')}<div class="wordmark">Oath</div><p class="tagline">Keep your word.</p></div>`;
+// The face of Oath: the mark, the chrome wordmark and the promise, centred.
+function brandLockup(size = 76) {
+  return `<div class="brand-lockup">${brandMark(size, 'gate-mark')}<div class="wordmark">Oath</div><p class="tagline">Keep your word.</p></div>`;
 }
 
-// The way in. With Face ID only, it is a lock screen that starts Face ID by itself, with the
-// password and recovery code tucked away for the day Face ID is lost. Otherwise it is the password,
-// with Face ID offered once a passkey exists.
-function renderLogin(session = null) {
+const pause = (ms) => new Promise((r) => setTimeout(r, ms));
+const calmMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- The lock screen ----------
+//
+// With Face ID only, Oath opens on a lock screen that asks for Face ID by itself, on launch and each
+// time the app comes back from the background. What the platform allows, from WebKit's own source
+// (AuthenticatorCoordinator.cpp): navigator.credentials.get() needs no tap, but a page that is not
+// focused is refused at once with NotAllowedError, and a newer request cancels the one before it.
+// iOS 16 to 17.3 gave each page load one free prompt; 17.4 and later dropped the tap rule altogether.
+// So the app waits for focus, asks once per cycle, runs one prompt at a time, and never retries on
+// its own after a refusal or a cancel: the next try is a tap anywhere, or the next return from the
+// background. States, set on .lock[data-state]: scanning (waiting for Face ID), idle (refused or
+// cancelled, button and tap-anywhere offered), unlocking (verified, fading into the app), error and
+// offline. The layout is the same in every state, so nothing moves between them.
+const door = { busy: false, ctl: null, started: 0, cycle: 0, disarm: null, preparing: null, refresh: 0, locking: null };
+
+const lockEl = () => document.querySelector('.gate.lock');
+
+function scanText() {
+  const d = deviceName();
+  return d === 'iPhone' || d === 'iPad' ? `Look at your ${d}.` : 'Confirm it is you.';
+}
+
+const LOCK_TEXT = {
+  scanning: scanText,
+  idle: () => 'Tap to unlock.',
+  unlocking: () => 'Unlocked.',
+  offline: () => 'No connection. Oath needs one to check Face ID.',
+  error: () => 'Face ID did not go through. Tap to try again.',
+};
+
+function setLock(phase, text) {
+  clearTimeout(door.refresh);
+  // A tap may come minutes later: keep a fresh challenge ready so the tap goes straight to Face ID.
+  if (phase === 'idle' || phase === 'error') door.refresh = setTimeout(() => prepareFaceIdLogin({ force: true }).catch(() => {}), 3 * 60000);
+  const root = lockEl();
+  if (!root) return;
+  root.dataset.state = phase;
+  const status = root.querySelector('.lock-status');
+  if (status) status.textContent = text ?? LOCK_TEXT[phase]();
+  const label = root.querySelector('.lock-btn-label');
+  if (label) label.textContent = phase === 'offline' ? 'Try again' : 'Unlock with Face ID';
+}
+
+function showLock({ auto = true, offline = false } = {}) {
+  if (lockEl()) return;
+  abortFaceId();
+  // Nothing of the day stays in memory behind the lock.
+  Object.assign(state, {
+    today: null, plan: null, review: null, coach: null, goals: null, goal: null, settings: null,
+    sheet: null, sheetNode: null, sheetMode: null, foodSheet: null, dodging: null, pardoning: null, editingGoal: false,
+  });
+  document.body.classList.remove('sheet-open');
+  window.scrollTo(0, 0);
+  const phase = offline ? 'offline' : auto ? 'scanning' : 'idle';
+  $app.classList.remove('enter');
+  $app.innerHTML = `<div class="gate lock" data-state="${phase}">
+    ${brandLockup(84)}
+    <div class="lock-stage">
+      <div class="lock-glyph" aria-hidden="true">${icon('faceid')}</div>
+      <p class="lock-status" role="status" aria-live="polite">${esc(LOCK_TEXT[phase]())}</p>
+      <div class="lock-action"><button class="btn chrome big wide" type="button" data-action="faceid-login">${icon('faceid')}<span class="lock-btn-label">${offline ? 'Try again' : 'Unlock with Face ID'}</span></button></div>
+    </div>
+    <details class="recover"><summary>Lost Face ID?</summary>
+      <form data-form="login">
+        <label class="field"><span>Password</span><input class="input" type="password" name="password" autocomplete="current-password" required></label>
+        <label class="field"><span>Recovery code (SETUP_CODE in Railway)</span><input class="input" name="recovery" autocomplete="off" required></label>
+        <div class="form-actions"><button class="btn primary big wide" type="submit">Open with password</button></div>
+      </form>
+      <p class="note bad" id="gate-error" role="alert" hidden></p></details>
+  </div>`;
+  const root = lockEl();
+  // A tap anywhere on the lock screen starts Face ID, straight from the tap so iOS allows it.
+  root.addEventListener('click', (e) => {
+    if (e.target.closest('details, a, input, label')) return;
+    e.stopPropagation();
+    if (['idle', 'error', 'offline'].includes(root.dataset.state)) faceIdLogin();
+  });
+  if (phase === 'scanning') armAutoFaceId();
+  else if (phase === 'idle') { prepareFaceIdLogin().catch(() => {}); setLock('idle'); }
+}
+
+// Locks the open app in place, with no reload and no flash of the day, and asks for Face ID.
+function lockApp() {
+  showLock();
+  // The server locks its own session too, so an app closed before unlocking leaves nothing open.
+  door.locking = api('POST', '/api/lock', {}).catch(() => {});
+}
+
+// Starts Face ID by itself, once, as soon as the page can show it. delay: a beat for an aborted
+// prompt to clear first, so two are never open together.
+function armAutoFaceId({ delay = 0 } = {}) {
+  const cycle = ++door.cycle;
+  if (door.disarm) door.disarm();
+  const start = () => {
+    if (door.disarm) door.disarm();
+    if (cycle === door.cycle && lockEl()) faceIdLogin({ auto: true });
+  };
+  if (document.visibilityState !== 'visible') return; // the visibility handler arms it on return
+  prepareFaceIdLogin().catch(() => {});
+  if (document.hasFocus()) {
+    if (delay) setTimeout(start, delay); else start();
+    return;
+  }
+  // WebKit refuses a prompt while the page is not focused, so wait for focus rather than burn the try.
+  const timer = setTimeout(start, 2000);
+  const onFocus = () => start();
+  window.addEventListener('focus', onFocus);
+  door.disarm = () => { clearTimeout(timer); window.removeEventListener('focus', onFocus); door.disarm = null; };
+}
+
+function abortFaceId() {
+  if (door.disarm) door.disarm();
+  door.cycle += 1;
+  if (door.ctl) door.ctl.abort();
+  door.ctl = null;
+  door.busy = false;
+}
+
+// The app is back in front with the lock screen up: ask again, unless a prompt has only just opened.
+function resumeLock() {
+  const root = lockEl();
+  if (!root || root.dataset.state === 'unlocking') return;
+  if (door.busy && Date.now() - door.started < 3000) return;
+  abortFaceId();
+  setLock('scanning');
+  armAutoFaceId({ delay: 150 });
+}
+
+// The server's challenge, fetched ahead so a tap goes straight to Face ID. Challenges last five minutes.
+function prepareFaceIdLogin({ force = false } = {}) {
+  if (!window.PublicKeyCredential) return Promise.reject(new Error('Face ID is not available.'));
+  if (!force && fresh(state.faceIdLogin)) return Promise.resolve(state.faceIdLogin);
+  if (!door.preparing) {
+    door.preparing = api('POST', '/api/passkey/login/options', {})
+      .then((options) => { state.faceIdLogin = { options, at: Date.now() }; return state.faceIdLogin; })
+      .finally(() => { door.preparing = null; });
+  }
+  return door.preparing;
+}
+
+// One prompt at a time. auto: started by the app rather than by a tap. A refused or cancelled try
+// leaves the button and the tap, and nothing else: no retry loop.
+async function faceIdLogin({ auto = false } = {}) {
+  if (door.busy) return;
+  if (!window.PublicKeyCredential) {
+    const msg = 'This browser cannot use Face ID. Open Oath from the Home Screen on your iPhone.';
+    if (lockEl()) setLock('error', msg); else gateError(msg);
+    return;
+  }
+  door.busy = true;
+  door.started = Date.now();
+  const ctl = new AbortController();
+  door.ctl = ctl;
+  const current = () => door.ctl === ctl;
+  setLock('scanning');
+  const slotBtn = document.querySelector('#faceid-slot button');
+  if (slotBtn) slotBtn.disabled = true;
+  let cred;
+  try {
+    const pre = fresh(state.faceIdLogin) ? state.faceIdLogin : await prepareFaceIdLogin();
+    state.faceIdLogin = null;
+    cred = await navigator.credentials.get({ publicKey: getOptions(pre.options), signal: ctl.signal });
+    await door.locking;
+    await api('POST', '/api/passkey/login', { response: credentialJSON(cred) });
+  } catch (err) {
+    if (!current() || err.name === 'AbortError') return;
+    door.busy = false;
+    door.ctl = null;
+    if (slotBtn) slotBtn.disabled = false;
+    prepareFaceIdLogin({ force: true }).catch(() => {});
+    const quick = Date.now() - door.started < 700;
+    let phase = 'idle';
+    let text = 'Face ID could not start. Tap to try again.';
+    if (err.status === 0) { phase = 'offline'; text = LOCK_TEXT.offline(); }
+    else if (err.status === 429) { phase = 'error'; text = err.message; }
+    else if (err.status) { phase = 'error'; text = LOCK_TEXT.error(); }
+    else if (err.name === 'NotAllowedError') text = auto && quick ? 'Tap to unlock.' : 'Face ID was cancelled. Tap to try again.';
+    if (lockEl()) setLock(phase, text); else gateError(text);
+    return;
+  }
+  door.busy = false;
+  door.ctl = null;
+  setLock('unlocking');
+  await enterApp();
+}
+
+// Verified. The day loads behind the lock, the lock dissolves, and the app fades in.
+async function enterApp(hash) {
+  const calm = calmMotion();
+  const gate = document.querySelector('.gate');
+  if (hash && location.hash !== hash) history.replaceState(null, '', hash);
+  else if (!location.hash) history.replaceState(null, '', '#/today');
+  parseHash();
+  state.dirty = true; // keeps the side loaders from swapping the screen before it is ready
+  const loading = load(state.route).then(() => null, (err) => err);
+  const [err] = await Promise.all([loading, calm ? null : pause(320)]);
+  if (gate && !calm) {
+    gate.classList.add('leaving');
+    await pause(200);
+  }
+  if (err) await go(); else render();
+  if (!calm) {
+    $app.classList.add('enter');
+    setTimeout(() => $app.classList.remove('enter'), 500);
+  }
+  resyncPush();
+}
+
+// The way in. With Face ID only, it is the lock screen. Otherwise it is the password, with Face ID
+// offered once a passkey exists. auto: false for a person who has just logged out on purpose.
+function renderLogin(session = null, { auto = true } = {}) {
   if (!session) {
-    api('GET', '/api/session').then((s) => renderLogin(s)).catch(() => renderLogin({}));
+    api('GET', '/api/session').then((s) => renderLogin(s, { auto })).catch((err) => {
+      if (err.status === 0 && lockModeRemembered()) showLock({ offline: true });
+      else renderLogin({}, { auto });
+    });
     return;
   }
   rememberLockMode(session.faceIdOnly);
   if (session.faceIdOnly) {
-    $app.innerHTML = `<div class="gate">
-      ${brandLockup()}
-      <p>${session.locked ? 'Locked. ' : ''}Look at your iPhone to open it, <em class="serif">Daniel</em>.</p>
-      <div id="faceid-slot"><button class="btn chrome big wide" type="button" data-action="faceid-login">${icon('faceid')}Open with Face ID</button></div>
-      <p class="note bad" id="gate-error" role="alert" hidden></p>
-      <details class="recover"><summary>Lost Face ID?</summary>
-        <form data-form="login">
-          <label class="field"><span>Password</span><input class="input" type="password" name="password" autocomplete="current-password" required></label>
-          <label class="field"><span>Recovery code (SETUP_CODE in Railway)</span><input class="input" name="recovery" autocomplete="off" required></label>
-          <div class="form-actions"><button class="btn primary big wide" type="submit">Open with password</button></div>
-        </form></details>
-    </div>`;
-    const btn = document.querySelector('[data-action="faceid-login"]');
-    if (btn) faceIdLogin(btn, { auto: true });
+    showLock({ auto });
     return;
   }
+  abortFaceId();
   $app.innerHTML = `<div class="gate">
     ${brandLockup()}
     <p>Welcome back, <em class="serif">Daniel</em>. Log in to see today.</p>
@@ -1227,7 +1478,17 @@ function renderLogin(session = null) {
       <div class="form-actions"><button class="btn primary big wide" type="submit">Log in</button></div>
       <p class="note bad" id="gate-error" role="alert" hidden></p>
     </form></div>`;
-  if (session.faceId) prepareFaceIdLogin();
+  if (session.faceId) offerFaceId();
+}
+
+// The password screen's Face ID button, once a challenge is ready.
+async function offerFaceId() {
+  try { await prepareFaceIdLogin(); } catch { return; }
+  const slot = document.getElementById('faceid-slot');
+  if (!slot || slot.querySelector('button')) return;
+  slot.innerHTML = `<button class="btn chrome big wide" type="button" data-action="faceid-login">${icon('faceid')}Log in with Face ID</button>
+    <p class="note">Or use your password.</p>`;
+  slot.querySelector('button').addEventListener('click', (e) => { e.stopPropagation(); faceIdLogin(); });
 }
 
 // Remembered on the phone so a launch without signal does not show a cached day past the lock.
@@ -1238,7 +1499,8 @@ function rememberLockMode(on) {
 function lockModeRemembered() {
   try { return localStorage.getItem('oath.faceIdOnly') === '1'; } catch { return false; }
 }
-hooks.onUnauthed = renderLogin;
+// A stray 401 behind a gate that is already up must not rebuild it, or Face ID would start over.
+hooks.onUnauthed = () => { if (!document.querySelector('.gate')) renderLogin(); };
 
 function renderSetup(code) {
   $app.innerHTML = `<div class="gate">
@@ -1357,9 +1619,14 @@ function parseHash() {
   state.query = new URLSearchParams(qs || '');
 }
 
-async function go() {
+// top: a new screen starts at the top (scrolled inside the transition, so the old screen leaves from
+// where it was). native: the browser already animated this step, as with a swipe back in Safari.
+async function go({ top = false, native = false } = {}) {
   parseHash();
-  render();
+  motion.navigate(() => {
+    if (top) window.scrollTo({ top: 0 });
+    render();
+  }, { native });
   try {
     await load(state.route);
     render();
@@ -1497,46 +1764,9 @@ function deviceName() {
   return 'This device';
 }
 
-// iOS only shows Face ID when the request comes straight from a tap, so the server's challenge is
-// fetched ahead of time and the tap goes straight to Face ID. Challenges last five minutes.
+// iOS used to show Face ID only for a request that came straight from a tap, so a challenge fetched
+// ahead of time goes straight to Face ID. Challenges last five minutes. (Login: see the lock screen.)
 const fresh = (pre) => pre && Date.now() - pre.at < 4 * 60000;
-
-async function prepareFaceIdLogin() {
-  if (!window.PublicKeyCredential) return;
-  try {
-    state.faceIdLogin = { options: await api('POST', '/api/passkey/login/options', {}), at: Date.now() };
-    const slot = document.getElementById('faceid-slot');
-    if (slot && !slot.querySelector('[data-action="faceid-login"]')) {
-      slot.innerHTML = `<button class="btn chrome big wide" type="button" data-action="faceid-login">${icon('faceid')}Log in with Face ID</button>
-        <p class="note">Or use your password.</p>`;
-    }
-  } catch { /* the password still works */ }
-}
-
-// auto: started by the app as it opens rather than by a tap. iOS allows that for the first Face ID
-// request after a page loads; if it refuses, the button stays for a tap, with no error shown.
-async function faceIdLogin(el, { auto = false } = {}) {
-  if (!window.PublicKeyCredential) {
-    gateError('This browser cannot use Face ID. Open Oath from the Home Screen on your iPhone.');
-    return;
-  }
-  el.disabled = true;
-  try {
-    const pre = fresh(state.faceIdLogin) ? state.faceIdLogin : { options: await api('POST', '/api/passkey/login/options', {}) };
-    state.faceIdLogin = null;
-    const cred = await navigator.credentials.get({ publicKey: getOptions(pre.options) });
-    await api('POST', '/api/passkey/login', { response: credentialJSON(cred) });
-    location.hash = location.hash || '#/today';
-    await go();
-    resyncPush();
-  } catch (err) {
-    if (!(auto && err.name === 'NotAllowedError')) {
-      gateError(err.name === 'NotAllowedError' ? 'Face ID was cancelled. Tap to try again.' : err.message);
-    }
-    el.disabled = false;
-    prepareFaceIdLogin();
-  }
-}
 
 async function faceIdAdd(el) {
   el.disabled = true;
@@ -1630,10 +1860,12 @@ async function keepHabit(el, id, minimum = false) {
   const row = el.closest('.li');
   haptic();
   if (row) row.classList.add('kept', 'pending');
+  motion.ticked(row);
   el.disabled = true;
   const ok = await act(() => api('POST', `/api/habits/${id}/keep`, { minimum }));
   if (ok) {
     state.dodging = null;
+    if (state.sheet?.kind === 'dodge') state.sheet = null;
     await afterTick(ok.reaction);
   } else {
     if (row) row.classList.remove('kept', 'pending');
@@ -1654,7 +1886,10 @@ async function coachChangedThings(reply) {
 // After a tick: the Today ring pulses, the day is reloaded, and the reaction says how much is left.
 async function afterTick(reaction, current = false) {
   state.justTicked = true;
-  if (current) await refreshCurrent(); else await refreshToday();
+  // The day reloads while the check finishes drawing; then the list settles into its new order.
+  const other = current && state.route !== 'today';
+  await Promise.all([other ? load(state.route) : fetchToday(), motion.tickSettled()]);
+  if (other || state.route === 'today') render();
   const open = state.today?.progress?.open;
   const tail = open === 0 ? ' Everything due today is done.' : open ? ` ${open} to go.` : '';
   if (reaction?.text) react({ ...reaction, text: `${reaction.text}${tail}` });
@@ -1691,6 +1926,7 @@ $app.addEventListener('click', async (e) => {
     haptic();
     const row = el.closest('.li');
     if (row) row.classList.add('done', 'pending');
+    motion.ticked(row);
     const ok = await act(() => api('POST', `/api/tasks/${id}/done`, {}));
     if (ok) await afterTick(ok.reaction, true); else if (row) row.classList.remove('done', 'pending');
   } else if (a === 'task-undo') {
@@ -1714,16 +1950,33 @@ $app.addEventListener('click', async (e) => {
   } else if (a === 'now-done') {
     el.disabled = true;
     haptic();
+    // Its row in the list ticks at the same moment, so both places agree.
+    const row = $app.querySelector(`.group > [data-key="${el.dataset.kind === 'habit' ? 'h' : 't'}${id}"]`);
+    const cls = el.dataset.kind === 'habit' ? 'kept' : 'done';
+    row?.classList.add(cls, 'pending');
+    motion.ticked(row);
     const path = el.dataset.kind === 'habit' ? `/api/habits/${id}/keep` : `/api/tasks/${id}/done`;
     const r = await act(() => api('POST', path, {}));
-    if (r) await afterTick(r.reaction); else el.disabled = false;
+    if (r) await afterTick(r.reaction);
+    else {
+      el.disabled = false;
+      row?.classList.remove(cls, 'pending');
+    }
   } else if (a === 'not-now') {
     state.dodging = { kind: el.dataset.kind, id };
     render();
   } else if (a === 'dodge-cancel') {
     state.dodging = null;
+    if (state.sheet?.kind === 'dodge') state.sheet = null;
     toast('Good. Start it now.');
     render();
+  } else if (a === 'coach-quick') {
+    // A quick reply goes out as if typed.
+    const form = $app.querySelector('form[data-form="coach"]');
+    const box = form?.elements.namedItem('text');
+    if (!box || state.sending) return;
+    box.value = el.dataset.text;
+    form.requestSubmit();
   } else if (a === 'plan-tab') {
     state.planTab = el.dataset.tab;
     render();
@@ -1806,7 +2059,7 @@ $app.addEventListener('click', async (e) => {
   } else if (a === 'retry') {
     location.reload();
   } else if (a === 'faceid-login') {
-    await faceIdLogin(el);
+    await faceIdLogin();
   } else if (a === 'faceid-add') {
     await faceIdAdd(el);
   } else if (a === 'faceid-lock') {
@@ -1838,7 +2091,7 @@ $app.addEventListener('click', async (e) => {
   } else if (a === 'logout') {
     await act(() => api('POST', '/api/logout', {}));
     try { localStorage.removeItem(TODAY_CACHE); } catch { /* storage unavailable */ }
-    renderLogin();
+    renderLogin(null, { auto: false });
   }
 });
 
@@ -1875,9 +2128,7 @@ $app.addEventListener('submit', async (e) => {
     if (kind === 'login') {
       try {
         await api('POST', '/api/login', form2obj(form));
-        location.hash = '#/today';
-        await go();
-        resyncPush();
+        await enterApp('#/today');
       } catch (err) { gateError(err.message); }
     } else if (kind === 'setup') {
       const { password, again } = form2obj(form);
@@ -1894,7 +2145,12 @@ $app.addEventListener('submit', async (e) => {
       const f = new FormData(form);
       const reason = (f.get('own') || '').trim() || f.get('reason') || '';
       const r = await act(() => api('POST', '/api/defer', { kind: form.dataset.kind, id: Number(form.dataset.id), reason, moveToTomorrow: f.get('move') === 'on' }));
-      if (r) { state.dodging = null; react(r.reaction); await refreshToday(); }
+      if (r) {
+        state.dodging = null;
+        if (state.sheet?.kind === 'dodge') state.sheet = null;
+        react(r.reaction);
+        await refreshToday();
+      }
     } else if (kind === 'reflect') {
       const r = await act(() => api('POST', '/api/reflection', form2obj(form)), 'Day closed.');
       if (r) await refreshToday();
@@ -2063,38 +2319,63 @@ setInterval(() => {
 }, 15000);
 
 setInterval(() => {
-  if (document.visibilityState === 'visible' && state.route === 'today' && state.today && !state.sheet && !state.dirty && !document.activeElement?.matches('input, textarea, select')) refreshToday().catch(() => {});
+  if (document.visibilityState === 'visible' && state.route === 'today' && state.today && !state.sheet && !state.dirty && !motion.busy() && !document.activeElement?.matches('input, textarea, select')) refreshToday().catch(() => {});
 }, 60000);
 
-// Back after more than a minute away: with Face ID only, start over, which locks and asks again.
-// A fresh page load also lets iOS start Face ID without a tap.
+// Back from the background. With the lock screen up, ask for Face ID again. With Face ID only and
+// more than a minute away, lock the open app in place (no reload, no flash of the day) and ask.
 let hiddenAt = 0;
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {
     hiddenAt = Date.now();
     return;
   }
-  if (state.faceIdOnly && hiddenAt && Date.now() - hiddenAt > 60000 && document.querySelector('.tabbar')) {
-    location.reload();
+  const away = hiddenAt ? Date.now() - hiddenAt : 0;
+  hiddenAt = 0;
+  if (lockEl()) {
+    resumeLock();
+    return;
+  }
+  if (state.faceIdOnly && away > 60000 && document.querySelector('.tabbar')) {
+    lockApp();
     return;
   }
   navigator.serviceWorker?.getRegistration().then((reg) => reg?.update()).catch(() => {});
   if (document.querySelector('.tabbar') && !state.sheet && !state.dirty && !document.activeElement?.matches('input, textarea, select')) go();
 });
 
-window.addEventListener('hashchange', () => {
+// A page restored from the back-forward cache comes back without a visibility change.
+window.addEventListener('pageshow', (e) => { if (e.persisted && lockEl()) resumeLock(); });
+
+window.addEventListener('hashchange', (e) => {
+  // Behind the lock screen a new address (a tapped notification) waits: unlocking opens it.
+  if (document.querySelector('.gate')) return;
   state.pardoning = null;
   state.sheet = state.route === 'review' ? state.sheet : null;
   state.editingGoal = false;
   state.sheetNode = null;
   state.sheetMode = null;
   state.dodging = null;
-  window.scrollTo({ top: 0 });
-  go();
+  dockShown = false; // a new screen starts at the top, where Up next is in view
+  // The scroll to the top happens inside the screen change, so the old screen leaves from where it was.
+  go({ top: true, native: Boolean(e.hasUAVisualTransition) });
+});
+
+// Motion that needs the app: a row swiped left asks "Not now?" in a sheet, and Today pulls to refresh.
+motion.initMotion({
+  notNow(row) {
+    const [, k, id] = /^([ht])(\d+)$/.exec(row.dataset.key || '') || [];
+    if (!k) return;
+    state.sheet = { kind: 'dodge', ref: { kind: k === 'h' ? 'habit' : 'task', id: Number(id) } };
+    render();
+  },
+  canPull: () => state.route === 'today' && Boolean(state.today) && !state.sheet && !state.foodSheet && !document.querySelector('.gate'),
+  refresh: () => refreshToday().catch((err) => { if (err.status !== 401) toast(err.message, true); }),
 });
 
 // The sidebar arrives at 900px and the two-column layouts at 1240px.
-['(min-width: 900px)', '(min-width: 1240px)'].forEach((q) => window.matchMedia(q).addEventListener('change', () => render()));
+// A gate (the lock screen) is not a view: turning the iPad must not swap it for the app.
+['(min-width: 900px)', '(min-width: 1240px)'].forEach((q) => window.matchMedia(q).addEventListener('change', () => { if (!document.querySelector('.gate')) render(); }));
 
 // ---------- Boot ----------
 
@@ -2121,10 +2402,14 @@ async function boot() {
     } catch { /* show the form anyway */ }
     return renderSetup(code);
   }
+  // A phone that opens with Face ID only goes straight to the lock screen, with no blank wait, and
+  // Face ID starts while the server is still being asked.
+  if (lockModeRemembered()) showLock();
   try {
     const s = await api('GET', '/api/session');
     if (!s.authed) {
       if (!s.setupDone) {
+        abortFaceId();
         $app.innerHTML = `<div class="gate">${brandLockup()}<p>Open the setup link you were given to choose your password.</p></div>`;
         return;
       }
@@ -2132,16 +2417,18 @@ async function boot() {
     }
     // Face ID only: every time the app opens, it locks its own session first and asks for Face ID.
     if (s.faceIdOnly) {
-      await api('POST', '/api/lock', {}).catch(() => {});
-      return renderLogin({ ...s, authed: false, locked: true });
+      rememberLockMode(true);
+      door.locking = api('POST', '/api/lock', {}).catch(() => {});
+      return showLock();
     }
     rememberLockMode(false);
+    abortFaceId();
     await go();
     resyncPush();
   } catch (err) {
     if (err.status === 0 && lockModeRemembered()) {
-      $app.innerHTML = `<div class="gate">${brandLockup()}<p>Offline. Oath needs a connection to check Face ID.</p>
-        <div class="form-actions"><button class="btn primary" data-action="retry">Retry</button></div></div>`;
+      abortFaceId();
+      if (lockEl()) setLock('offline'); else showLock({ offline: true });
       return;
     }
     const c = err.status === 0 ? cachedToday() : null;

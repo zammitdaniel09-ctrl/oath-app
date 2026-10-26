@@ -1,9 +1,10 @@
-// Food: the day's diary, search, "photo of anything", quick add, the drinks tray, shake / fruit bowl /
-// plate builders, recipes, cooked batches, plans and the coverage report. Every number on these
-// screens comes from nutrition.js, the same maths the server uses, so nothing here needs an AI call.
+// Food: the day's diary, "snap your food" and "what did you eat?", search, quick add, the drinks tray,
+// shake / fruit bowl / plate builders, recipes, cooked batches, plans, trends and the coverage report.
+// Every number on these screens comes from nutrition.js, the same maths the server uses; only reading
+// a photo or a typed meal needs an AI call, and both end in a review before anything is logged.
 // Unknown stays unknown: a "—" is a value nobody has sourced, a "+" is a total missing some lines.
-// Food is a diary. It never touches HP.
-import { $app, state, esc, api, act, toast, fmtDay, icon, pageHead, haptic, localToday, form2obj } from './ui.js';
+// Food is a diary. It never touches HP and has no targets.
+import { $app, state, esc, api, act, toast, fmtDay, icon, pageHead, haptic, localToday, localNowHM, form2obj } from './ui.js';
 import { NUTRIENT, line, total, scale, show, unitsFor, round, amountText, norm } from './nutrition.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
@@ -96,16 +97,23 @@ async function loadDay() {
 }
 
 async function loadExtras() {
-  const [recent, drinks, batches] = await Promise.all([
+  const [recent, drinks, batches, week] = await Promise.all([
     api('GET', '/api/food/recent').then((r) => r.items).catch(() => null),
     api('GET', '/api/food/recent?drinks=1').then((r) => r.items).catch(() => null),
     api('GET', '/api/food/batches').then((r) => r.batches).catch(() => null),
+    api('GET', '/api/food/history?days=7').catch(() => null),
   ]);
   if (recent) store.set('oath.foodRecent', recent);
   if (drinks) store.set('oath.foodDrinks', drinks);
   f().recent = recent || store.get('oath.foodRecent', []);
   f().drinks = drinks || store.get('oath.foodDrinks', []);
   f().batches = batches || [];
+  f().week = week || f().week || null;
+}
+
+async function loadTrends() {
+  const F = f();
+  F.trend = await api('GET', `/api/food/history?days=${F.span || 7}${F.trendDate ? `&date=${F.trendDate}` : ''}`);
 }
 
 async function loadMeals() {
@@ -134,6 +142,8 @@ export async function loadFood() {
     await loadMeals();
   } else if (p === 'report') {
     f().report = await api('GET', '/api/food/report');
+  } else if (p === 'trends') {
+    await loadTrends();
   }
 }
 
@@ -166,7 +176,7 @@ function strip(n, keys = STRIP) {
   return `<dl class="nstrip">${keys.map((k) => `<div><dt>${NUTRIENT[k].label}</dt><dd>${show(n, k)}</dd></div>`).join('')}</dl>`;
 }
 
-// Which values some lines don't have, grouped by how many lines: "1 item has no protein, carbs or fat value".
+// Which values some lines don't have, grouped by how many lines: "+ is at least: 1 item has no fibre".
 const SHOWN = ['protein', 'carbs', 'sugars', 'fat', 'fibre', 'salt', 'caffeine'];
 function missingNote(n) {
   const m = n?.missing || {};
@@ -174,8 +184,115 @@ function missingNote(n) {
   for (const k of SHOWN.filter((x) => m[x])) groups.set(m[k], [...(groups.get(m[k]) || []), NUTRIENT[k].label.toLowerCase()]);
   if (!groups.size) return '';
   const list = (a) => (a.length > 1 ? `${a.slice(0, -1).join(', ')} or ${a.at(-1)}` : a[0]);
-  const parts = [...groups].sort((a, b) => a[0] - b[0]).map(([count, names]) => `${count} ${count === 1 ? 'item has' : 'items have'} no ${list(names)} value`);
-  return `<p class="note incomplete">${icon('spark')}<span>${parts.join('; ')}. A total with + is at least that much.</span></p>`;
+  const parts = [...groups].sort((a, b) => a[0] - b[0]).map(([count, names]) => `${count} ${count === 1 ? 'item has' : 'have'} no ${list(names)}`);
+  return `<p class="note incomplete">${icon('spark')}<span><b>+</b> is at least: ${parts.join('; ')}.</span></p>`;
+}
+
+// ---------- Drawings: rings, bars and timelines, hand-made SVG ----------
+
+// Charts grow in the first time a screen is seen in a session, never on a re-render.
+const seen = new Set();
+const enter = (key) => {
+  if (seen.has(key)) return '';
+  seen.add(key);
+  return ' f-enter';
+};
+let uid = 0;
+const nextId = (p) => `${p}${(uid += 1)}`;
+const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
+const fmtN = (v, dec = 0) => (num(v) === null ? '—' : new Intl.NumberFormat('en-GB', { maximumFractionDigits: dec }).format(round(v, dec)));
+const shortDay = (d) => fmtDay(d, { weekday: 'short', day: 'numeric', month: 'short' });
+// A striped fill for unknown or incomplete parts, drawn in screen pixels so it never stretches.
+const hatchDef = (id, cls = '') => `<pattern id="${id}" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" class="fh-bg ${cls}"/><rect width="1.8" height="5" class="fh-line ${cls}"/></pattern>`;
+
+const MACROS = [['protein', 4], ['carbs', 4], ['fat', 9]];
+const MACRO_LABEL = { protein: 'Protein', carbs: 'Carbs', fat: 'Fat', unknown: 'Unknown' };
+
+// Energy from protein, carbs and fat (4, 4 and 9 kcal a gram). When some lines have no macro values,
+// the energy they leave unexplained is its own "unknown" part rather than shared out among the rest.
+function macroParts(n) {
+  const parts = MACROS.map(([k, per]) => ({ key: k, kcal: (num(n?.[k]) || 0) * per }));
+  const known = parts.reduce((a, p) => a + p.kcal, 0);
+  const gaps = MACROS.some(([k]) => num(n?.[k]) === null || n?.missing?.[k]);
+  const rest = gaps && num(n?.kcal) !== null ? Math.max(0, n.kcal - known) : 0;
+  if (rest >= 1) parts.push({ key: 'unknown', kcal: rest });
+  return { parts, sum: parts.reduce((a, p) => a + p.kcal, 0) };
+}
+const share = (v, sum) => (sum > 0 ? Math.round((v / sum) * 100) : 0);
+
+// The macro energy split as a ring, with whatever goes in the middle.
+function donut(n, { size = 112, sw = 12, center = '', label = 'Energy split' } = {}) {
+  const { parts, sum } = macroParts(n);
+  const c0 = size / 2;
+  const r = (size - sw) / 2;
+  const c = 2 * Math.PI * r;
+  const live = parts.filter((p) => p.kcal > 0);
+  const gap = live.length > 1 ? 3 : 0;
+  const hatch = nextId('fh');
+  let off = 0;
+  const arcs = sum > 0 ? live.map((p) => {
+    const len = (p.kcal / sum) * c;
+    const arc = `<circle cx="${c0}" cy="${c0}" r="${r}" fill="none" stroke-width="${sw}" class="fr-seg m-${p.key}"${p.key === 'unknown' ? ` style="stroke:url(#${hatch})"` : ''}
+      stroke-dasharray="${Math.max(0.5, len - gap).toFixed(2)} ${c.toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 ${c0} ${c0})"/>`;
+    off += len;
+    return arc;
+  }).join('') : '';
+  const spoken = sum > 0 ? live.map((p) => `${MACRO_LABEL[p.key]} ${share(p.kcal, sum)}%`).join(', ') : 'nothing logged';
+  return `<div class="fring" style="width:${size}px;height:${size}px">
+    <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-label="${esc(`${label}: ${spoken}`)}">
+      <defs>${hatchDef(hatch)}</defs><circle cx="${c0}" cy="${c0}" r="${r}" fill="none" stroke-width="${sw}" class="fr-track"/>${arcs}</svg>
+    ${center ? `<span class="fring-c" aria-hidden="true">${center}</span>` : ''}</div>`;
+}
+
+// One meal's share of the day's energy as a short bar, split by macro.
+function mealBar(n, dayKcal) {
+  const k = num(n?.kcal);
+  if (!(dayKcal > 0) || !(k > 0)) return '';
+  const { parts, sum } = macroParts(n);
+  const segs = sum > 0 ? parts.filter((p) => p.kcal > 0).map((p) => `<i class="m-${p.key}" style="flex-grow:${p.kcal.toFixed(1)}"></i>`).join('') : '<i class="m-unknown" style="flex-grow:1"></i>';
+  const pc = Math.max(2, Math.min(100, (k / dayKcal) * 100));
+  return `<div class="fmeal" role="img" aria-label="${share(k, dayKcal)}% of the day's energy"><span class="fmeal-bar" style="width:${pc.toFixed(1)}%">${segs}</span></div>`;
+}
+
+// Bars in a percentage-wide SVG with no viewBox: widths stretch with the card, heights and corners
+// stay in real pixels. A day with nothing logged is a small dashed gap mark, never a zero bar.
+function dayBars(series, { height = 132, top = 22, sel = null, values = false, selValue = true, avg = null, rx = 3, hatch }) {
+  const n = series.length || 1;
+  const vals = series.map((d) => (d.logged ? num(d.kcal) : null));
+  const peak = Math.max(...vals.map((v) => v || 0), num(avg) || 0, 1);
+  const step = peak > 1500 ? 500 : peak > 300 ? 100 : 50;
+  const max = Math.ceil(peak / step) * step;
+  const y = (v) => height - ((height - top) * v) / max;
+  const slot = 100 / n;
+  const bw = slot * (n > 40 ? 0.72 : 0.62);
+  const corner = n > 40 ? 1 : rx;
+  const parts = series.map((d, i) => {
+    const x = (i * slot + (slot - bw) / 2).toFixed(3);
+    const v = vals[i];
+    if (v === null) return `<rect x="${x}%" y="${height - 2}" width="${bw.toFixed(3)}%" height="2" class="fx-gap"/>`;
+    const bh = Math.max(2, height - y(v));
+    const cls = `fx-bar${d.incomplete ? ' inc' : ''}${d.date === sel ? ' sel' : ''}`;
+    const delay = Math.round((i * 320) / n);
+    const fill = d.incomplete ? `fill:url(#${hatch});` : '';
+    let label = '';
+    if ((values || (selValue && d.date === sel)) && v > 0) {
+      const cx = (i + 0.5) * slot;
+      const anchor = cx > 88 ? 'end' : cx < 12 ? 'start' : 'middle';
+      label = `<text x="${anchor === 'end' ? Math.min(100, (i + 1) * slot) : anchor === 'start' ? i * slot : cx}%" y="${(height - bh - 6).toFixed(1)}" text-anchor="${anchor}" class="fx-val${d.date === sel ? ' sel' : ''}">${fmtN(v)}${d.missing?.kcal ? '+' : ''}</text>`;
+    }
+    return `<rect x="${x}%" y="${(height - bh).toFixed(1)}" width="${bw.toFixed(3)}%" height="${bh.toFixed(1)}" rx="${corner}" class="${cls}" style="${fill}animation-delay:${delay}ms"/>${label}`;
+  }).join('');
+  const avgLine = num(avg) !== null ? `<line x1="0" x2="100%" y1="${y(avg).toFixed(1)}" y2="${y(avg).toFixed(1)}" class="fx-avg"/>` : '';
+  return { svg: `${avgLine}${parts}`, max };
+}
+
+function axisLabels(series, today) {
+  const n = series.length;
+  if (n <= 7) {
+    return `<div class="fx-axis cols" style="grid-template-columns:repeat(${n},minmax(0,1fr))" aria-hidden="true">${series.map((d) => `<span${d.date === today ? ' class="is-today"' : ''}>${d.date === today ? 'Today' : fmtDay(d.date, { weekday: 'short' })}</span>`).join('')}</div>`;
+  }
+  const mid = series[Math.floor(n / 2)].date;
+  return `<div class="fx-axis" aria-hidden="true"><span>${fmtDay(series[0].date, { day: 'numeric', month: 'short' })}</span><span>${fmtDay(mid, { day: 'numeric', month: 'short' })}</span><span class="is-today">Today</span></div>`;
 }
 
 function kindTag(it) {
@@ -252,7 +369,7 @@ function dateLabel(d) {
 }
 
 function entryRow(e) {
-  const badges = [e.estimate ? '<span class="tag ftag-est">Estimated</span>' : '', e.kind === 'quick' ? '<span class="tag">Quick add</span>' : '', e.source === 'coach' ? '<span class="tag">Coach</span>' : ''].join('');
+  const badges = [e.estimate ? '<span class="tag ftag-est">Estimated</span>' : '', e.kind === 'quick' && !e.estimate ? '<span class="tag">Quick add</span>' : '', e.source === 'coach' ? '<span class="tag">Coach</span>' : ''].join('');
   return `<button class="li li-plain food-row" data-action="food-entry" data-eid="${esc(e.id)}">
     <span class="li-body"><span class="li-title">${esc(e.name)}${e.brand ? ` <small class="faint">${esc(e.brand)}</small>` : ''}</span>
     <span class="li-sub">${esc(e.amountText || '')}${badges ? ` ${badges}` : ''}</span></span>
@@ -298,42 +415,82 @@ function viewDiary() {
   const t = d.total;
   const head = pageHead('Food', {
     over: dateLabel(d),
-    actions: `<a class="icon-btn" href="#/food/recipes" aria-label="Recipes">${icon('recipe')}</a><a class="icon-btn" href="#/food/meals" aria-label="Saved meals">${icon('star')}</a>`,
+    actions: `<a class="icon-btn" href="#/food/trends" aria-label="Trends">${icon('trend')}</a><a class="icon-btn" href="#/food/recipes" aria-label="Recipes">${icon('recipe')}</a><a class="icon-btn" href="#/food/meals" aria-label="Saved meals">${icon('star')}</a>`,
   });
   const nav = `<div class="food-date"><button class="icon-btn" data-action="food-day" data-step="-1" aria-label="Previous day">${icon('back')}</button>
     <span>${esc(dateLabel(d))}</span>
     <button class="icon-btn" data-action="food-day" data-step="1" aria-label="Next day"${d.today ? ' disabled' : ''}>${icon('chevron')}</button></div>`;
-  const incomplete = t.missing && Object.keys(t.missing).some((k) => NUTRIENT[k]?.core);
-  const summary = `<section class="card food-total">
-    <div class="ft-main"><b class="ft-kcal">${show(t, 'kcal', { unit: false })}</b><span class="ft-unit">kcal</span>${incomplete ? '<span class="tag ftag-est">Incomplete</span>' : ''}</div>
-    ${strip(t)}
-    <p class="ft-extra">${icon('drink')}<span>${d.drinksMl || 0} ml of drinks · caffeine ${show(t, 'caffeine')}</span></p>
-    ${missingNote(t)}
-    ${d.estimates ? `<p class="note">${d.estimates} ${d.estimates === 1 ? 'amount was' : 'amounts were'} estimated from a photo. Tap one to set the real amount.</p>` : ''}
-  </section>`;
-  const capture = `<div class="food-capture">
-    <label class="fc-btn fc-photo">${icon('camera')}<span>Photo</span><input class="vh" type="file" accept="image/*" capture="environment" data-food-photo aria-label="Take a photo of food, a label or a barcode"></label>
-    <button class="fc-btn" data-action="food-search">${icon('search')}<span>Search</span></button>
-    <button class="fc-btn" data-action="food-quick">${icon('bolt')}<span>Quick add</span></button>
-    <button class="fc-btn" data-action="food-search" data-drinks="1">${icon('drink')}<span>Drinks</span></button>
-  </div>`;
+  const anim = enter('diary');
   const builders = `<div class="builders">${['shake', 'bowl', 'plate'].map((m) => `<button class="btn tinted small" data-action="food-builder" data-mode="${m}">${icon(BUILDERS[m].icon)}${BUILDERS[m].title}</button>`).join('')}<a class="btn tinted small" href="#/food/meals">${icon('star')}Saved</a></div>`;
   const drinks = F.drinks?.length ? `<section class="section"><div class="gh sub"><h3>Drinks</h3><button class="gh-link" data-action="food-search" data-drinks="1">${icon('plus')}Other</button></div>${trayHtml(F.drinks)}</section>` : '';
   const recent = F.recent?.filter((x) => !x.liquid).length ? `<section class="section"><div class="gh sub"><h3>Recent</h3></div>${trayHtml(F.recent.filter((x) => !x.liquid))}</section>` : '';
   const slots = SLOTS.map(([s, label]) => {
     const sl = d.slots.find((x) => x.slot === s);
     if (!sl?.entries.length) return '';
-    return `<section class="section"><div class="gh"><h2>${label}</h2><span class="gh-count">${kcal(sl.total)}</span></div><div class="group">${sl.entries.map(entryRow).join('')}</div></section>`;
+    return `<section class="section"><div class="gh"><h2>${label}</h2><span class="gh-count">${kcal(sl.total)}</span></div>${mealBar(sl.total, num(t.kcal))}<div class="group">${sl.entries.map(entryRow).join('')}</div></section>`;
   }).join('');
   const undo = F.undo ? `<div class="banner food-undo"><span>Removed ${esc(F.undo.name)}.</span><button class="btn tinted small" data-action="food-undo">Undo</button></div>` : '';
-  const empty = !d.entries.length ? `<div class="card empty"><h3>Nothing logged${d.today ? ' yet' : ''}</h3><p class="muted">Take a photo of anything (a plate, a label, a barcode), search, or tap a recent food.</p></div>` : '';
+  const empty = !d.entries.length ? `<div class="card empty"><h3>Nothing logged${d.today ? ' yet' : ''}</h3><p class="muted">Snap it or type it above. A plate, a label or a barcode all work.</p></div>` : '';
   const offline = F.offline ? '<p class="note">Offline. Showing what this phone saved last; new entries wait here and sync when you are back online.</p>' : '';
-  ctx.shell(`${head}${offline}${undo}<div class="split food-split"><div>${nav}${summary}${capture}${builders}${drinks}${recent}
+  const typing = document.activeElement?.matches?.('[data-food-text]');
+  ctx.shell(`${head}${offline}${undo}<div class="split food-split${anim}"><div>${captureHtml()}${nav}${daySummary(d)}${trendPreview(F.week)}${drinks}${recent}${builders}
     ${plansHtml(d.plans)}${batchesHtml(F.batches)}</div>
     <div>${pendingRows(d.date)}${slots}${empty}
     ${d.today ? `<div class="form-actions food-repeat"><button class="btn tinted small" data-action="food-repeat">${icon('review')}Repeat yesterday</button></div>` : ''}
     <p class="note credits">Generic foods: USDA FoodData Central (public domain). Products: © Open Food Facts contributors, ODbL. Food is a diary only: it never changes HP. <a href="#/food/report">Coverage report</a></p>
     </div></div>${sheetHtml()}`);
+  if (typing && !state.foodSheet) {
+    const box = document.querySelector('[data-food-text]');
+    box?.focus({ preventScroll: true });
+    box?.setSelectionRange(box.value.length, box.value.length);
+  }
+}
+
+// The two ways in: a photo of anything, or a few typed words. Search, quick add and drinks sit below.
+function captureHtml() {
+  return `<section class="fcap" aria-label="Log food">
+    <label class="fcap-snap"><span class="fcap-ic">${icon('camera')}</span><span class="fcap-words"><b>Snap your food</b><small>A plate, a label or a barcode</small></span>
+      <input class="vh" type="file" accept="image/*" capture="environment" data-food-photo aria-label="Take a photo of food, a label or a barcode"></label>
+    <form class="fcap-type" data-form="food-describe">
+      <label class="fcap-q" for="food-text">What did you eat?</label>
+      <div class="fcap-row"><textarea id="food-text" class="input" name="text" rows="2" maxlength="600" placeholder="Two eggs on toast and a flat white" data-food-text enterkeyhint="send" autocomplete="off">${esc(f().text || '')}</textarea>
+        <button class="icon-btn accent" type="submit" aria-label="Work it out">${icon('send')}</button></div>
+    </form>
+    <div class="fcap-more">
+      <button class="btn tinted small" data-action="food-search">${icon('search')}Search</button>
+      <button class="btn tinted small" data-action="food-quick">${icon('bolt')}Quick add</button>
+      <button class="btn tinted small" data-action="food-search" data-drinks="1">${icon('drink')}Drinks</button>
+    </div>
+  </section>`;
+}
+
+// The day at a glance: a ring for where the energy came from, the macros beside it, the rest in a line.
+function daySummary(d) {
+  const t = d.total;
+  const incomplete = t.missing && Object.keys(t.missing).some((k) => NUTRIENT[k]?.core);
+  const { parts, sum } = macroParts(t);
+  const rows = parts.map((p) => `<div class="fmac-row"><dt><i class="fdot m-${p.key}"></i>${MACRO_LABEL[p.key]}</dt>
+    <dd>${p.key === 'unknown' ? `${fmtN(p.kcal)} kcal` : show(t, p.key)}<small>${share(p.kcal, sum)}%</small></dd></div>`).join('');
+  const center = `<b>${show(t, 'kcal', { unit: false })}</b><small>kcal</small>`;
+  return `<section class="card fday">
+    <div class="fday-main">${donut(t, { size: 116, sw: 13, center, label: `${show(t, 'kcal')} today, energy from` })}<dl class="fmac">${rows}</dl></div>
+    <p class="fday-line">${['sugars', 'fibre', 'salt'].map((k) => `<span>${NUTRIENT[k].label} <b>${show(t, k)}</b></span>`).join('')}</p>
+    <p class="fday-line">${icon('drink')}<span><b>${fmtN(d.drinksMl || 0)}</b> ml</span><span>Caffeine <b>${show(t, 'caffeine')}</b></span>${incomplete ? '<span class="tag ftag-est">Incomplete</span>' : ''}</p>
+    ${missingNote(t)}
+    ${d.estimates ? `<p class="note">${d.estimates} estimated ${d.estimates === 1 ? 'entry' : 'entries'}. Tap one to check it.</p>` : ''}
+  </section>`;
+}
+
+// A small link to Trends: the last seven days as bars and their average.
+function trendPreview(w) {
+  if (!w?.series) return '';
+  const hatch = nextId('fp');
+  const { svg } = dayBars(w.series, { height: 40, top: 4, sel: w.today, selValue: false, avg: w.avg?.kcal, rx: 2, hatch });
+  const avg = num(w.avg?.kcal);
+  return `<a class="card ftrend" href="#/food/trends">
+    <svg class="ftrend-bars" width="104" height="40" aria-hidden="true"><defs>${hatchDef(hatch)}</defs>${svg}</svg>
+    <span class="ftrend-words"><span class="eyebrow">Last 7 days</span><b>${avg === null ? '—' : `${fmtN(avg)}${w.avg.missing?.kcal ? '+' : ''}`}<small> kcal a day</small></b></span>
+    ${icon('chevron', 'chev')}</a>`;
 }
 
 // ---------- Sheets ----------
@@ -428,10 +585,66 @@ function customBody(s) {
     <div class="form-actions"><button class="btn primary" type="submit">Save and log</button></div></form>`;
 }
 
+// The review for a photographed plate or a typed meal. Each food is matched to a record with an
+// estimated amount; a typed food with no record keeps a rough estimate and logs as an estimated
+// quick add. Nothing is logged until Log all.
+function reviewItem(it) {
+  const l = it.match && Number(it.qty) > 0 ? line(it.match, it.qty, it.unit) : null;
+  if (l && !l.error) return { mode: 'match', line: l };
+  if (num(it.guess?.kcal) !== null) return { mode: 'rough' };
+  return { mode: 'none', error: l?.error || null };
+}
+
+function roughAmount(g) {
+  if (num(g?.amount) === null || !(g.amount > 0)) return '';
+  const q = round(g.amount, g.unit === 'piece' ? 1 : 0);
+  return g.unit === 'piece' ? `about ${q} ${q === 1 ? 'piece' : 'pieces'}` : `about ${q} ${g.unit}`;
+}
+
+function reviewKcal(it) {
+  const m = reviewItem(it);
+  if (m.mode === 'match') return kcal(m.line.nutrients);
+  if (m.mode === 'rough') return `≈ ${fmtN(it.guess.kcal)} kcal`;
+  return '';
+}
+
+function reviewBody(s) {
+  const r = s.result;
+  const text = s.source === 'text';
+  const modes = s.items.map(reviewItem);
+  const rows = s.items.map((it, i) => {
+    const m = modes[i];
+    // A record that is itself an estimate would read "Estimate" twice next to an estimated amount.
+    const tag = it.match && !(it.match.kind === 'estimate' && !it.edited) ? `${kindTag(it.match)} ` : '';
+    const sub = it.match ? tag : m.mode === 'rough' ? `${esc(roughAmount(it.guess))} · ` : 'No match in the catalogue. ';
+    return `<div class="li li-plain photo-item">
+      <span class="li-body"><span class="li-title">${esc(it.match?.name || cap(it.name))}</span>
+      <span class="li-sub">${sub}<button class="linkish" data-action="food-photo-change" data-index="${i}">Change</button></span></span>
+      <span class="li-side"><b data-photo-kcal="${i}">${reviewKcal(it)}</b>
+        ${it.edited ? '' : '<span class="tag ftag-est">Estimate</span>'}<button class="icon-btn" data-action="food-photo-drop" data-index="${i}" aria-label="Remove">${icon('close')}</button></span>
+      ${it.match ? `<span class="amount-row small photo-amount"><input class="input" inputmode="decimal" value="${esc(it.qty ?? '')}" placeholder="amount" data-photo-index="${i}" data-photo-field="qty" aria-label="Amount">
+        <select class="input" data-photo-index="${i}" data-photo-field="unit" aria-label="Unit">${unitOptions(it.match, it.unit)}</select></span>` : ''}</div>`;
+  }).join('');
+  const n = modes.filter((m) => m.mode !== 'none').length;
+  const rough = text && modes.some((m) => m.mode === 'rough');
+  return `<p class="note">${r.summary ? `<b>${esc(r.summary)}.</b> ` : ''}${text ? 'Amounts are estimates, so check them.' : 'The foods come from the catalogue; the amounts are estimates from the photo, so check them.'}</p>
+    <div class="group photo-items">${rows || '<p class="note pad">Nothing left to log.</p>'}</div>
+    ${rough ? '<p class="note">≈ is a rough estimate for something not in the catalogue. It logs as an estimate you can remove later.</p>' : ''}
+    ${n < s.items.length ? '<p class="note">Items with no amount or no match are left out. Tap Change to pick one.</p>' : ''}
+    <form data-form="food-photo-log">${slotSelect(slotNow())}<div class="form-actions"><button class="btn primary" type="submit"${n ? '' : ' disabled'}>${n === s.items.length ? 'Log all' : `Log ${n} of ${s.items.length}`}</button></div></form>`;
+}
+
 function photoBody(s) {
+  if (s.busy && s.source === 'text') return `<div class="photo-busy"><div class="msg assistant typing" aria-label="Working it out"><i></i><i></i><i></i></div><p class="note">"${esc(s.text)}"</p></div>`;
   if (s.busy) return '<div class="photo-busy"><div class="msg assistant typing" aria-label="Reading the photo"><i></i><i></i><i></i></div><p class="note">Reading the photo. It is not stored.</p></div>';
   const r = s.result;
   if (!r) return '';
+  if (r.kind === 'meal') return reviewBody(s);
+  if (s.source === 'text') {
+    return `<p class="note">${esc(r.question || 'What did you eat?')}</p><div class="sheet-actions">
+      <button class="btn tinted" data-action="food-text-edit">${icon('back')}Change what you typed</button>
+      <button class="btn tinted" data-action="food-search">${icon('search')}Search</button><button class="btn tinted" data-action="food-quick">${icon('bolt')}Quick add</button></div>`;
+  }
   if (r.kind === 'product') {
     return `<p class="note">${esc(r.summary || '')}</p><div class="group">${resultRow(r.item)}</div>`;
   }
@@ -442,17 +655,6 @@ function photoBody(s) {
       <div class="sheet-actions"><label class="btn primary">${icon('camera')}Photo of the nutrition label<input class="vh" type="file" accept="image/*" capture="environment" data-food-photo></label>
       <button class="btn tinted" data-action="food-custom" data-from-photo="1">${icon('plus')}Type the label in</button>
       <button class="btn tinted" data-action="food-quick">${icon('bolt')}Quick add calories</button></div>`;
-  }
-  if (r.kind === 'meal') {
-    return `<p class="note">${esc(r.summary || '')} The foods come from the catalogue; the amounts are estimates from the photo, so check them.</p>
-      <div class="group photo-items">${s.items.map((it, i) => `<div class="li li-plain photo-item">
-        <span class="li-body"><span class="li-title">${esc(it.match?.name || it.name)}</span>
-        <span class="li-sub">${it.match ? `${kindTag(it.match)} ` : 'No match in the catalogue. '}<button class="linkish" data-action="food-photo-change" data-index="${i}">Change</button></span>
-        ${it.match ? `<span class="amount-row small"><input class="input" inputmode="decimal" value="${esc(it.qty ?? '')}" data-photo-index="${i}" data-photo-field="qty" aria-label="Amount">
-          <select class="input" data-photo-index="${i}" data-photo-field="unit" aria-label="Unit">${unitOptions(it.match, it.unit)}</select></span>` : ''}</span>
-        <span class="li-side"><b data-photo-kcal="${i}">${it.match && it.qty ? kcal(line(it.match, it.qty, it.unit).nutrients || {}) : ''}</b>
-          ${it.edited ? '' : '<span class="tag ftag-est">Estimate</span>'}<button class="icon-btn" data-action="food-photo-drop" data-index="${i}" aria-label="Remove">${icon('close')}</button></span></div>`).join('')}</div>
-      <form data-form="food-photo-log">${slotSelect(slotNow())}<div class="form-actions"><button class="btn primary" type="submit">Log ${s.items.filter((x) => x.match && x.qty).length} items</button></div></form>`;
   }
   return `<p class="note">${esc(r.question || 'What is it?')}</p><div class="sheet-actions">
     <button class="btn tinted" data-action="food-search">${icon('search')}Search</button><button class="btn tinted" data-action="food-quick">${icon('bolt')}Quick add</button></div>`;
@@ -467,7 +669,8 @@ function entryBody(s) {
       <div class="form-actions"><button class="btn primary" type="submit">Save</button></div></form>`
     : `<p class="li-sub">${esc(e.amountText || '')}</p>${strip(e.nutrients, ['kcal', ...STRIP, 'caffeine'])}${missingNote(e.nutrients)}
       <form data-form="food-entry-edit">${slotSelect(e.slot)}<div class="form-actions"><button class="btn tinted" type="submit">Move</button></div></form>`;
-  return `${e.estimate ? '<p class="note">The amount was estimated from a photo. Set the real amount if you know it.</p>' : ''}${amount}${lines}
+  const est = e.kind === 'quick' ? 'A rough estimate from what you typed. Remove it and search if you want exact numbers.' : 'The amount is an estimate. Set the real amount if you know it.';
+  return `${e.estimate ? `<p class="note">${est}</p>` : ''}${amount}${lines}
     <div class="sheet-actions"><button class="btn tinted danger-text" data-action="food-entry-del" data-eid="${esc(e.id)}">${icon('trash')}Remove from the diary</button></div>`;
 }
 
@@ -581,7 +784,12 @@ function sheetHtml() {
     case 'food': return sheetWrap(s.item.name, foodBody(s));
     case 'quick': return sheetWrap('Quick add', quickBody(s));
     case 'custom': return sheetWrap(s.fromLabel ? 'Check the label' : 'A food of your own', customBody(s), 'tall');
-    case 'photo': return sheetWrap(s.busy ? 'Reading the photo' : s.result?.kind === 'meal' ? 'On the plate' : s.result?.kind === 'product' ? 'Found it' : 'From the photo', photoBody(s), 'tall');
+    case 'photo': {
+      const title = s.source === 'text'
+        ? (s.busy ? 'Working it out' : s.result?.kind === 'meal' ? 'What you ate' : 'What did you eat?')
+        : (s.busy ? 'Reading the photo' : s.result?.kind === 'meal' ? 'On the plate' : s.result?.kind === 'product' ? 'Found it' : 'From the photo');
+      return sheetWrap(title, photoBody(s), 'tall');
+    }
     case 'entry': return sheetWrap(s.entry.name, entryBody(s));
     case 'builder': return sheetWrap(s.mealId ? s.name || 'Saved meal' : `New ${(BUILDERS[s.mode] || BUILDERS.meal).title.toLowerCase()}`, builderBody(s), 'tall');
     case 'plan': return sheetWrap('Plan for later', planBody(s));
@@ -708,8 +916,155 @@ function viewReport() {
     <section class="section"><div class="gh"><h2>Recipes by family</h2></div>${r.recipes.categories.map((c) => cat(c, 'recipe')).join('')}</section>`);
 }
 
+// ---------- Trends: drawings first, a few short labels, numbers on the graphics ----------
+
+const SPANS = [7, 30, 90];
+
+function cardHead(title, side = '') {
+  return `<div class="fcard-head"><h2>${title}</h2>${side ? `<span class="fcard-side">${side}</span>` : ''}</div>`;
+}
+
+// Energy per day: bars, the average as a dashed line, the chosen day bright. Tap a day to choose it.
+function energyCard(h, sel) {
+  const hatch = nextId('fx');
+  const avg = num(h.avg.kcal);
+  const height = 150;
+  const { svg } = dayBars(h.series, { height, top: 24, sel, values: h.days <= 7, avg, hatch });
+  const hits = h.series.map((d) => `<button type="button" data-action="food-trend-day" data-date="${d.date}" aria-pressed="${d.date === sel}"
+    aria-label="${esc(`${d.date === h.today ? 'Today' : shortDay(d.date)}: ${d.logged ? `${fmtN(d.kcal)} kcal${d.incomplete ? ', incomplete' : ''}` : 'nothing logged'}`)}"></button>`).join('');
+  const keys = [h.series.some((d) => d.incomplete) ? '<span><i class="fk fk-inc"></i>Incomplete</span>' : '', h.series.some((d) => !d.logged) ? '<span><i class="fk fk-gap"></i>No log</span>' : ''].join('');
+  const side = `<span><i class="fk fk-avg"></i>${avg === null ? 'no full day yet' : `avg <b>${fmtN(avg)}${h.avg.missing?.kcal ? '+' : ''}</b> kcal`}</span>`;
+  return `<section class="card fcard ftr-energy${h.days > 7 ? ' wide' : ''}">${cardHead('Energy', side)}
+    <div class="fx-plot"><svg class="fx-svg" width="100%" height="${height}" aria-hidden="true"><defs>${hatchDef(hatch)}</defs><line x1="0" x2="100%" y1="${height - 0.5}" y2="${height - 0.5}" class="fx-base"/>${svg}</svg>
+      <div class="fx-hits" style="grid-template-columns:repeat(${h.series.length},minmax(0,1fr))">${hits}</div></div>
+    ${axisLabels(h.series, h.today)}
+    ${keys ? `<p class="fx-keys">${keys}</p>` : ''}
+    ${h.loggedDays || h.chosen.logged ? '' : `<p class="note">Nothing logged in the last ${h.days} days yet.</p>`}
+  </section>`;
+}
+
+// The chosen day's macro split against the period's average.
+function splitCard(h) {
+  const ch = h.chosen;
+  const avg = h.avg;
+  const dayName = ch.today ? 'Today' : shortDay(ch.date);
+  const a = macroParts(avg);
+  const d = macroParts(ch);
+  const keys = ['protein', 'carbs', 'fat', ...([d, a].some((m) => m.parts.some((p) => p.key === 'unknown')) ? ['unknown'] : [])];
+  const pc = (m, k) => {
+    const p = m.parts.find((x) => x.key === k);
+    return m.sum > 0 && p ? `${share(p.kcal, m.sum)}%` : '—';
+  };
+  const ring = (n, title, total, plus) => `<figure class="fsplit-ring">${donut(n, { size: 104, sw: 12, label: `${title}, energy from`,
+    center: `<b>${fmtN(total)}${plus ? '+' : ''}</b><small>kcal</small>` })}<figcaption>${title}</figcaption></figure>`;
+  return `<section class="card fcard">${cardHead('Where the energy came from')}
+    <div class="fsplit">${ring(ch, dayName, ch.kcal, ch.missing?.kcal)}${ring(avg, `${h.days}-day avg`, avg.kcal, avg.missing?.kcal)}</div>
+    <table class="fsplit-table"><thead><tr><th scope="col"><span class="sr">Macro</span></th><th scope="col">${esc(dayName)}</th><th scope="col">Avg</th></tr></thead>
+      <tbody>${keys.map((k) => `<tr><th scope="row"><i class="fdot m-${k}"></i>${MACRO_LABEL[k]}</th><td>${pc(d, k)}</td><td>${pc(a, k)}</td></tr>`).join('')}</tbody></table>
+  </section>`;
+}
+
+// This period against the one before, as paired bars with the change beside them.
+function compareCard(h) {
+  const rows = [['kcal', 'Energy', 'kcal'], ['protein', 'Protein', 'g'], ['sugars', 'Sugars', 'g'], ['caffeine', 'Caffeine', 'mg']];
+  const now = h.avg;
+  const before = h.prev.avg;
+  const body = rows.map(([k, label, unit]) => {
+    const a = num(now[k]);
+    const b = num(before[k]);
+    const top = Math.max(a || 0, b || 0) || 1;
+    const bar = (v, cls, plus) => `<span class="fcmp-bar ${cls}">${v === null ? '' : `<i style="--f:${(v / top).toFixed(3)}"></i>`}<b>${fmtN(v, k === 'kcal' || k === 'caffeine' ? 0 : 1)}${v !== null && plus ? '+' : ''}</b></span>`;
+    let delta = '<span class="fcmp-delta none" aria-hidden="true">—</span>';
+    if (a !== null && b !== null && b > 0) {
+      const c = Math.round(((a - b) / b) * 100);
+      delta = `<span class="fcmp-delta${c > 0 ? ' up' : c < 0 ? ' down' : ''}"><i aria-hidden="true"></i>${c > 0 ? '+' : c < 0 ? '−' : ''}${Math.abs(c)}%</span>`;
+    }
+    return `<div class="fcmp-row"><span class="fcmp-label">${label}<small>${unit}</small></span>
+      <span class="fcmp-bars">${bar(a, 'cur', now.missing?.[k])}${bar(b, 'prev', before.missing?.[k])}</span>${delta}</div>`;
+  }).join('');
+  const key = `<span><i class="fk fk-now"></i>Last ${h.days} days</span><span><i class="fk fk-prev"></i>${h.days} before</span>`;
+  return `<section class="card fcard">${cardHead('Against the period before')}
+    <p class="fx-keys top">${key}</p>${body}
+    ${h.prev.loggedDays ? '' : `<p class="note">Nothing logged in the ${h.days} days before.</p>`}
+  </section>`;
+}
+
+// Caffeine through the chosen day by hour, with drinks hanging below the line.
+function caffeineCard(h) {
+  const ch = h.chosen;
+  const { caffeine, caffeineUnknown, drinksMl } = ch.hours;
+  const height = 112;
+  const mid = 74;
+  const cmax = Math.max(100, ...caffeine);
+  const mmax = Math.max(500, ...drinksMl);
+  const slot = 100 / 24;
+  const bw = slot * 0.62;
+  const hatch = nextId('fc');
+  let lastLabel = -9;
+  const marks = caffeine.map((v, i) => {
+    const x = (i * slot + (slot - bw) / 2).toFixed(3);
+    let out = '';
+    let topY = mid;
+    if (v > 0) {
+      const bh = Math.max(3, ((mid - 20) * v) / cmax);
+      topY = mid - bh;
+      out += `<rect x="${x}%" y="${topY.toFixed(1)}" width="${bw.toFixed(3)}%" height="${bh.toFixed(1)}" rx="2" class="fc-bar" style="animation-delay:${i * 12}ms"/>`;
+    }
+    if (caffeineUnknown[i]) {
+      topY -= 9;
+      out += `<rect x="${x}%" y="${topY.toFixed(1)}" width="${bw.toFixed(3)}%" height="8" rx="2" class="fc-unk" style="fill:url(#${hatch})"/>`;
+    }
+    if (v > 0 && i - lastLabel > 2) {
+      lastLabel = i;
+      out += `<text x="${((i + 0.5) * slot).toFixed(2)}%" y="${(topY - 5).toFixed(1)}" text-anchor="${i > 21 ? 'end' : i < 2 ? 'start' : 'middle'}" class="fx-val">${fmtN(v)}</text>`;
+    }
+    if (drinksMl[i] > 0) {
+      const dh = Math.max(3, ((height - mid - 6) * drinksMl[i]) / mmax);
+      out += `<rect x="${x}%" y="${mid + 3}" width="${bw.toFixed(3)}%" height="${dh.toFixed(1)}" rx="2" class="fd-bar" style="animation-delay:${i * 12}ms"/>`;
+    }
+    return out;
+  }).join('');
+  let now = '';
+  if (ch.today) {
+    const [hh, mm] = localNowHM().split(':').map(Number);
+    now = `<line x1="${(((hh + mm / 60) / 24) * 100).toFixed(2)}%" x2="${(((hh + mm / 60) / 24) * 100).toFixed(2)}%" y1="8" y2="${height}" class="fc-now"/>`;
+  }
+  const unknown = caffeineUnknown.some(Boolean);
+  const spoken = caffeine.map((v, i) => (v > 0 ? `${i}:00 ${fmtN(v)} mg` : '')).filter(Boolean).join(', ') || 'no caffeine logged';
+  const side = `<span><i class="fk fk-caf"></i><b>${show(ch, 'caffeine', { unit: false })}</b> mg</span><span><i class="fk fk-drink"></i><b>${fmtN(ch.drinksMl ?? 0)}</b> ml</span>`;
+  return `<section class="card fcard">${cardHead(`Caffeine, ${ch.today ? 'today' : esc(shortDay(ch.date))}`, side)}
+    <div class="fc-plot"><svg class="fx-svg" width="100%" height="${height}" role="img" aria-label="${esc(`Caffeine by hour: ${spoken}`)}"><defs>${hatchDef(hatch, 'caf')}</defs>
+      <line x1="0" x2="100%" y1="${mid + 1}" y2="${mid + 1}" class="fx-base"/>${marks}${now}</svg></div>
+    <div class="fc-axis" aria-hidden="true"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></div>
+    ${unknown ? '<p class="fx-keys"><span><i class="fk fk-unk"></i>A drink with no caffeine value</span></p>' : ''}
+  </section>`;
+}
+
+// What he logs most in the period, as a short list with bars.
+function topCard(h) {
+  if (!h.top.length) return '';
+  const most = h.top[0].count;
+  return `<section class="card fcard">${cardHead('Most logged')}
+    <ol class="ftop">${h.top.map((x, i) => `<li><span class="ftop-name">${esc(x.name)}</span><span class="ftop-bar"><i style="--f:${(x.count / most).toFixed(3)};animation-delay:${i * 40}ms"></i></span><b>×${x.count}</b></li>`).join('')}</ol>
+  </section>`;
+}
+
+function viewTrends() {
+  const F = f();
+  const h = F.trend;
+  const span = F.span || 7;
+  const head = pageHead('Trends', { over: '<a class="back-inline" href="#/food">Food</a>' });
+  const seg = `<div class="seg small ftr-span" role="group" aria-label="Period">${SPANS.map((n) => `<button type="button" data-action="food-span" data-days="${n}" class="${span === n ? 'on' : ''}" aria-pressed="${span === n}">${n} days</button>`).join('')}</div>`;
+  if (!h) return ctx.shell(`${head}${seg}<div class="skeleton"><i></i><i></i><i class="short"></i></div>`);
+  const sel = h.chosen.date;
+  ctx.shell(`${head}${seg}
+    <div class="ftr-grid${enter('trends')}">${energyCard(h, sel)}${splitCard(h)}${compareCard(h)}${caffeineCard(h)}${topCard(h)}</div>
+    <p class="note credits">Averages use logged days only, and leave out today while it is still going. + means at least.</p>`);
+}
+
 export function viewFood() {
   const p = state.param;
+  if (p === 'trends') return viewTrends();
   if (p === 'recipes') return viewRecipes();
   if (p === 'recipe') return viewRecipe();
   if (p === 'meals') return viewMeals();
@@ -985,9 +1340,37 @@ export async function foodClick(a, el) {
       if (r) await afterLog(r, m.name);
       return true;
     }
-    case 'food-photo-change':
-      openSheet({ kind: 'search', q: s.items[Number(el.dataset.index)].search || '', results: null, pick: { purpose: 'photo', index: Number(el.dataset.index) }, back: s });
+    case 'food-photo-change': {
+      const q = s.items[Number(el.dataset.index)].search || '';
+      openSheet({ kind: 'search', q, results: null, pick: { purpose: 'photo', index: Number(el.dataset.index) }, back: s });
+      if (q) await runSearch(q, true);
       return true;
+    }
+    case 'food-text-edit': {
+      closeSheet();
+      const box = document.querySelector('[data-food-text]');
+      box?.focus();
+      box?.setSelectionRange(box.value.length, box.value.length);
+      return true;
+    }
+    case 'food-span': {
+      const days = Number(el.dataset.days);
+      if (days === (F.span || 7)) return true;
+      F.span = days;
+      ctx.render();
+      await act(() => loadTrends());
+      ctx.render();
+      return true;
+    }
+    case 'food-trend-day': {
+      const date = el.dataset.date;
+      if (F.trend?.chosen?.date === date) return true;
+      F.trendDate = date === F.trend?.today ? null : date;
+      await act(() => loadTrends());
+      ctx.render();
+      document.querySelector(`[data-action="food-trend-day"][data-date="${date}"]`)?.focus({ preventScroll: true });
+      return true;
+    }
     case 'food-photo-drop':
       s.items.splice(Number(el.dataset.index), 1);
       ctx.render();
@@ -1174,17 +1557,46 @@ export async function foodSubmit(kind, form) {
       }
       return true;
     }
+    case 'food-describe': {
+      const text = String(o.text || '').trim();
+      if (!text) { toast('Type what you ate first.', true); return true; }
+      f().text = text;
+      const sheet = { kind: 'photo', source: 'text', busy: true, text };
+      state.foodSheet = sheet;
+      ctx.render();
+      try {
+        const result = await api('POST', '/api/food/describe', { text });
+        if (state.foodSheet !== sheet) return true;
+        state.foodSheet = { kind: 'photo', source: 'text', text, result, items: photoItemsFrom(result) };
+        ctx.render();
+      } catch (err) {
+        if (state.foodSheet === sheet) state.foodSheet = null;
+        ctx.render();
+        toast(err.status === 0 ? 'Working out a typed meal needs a connection. Quick add works offline.' : err.message, true);
+      }
+      return true;
+    }
     case 'food-photo-log': {
-      const items = s.items.filter((x) => x.match && Number(x.qty) > 0);
       let n = 0;
       let queued = false;
-      for (const it of items) {
-        const l = line(it.match, it.qty, it.unit);
-        if (l.error) { toast(`${it.match.name}: ${l.error}`, true); continue; }
-        const r = await act(() => foodPost('log', { key: it.match.key, qty: Number(it.qty), unit: it.unit, slot: o.slot, estimate: !it.edited }, { name: it.match.name, amount: amountText(it.qty, it.unit, it.match), kcal: l.nutrients.kcal }));
+      for (const it of s.items) {
+        const m = reviewItem(it);
+        let r = null;
+        if (m.mode === 'match') {
+          r = await act(() => foodPost('log', { key: it.match.key, qty: Number(it.qty), unit: it.unit, slot: o.slot, estimate: !it.edited }, { name: it.match.name, amount: amountText(it.qty, it.unit, it.match), kcal: m.line.nutrients.kcal }));
+        } else if (m.mode === 'rough') {
+          // Not in the catalogue: the rough numbers go in the diary as a quick add marked as an estimate.
+          const g = it.guess;
+          const name = cap(it.name);
+          const amount = roughAmount(g);
+          r = await act(() => foodPost('quick', { name, kcal: round(g.kcal, 0), protein: g.protein, carbs: g.carbs, fat: g.fat, ml: g.unit === 'ml' && g.amount > 0 ? g.amount : null, amount, slot: o.slot, estimate: true }, { name, amount, kcal: g.kcal }));
+        } else if (m.error) toast(`${it.match.name}: ${m.error}`, true);
         if (r) { n += 1; queued = queued || r.queued; }
       }
-      if (n) await afterLog({ queued }, `${n} ${n === 1 ? 'item' : 'items'}`);
+      if (n) {
+        if (s.source === 'text') f().text = '';
+        await afterLog({ queued }, `${n} ${n === 1 ? 'item' : 'items'}`);
+      }
       return true;
     }
     case 'food-entry-edit': {
@@ -1293,6 +1705,10 @@ function onInput(e) {
   const el = e.target;
   const s = state.foodSheet;
   if (el.matches('[data-food-q]')) return runSearch(el.value);
+  if (el.matches('[data-food-text]')) {
+    f().text = el.value;
+    return null;
+  }
   if (el.matches('[data-recipe-q]')) {
     f().filter.q = el.value;
     clearTimeout(searchTimer);
@@ -1328,7 +1744,7 @@ function onInput(e) {
     it[el.dataset.photoField] = el.value;
     it.edited = true;
     const out = document.querySelector(`[data-photo-kcal="${el.dataset.photoIndex}"]`);
-    if (out) out.textContent = kcal(line(it.match, it.qty, it.unit).nutrients || {});
+    if (out) out.textContent = reviewKcal(it);
   } else if (el.matches('[data-re-index]')) {
     s.draft.lines[Number(el.dataset.reIndex)][el.dataset.reField] = el.value;
   }
@@ -1351,9 +1767,17 @@ function onChange(e) {
   if (el.matches('[data-photo-index][data-photo-field="unit"]')) ctx.render();
 }
 
+// Return sends a typed meal; Shift+Return adds a new line.
+function onKey(e) {
+  if (e.key !== 'Enter' || e.shiftKey || e.isComposing || !e.target.matches?.('[data-food-text]')) return;
+  e.preventDefault();
+  e.target.form?.requestSubmit();
+}
+
 export function initFood(c) {
   ctx = c;
   $app.addEventListener('input', onInput);
   $app.addEventListener('change', onChange);
+  $app.addEventListener('keydown', onKey);
   window.addEventListener('online', () => flushFood());
 }

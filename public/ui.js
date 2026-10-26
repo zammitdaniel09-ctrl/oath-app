@@ -195,11 +195,12 @@ export function haptic() {
   } catch { /* no haptics available */ }
 }
 
-// A progress bar. No measure at all (null) reads differently from a measured 0%.
-export function bar(pct, cls = '') {
+// A progress bar. No measure at all (null) reads differently from a measured 0%. grow: a key under
+// which motion.js remembers the width, so the bar grows in on first view and from its old width after.
+export function bar(pct, cls = '', grow = '') {
   if (pct === null || pct === undefined) return `<div class="pbar none ${cls}" role="img" aria-label="Not measured yet"></div>`;
   const p = Math.max(0, Math.min(100, pct));
-  return `<div class="pbar ${cls}" role="img" aria-label="${p}%"><i style="width:${p}%"></i></div>`;
+  return `<div class="pbar ${cls}" role="img" aria-label="${p}%"><i style="width:${p}%"${grow ? ` data-grow="${esc(grow)}"` : ''}></i></div>`;
 }
 
 // A colour from a calendar feed, only if it is a plain CSS colour, so it can go in a style attribute.
@@ -282,19 +283,21 @@ const ICONS = {
   star: '<path d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/>',
 };
 
-// The Oath mark: a chrome ring with a Merlot arc, an HP ring three quarters full.
+// The Oath mark: a ring cut down the middle and slid apart. Chrome is the word, Merlot is the deed,
+// and the step between them is the gap each day closes. Same geometry as HALVES in tools/icons.mjs,
+// which draws the Home Screen icon; change them together.
 let markCount = 0;
 export function brandMark(size = 32, cls = '') {
   markCount += 1;
   const g = `bm${markCount}`;
-  const r = 22;
-  const c = 2 * Math.PI * r;
+  // R 21, stroke 10.5, a 2.4 gap and a 5.6 step.
+  const half = (side, stroke, r = 21, w = 10.5, extra = '') => `<g clip-path="url(#${g}${side})" transform="translate(0 ${side === 'L' ? 2.8 : -2.8})"><circle cx="32" cy="32" r="${r}" fill="none" stroke="${stroke}" stroke-width="${w}"${extra}/></g>`;
   return `<svg class="mark${cls ? ` ${cls}` : ''}" width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true">
-    <defs><linearGradient id="${g}c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#ffffff"/><stop offset="0.5" style="stop-color:#c9ced6"/><stop offset="1" style="stop-color:#7d838f"/></linearGradient>
-    <linearGradient id="${g}m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:#ff2a17"/><stop offset="1" style="stop-color:#b30500"/></linearGradient></defs>
-    <circle cx="32" cy="32" r="${r}" fill="none" stroke="url(#${g}c)" stroke-width="10"/>
-    <circle cx="32" cy="32" r="${r}" fill="none" stroke="url(#${g}m)" stroke-width="10" stroke-linecap="round"
-      stroke-dasharray="${(c * 0.72).toFixed(2)} ${c.toFixed(2)}" transform="rotate(-90 32 32)"/>
+    <defs><clipPath id="${g}L"><rect width="30.8" height="64"/></clipPath><clipPath id="${g}R"><rect x="33.2" width="30.8" height="64"/></clipPath>
+    <linearGradient id="${g}c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#ffffff"/><stop offset="0.32" style="stop-color:#e7eaef"/><stop offset="0.5" style="stop-color:#aeb4bf"/><stop offset="0.57" style="stop-color:#7b8290"/><stop offset="0.76" style="stop-color:#abb1bc"/><stop offset="1" style="stop-color:#d2d6dd"/></linearGradient>
+    <linearGradient id="${g}m" gradientUnits="userSpaceOnUse" x1="34" y1="6" x2="57" y2="58"><stop offset="0" style="stop-color:#ff5a3f"/><stop offset="0.36" style="stop-color:#ee1004"/><stop offset="0.72" style="stop-color:#c30500"/><stop offset="1" style="stop-color:#7f0300"/></linearGradient></defs>
+    ${half('L', `url(#${g}c)`)}${half('R', `url(#${g}m)`)}
+    ${half('L', '#fff', 25.75, 1, ' stroke-opacity="0.5"')}${half('R', '#ffb8a8', 25.75, 1, ' stroke-opacity="0.55"')}
   </svg>`;
 }
 
@@ -303,20 +306,29 @@ export function icon(name, cls = '') {
 }
 
 // ---------- Rings: the day at a glance ----------
-// list: [{ pct, cls }] outside in. Each ring is a track plus a gradient arc. Animated once per session.
+// list: [{ pct, cls }] outside in. Each ring is a track plus a gradient arc. They sweep in from empty
+// once per session, and after that from where they were whenever their value changes (a tick).
 const RING_STOPS = {
   'r-hp': ['var(--merlot-hi)', 'var(--merlot)', '#a30400'],
   'r-day': ['#8dffdc', 'var(--menthol)', '#1fbf8e'],
   'r-move': ['var(--honey)', 'var(--blaze)', 'var(--ember)'],
   'r-sleep': ['#ff7d97', 'var(--cherry)', '#c4103a'],
 };
+const RING_MS = 1100;
 let ringsDrawn = false;
+const ringWas = {};
+let sweep = null; // the sweep under way: when it started, and each ring's start and end
 export function rings(list, size = 128) {
   // Big rings get relatively thinner strokes, leaving room for the number in the middle.
   const sw = Math.round(size * (size >= 160 ? 0.086 : 0.105));
   const gap = Math.max(2, Math.round(size * 0.02));
-  const animate = !ringsDrawn;
+  const first = !ringsDrawn;
   ringsDrawn = true;
+  const now = performance.now();
+  // A redraw in the middle of a sweep carries on with it rather than jumping to the end.
+  const going = sweep && now - sweep.t0 < RING_MS && list.every((ring) => sweep.to[ring.cls] === Math.max(0, Math.min(1, (ring.pct || 0) / 100))) ? sweep : null;
+  const next = { t0: now, from: {}, to: {} };
+  let moving = false;
   const defs = list.map(({ cls }) => RING_STOPS[cls] && `<linearGradient id="rg-${cls}" x1="0" y1="0" x2="1" y2="1">${RING_STOPS[cls]
     .map((c, i) => `<stop offset="${i / 2}" style="stop-color:${c}"/>`).join('')}</linearGradient>`).filter(Boolean).join('');
   const circles = list.map((ring, i) => {
@@ -324,24 +336,36 @@ export function rings(list, size = 128) {
     const c = 2 * Math.PI * r;
     const p = Math.max(0, Math.min(1, (ring.pct || 0) / 100));
     const off = c * (1 - p);
+    const from = going ? going.from[ring.cls] : first ? 0 : (ringWas[ring.cls] ?? p);
+    ringWas[ring.cls] = p;
+    next.from[ring.cls] = from;
+    next.to[ring.cls] = p;
+    if (from !== p) moving = true;
     return `<g class="ring ${ring.cls}">
       <circle cx="${size / 2}" cy="${size / 2}" r="${r.toFixed(2)}" class="ring-track" stroke-width="${sw}" fill="none"/>
       <circle cx="${size / 2}" cy="${size / 2}" r="${r.toFixed(2)}" class="ring-fill" stroke-width="${sw}" fill="none" stroke-linecap="round"
-        stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${(animate ? c : off).toFixed(2)}" data-off="${off.toFixed(2)}"
-        transform="rotate(-90 ${size / 2} ${size / 2})"${p ? '' : ' opacity="0"'}/>
+        stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}"${from !== p ? ` data-from="${(c * (1 - from)).toFixed(2)}"` : ''}
+        transform="rotate(-90 ${size / 2} ${size / 2})"${p || from ? '' : ' opacity="0"'}/>
     </g>`;
   }).join('');
-  return `<svg class="rings${animate ? ' drawing' : ''}" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><defs>${defs}</defs>${circles}</svg>`;
+  sweep = going || (moving ? next : null);
+  return `<svg class="rings" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><defs>${defs}</defs>${circles}</svg>`;
 }
 
-// After a render, sweep any rings that start empty to their value.
+// After a render, sweep any ring drawn away from its value to it (Web Animations, so a redraw can
+// pick the sweep up where it was). Reduced motion shows the value at once.
 export function drawRings() {
-  const svg = document.querySelector('svg.rings.drawing');
-  if (!svg) return;
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    svg.querySelectorAll('.ring-fill').forEach((c) => c.setAttribute('stroke-dashoffset', c.dataset.off));
-    svg.classList.remove('drawing');
-  }));
+  const svg = document.querySelector('svg.rings');
+  if (!svg || !sweep || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const t = performance.now() - sweep.t0;
+  if (t >= RING_MS) return;
+  svg.querySelectorAll('.ring-fill[data-from]').forEach((c) => {
+    try {
+      const a = c.animate([{ strokeDashoffset: `${c.dataset.from}px` }, { strokeDashoffset: `${c.getAttribute('stroke-dashoffset')}px` }],
+        { duration: RING_MS, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'backwards' });
+      a.currentTime = t;
+    } catch { /* no Web Animations: the ring shows its value */ }
+  });
 }
 
 // ---------- Small charts ----------
@@ -433,6 +457,16 @@ export function pageHead(title, { over = '', actions = '' } = {}) {
 
 export function iconLink(href, name, label) {
   return `<a class="icon-btn" href="${href}" aria-label="${label}">${icon(name)}</a>`;
+}
+
+// An empty state: a lit icon, what this place is for, and the one action that fills it.
+// title, text and actions are HTML the caller has already escaped.
+export function emptyState({ icon: name, title, text = '', actions = '', small = false }) {
+  return `<div class="card empty-state${small ? ' small' : ''}">
+    <span class="empty-orb" aria-hidden="true">${icon(name)}</span>
+    <h3>${title}</h3>${text ? `<p class="muted">${text}</p>` : ''}
+    ${actions ? `<div class="form-actions">${actions}</div>` : ''}
+  </div>`;
 }
 
 // The personal key for Shortcuts and Apple Health, shown once right after it is made.

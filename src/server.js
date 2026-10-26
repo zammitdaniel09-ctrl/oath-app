@@ -22,7 +22,7 @@ import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleU
 import { setupStatus, noteIngestError } from './setup.js';
 import { foodApi, saveCustomFood } from './food.js';
 import { ensureFoodSeed } from './food-seed.js';
-import { readFoodPhoto } from './food-photo.js';
+import { readFoodPhoto, readFoodText } from './food-photo.js';
 import { productByBarcode, searchOff } from './off.js';
 import * as passkeys from './passkeys.js';
 
@@ -298,6 +298,8 @@ api.route('/', businessApi);
 // ---------- Food ----------
 // Photo of anything: barcode, packet, label or plate. The photo is read and dropped, never stored.
 api.post('/food/photo', async (c) => c.json(await readFoodPhoto(await body(c))));
+// "What did you eat?": typed words become catalogue matches with estimated amounts, never logged unseen.
+api.post('/food/describe', async (c) => c.json(await readFoodText(await body(c))));
 api.post('/food/label', async (c) => c.json(await saveCustomFood(await body(c), { fromLabel: true })));
 api.get('/food/barcode/:code', async (c) => c.json({ item: await productByBarcode(c.req.param('code')) }));
 api.get('/food/off-search', async (c) => c.json({ items: await searchOff(c.req.query('q')) }));
