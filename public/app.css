@@ -2139,3 +2139,96 @@ a.tag { text-decoration: none; }
   .food-split { grid-template-columns: minmax(360px, 0.95fr) minmax(0, 1.05fr); }
   .food-split > div:last-child > .section:first-child .gh { margin-top: 12px; }
 }
+
+/* ---------- Life: livelier presses, switches, sparks, rolling numbers, shimmer, scroll ---------- */
+
+/* Presses go in fast and come back on the livelier spring (--pop), a little past rest. */
+.btn { transition: background-color var(--t-ctl) var(--ease), transform var(--pop-ms) var(--pop), box-shadow var(--t-ctl) var(--ease), opacity var(--t-ctl); }
+.btn:active:not(:disabled) { transform: scale(0.95); }
+.btn.wide:active:not(:disabled), .btn.big:active:not(:disabled) { transform: scale(0.975); }
+.gh-link, .back, .topbar-back { transition: transform var(--pop-ms) var(--pop), background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease); }
+.gh-link:active, .back:active, .topbar-back:active { transform: scale(0.94); transition: transform var(--t-press) var(--ease), background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease); }
+/* A pressed row gives a little under the finger: its words sink, then spring back. */
+.li > .li-body { transform-origin: 0 50%; transition: transform var(--pop-ms) var(--pop); }
+button.li:active > .li-body, a.li:active > .li-body { transform: scale(0.98); transition: transform var(--t-press) var(--ease); }
+.li .chev { transition: transform var(--pop-ms) var(--pop); }
+button.li:active .chev, a.li:active .chev { transform: translateX(3px); transition: transform var(--t-press) var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  a.card:hover, .goal-card:hover { transform: translateY(-2px); }
+  a.card:active { transform: scale(0.985); }
+  .goal-card:active { transform: scale(0.98); }
+}
+.check input { transition: background-color var(--t-ctl), box-shadow var(--t-ctl), transform var(--pop-ms) var(--pop); }
+.check input::after { transform: rotate(45deg) scale(0.3); transition: opacity var(--t-ctl) var(--ease), transform var(--pop-ms) var(--pop); }
+.check input:checked::after { transform: rotate(45deg) scale(1); }
+.check:active input { transform: scale(0.88); transition: background-color var(--t-ctl), box-shadow var(--t-ctl), transform var(--t-press) var(--ease); }
+
+/* A switch: the knob travels on the spring, the track turns Menthol. Used for the Sounds setting. */
+.switch-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 52px; cursor: pointer; }
+.switch-text { display: grid; gap: 3px; min-width: 0; line-height: 1.45; }
+.switch-text b { font-weight: 650; }
+.switch {
+  -webkit-appearance: none; appearance: none; position: relative; flex: none; width: 52px; height: 32px; margin: 0; padding: 0;
+  border: 0; border-radius: 16px; cursor: pointer; background: var(--fill-2); box-shadow: inset 0 0 0 1px var(--line-ctl);
+  transition: background-color var(--t-layer) var(--ease), box-shadow var(--t-layer) var(--ease);
+}
+.switch::after {
+  content: ''; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: var(--silver);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); transition: transform var(--pop-ms) var(--pop);
+}
+.switch:checked { background: var(--menthol); box-shadow: none; }
+.switch:checked::after { transform: translateX(20px); }
+.switch-row:active .switch::after { transform: scale(0.9); transition-duration: var(--t-press); transition-timing-function: var(--ease); }
+.switch-row:active .switch:checked::after { transform: translateX(20px) scale(0.9); }
+.switch:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* Sparks leave a tick (motion.js): a layer of its own, above everything, that takes no touches. */
+.spark-layer { position: fixed; inset: 0; z-index: 70; overflow: hidden; pointer-events: none; contain: layout paint; }
+.spark { position: absolute; left: 0; top: 0; border-radius: 40%; will-change: transform, opacity; }
+
+/* A row that has gone from the list slips away from where it was. */
+.row-ghost { position: absolute; left: 0; right: 0; z-index: 0; pointer-events: none; }
+
+/* A number that changes rolls: the new one comes up behind the old (motion.js). */
+.roll { display: inline-grid; }
+.roll > * { grid-area: 1 / 1; }
+
+/* Loading: a soft light passes over the placeholders. Add .shimmer to any other placeholder. */
+.skeleton i, .shimmer { position: relative; overflow: hidden; }
+.skeleton i { animation: none; }
+.skeleton i::after, .shimmer::after {
+  content: ''; position: absolute; inset: 0; transform: translateX(-100%); pointer-events: none;
+  background: linear-gradient(100deg, transparent 25%, rgba(255, 255, 255, 0.06) 50%, transparent 75%);
+  animation: shimmer 1.8s var(--ease-in-out) infinite;
+}
+@keyframes shimmer { 0% { transform: translateX(-100%); } 70%, 100% { transform: translateX(100%); } }
+
+/* Between tabs the new screen drifts in from the side its tab is on. */
+:root[data-nav="tab"][data-dir="r"]::view-transition-old(root) { animation: vt-leave-l 140ms var(--ease) both; }
+:root[data-nav="tab"][data-dir="r"]::view-transition-new(root) { animation: vt-drift-r 300ms var(--ease) both; }
+:root[data-nav="tab"][data-dir="l"]::view-transition-old(root) { animation: vt-leave-r 140ms var(--ease) both; }
+:root[data-nav="tab"][data-dir="l"]::view-transition-new(root) { animation: vt-drift-l 300ms var(--ease) both; }
+@keyframes vt-leave-l { to { opacity: 0; transform: translateX(-10px); } }
+@keyframes vt-leave-r { to { opacity: 0; transform: translateX(10px); } }
+@keyframes vt-drift-r { from { opacity: 0; transform: translateX(22px); } }
+@keyframes vt-drift-l { from { opacity: 0; transform: translateX(-22px); } }
+
+/* Scrolling. Where the browser can tie an animation to scroll position (no script, no jank), the large
+   title lags, fades and blurs as it leaves, and blocks below the fold rise into view as they arrive.
+   Anything already in view is simply there. */
+@keyframes title-away { to { opacity: 0; transform: translateY(16px) scale(0.96); filter: blur(4px); } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(18px); } }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .lt-text, .goal-h { transform-origin: 0 100%; animation: title-away linear both; animation-timeline: view(block); animation-range: exit 0% exit 100%; }
+    :where(.page, .page > .section, .page > .split > *, .page > .split > * > .section) > :where(.card, .group) {
+      animation: rise-in linear both; animation-timeline: view(block); animation-range: entry 30px entry 170px;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .switch { border: 1px solid CanvasText; }
+  .switch:checked { background: Highlight; }
+  .spark-layer { display: none; }
+}

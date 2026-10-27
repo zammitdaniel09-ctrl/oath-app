@@ -1,10 +1,11 @@
 // Oath web app. Plain modules, no build step.
 import {
   $app, state, hooks, esc, ApiError, api, toast, react, act, form2obj, fmtClock, fmtDay, left, fmtMin,
-  DAY_NAMES, scheduleText, CHECK, isStandalone, isIOS, haptic, bar, strengthChip, localToday, localNowHM,
+  DAY_NAMES, scheduleText, CHECK, isStandalone, isIOS, haptic, fx, RING_MS, bar, strengthChip, localToday, localNowHM,
   icon, drawRings, pageHead, iconLink, fmtInt, fmtDec, ago, miniRing, keyBlock, rememberKey, safeColor,
   urgency, URGENCY, brandMark, emptyState,
 } from './ui.js';
+import { soundsOn, setSounds } from './sound.js';
 import * as motion from './motion.js';
 import { richHtml } from './rich.js';
 import { parseCapture } from './parse.js';
@@ -1063,6 +1064,13 @@ function settingsCard(ic, title, body, id = '') {
   return `<div class="card scard"${id ? ` id="${id}"` : ''}><h3 class="scard-h"><span class="sic sic-${ic}">${icon(ic)}</span>${title}</h3>${body}</div>`;
 }
 
+// Sounds belong to the device, not the account: the choice is kept in this browser's storage (sound.js).
+function soundsCard() {
+  return settingsCard('sound', 'Sounds', `<label class="switch-row"><span class="switch-text"><b>Play sounds on this device</b>
+      <span class="muted small">Soft sounds for ticks, meals, messages and errors. On iPhone the silent switch mutes them.</span></span>
+      <input class="switch" type="checkbox" role="switch" data-action="sounds"${soundsOn() ? ' checked' : ''}></label>`);
+}
+
 function alertsCard(s) {
   const opt = (v, label, hint) => `<label class="radio-row"><input type="radio" name="alerts" value="${v}"${(s.alerts || 'both') === v ? ' checked' : ''}><span><b>${label}</b><br><span class="muted small">${hint}</span></span></label>`;
   return settingsCard('phone', 'Where alerts go', `<form data-form="alerts">
@@ -1161,6 +1169,7 @@ function viewSettings() {
       ${connections}
       ${faceIdCard()}
       ${pushCard()}
+      ${soundsCard()}
       ${alertsCard(s)}
       ${telegramCard()}
       ${siriCard()}
@@ -1795,7 +1804,7 @@ function taskPayload(form) {
 // Optimistic tick: the row turns green at once, then the server confirms.
 async function keepHabit(el, id, minimum = false) {
   const row = el.closest('.li');
-  haptic();
+  haptic('tick');
   if (row) row.classList.add('kept', 'pending');
   motion.ticked(row);
   el.disabled = true;
@@ -1823,13 +1832,24 @@ async function coachChangedThings(reply) {
 // After a tick: the Today ring pulses, the day is reloaded, and the reaction says how much is left.
 async function afterTick(reaction, current = false) {
   state.justTicked = true;
+  const wasOpen = state.today?.progress?.open || 0;
   // The day reloads while the check finishes drawing; then the list settles into its new order.
   const other = current && state.route !== 'today';
   await Promise.all([other ? load(state.route) : fetchToday(), motion.tickSettled()]);
   if (other || state.route === 'today') render();
   const open = state.today?.progress?.open;
+  // The last thing due today: a chord and a burst, once. On Today the chord comes from the ring as it
+  // closes (today.js), so the burst waits for the same moment; elsewhere both come at once.
+  if (wasOpen > 0 && open === 0) {
+    if (state.route === 'today') setTimeout(() => motion.celebrate(), window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : RING_MS);
+    else {
+      fx('all-done');
+      motion.celebrate();
+    }
+  }
   const tail = open === 0 ? ' Everything due today is done.' : open ? ` ${open} to go.` : '';
-  if (reaction?.text) react({ ...reaction, text: `${reaction.text}${tail}` });
+  // The server's reaction may already say the day is done; it is said once.
+  if (reaction?.text) react({ ...reaction, text: reaction.text.includes(tail.trim()) ? reaction.text : `${reaction.text}${tail}` });
   else if (tail) toast(tail.trim());
 }
 
@@ -1859,15 +1879,17 @@ $app.addEventListener('click', async (e) => {
   } else if (a === 'keep-minimum') {
     await keepHabit(el, id, true);
   } else if (a === 'undo') {
+    haptic('untick');
     if (await act(() => api('POST', `/api/habits/${id}/undo`, {}), 'Undone.')) await refreshToday();
   } else if (a === 'task-done') {
-    haptic();
+    haptic('tick');
     const row = el.closest('.li');
     if (row) row.classList.add('done', 'pending');
     motion.ticked(row);
     const ok = await act(() => api('POST', `/api/tasks/${id}/done`, {}));
     if (ok) await afterTick(ok.reaction, true); else if (row) row.classList.remove('done', 'pending');
   } else if (a === 'task-undo') {
+    haptic('untick');
     if (await act(() => api('POST', `/api/tasks/${id}/undo`, {}), 'Undone.')) await refreshToday();
   } else if (a === 'triage') {
     const labels = { today: 'Moved to today.', tomorrow: 'Moved to tomorrow.', week: 'Moved to next Monday.', someday: 'Moved to someday.', drop: 'Dropped.' };
@@ -1882,12 +1904,12 @@ $app.addEventListener('click', async (e) => {
     if (r) await refreshToday(); else el.disabled = false;
   } else if (a === 'focus-done' || a === 'focus-stop') {
     el.disabled = true;
-    if (a === 'focus-done') haptic();
+    if (a === 'focus-done') haptic('tick');
     const r = await act(() => api('POST', `/api/focus/${id}/finish`, { outcome: a === 'focus-done' ? 'done' : 'stopped' }));
     if (r) { react(r.reaction); await refreshToday(); } else el.disabled = false;
   } else if (a === 'now-done') {
     el.disabled = true;
-    haptic();
+    haptic('tick');
     // Its row in the list ticks at the same moment, so both places agree.
     const row = $app.querySelector(`.group > [data-key="${el.dataset.kind === 'habit' ? 'h' : 't'}${id}"]`);
     const cls = el.dataset.kind === 'habit' ? 'kept' : 'done';
@@ -1987,6 +2009,7 @@ $app.addEventListener('click', async (e) => {
     if (r) {
       state.coach.messages.push({ role: 'assistant', text: r.text, at: new Date().toISOString() });
       render();
+      fx('receive');
       state.today = null;
     }
   } else if (a === 'coach-confirm') {
@@ -2018,6 +2041,10 @@ $app.addEventListener('click', async (e) => {
     } else {
       el.checked = !on;
     }
+  } else if (a === 'sounds') {
+    // A setting of this device only. Turning them on clicks, so it can be heard straight away.
+    setSounds(el.checked);
+    if (el.checked) fx('toggle');
   } else if (a === 'faceid-remove') {
     if (!confirm('Remove Face ID login for this device? The password keeps working.')) return;
     if (await act(() => api('DELETE', `/api/passkeys/${encodeURIComponent(el.dataset.id)}`), 'Face ID removed for that device.')) {
@@ -2101,7 +2128,7 @@ $app.addEventListener('submit', async (e) => {
       const text = form2obj(form).title;
       const r = await act(() => api('POST', '/api/capture', { text }));
       if (r) {
-        haptic();
+        haptic('success');
         toast(r.say);
         form.reset();
         form.querySelector('.parse-preview').innerHTML = '';
@@ -2149,10 +2176,12 @@ $app.addEventListener('submit', async (e) => {
       if (state.query.has('ask')) history.replaceState(null, '', '#/coach');
       state.query = new URLSearchParams();
       render();
+      haptic('send');
       const r = await act(() => api('POST', '/api/coach', { text }));
       state.sending = false;
       if (r) state.coach.messages.push(r.reply);
       render();
+      if (r) fx('receive');
       await coachChangedThings(r?.reply);
     } else if (kind === 'ask-coach') {
       // The quick line on Today and Plan: the answer, and what the coach did, open in a sheet.
@@ -2161,12 +2190,14 @@ $app.addEventListener('submit', async (e) => {
       form.reset();
       state.sheet = { kind: 'coach', text };
       render();
+      haptic('send');
       const r = await act(() => api('POST', '/api/coach', { text }));
       if (!r) { state.sheet = null; render(); return; }
       state.sheet = { kind: 'coach', text, reply: r.reply };
       state.coach = null;
       await coachChangedThings(r.reply);
       render();
+      fx('receive');
     } else if (kind === 'rules') {
       const f = form2obj(form);
       const patch = Object.fromEntries(Object.entries(f).filter(([k, x]) => x !== '' && Number(x) !== Number(state.settings?.[k])).map(([k, x]) => [k, Number(x)]));
@@ -2222,7 +2253,7 @@ async function takeOath(form) {
   const [kind, id] = String(f.get('focus')).split(':');
   const r = await act(() => api('POST', '/api/oath', { focusKind: kind, focusId: Number(id), intention: f.get('intention') || '' }));
   if (r) {
-    haptic();
+    haptic('success');
     toast('Sworn. Now do it.', false, 3500, true);
     await refreshToday();
     window.scrollTo({ top: 0 });

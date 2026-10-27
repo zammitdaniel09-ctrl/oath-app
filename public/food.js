@@ -1544,7 +1544,7 @@ function backToBuilder(s, mutate) {
 }
 
 async function afterLog(r, name) {
-  haptic();
+  haptic('log-food');
   if (r?.queued) toast(`${name} saved on this phone. It syncs when you are back online.`);
   else toast(r?.duplicate ? 'Already logged.' : `Logged ${name}.`);
   state.foodSheet = null;

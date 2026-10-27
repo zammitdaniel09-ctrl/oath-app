@@ -445,7 +445,7 @@ export async function goalsClick(a, el) {
       ctx.render();
       return true;
     case 'node-toggle': {
-      haptic();
+      haptic('tick');
       if (await act(() => api('POST', `/api/nodes/${id}/toggle`, {}))) await reloadGoal();
       return true;
     }
@@ -507,7 +507,7 @@ export async function goalsSubmit(kind, form) {
     case 'goal-log': {
       const r = await act(() => api('POST', `/api/goals/${form.dataset.id}/log`, { value: form2obj(form).value }));
       if (r) {
-        haptic();
+        haptic('success');
         toast(`Updated to ${r.value}.`);
         await reloadGoal();
       }
