@@ -372,8 +372,8 @@ export function viewCalendar() {
   if (!c.date) c.date = localToday();
   const head = pageHead('Calendar', {
     over: esc(longDay(localToday())),
-    actions: `<button type="button" class="icon-btn" data-action="cal-sub" aria-label="Show in Apple Calendar">${icon('phone')}</button>
-      <button type="button" class="icon-btn accent" data-action="cal-new" aria-label="New event">${icon('plus')}</button>`,
+    actions: `<button type="button" class="icon-btn" data-action="cal-sub" aria-label="Show in Apple Calendar" title="Show in Apple Calendar">${icon('phone')}</button>
+      <button type="button" class="icon-btn accent" data-action="cal-new" aria-label="New event" title="New event">${icon('plus')}</button>`,
   });
   const body = c.view === 'month' ? monthHtml(c) : gridHtml(c);
   ctx.shell(`${head}<div class="cal v-${c.view}">${topHtml(c)}<div class="cal-frame">${body}</div></div>${sheetHtml(c)}`);
