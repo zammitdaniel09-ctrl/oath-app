@@ -1001,3 +1001,82 @@ html.scan-open, html.scan-open body { overflow: hidden; }
 @media (min-width: 900px) {
   .fcap .fusual-row { flex-wrap: wrap; overflow: visible; -webkit-mask-image: none; mask-image: none; }
 }
+/* ---------- What to eat next, and Rich in… (food-next.js) ---------- */
+
+/* The card under the day: the main gaps as its heading, then a few foods to close them. */
+.fnext { margin-top: 12px; padding-bottom: var(--pad-sm); }
+.fnext-k { margin-bottom: 4px; }
+.fnext-gap { white-space: nowrap; }
+.fnext-gaps { font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.012em; line-height: 1.3; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.fnext-list { display: grid; margin: 8px calc(var(--pad) * -1) 0; padding: 0; list-style: none; }
+.fnext-row { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; padding-right: var(--pad); }
+.fnext-row + .fnext-row::before { content: ''; position: absolute; top: 0; right: 0; left: calc(var(--pad) + 34px); height: 1px; background: var(--line-soft); }
+.fnext-pick {
+  display: grid; grid-template-columns: 22px minmax(0, 1fr); align-items: start; gap: 12px; min-width: 0; min-height: 64px;
+  padding: 12px 4px 12px var(--pad); border: 0; border-radius: 0 var(--r-inset) var(--r-inset) 0; background: transparent;
+  color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background-color var(--t-ctl) var(--ease);
+}
+.fnext-pick > .ns-dot { margin-top: 1px; }
+.fnext-pick:active { background: var(--inset); transition-duration: 0s; }
+.fnext-pick:focus-visible { outline-offset: -3px; }
+@media (hover: hover) { .fnext-pick:hover { background: var(--fill); } }
+.fnext-body { display: grid; gap: 3px; min-width: 0; }
+.fnext-name { font-size: 1rem; font-weight: 620; line-height: 1.3; overflow-wrap: anywhere; }
+.fnext-amt { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 0.8125rem; color: var(--text-3); overflow-wrap: anywhere; }
+.fnext-adds { display: flex; flex-wrap: wrap; gap: 1px 10px; font-size: 0.8125rem; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.fnext-adds span { white-space: nowrap; }
+.fnext-adds b { font-weight: 700; color: var(--text); }
+.fnext-why { font-size: 0.8125rem; line-height: 1.4; color: var(--menthol); }
+.fnext-log { min-width: 64px; min-height: 44px; }
+.fnext-undo {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; padding: 4px 4px 4px 12px;
+  border-radius: var(--r-ctl); background: var(--inset); box-shadow: inset 0 0 0 1px var(--line); font-size: 0.875rem; color: var(--text-2);
+}
+.fnext-undo span { min-width: 0; overflow-wrap: anywhere; }
+.fnext-undo .btn { flex: none; min-height: 44px; }
+.fnext-none { margin: 10px 0 0; font-size: 0.875rem; color: var(--text-2); }
+.fnext-foot { margin: 6px 0 0; font-size: 0.75rem; line-height: 1.45; color: var(--text-3); }
+.fnext-calm { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 0.9375rem; line-height: 1.45; color: var(--text-2); }
+.fnext-calm .ic { width: 18px; height: 18px; color: var(--menthol); }
+.fnext.is-covered .fnext-undo { margin: 0 0 12px; }
+@media (min-width: 1240px) {
+  .fd-sum > .fnext { margin-top: 14px; }
+}
+
+/* Nutrients shown with a % of need open "Rich in…". They are real buttons that keep their look, with a
+   small chevron by the name and a press state; rows grow to a 44 px target. */
+.tap-hint { width: 11px !important; height: 11px !important; flex: none; color: var(--text-3); stroke-width: 2.4; }
+button.fmicro-i, button.nf-row, button.rirow {
+  width: 100%; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer;
+  transition: background-color var(--t-ctl) var(--ease);
+}
+button.fmicro-i { margin: -6px; width: calc(100% + 12px); padding: 6px; border-radius: 10px; }
+button.fmicro-i .fmicro-k, button.rirow .rirow-k { display: flex; align-items: center; gap: 2px; min-width: 0; }
+button.fmicro-i .fmicro-k > span, button.rirow .rirow-k > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+button.nf-row { min-height: 44px; padding: 6px 0; border-radius: 0; }
+button.nf-row .tap-hint { margin-left: 4px; vertical-align: -1px; }
+.nf-label button.nf-row:first-of-type { box-shadow: 0 -1px 0 var(--line-soft); }
+button.rirow { min-height: 44px; margin: 0; padding: 0; border-radius: 8px; }
+.rirow + button.rirow { margin-top: 0; }
+button.fmicro-i:active, button.nf-row:active, button.rirow:active { background: var(--fill-2); transition-duration: 0s; }
+button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; }
+@media (hover: hover) { button.fmicro-i:hover, button.nf-row:hover, button.rirow:hover { background: var(--fill); } }
+
+/* The sheet: per portion or per 100 kcal, his foods first, then more ideas. */
+.frich-seg { margin-top: 0; }
+.frich-seg label { flex: 0 0 auto; min-width: 112px; }
+.frich-seg span { white-space: nowrap; }
+.frich-lead { margin: 12px 2px 0; font-size: 0.875rem; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.frich-h { margin: 20px 2px 0; font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+.sheet .frich-h { font-size: 0.6875rem; font-weight: 500; }
+.frich-group { margin-top: 8px; }
+.frich-row .li-side { display: grid; justify-items: end; gap: 1px; }
+.frich-v b { font-size: 1rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.frich-v small { font-size: 0.75rem; font-weight: 650; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.frich-empty { margin: 8px 2px 0; }
+.frich-foot { margin: 16px 2px 4px; font-size: 0.75rem; line-height: 1.5; color: var(--text-3); }
+.frich-wait { display: flex; justify-content: center; gap: 6px; padding: 36px 0; }
+.frich-wait i { width: 7px; height: 7px; border-radius: 50%; background: var(--chrome-c); opacity: 0.35; animation: typing 1.3s var(--ease-in-out) infinite; }
+.frich-wait i:nth-of-type(2) { animation-delay: 0.16s; }
+.frich-wait i:nth-of-type(3) { animation-delay: 0.32s; }
+@media (prefers-reduced-motion: reduce) { .frich-wait i { animation-name: typing-fade; } }

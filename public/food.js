@@ -18,6 +18,7 @@ import { initScan, scanClick, scanMissBody, scanMissTitle } from './scan.js';
 import {
   initUsual, loadUsual, usualHtml, usualClick, usualSubmit, usualSheet, undoLog, waterHtml, leftHtml, slotAction, emptySlotsHtml,
 } from './food-usual.js';
+import { initNext, loadNext, nextCardHtml, nextClick, richBody, richTitle } from './food-next.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 
@@ -96,6 +97,8 @@ export async function flushFood() {
 
 async function loadDay() {
   const d = f().date;
+  // What to eat next is for today only, and loads alongside it.
+  const next = d ? null : loadNext();
   try {
     f().day = await api('GET', `/api/food/day${d ? `?date=${d}` : ''}`);
     f().offline = false;
@@ -106,6 +109,7 @@ async function loadDay() {
     f().day = c;
     f().offline = true;
   }
+  await next;
   loadTake('day');
 }
 
@@ -338,15 +342,18 @@ const FACT_NAME = {
   carbs: 'Carbohydrate', addsugars: 'Added sugars',
 };
 
-function factRow(n, k, sub, filled) {
+// With `tap`, a row with a % of need is a button that opens the foods richest in it.
+function factRow(n, k, sub, filled, tap = false) {
   const d = NUTRIENT[k];
   const p = riPct(n, k);
   const unknown = num(n?.[k]) === null;
-  return `<div class="nf-row${sub ? ' sub' : ''}${unknown ? ' unk' : ''}"><span class="nf-k">${esc(FACT_NAME[k] || d.label)}</span>
-    <span class="nf-v">${val(n, k, filled)}</span><span class="nf-ri">${refAt(k) ? `${riBar(p, k)}<small>${p === null ? '' : pctText(p, n?.missing?.[k])}</small>` : ''}</span></div>`;
+  const btn = tap && k !== 'kcal' && refAt(k);
+  const tag = btn ? `button type="button" data-action="food-rich" data-key="${k}"` : 'div';
+  return `<${tag} class="nf-row${sub ? ' sub' : ''}${unknown ? ' unk' : ''}${btn ? ' nf-tap' : ''}"><span class="nf-k">${esc(FACT_NAME[k] || d.label)}${btn ? icon('chevron', 'tap-hint') : ''}</span>
+    <span class="nf-v">${val(n, k, filled)}</span><span class="nf-ri">${refAt(k) ? `${riBar(p, k)}<small>${p === null ? '' : pctText(p, n?.missing?.[k])}</small>` : ''}</span></${btn ? 'button' : 'div'}>`;
 }
 
-function factsHtml(n, filled = null) {
+function factsHtml(n, filled = null, { tap = false } = {}) {
   const fl = filledSet(filled);
   // Sub-rows nobody has a value for are left out; the main rows always show, "–" when unknown.
   const label = LABEL_ROWS.filter(([k, sub]) => !sub || ['satfat', 'sugars'].includes(k) || num(n?.[k]) !== null);
@@ -354,12 +361,12 @@ function factsHtml(n, filled = null) {
     const all = NUTRIENTS.filter((x) => x.group === g);
     const known = all.filter((x) => num(n?.[x.key]) !== null);
     const rest = all.length - known.length;
-    return `<div class="nf-group"><h4 class="nf-h">${title}</h4>${known.map((x) => factRow(n, x.key, false, fl)).join('')}
+    return `<div class="nf-group"><h4 class="nf-h">${title}</h4>${known.map((x) => factRow(n, x.key, false, fl, tap)).join('')}
       ${rest ? `<p class="nf-none">${known.length ? `${rest} more not on record` : 'Not on record'}</p>` : ''}</div>`;
   };
   const other = ['caffeine', 'alcohol'].filter((k) => num(n?.[k]) > 0);
   return `<div class="nf-group nf-label"><div class="nf-cols" aria-hidden="true"><span></span><span></span><span>% ${riWord()}</span></div>
-      ${label.map(([k, sub]) => factRow(n, k, sub, fl)).join('')}</div>
+      ${label.map(([k, sub]) => factRow(n, k, sub, fl, tap)).join('')}</div>
     ${group('mineral', 'Minerals')}${group('vitamin', 'Vitamins')}
     ${other.length ? `<div class="nf-group"><h4 class="nf-h">Other</h4>${other.map((k) => factRow(n, k, false, fl)).join('')}</div>` : ''}`;
 }
@@ -640,7 +647,7 @@ function viewDiary() {
   const typing = document.activeElement?.matches?.('[data-food-text]');
   ctx.shell(`${head}${offline}${undo}<div class="split fdiary${anim}">
     <div class="fcol fcol-a"><div class="fd-cap">${captureHtml()}${takeHtml('day')}</div><div class="fd-meals">${pendingRows(d.date)}${slots}${empty}${emptySlotsHtml(d)}${repeat}</div></div>
-    <div class="fcol fcol-b"><div class="fd-sum">${daySummary(d)}</div><div class="fd-side">${burnTile(F.energy)}${trendPreview(F.week)}${plansHtml(d.plans)}${batchesHtml(F.batches)}</div></div>
+    <div class="fcol fcol-b"><div class="fd-sum">${daySummary(d)}${nextCardHtml(d)}</div><div class="fd-side">${burnTile(F.energy)}${trendPreview(F.week)}${plansHtml(d.plans)}${batchesHtml(F.batches)}</div></div>
     </div>${sheetHtml()}`);
   if (typing && !state.foodSheet) {
     const box = document.querySelector('[data-food-text]');
@@ -683,9 +690,11 @@ function daySummary(d) {
   const rows = parts.map((p) => `<div class="fmac-row"><dt><i class="fdot m-${p.key}"></i>${MACRO_LABEL[p.key]}</dt>
     <dd>${p.key === 'unknown' ? `${fmtN(p.kcal)} kcal` : val(t, p.key, fl)}<small>${has ? `${share(p.kcal, sum)}%` : ''}</small></dd></div>`).join('');
   const center = `<b>${has ? show(t, 'kcal', { unit: false }) : '0'}</b><small>kcal</small>`;
+  // Each tile opens the foods richest in it.
   const micros = `<div class="fmicro">${KEY_MICROS.map((k) => {
     const p = riPct(t, k);
-    return `<div class="fmicro-i${p === null ? ' unk' : ''}"><span class="fmicro-k">${shortLabel(k)}</span><b>${pctText(p, t.missing?.[k])}</b>${riBar(p, k)}</div>`;
+    return `<button type="button" class="fmicro-i${p === null ? ' unk' : ''}" data-action="food-rich" data-key="${k}" aria-label="${esc(`${shortLabel(k)} ${pctText(p, t.missing?.[k])}. Foods rich in it`)}">
+      <span class="fmicro-k"><span>${shortLabel(k)}</span>${icon('chevron', 'tap-hint')}</span><b>${pctText(p, t.missing?.[k])}</b>${riBar(p, k)}</button>`;
   }).join('')}</div>`;
   const extra = [['sugars'], ['satfat'], ['salt'], ['fibre'], ['caffeine'], ['alcohol']];
   const facts = `<dl class="fday-strip">${extra.map(([k]) => `<div><dt>${shortLabel(k)}</dt><dd>${val(t, k, fl)}</dd></div>`).join('')}</dl>`;
@@ -921,7 +930,7 @@ function dayNutBody() {
   const fl = new Set(d.entries.flatMap((e) => e.filled || []));
   return `<div class="fprev"><div class="fprev-main"><b>${val(d.total, 'kcal', fl)}</b><span>${d.entries.length} ${d.entries.length === 1 ? 'item' : 'items'}</span></div>${strip(d.total, STRIP, fl)}</div>
     ${gradeMix(d.grades) ? `<div class="nf-mix">${gradeMix(d.grades)}</div>` : ''}
-    <section class="nf" aria-label="Nutrition facts"><div class="nf-top"><h3>Nutrition</h3></div>${factsHtml(d.total, fl)}</section>`;
+    <section class="nf" aria-label="Nutrition facts"><div class="nf-top"><h3>Nutrition</h3></div>${factsHtml(d.total, fl, { tap: true })}</section>`;
 }
 
 function builderTotals(s) {
@@ -1046,6 +1055,7 @@ function sheetHtml() {
     case 'cook': return sheetWrap('Cook a batch', cookBody(s));
     case 'recipe-log': return sheetWrap('Log it', recipeLogBody(s));
     case 'recipe-edit': return sheetWrap(s.draft.key ? 'Edit recipe' : 'New recipe', recipeEditBody(s), 'tall');
+    case 'rich': return sheetWrap(richTitle(s), richBody(s), 'tall');
     default: return '';
   }
 }
@@ -1240,7 +1250,8 @@ function gradeCard(h) {
 }
 
 // Bars against the reference intake, with a mark at 100%.
-function riRows(list, { max = 150, best = new Set(), low = new Set() } = {}) {
+// With `tap`, each row is a button that opens the foods richest in it.
+function riRows(list, { max = 150, best = new Set(), low = new Set(), tap = false } = {}) {
   const at = ((100 / max) * 100).toFixed(2);
   return list.map((c, i) => {
     const p = num(c.pct);
@@ -1248,9 +1259,10 @@ function riRows(list, { max = 150, best = new Set(), low = new Set() } = {}) {
     const tone = `${riTone(p, c.key)}${best.has(c.key) ? ' best' : ''}${low.has(c.key) ? ' low' : ''}`;
     // "~" when some of it was filled from a similar food, the web or an estimate rather than on record.
     const est = p !== null && c.est > 0 ? `<i class="est" title="${c.est >= 100 ? 'Estimated' : `About ${fmtN(c.est)}% estimated`}">~</i>` : '';
-    return `<div class="rirow${tone}${p === null ? ' unk' : ''}" style="--i:${i}"><span class="rirow-k">${esc(shortLabel(c.key))}</span>
+    const tag = tap ? `button type="button" data-action="food-rich" data-key="${esc(c.key)}"` : 'div';
+    return `<${tag} class="rirow${tone}${p === null ? ' unk' : ''}${tap ? ' ri-tap' : ''}" style="--i:${i}"><span class="rirow-k">${tap ? `<span>${esc(shortLabel(c.key))}</span>${icon('chevron', 'tap-hint')}` : esc(shortLabel(c.key))}</span>
       <span class="rirow-bar"><i style="--f:${w.toFixed(3)}"></i><b class="rirow-100" style="left:${at}%"></b></span>
-      <span class="rirow-v">${p === null ? '–' : `${est}${fmtN(p)}%${c.partial ? '+' : ''}`}</span></div>`;
+      <span class="rirow-v">${p === null ? '–' : `${est}${fmtN(p)}%${c.partial ? '+' : ''}`}</span></${tap ? 'button' : 'div'}>`;
   }).join('');
 }
 
@@ -1287,7 +1299,7 @@ function microCard(h) {
   const best = new Set(known.slice(0, 3).map((c) => c.key));
   const low = new Set(known.length > 3 ? known.slice(Math.max(3, known.length - 3)).map((c) => c.key) : []);
   return `<section class="card fcard f-wide fmicro-card">${cardHead('Vitamins and minerals', known.length ? '<span><i class="fk fk-best"></i>Top</span><span><i class="fk fk-low"></i>Lowest</span>' : '')}
-    ${known.length ? `${riLegend()}<div class="rirows" style="--rows:${Math.ceil(known.length / 2)}">${riRows(known, { best, low })}</div>` : '<p class="fempty-line">No values on record yet</p>'}
+    ${known.length ? `${riLegend()}<div class="rirows" style="--rows:${Math.ceil(known.length / 2)}">${riRows(known, { best, low, tap: true })}</div>` : '<p class="fempty-line">No values on record yet</p>'}
     ${known.some((c) => c.est > 0) ? '<p class="rirow-none"><i class="est">~</i> Partly filled from similar foods, published values or estimates</p>' : ''}
     ${unknown.length ? `<p class="rirow-none">No data: ${unknown.map((c) => esc(shortLabel(c.key))).join(', ')}</p>` : ''}</section>`;
 }
@@ -1553,7 +1565,7 @@ function viewTrends() {
   // The Body tab keeps its own windows (28 days for the real burn, 90 for the links), so it has no period.
   ctx.shell(`${head}${legend}${tabs}${tab === 'body' ? '' : seg}
     <div id="ftr-panel" role="tabpanel" aria-labelledby="ftab-${tab}">${top}
-    <div class="ftr-grid${enter(`trends-${tab}`)}">${first(h, sel)}${rest.map((x) => lazy(x, h)).join('')}</div></div>`);
+    <div class="ftr-grid${enter(`trends-${tab}`)}">${first(h, sel)}${rest.map((x) => lazy(x, h)).join('')}</div></div>${sheetHtml()}`);
   watchLazy();
 }
 
@@ -1703,6 +1715,7 @@ export async function foodClick(a, el) {
   if (a.startsWith('food-burn-')) return energyClick(a, el, refresh);
   if (a.startsWith('food-scan')) return scanClick(a, el);
   if (await usualClick(a, el)) return true;
+  if (a.startsWith('food-next-') || a.startsWith('food-rich')) return nextClick(a, el);
   const s = state.foodSheet;
   const F = f();
   switch (a) {
@@ -2413,6 +2426,10 @@ function onKey(e) {
 export function initFood(c) {
   ctx = c;
   initScan({ found: openProduct, openSheet, render: () => ctx.render() });
+  initNext({
+    openSheet, itemFor, foodPost, afterLog, slotNow, refresh, openBuilder: openBuilderFromLines,
+    dropQueued: (id) => store.set(QUEUE, queue().filter((x) => x.id !== id)),
+  });
   $app.addEventListener('input', onInput);
   $app.addEventListener('change', onChange);
   $app.addEventListener('keydown', onKey);

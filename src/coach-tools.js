@@ -743,6 +743,18 @@ const TOOLS = {
       return (await food()).foodForCoach(date);
     },
   },
+  foods_rich_in: {
+    read: true,
+    description: 'The foods richest in one nutrient: his own (logged in the last 90 days, at his usual amount) and more ideas from the catalogue, per typical portion or per 100 kcal, each with its % of his need. Foods with no value for it are left out. Use it when he asks where to get more of something.',
+    properties: {
+      nutrient: E(ESTIMATE_KEYS.filter((k) => k !== 'kcal'), 'vitc is vitamin C, vitd vitamin D, b12 vitamin B12, satfat saturates; the rest are their names'),
+      by: E(['portion', 'kcal'], 'Rank per typical portion (default) or per 100 kcal'),
+    },
+    required: ['nutrient'],
+    async run({ nutrient, by = 'portion' }) {
+      return (await import('./food-next.js')).richForCoach(nutrient, by);
+    },
+  },
 
   // ---------- Calendar: his own events join the calendar page, Today and his busy time ----------
   find_events: {
