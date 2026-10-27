@@ -1,7 +1,7 @@
-// The Dashboard: Apple Health, business sites, calendars and the way into the weekly review.
+// Health: Apple Health in detail, the business sites, and the calendars Oath reads.
 import {
-  state, esc, api, act, toast, fmtDay, bar, icon, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago,
-  miniRing, barChart, sparkline, localToday, keyBlock, form2obj, haptic, safeColor, emptyState,
+  state, esc, api, act, toast, fmtDay, icon, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago,
+  miniRing, barChart, sparkline, keyBlock, form2obj, haptic, safeColor,
 } from './ui.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
@@ -32,31 +32,20 @@ export function autoValue(auto, h) {
   return h[auto.metric] ?? 0;
 }
 
-function addDays(date, n) {
-  const d = new Date(`${date}T12:00:00Z`);
-  d.setUTCDate(d.getUTCDate() + n);
-  return d.toISOString().slice(0, 10);
-}
-
 const val = (r) => (r.status === 'fulfilled' ? r.value : null);
 
-export async function loadDashboard() {
-  const today = localToday();
-  const [health, business, feeds, events, tokens, season] = await Promise.allSettled([
+export async function loadHealth() {
+  const [health, business, feeds, tokens] = await Promise.allSettled([
     api('GET', '/api/health?days=14'),
     api('GET', '/api/business'),
     api('GET', '/api/calendar/feeds'),
-    api('GET', `/api/calendar/events?from=${today}&to=${addDays(today, 6)}`),
     api('GET', '/api/tokens'),
-    api('GET', '/api/season'),
   ]);
   state.dash = {
-    season: val(season),
     health: val(health),
     business: val(business),
     feeds: val(feeds)?.feeds || [],
-    events: val(events)?.events || [],
-    errors: [health, business, feeds, events].filter((r) => r.status === 'rejected' && r.reason?.status !== 401).map((r) => r.reason?.message),
+    errors: [health, business, feeds].filter((r) => r.status === 'rejected' && r.reason?.status !== 401).map((r) => r.reason?.message),
   };
   state.tokens = val(tokens) || state.tokens;
 }
@@ -125,8 +114,8 @@ function healthSetup(connected) {
 }
 
 function healthSection(h) {
-  if (!h) return `<section class="section"><div class="gh"><h2>Body</h2></div><div class="card muted">Health data could not be loaded.</div></section>`;
-  if (!h.connected) return `<section class="section" id="health"><div class="gh"><h2>Body</h2></div>${healthSetup(false)}</section>`;
+  if (!h) return `<section class="section"><div class="gh"><h2>Apple Health</h2></div><div class="card muted">Health data could not be loaded.</div></section>`;
+  if (!h.connected) return `<section class="section" id="health"><div class="gh"><h2>Apple Health</h2></div>${healthSetup(false)}</section>`;
   const days = h.days || [];
   const todayRow = days.find((d) => d.date === h.today) || {};
   const lastNight = todayRow.sleep_hours !== null && todayRow.sleep_hours !== undefined ? todayRow : [...days].reverse().find((d) => d.sleep_hours);
@@ -161,7 +150,7 @@ function healthSection(h) {
   const other = (h.other || []).map((o) => `<div class="li li-plain"><span class="li-body"><span class="li-title">${esc(o.label)}</span><span class="li-sub">${fmtDay(o.date)}</span></span><span class="li-side">${fmtDec(o.value)} ${esc(o.unit || '')}</span></div>`).join('');
 
   return `<section class="section" id="health">
-    <div class="gh"><h2>Body</h2><span class="gh-count">${icon('sync')}Synced ${ago(h.lastSync)}</span></div>
+    <div class="gh"><h2>Apple Health</h2><span class="gh-count">${icon('sync')}Synced ${ago(h.lastSync)}</span></div>
     <div class="dtiles">
       ${tile('steps', 'c-move', 'Steps', todayRow.steps, '', g.steps, fmtInt)}
       ${tile('timer', 'c-day', 'Exercise', todayRow.exercise_min, ' min', g.exercise_min, (v) => Math.round(v))}
@@ -247,32 +236,17 @@ function businessSection(b) {
 
 // ---------- Calendars ----------
 
-function eventsByDay(events) {
-  const today = localToday();
-  const byDay = new Map();
-  for (const e of events) {
-    const d = e.allDay ? e.start : e.start.slice(0, 10);
-    if (!byDay.has(d)) byDay.set(d, []);
-    byDay.get(d).push(e);
-  }
-  return [...byDay.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([d, list]) => `<div class="day-block">
-      <p class="day-h">${d === today ? 'Today' : d === addDays(today, 1) ? 'Tomorrow' : fmtDay(d, { weekday: 'long', day: 'numeric', month: 'short' })}</p>
-      ${list.map((e) => `<div class="ev${e.deadline ? ' deadline' : ''}"${safeColor(e.color) ? ` style="--c:${safeColor(e.color)}"` : ''}><span class="ev-time">${e.allDay ? 'All day' : e.time}</span><span class="ev-title">${esc(e.title)}${e.location ? `<span class="faint"> ${esc(e.location)}</span>` : ''}</span></div>`).join('')}
-    </div>`).join('');
-}
-
+// The feeds Oath reads. The days themselves are on the Calendar tab.
 function calendarSection(d) {
   const feeds = d.feeds.map((f) => `<div class="li li-plain feed">
       <span class="li-ic"${safeColor(f.color) ? ` style="color:${safeColor(f.color)}"` : ''}>${icon(f.kind === 'deadlines' ? 'bolt' : 'calendar')}</span>
       <span class="li-body"><span class="li-title">${esc(f.name)}</span>
         <span class="li-sub">${f.kind === 'deadlines' ? 'Deadlines become tasks' : 'Calendar'}, ${esc(f.host)}. ${f.lastError ? `<span class="bad">${esc(f.lastError)}</span>` : `${f.eventCount} events, synced ${ago(f.lastSync)}`}</span></span>
       <button class="btn tinted small" data-action="cal-remove" data-id="${f.id}">Remove</button></div>`).join('');
-  const upcoming = d.events.length ? eventsByDay(d.events) : '';
-  // Feeds and the add form fold away once something is connected; the week itself comes first.
+  // Feeds and the add form fold away once something is connected.
   const manageOpen = !d.feeds.length || state.query?.get('section') === 'calendars';
-  return `<section class="section" id="calendars"><div class="gh"><h2>Uni and calendar</h2><span class="gh-links"><a class="gh-link" href="#/calendar">${icon('calendar')}Open calendar</a>${d.feeds.length ? `<button class="gh-link" data-action="cal-sync">${icon('sync')}Sync now</button>` : ''}</span></div>
-    ${nextEvent(d.events)}
-    ${upcoming ? `<div class="card agenda">${upcoming}</div>` : d.feeds.length ? emptyState({ icon: 'calendar', title: 'A clear week', text: 'Nothing on your calendars in the next 7 days.', small: true }) : ''}
+  return `<section class="section" id="calendars"><div class="gh"><h2>Calendars</h2>${d.feeds.length ? `<button class="gh-link" data-action="cal-sync">${icon('sync')}Sync now</button>` : ''}</div>
+    <div class="group"><a class="li li-plain li-nav" href="#/calendar"><span class="li-ic">${icon('calendar')}</span><span class="li-body"><span class="li-title">Open calendar</span></span>${icon('chevron', 'chev')}</a></div>
     <details class="card disclosure manage-cal"${manageOpen ? ' open' : ''}>
     <summary>${icon('calendar')}Manage calendars<span class="summary-count">${d.feeds.length} connected</span></summary>
     ${feeds ? `<div class="group flush">${feeds}</div>` : ''}
@@ -306,81 +280,20 @@ function calendarSection(d) {
   </section>`;
 }
 
-// The next timed event in the coming week, with how long until it starts.
-function nextEvent(events) {
-  const now = Date.now();
-  const e = events.find((x) => !x.allDay && new Date(x.start).getTime() > now);
-  if (!e) return '';
-  const min = Math.round((new Date(e.start).getTime() - now) / 60000);
-  const when = min < 60 ? `in ${min} min` : min < 24 * 60 ? `in ${Math.floor(min / 60)} h ${min % 60} min` : fmtDay(e.start.slice(0, 10), { weekday: 'long' });
-  return `<div class="card next-event${e.deadline ? ' deadline' : ''}"${safeColor(e.color) ? ` style="--c:${safeColor(e.color)}"` : ''}>
-    <p class="eyebrow">${icon(e.deadline ? 'bolt' : 'uni')}${e.deadline ? 'Next deadline' : 'Next up'}</p>
-    <p class="next-event-title">${esc(e.title)}</p>
-    <p class="next-event-when"><b>${when}</b>, ${esc(e.time)}${e.endTime && e.endTime !== e.time ? ` to ${esc(e.endTime)}` : ''}${e.location ? ` · ${esc(e.location)}` : ''}</p>
-  </div>`;
-}
-
-// ---------- Season ----------
-
-// HP over the last 30 days as a filled line on a fixed 0 to max scale, deaths marked at 0.
-function hpArea(days, maxHp) {
-  if (days.length < 2) return '<p class="muted small">Not enough days yet</p>';
-  const w = 300;
-  const h = 84;
-  const step = w / (days.length - 1);
-  const y = (hp) => (h - 4 - (Math.max(0, hp) / maxHp) * (h - 10)).toFixed(1);
-  const pts = days.map((d, i) => `${(i * step).toFixed(1)} ${y(d.hp_end)}`);
-  const line = `M${pts.join(' L')}`;
-  const deaths = days.map((d, i) => (d.hp_end <= 0 ? `<line x1="${(i * step).toFixed(1)}" x2="${(i * step).toFixed(1)}" y1="0" y2="${h}" class="hp-death"/>` : '')).join('');
-  const low = days.reduce((a, d) => (d.hp_end < a.hp_end ? d : a), days[0]);
-  const label = `HP at the end of each of the last ${days.length} days, from ${days[0].hp_end} to ${days[days.length - 1].hp_end}, lowest ${low.hp_end} on ${fmtDay(low.date)}.`;
-  return `<svg class="hp-area" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="${label}">
-    <defs><linearGradient id="hp-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:rgba(225,6,0,0.45)"/><stop offset="1" style="stop-color:rgba(225,6,0,0)"/></linearGradient></defs>
-    ${deaths}<path d="${line} L${w} ${h} L0 ${h} Z" fill="url(#hp-fill)"/><path d="${line}" class="hp-line"/></svg>
-    <div class="bc-axis" aria-hidden="true"><span>${fmtDay(days[0].date)}</span><span class="last">${fmtDay(days[days.length - 1].date)}</span></div>`;
-}
-
-function seasonSection(s) {
-  if (!s) return '';
-  const g = s.game;
-  const w = s.week;
-  const streaks = s.streaks.map((x) => `<li><span class="li-ic">${icon('flame')}</span><span class="streak-name">${esc(x.name)}</span><b>${x.streak}</b><span class="faint small">${x.weekly ? (x.streak === 1 ? 'week' : 'weeks') : (x.streak === 1 ? 'day' : 'days')}</span></li>`).join('');
-  return `<section class="section season" id="season">
-    <div class="gh"><h2>Season ${g.season}</h2><span class="gh-count">Day ${s.seasonDay}${g.deaths ? `, ${g.deaths} ${g.deaths === 1 ? 'death' : 'deaths'} so far` : ''}</span></div>
-    <div class="card season-card${g.hp <= 30 ? ' low' : ''}">
-      <div class="season-top">
-        <div class="season-hp"><b data-count="season-hp">${g.hp}</b><span>of ${g.maxHp} HP</span></div>
-        <dl class="season-stats">
-          <div><dt>This week</dt><dd><b>${w.cleanDays}</b> clean ${w.cleanDays === 1 ? 'day' : 'days'} of ${w.judgedDays}</dd></div>
-          <div><dt>Pardons</dt><dd><b>${g.pardonsLeft}</b> left this month</dd></div>
-          ${w.focusMin ? `<div><dt>Focus</dt><dd><b>${Math.floor(w.focusMin / 60)} h ${w.focusMin % 60}</b> min this week</dd></div>` : ''}
-        </dl>
-      </div>
-      ${hpArea(s.days, g.maxHp)}
-      ${streaks ? `<p class="season-sub">Longest streaks</p><ul class="streaks">${streaks}</ul>` : ''}
-    </div>
-    ${s.reviewDue ? `<a class="banner action" href="#/review">${icon('review')}<span><b>Weekly review is ready</b></span>${icon('chevron', 'chev')}</a>` : ''}
-    <div class="group">
-      <a class="li li-plain li-nav" href="#/review"><span class="li-ic">${icon('review')}</span><span class="li-body"><span class="li-title">Weekly review</span></span>${icon('chevron', 'chev')}</a>
-      <a class="li li-plain li-nav" href="#/review"><span class="li-ic">${icon('trend')}</span><span class="li-body"><span class="li-title">History</span></span>${icon('chevron', 'chev')}</a>
-    </div>
-  </section>`;
-}
-
 // ---------- Page ----------
 
-export function viewDashboard() {
+export function viewHealth() {
   const d = state.dash;
-  const head = pageHead('Dashboard', { actions: iconLink('#/settings', 'settings', 'Settings') });
+  const head = pageHead('Health', { actions: iconLink('#/settings', 'settings', 'Settings') });
   if (!d) return ctx.shell(`${head}<div class="skeleton"><i></i><i></i><i class="short"></i></div>`);
-  // Your season first, then the week at uni, then your body; the businesses sit alongside.
+  // Your body first; the businesses and the calendar feeds sit alongside.
   ctx.shell(`${head}
     ${d.errors.length ? `<div class="banner warn">${esc(d.errors[0])}</div>` : ''}
     <div class="split">
-      <div>${seasonSection(d.season)}<div id="sec-calendars">${calendarSection(d)}</div><div id="sec-health">${healthSection(d.health)}</div></div>
-      <aside>${businessSection(d.business)}</aside>
+      <div><div id="sec-health">${healthSection(d.health)}</div></div>
+      <aside><div id="sec-business">${businessSection(d.business)}</div><div id="sec-calendars">${calendarSection(d)}</div></aside>
     </div>`);
-  // Links like #/dashboard?section=health land on that section.
+  // Links like #/health?section=calendars land on that section.
   const section = state.query?.get('section');
   if (section) document.getElementById(`sec-${section}`)?.scrollIntoView({ block: 'start' });
 }
@@ -396,7 +309,7 @@ export async function dataClick(a, el) {
       return true;
     case 'cal-remove':
       if (!confirm('Remove this calendar? Tasks it already made stay.')) return true;
-      if (await act(() => api('DELETE', `/api/calendar/feeds/${el.dataset.id}`), 'Calendar removed.')) { await loadDashboard(); ctx.render(); }
+      if (await act(() => api('DELETE', `/api/calendar/feeds/${el.dataset.id}`), 'Calendar removed.')) { await loadHealth(); ctx.render(); }
       return true;
     case 'cal-sync': {
       el.disabled = true;
@@ -405,7 +318,7 @@ export async function dataClick(a, el) {
         const made = r.results.reduce((n, x) => n + (x.created || 0), 0);
         const bad = r.results.filter((x) => !x.ok).length;
         toast(bad ? `${bad} calendar${bad === 1 ? '' : 's'} could not sync.` : made ? `Synced. ${made} new deadline${made === 1 ? '' : 's'} added as tasks.` : 'Synced.', Boolean(bad));
-        await loadDashboard();
+        await loadHealth();
         ctx.render();
       } else el.disabled = false;
       return true;
@@ -430,7 +343,7 @@ export async function dataSubmit(kind, form) {
       if (r) {
         haptic('success');
         toast(`Added ${r.feed.name}: ${r.events} events${r.created ? `, ${r.created} deadlines added as tasks` : ''}.`);
-        await loadDashboard();
+        await loadHealth();
         ctx.render();
       }
       return true;
@@ -438,7 +351,7 @@ export async function dataSubmit(kind, form) {
     case 'health-goals': {
       const f = form2obj(form);
       const r = await act(() => api('PUT', '/api/health/goals', f), 'Targets saved.');
-      if (r) { await loadDashboard(); ctx.render(); }
+      if (r) { await loadHealth(); ctx.render(); }
       return true;
     }
     default:

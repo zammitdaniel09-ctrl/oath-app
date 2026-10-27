@@ -45,15 +45,14 @@ function goalCard(g) {
   </a>`;
 }
 
-export function viewGoals() {
-  const goals = state.goals;
-  if (!goals) return ctx.shell(`${pageHead('Goals')}<div class="skeleton"><i></i><i></i><i class="short"></i></div>`);
+// Where the goals list lives: a segment of Plan on the phone, its own row in the sidebar.
+export const goalsHref = () => (window.matchMedia('(min-width: 900px)').matches ? '#/goals' : '#/plan?tab=goals');
+
+// The list itself, shared by the Goals page and Plan's Goals segment (which gives it a heading).
+export function goalsBody(goals, head = '') {
   const active = goals.filter((g) => g.status === 'active');
   const closed = goals.filter((g) => g.status !== 'active');
-  const behind = active.filter((g) => g.pace?.state === 'behind').length;
-  ctx.shell(`${pageHead('Goals', { over: `${active.length} active${behind ? `, ${behind} behind pace` : ''}`, actions: `<a class="icon-btn accent" href="#/goals/new" aria-label="New goal">${icon('plus')}</a>` })}
-    <div><div>
-    <section class="section">
+  return `<section class="section">${head}
       ${active.length ? `<div class="goal-list">${active.map(goalCard).join('')}</div>`
         : emptyState({
           icon: 'goals',
@@ -61,8 +60,16 @@ export function viewGoals() {
           actions: '<a class="btn primary" href="#/goals/new">Set your first goal</a>',
         })}
     </section>
-    ${closed.length ? `<section class="section"><div class="gh"><h2>Closed</h2></div><div class="goal-list">${closed.map(goalCard).join('')}</div></section>` : ''}
-  </div></div>`);
+    ${closed.length ? `<section class="section"><div class="gh"><h2>Closed</h2></div><div class="goal-list">${closed.map(goalCard).join('')}</div></section>` : ''}`;
+}
+
+export function viewGoals() {
+  const goals = state.goals;
+  if (!goals) return ctx.shell(`${pageHead('Goals')}<div class="skeleton"><i></i><i></i><i class="short"></i></div>`);
+  const active = goals.filter((g) => g.status === 'active');
+  const behind = active.filter((g) => g.pace?.state === 'behind').length;
+  ctx.shell(`${pageHead('Goals', { over: `${active.length} active${behind ? `, ${behind} behind pace` : ''}`, actions: `<a class="icon-btn accent" href="#/goals/new" aria-label="New goal">${icon('plus')}</a>` })}
+    <div><div>${goalsBody(goals)}</div></div>`);
 }
 
 // ---------- New and edit ----------
@@ -97,13 +104,13 @@ function goalForm(g) {
     </ol>
     <div class="form-actions">
       <button class="btn primary" type="submit">${g ? 'Save goal' : 'Set the goal'}</button>
-      ${g ? '<button class="btn tinted" type="button" data-action="goal-edit-cancel">Cancel</button>' : '<a class="btn tinted" href="#/goals">Cancel</a>'}
+      ${g ? '<button class="btn tinted" type="button" data-action="goal-edit-cancel">Cancel</button>' : `<a class="btn tinted" href="${goalsHref()}">Cancel</a>`}
     </div>
   </form>`;
 }
 
 export function viewGoalNew() {
-  ctx.shell(`<a class="back" href="#/goals">${icon('back')}Goals</a>${pageHead('New goal', { over: 'Wish, outcome, obstacle, plan' })}<div class="narrow">
+  ctx.shell(`<a class="back" href="${goalsHref()}">${icon('back')}Goals</a>${pageHead('New goal', { over: 'Wish, outcome, obstacle, plan' })}<div class="narrow">
       <div class="card">${goalForm(null)}</div></div>`);
 }
 
@@ -309,7 +316,7 @@ function sheet(tree) {
 export function viewGoal() {
   const d = state.goal;
   if (!d || d.goal.id !== Number(state.param)) {
-    return ctx.shell(`<a class="back" href="#/goals">${icon('back')}Goals</a><div class="skeleton"><i class="short"></i><i></i><i></i></div>`);
+    return ctx.shell(`<a class="back" href="${goalsHref()}">${icon('back')}Goals</a><div class="skeleton"><i class="short"></i><i></i><i></i></div>`);
   }
   const g = d.goal;
   if (state.editingGoal) {
@@ -317,7 +324,7 @@ export function viewGoal() {
   }
   const closed = g.status !== 'active';
   const head = `<header class="goal-head">
-    <a class="back" href="#/goals">${icon('back')}Goals</a>
+    <a class="back" href="${goalsHref()}">${icon('back')}Goals</a>
     <h1 class="goal-h">${esc(g.title)}</h1>
     <div class="goal-progress">
       <span class="goal-big" data-count="goal-${g.id}">${g.pct === null ? '' : `${g.pct}<small>%</small>`}</span>
