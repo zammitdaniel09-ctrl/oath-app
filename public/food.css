@@ -889,3 +889,115 @@ html.scan-open, html.scan-open body { overflow: hidden; }
 @media (min-width: 1240px) { .fdiary .fcap-tools { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .fscan-btn { width: 48px; height: 48px; border-radius: var(--r-ctl); }
 .scan-code { font-family: var(--mono); font-size: 0.9em; letter-spacing: 0.02em; color: var(--text); white-space: nowrap; }
+/* ---------- Fast logging: "Usually now", one-tap water, what is left today, per meal, swipe to remove ---------- */
+
+/* "Usually now": the first row under the capture bar. A chip logs in one tap; its chevron opens the food first. */
+.fusual { margin-top: 12px; }
+.fusual-k {
+  display: flex; align-items: baseline; gap: 8px; margin: 0 2px;
+  font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2);
+}
+.fusual-k small { font-family: var(--font); font-size: 0.75rem; letter-spacing: 0; text-transform: none; color: var(--text-3); }
+.fcap .fusual-row { margin-top: 6px; }
+/* Two lines like the tray's chips below: the food, then his usual amount (or a combination's foods). */
+.fu {
+  flex: none; display: inline-flex; align-items: stretch; min-height: 48px; max-width: 236px; border-radius: var(--r-inset);
+  background: var(--raised); box-shadow: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+.fu.combo { max-width: 268px; background: linear-gradient(180deg, rgba(31, 163, 122, 0.13), rgba(31, 163, 122, 0.03)), var(--raised); box-shadow: inset 0 0 0 1px rgba(31, 163, 122, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+.fu-log {
+  display: grid; align-content: center; gap: 1px; min-width: 0; padding: 6px 8px 6px 13px; border: 0; border-radius: var(--r-inset) 0 0 var(--r-inset);
+  background: none; color: var(--text); font: inherit; text-align: left; white-space: nowrap; cursor: pointer;
+  transition: transform var(--spring-ms) var(--spring);
+}
+.fu-name, .fu-amt { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.fu-name { font-size: 0.875rem; font-weight: 660; line-height: 1.25; }
+.fu-amt { font-size: 0.75rem; font-weight: 540; line-height: 1.3; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.fu-more {
+  position: relative; flex: none; width: 36px; padding: 0 3px 0 0; border: 0; border-radius: 0 var(--r-inset) var(--r-inset) 0; display: grid; place-items: center;
+  background: none; color: var(--text-3); cursor: pointer;
+}
+.fu-more::before { content: ''; position: absolute; left: 0; top: 12px; bottom: 12px; width: 1px; background: var(--line); }
+.fu-more .ic { width: 15px; height: 15px; transform: rotate(90deg); }
+.fu-log:active { transform: scale(0.96); transition: transform var(--t-press) var(--ease); }
+.fu-log:focus-visible, .fu-more:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+@media (hover: hover) {
+  .fu-log:hover, .fu-more:hover { background: var(--raised-hover); }
+  .fu-more:hover { color: var(--text); }
+}
+.fu-why { margin: -2px 0 12px; font-size: 0.875rem; line-height: 1.45; color: var(--text-2); }
+.fu-lines .fu-line { align-items: center; }
+.fu-line .li-side { display: flex; align-items: center; gap: 4px; }
+.fu-line .li-side b { font-size: 1rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fu-line .li-side .icon-btn { width: 36px; height: 36px; margin-right: -6px; }
+.fu-servings { display: flex; align-items: center; gap: 10px; }
+.fu-servings .input { width: 96px; }
+
+/* What is left today: energy, protein, carbs and fat against his needs, in the macro colours of the ring. */
+.fleft { margin: 0 0 16px; }
+.fleft-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+.fleft-ref { font-family: var(--font); font-size: 0.75rem; letter-spacing: 0; text-transform: none; color: var(--text-3); }
+.fleft-row { display: grid; grid-template-columns: 54px minmax(36px, 1fr) auto; align-items: center; gap: 10px; min-height: 24px; }
+.fleft-row + .fleft-row { margin-top: 5px; }
+.fleft-k { font-size: 0.8125rem; font-weight: 620; color: var(--text-2); }
+.fleft-bar { position: relative; display: block; height: 8px; border-radius: 4px; background: var(--fill-2); overflow: hidden; }
+.fleft-bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: inherit; background: var(--m, var(--chrome-c)); transform-origin: 0 50%; }
+.fleft-row.m-kcal .fleft-bar i { background: var(--chrome-c); }
+.fleft-bar.none { background: repeating-linear-gradient(90deg, var(--fill-2) 0 4px, transparent 4px 7px); }
+.fleft-v { font-size: 0.8125rem; color: var(--text-2); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fleft-v b { font-size: 0.9375rem; font-weight: 720; color: var(--text); }
+.fleft-row.over:not(.m-protein) .fleft-v b { color: #ffad5c; }
+.fleft-row.over.m-protein .fleft-v b { color: var(--menthol); }
+.fleft-row.unk .fleft-v { color: var(--text-3); }
+/* With the left bars above it, the ring and its amounts sit a little tighter. */
+.fleft + .fday-main { gap: 16px; }
+.fleft + .fday-main .fmac { gap: 6px; }
+.fleft + .fday-main .fmac-row { padding-bottom: 5px; }
+
+/* One-tap water beside the water bar; the bar's fill is a width, so it grows from where it was. */
+.fwater-row { display: flex; align-items: center; gap: 10px; }
+.fwater-row .fwater-bar { flex: 1 1 auto; min-width: 48px; }
+.fwater-bar i[data-grow] { right: auto; transform: none; }
+.fwater-add { display: flex; gap: 6px; flex: none; }
+.fwater-btn {
+  min-height: 44px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer; white-space: nowrap;
+  background: var(--raised); color: var(--ring-water-1); font: inherit; font-size: 0.8125rem; font-weight: 700; font-variant-numeric: tabular-nums;
+  box-shadow: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: transform var(--spring-ms) var(--spring), background-color var(--t-ctl) var(--ease);
+}
+.fwater-btn:active { transform: scale(0.94); transition: transform var(--t-press) var(--ease); }
+@media (hover: hover) { .fwater-btn:hover { background: var(--raised-hover); } }
+
+/* Per meal: "+" on today, "Copy to today" on a past day, and today's empty meals as one quiet row. */
+.gh-side { display: inline-flex; align-items: center; gap: 6px; }
+/* A 40 px circle that keeps the header's height, with a 44 px target. */
+.fslot-btn { position: relative; width: 40px; height: 40px; margin: -10px -4px -10px 0; background: var(--fill); box-shadow: none; color: var(--text-2); }
+.fslot-btn::before { content: ''; position: absolute; inset: -2px; }
+.fslot-btn .ic { width: 18px; height: 18px; }
+.fslot-copy { margin: -12px -8px -12px 0; font-size: 0.875rem; }
+.fslot-copy .ic { width: 15px; height: 15px; }
+.fslot-empty { display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; margin: 22px 0 0; font-size: 0.875rem; color: var(--text-3); }
+.fslot-empty > span { margin: 0 6px 0 2px; }
+.fslot-chip {
+  min-height: 44px; padding: 0 10px; border: 0; border-radius: 999px; background: none; cursor: pointer;
+  color: var(--text-2); font: inherit; font-weight: 640; text-decoration: underline; text-decoration-color: var(--line-ctl); text-underline-offset: 4px;
+}
+@media (hover: hover) { .fslot-chip:hover { color: var(--text); background: var(--fill); } }
+
+/* Undo stays in reach while scrolled down the diary. */
+.page-food > .food-undo { position: sticky; top: calc(env(safe-area-inset-top) + 54px); z-index: 18; box-shadow: inset 3px 0 0 var(--edge), inset 0 0 0 1px var(--line), var(--lift); }
+
+/* Swipe a diary entry left to remove it (motion.js), over a Cherry panel. */
+.group > [data-swipe="remove"] { touch-action: pan-y pinch-zoom; }
+.swipe-bg.remove { --sw: var(--cherry); justify-content: flex-end; }
+.swipe-bg.remove.armed { color: #fff; }
+
+@media (max-width: 360px) {
+  .fleft-row { grid-template-columns: 50px minmax(28px, 1fr) auto; gap: 8px; }
+  .fleft-row.part .fleft-v { white-space: normal; max-width: 128px; line-height: 1.25; }
+  .fwater-btn { padding: 0 10px; }
+  .fu { max-width: 214px; }
+}
+@media (min-width: 900px) {
+  .fcap .fusual-row { flex-wrap: wrap; overflow: visible; -webkit-mask-image: none; mask-image: none; }
+}

@@ -22,6 +22,7 @@ import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleU
 import { setupStatus, noteIngestError } from './setup.js';
 import { foodApi, saveCustomFood } from './food.js';
 import { foodLinksApi } from './food-links.js';
+import { usualApi } from './food-usual.js';
 import { bodyApi } from './body.js';
 import { energyApi } from './food-energy.js';
 import { ensureFoodSeed } from './food-seed.js';
@@ -326,6 +327,7 @@ api.route('/', foodApi);
 api.route('/', energyApi);
 // Food and your body: honest links between the diary and Apple Health.
 api.route('/', foodLinksApi);
+api.route('/', usualApi); // "Usually now": one-tap predictions from his own diary (food-usual.js)
 api.route('/', bodyApi);
 
 app.route('/api', api);

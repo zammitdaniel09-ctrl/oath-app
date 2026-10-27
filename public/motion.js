@@ -1027,22 +1027,27 @@ export function chatToEnd() {
 }
 
 // ---------- Swipe a habit or task row on Today: right for Done, left for Not now ----------
+// A row marked data-swipe="remove" (a Food diary entry) only goes left, to Remove: it carries on out
+// and the row fires oath:swipe-remove for its page to handle, with that page's Undo.
 
 let swipe = null;
 let swallowUntil = 0;
 
 function swipeStart(e) {
-  if (e.pointerType !== 'touch' || !cb.notNow) return;
-  const row = e.target.closest?.('.page-today .group > button.li-habit, .page-today .group > button.li-task');
+  if (e.pointerType !== 'touch') return;
+  const row = e.target.closest?.('.page-today .group > button.li-habit, .page-today .group > button.li-task, .group > [data-swipe="remove"]');
   if (!row || row.disabled) return;
-  swipe = { row, pid: e.pointerId, x0: e.clientX, y0: e.clientY, on: false, dx: 0, trail: [] };
+  const remove = row.dataset.swipe === 'remove';
+  if (!remove && !cb.notNow) return;
+  swipe = { row, remove, pid: e.pointerId, x0: e.clientX, y0: e.clientY, on: false, dx: 0, trail: [] };
 }
 
-function swipeBg(row) {
+function swipeBg(row, remove) {
   const bg = document.createElement('div');
-  bg.className = 'swipe-bg';
+  bg.className = `swipe-bg${remove ? ' remove' : ''}`;
   bg.setAttribute('aria-hidden', 'true');
-  bg.innerHTML = `<span class="sw-done">${icon('check')}Done</span><span class="sw-later">Not now${icon('clock')}</span>`;
+  bg.innerHTML = remove ? `<span class="sw-remove">Remove${icon('trash')}</span>`
+    : `<span class="sw-done">${icon('check')}Done</span><span class="sw-later">Not now${icon('clock')}</span>`;
   bg.style.top = `${row.offsetTop}px`;
   bg.style.height = `${row.offsetHeight}px`;
   row.parentElement.append(bg);
@@ -1062,21 +1067,24 @@ function swipeMove(e) {
     s.on = true;
     s.x0 += Math.sign(dx) * 12;
     s.w = s.row.offsetWidth || 1;
-    s.bg = swipeBg(s.row);
+    s.bg = swipeBg(s.row, s.remove);
     s.row.classList.add('is-swiping');
     try { s.row.setPointerCapture(s.pid); } catch { /* the row went away */ }
   }
   let x = e.clientX - s.x0;
   const max = s.w * 0.42;
-  if (Math.abs(x) > max) x = Math.sign(x) * (max + rubber(Math.abs(x) - max, s.w));
+  // A remove-only row resists going right.
+  if (s.remove && x > 0) x = rubber(x, s.w, 0.15);
+  else if (Math.abs(x) > max) x = Math.sign(x) * (max + rubber(Math.abs(x) - max, s.w));
   s.dx = x;
   s.row.style.transform = `translate3d(${x}px, 0, 0)`;
-  const side = x >= 0 ? 'done' : 'later';
+  const side = s.remove ? (x < 0 ? 'remove' : '') : x >= 0 ? 'done' : 'later';
   if (side !== s.side) {
     s.side = side;
-    s.bg.dataset.side = side;
+    if (side) s.bg.dataset.side = side;
+    else delete s.bg.dataset.side;
   }
-  const armed = Math.abs(x) > s.w * 0.26;
+  const armed = Boolean(side) && Math.abs(x) > s.w * 0.26;
   if (armed !== s.armed) {
     s.armed = armed;
     s.bg.classList.toggle('armed', armed);
@@ -1093,7 +1101,17 @@ function swipeEnd(cancelled) {
   swallowUntil = performance.now() + 450;
   const v = speed(s.trail);
   const flick = Math.abs(v) > 0.5 && Math.sign(v) === Math.sign(s.dx) && Math.abs(s.dx) > 40;
-  const commit = !cancelled && (s.armed || flick);
+  const commit = !cancelled && (s.armed || flick) && (!s.remove || s.dx < 0);
+  if (commit && s.remove) {
+    // The row carries on out to the left over its "Remove" panel; the page redraws without it, or
+    // with it back if it could not be removed.
+    const out = reduced() ? [{ opacity: 1 }, { opacity: 0 }] : [{ transform: `translate3d(${s.dx}px, 0, 0)` }, { transform: `translate3d(${-s.w}px, 0, 0)` }];
+    play(s.row, out, { duration: 200, easing: EASE_OUT, fill: 'forwards' });
+    s.row.style.transform = '';
+    haptic();
+    s.row.dispatchEvent(new CustomEvent('oath:swipe-remove', { bubbles: true }));
+    return;
+  }
   const sp = reduced() ? { duration: 180, easing: EASE_OUT } : spring(0.86, 0.34, s.dx ? (v * 1000) / -s.dx : 0);
   const a = play(s.row, [{ transform: `translate3d(${s.dx}px, 0, 0)` }, { transform: 'translate3d(0, 0, 0)' }], sp);
   s.row.style.transform = '';
