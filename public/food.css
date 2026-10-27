@@ -386,6 +386,72 @@ stop.g1 { stop-color: var(--mh); }
 .ftag-mini.t-good { background: rgba(var(--f-good-rgb), 0.1); color: var(--menthol); }
 .ftag-mini.t-warn { background: rgba(255, 140, 26, 0.13); color: #ffad5c; }
 
+/* The tag panel on a food (food-tagdb.js): the lead tags, the UK traffic lights, his habits, then every
+   other group folded with its count. Colour only marks a light; its level is always in words. */
+.ftp { display: grid; gap: 10px; margin-top: 12px; }
+.ftp .ftags { margin-top: 0; }
+.ftl-box { display: block; }
+.ftl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.ftl-c {
+  position: relative; overflow: hidden; display: grid; gap: 1px; justify-items: start; min-width: 0; padding: 10px 10px 8px;
+  border: 0; border-radius: 12px; font: inherit; text-align: left; cursor: pointer; color: var(--text);
+  background: rgba(255, 251, 244, 0.045); box-shadow: inset 0 0 0 1px var(--line-soft);
+  transition: transform var(--spring-ms) var(--spring);
+}
+.ftl-c::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--lc, transparent); }
+.ftl-c:active { transform: scale(0.96); transition: transform var(--t-press) var(--ease); }
+.ftl-k { font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.02em; color: var(--text-2); }
+.ftl-v { font-size: 0.9375rem; font-weight: 720; }
+.ftl-c.l-green { --lc: #93c26f; }
+.ftl-c.l-amber { --lc: #e2b24c; }
+.ftl-c.l-red { --lc: #e8644f; }
+.ftl-c.l-none { cursor: default; }
+.ftl-c.l-none .ftl-v { font-weight: 600; color: var(--text-3); }
+.ftl-c[aria-expanded="true"] { box-shadow: inset 0 0 0 1.5px var(--silver); }
+.ftp-you { display: flex; align-items: flex-start; gap: 10px; }
+.ftp-you-k { flex: none; padding-top: 8px; font-size: 0.6875rem; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+.ftg-list { border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line-soft); overflow: hidden; }
+.ftg + .ftg { border-top: 1px solid var(--line-soft); }
+.ftg summary { display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 12px 0 14px; cursor: pointer; list-style: none; -webkit-user-select: none; user-select: none; }
+.ftg summary::-webkit-details-marker { display: none; }
+.ftg-name { flex: 1; min-width: 0; font-size: 0.9375rem; font-weight: 650; }
+.ftg-n { padding: 1px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text-2); background: rgba(255, 251, 244, 0.07); }
+.ftg summary .chev { width: 16px; height: 16px; color: var(--text-3); transition: transform var(--t-ctl) var(--ease); }
+.ftg[open] summary .chev { transform: rotate(90deg); }
+.ftg > .ftags { padding: 0 12px 12px; }
+.ftp-more { display: grid; gap: 10px; margin-top: 22px; }
+.ftp-all { display: inline-flex; align-items: center; gap: 3px; justify-self: start; font-size: 0.8125rem; font-weight: 650; color: var(--text-2); text-decoration: none; }
+.ftp-all .chev { width: 14px; height: 14px; }
+
+/* The tag browser (#/food/tags). */
+.tg-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 2px 0 14px; }
+.tg-stat { display: grid; gap: 3px; padding: 12px 12px 10px; border-radius: 14px; background: rgba(255, 251, 244, 0.04); box-shadow: inset 0 0 0 1px var(--line-soft); }
+.tg-stat b { font-size: 1.375rem; font-weight: 720; line-height: 1.1; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.tg-stat span { font-size: 0.75rem; color: var(--text-2); }
+.tg-tools { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; margin-bottom: 16px; }
+.tg-tools .seg { min-width: 170px; }
+.tg-group, .tg-sec { margin-bottom: 20px; }
+.tg-h { display: flex; align-items: baseline; gap: 8px; margin: 0 2px 8px; font-size: 0.75rem; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); }
+.tg-h span { font-weight: 600; letter-spacing: 0; font-variant-numeric: tabular-nums; color: var(--text-3); }
+.tg-row { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto auto 14px; align-items: center; gap: 12px; min-height: 50px; padding: 0 12px 0 14px; color: var(--text); text-decoration: none; }
+.tg-row + .tg-row { border-top: 1px solid var(--line-soft); }
+.tg-row:active { background: rgba(255, 251, 244, 0.05); }
+.tg-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); }
+.tg-row.t-good .tg-dot { background: var(--f-good); }
+.tg-row.t-warn .tg-dot { background: #ffad5c; }
+.tg-name { overflow: hidden; font-size: 0.9375rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.tg-n { display: grid; justify-items: end; min-width: 38px; line-height: 1.15; }
+.tg-n b { font-size: 0.9375rem; font-weight: 720; font-variant-numeric: tabular-nums; }
+.tg-n small { font-size: 0.625rem; font-weight: 650; color: var(--text-3); }
+.tg-n.all b { font-weight: 600; color: var(--text-2); }
+.tg-row.none { opacity: 0.5; }
+.tg-row .chev { width: 14px; height: 14px; color: var(--text-3); }
+.tg-about { margin: 0 2px 18px; font-size: 0.9375rem; line-height: 1.5; color: var(--text-2); }
+.tg-val { display: grid; justify-items: end; font-size: 0.9375rem; font-weight: 720; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tg-val small { font-size: 0.6875rem; font-weight: 600; color: var(--text-3); }
+.tg-food .li-sub { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: normal; }
+@media (max-width: 360px) { .tg-stat b { font-size: 1.125rem; } .tg-tools { grid-template-columns: 1fr; } }
+
 /* ---------- A food: head, amount, nutrition facts ---------- */
 
 .fd-head { margin-top: -4px; }

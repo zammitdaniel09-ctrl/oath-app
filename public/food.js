@@ -9,6 +9,8 @@ import {
 import { NUTRIENT, NUTRIENTS, line, total, scale, show, unitsFor, round, amountText, norm } from './nutrition.js';
 // Grades and tags come from the shared maths when it has them.
 import * as N from './nutrition.js';
+import { foodTags } from './food-tags.js';
+import { initTagDb, tagPanel, tagMore, rowTag, rowTags, loadTags, viewTags, tagsClick, tagsInput } from './food-tagdb.js';
 import { richHtml } from './rich.js';
 // Real burn: the Body tab's cards and the diary tile.
 import { burnCard, weightCard, burnTile, loadEnergy, energyClick, energySubmit } from './food-energy.js';
@@ -217,6 +219,8 @@ export async function loadFood() {
     await loadTrends();
   } else if (p === 'chat') {
     await loadChatDay();
+  } else if (p === 'tags') {
+    await loadTags(state.param2);
   }
 }
 
@@ -257,7 +261,7 @@ const safely = (fn) => {
 const itemGrade = (it) => (it ? gradeOf(it.nutriscore) || gradeOf(safely(() => N.nutriScore?.(it.nutrients, { category: it.category, liquid: it.liquid }))) : null);
 const itemTags = (it) => {
   if (!it) return [];
-  const t = Array.isArray(it.tags) ? it.tags : safely(() => N.foodTags?.(it));
+  const t = Array.isArray(it.tags) ? it.tags : safely(() => foodTags(it));
   return Array.isArray(t) ? t.filter((x) => x?.label) : [];
 };
 const novaOf = (x) => {
@@ -283,16 +287,9 @@ function novaBadge(v) {
   return n ? `<span class="nova nova-${n}" role="img" aria-label="NOVA group ${n}"><small aria-hidden="true">NOVA</small><b aria-hidden="true">${n}</b></span>` : '';
 }
 
-// Tags as chips; a tap shows why under them.
-function tagChips(tags) {
-  if (!tags.length) return '';
-  return `<div class="ftags">${tags.map((t) => `<button type="button" class="ftag t-${esc(t.tone || 'neutral')}" data-action="food-tag"${t.why ? ` data-why="${esc(t.why)}"` : ''} aria-expanded="false">${esc(t.label)}</button>`).join('')}
-    <p class="ftag-why" aria-live="polite" hidden></p></div>`;
-}
 const tagMini = (t) => (t ? `<span class="ftag-mini t-${esc(t.tone || 'neutral')}">${esc(t.label)}</span>` : '');
-// The one tag a row shows: the first that says more than the grade dot beside it already does.
-const GRADE_TAGS = new Set(['good-choice', 'eat-less']);
-const topTag = (tags) => (tags || []).find((t) => t?.label && !GRADE_TAGS.has(t.key)) || null;
+// The one tag a row shows (food-tagdb.js).
+const topTag = rowTag;
 
 // ---------- Values, estimates and reference intakes ----------
 
@@ -673,11 +670,11 @@ function dateLabel(d) {
 function entryRow(e) {
   const fl = filledSet(e.filled);
   const est = e.estimate || fl.has('kcal');
-  const tag = topTag(e.tags);
+  const tags = rowTags(e.tags, 2);
   return `<button class="li li-plain food-row" data-action="food-entry" data-eid="${esc(e.id)}" data-swipe="remove">
     ${foodRing(e.nutrients, e.grade)}
     <span class="li-body"><span class="li-title">${esc(e.name)}</span>
-    <span class="li-sub">${e.brand ? `<span class="fr-brand">${esc(e.brand)}</span>` : ''}<span class="fr-amt">${esc(e.amountText || '')}</span>${tag ? tagMini(tag) : ''}</span></span>
+    <span class="li-sub">${e.brand ? `<span class="fr-brand">${esc(e.brand)}</span>` : ''}<span class="fr-amt">${esc(e.amountText || '')}</span>${tags.map(tagMini).join('')}</span></span>
     <span class="li-side"><b>${est ? '<i class="est">~</i>' : ''}${show(e.nutrients, 'kcal', { unit: false })}</b><small>kcal</small></span></button>`;
 }
 
@@ -728,7 +725,7 @@ function viewDiary() {
   const F = f();
   const d = F.day;
   const head = pageHead('Food', {
-    actions: `<a class="icon-btn" href="#/food/trends" aria-label="Trends">${icon('trend')}</a><a class="icon-btn" href="#/food/recipes" aria-label="Recipes">${icon('recipe')}</a><a class="icon-btn" href="#/food/meals" aria-label="Saved meals">${icon('star')}</a>`,
+    actions: `<a class="icon-btn" href="#/food/trends" aria-label="Trends">${icon('trend')}</a><a class="icon-btn" href="#/food/recipes" aria-label="Recipes">${icon('recipe')}</a><a class="icon-btn" href="#/food/meals" aria-label="Saved meals">${icon('star')}</a><a class="icon-btn" href="#/food/tags" aria-label="Tags">${icon('tag')}</a>`,
   });
   if (!d) return ctx.shell(`${head}<div class="skeleton"><i></i><i></i><i class="short"></i></div>${sheetHtml()}`);
   const t = d.total;
@@ -904,7 +901,7 @@ function foodBody(s) {
   const record = it.source_ref?.startsWith('http') ? ` · <a href="${esc(it.source_ref)}" target="_blank" rel="noopener">record</a>` : '';
   return `<div class="fd-head">${sub ? `<p class="fd-sub">${sub}</p>` : ''}
       ${g || nova ? `<div class="fd-badges">${nutriBadge(g)}${nova}</div>` : ''}
-      ${tagChips(itemTags(it))}
+      ${tagPanel(itemTags(it))}
       ${it.check ? `<p class="note bad">${esc(it.check)}</p>` : ''}${it.status === 'needs-label' ? '<p class="note">No values yet. Add the label to log it.</p>' : ''}</div>
     <form data-form="food-log" class="food-amount">
       <div class="amount-row"><input class="input" name="qty" inputmode="decimal" value="${esc(s.qty)}" data-food-amount aria-label="Amount">
@@ -922,6 +919,7 @@ function foodBody(s) {
         <label><input type="radio" name="nf-per" value="100" data-food-per${per === '100' ? ' checked' : ''}><span>100 ${it.basis === 'ml' ? 'ml' : 'g'}</span></label></div></div>
       <div id="food-facts">${itemFacts({ ...s, per })}</div>
     </section>
+    ${tagMore(itemTags(it))}
     <p class="fd-src">${sourceLine(it)}${record}</p>`;
 }
 
@@ -1038,9 +1036,10 @@ function entryBody(s) {
       <div class="form-actions"><button class="btn primary" type="submit">Save</button></div></form>`
     : `<div class="fprev"><div class="fprev-main"><b>${e.estimate ? '<i class="est">~</i>' : ''}${val(e.nutrients, 'kcal', fl)}</b><span>${esc(e.amountText || '')}</span></div>${strip(e.nutrients, STRIP, fl)}</div>
       <form data-form="food-entry-edit">${slotSelect(e.slot)}<div class="form-actions"><button class="btn tinted" type="submit">Move</button></div></form>`;
-  return `<div class="fd-head">${e.grade || nova ? `<div class="fd-badges">${nutriBadge(e.grade)}${nova}</div>` : ''}${tagChips(e.tags || [])}</div>
+  return `<div class="fd-head">${e.grade || nova ? `<div class="fd-badges">${nutriBadge(e.grade)}${nova}</div>` : ''}${tagPanel(e.tags || [])}</div>
     ${amount}
     <section class="nf" aria-label="Nutrition facts"><div class="nf-top"><h3>Nutrition</h3><span class="nf-per">${esc(e.amountText || 'as logged')}</span></div>${factsHtml(e.nutrients, fl)}${fillSourceHtml(e.fillSource)}</section>
+    ${tagMore(e.tags || [])}
     ${lines}
     <div class="sheet-actions"><button class="btn tinted danger-text" data-action="food-entry-del" data-eid="${esc(e.id)}">${icon('trash')}Remove from the diary</button></div>`;
 }
@@ -1694,6 +1693,7 @@ export function viewFood() {
   if (p === 'meals') return viewMeals();
   if (p === 'report') return viewReport();
   if (p === 'chat') return viewChat();
+  if (p === 'tags') return viewTags();
   return viewDiary();
 }
 
@@ -1896,22 +1896,9 @@ export async function foodClick(a, el) {
       ctx.render();
       return true;
     }
-    case 'food-tag': {
-      const box = el.closest('.ftags');
-      const why = box?.querySelector('.ftag-why');
-      if (!why) return true;
-      const open = el.getAttribute('aria-expanded') === 'true';
-      box.querySelectorAll('.ftag').forEach((b) => b.setAttribute('aria-expanded', 'false'));
-      if (open || !el.dataset.why) {
-        why.hidden = true;
-        return true;
-      }
-      el.setAttribute('aria-expanded', 'true');
-      why.textContent = el.dataset.why;
-      why.hidden = false;
-      if (!reduced()) why.animate?.([{ opacity: 0, transform: 'translateY(-4px)' }, { opacity: 1, transform: 'none' }], { duration: 200, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' });
-      return true;
-    }
+    case 'food-tag':
+    case 'food-tags-mode':
+      return tagsClick(a, el);
     case 'food-daynut':
       openSheet({ kind: 'daynut' });
       return true;
@@ -2294,6 +2281,8 @@ export async function foodSubmit(kind, form) {
         pack: o.pack_size ? { size: Number(o.pack_size), unit: o.basis, count: Number(o.pack_count) || null } : null,
         serving: o.serving_size ? { size: Number(o.serving_size), unit: o.basis, label: o.serving_label || null } : null,
         market: 'Malta',
+        // What the photo read off the ingredient list (allergens, traces, E numbers) goes with it.
+        ...(s.draft?.facts ? { facts: s.draft.facts } : {}),
       };
       const item = await act(() => api('POST', s.fromLabel ? '/api/food/label' : '/api/food/items', body), 'Saved.');
       if (item) {
@@ -2440,6 +2429,7 @@ function onInput(e) {
   const el = e.target;
   const s = state.foodSheet;
   if (el.matches('[data-food-q]')) return runSearch(el.value);
+  if (tagsInput(el)) return null;
   if (el.matches('[data-food-text]')) {
     f().text = el.value;
     sizeText(el);
@@ -2572,6 +2562,7 @@ export function initFood(c) {
     f, store, queue, QUEUE, foodPost, uuid, itemFor, openSheet, slotSelect, unitOptions, SLOT, SLOTS, click: foodClick,
     refresh: () => refresh(), render: () => ctx.render(),
   });
+  initTagDb({ f, sheetHtml, shell: (html) => ctx.shell(html), render: () => ctx.render() });
   initChat({
     f, store, uuid, openSheet, runSearch, defaults, reviewItem, reviewKcal, roughAmount, unitOptions, itemGrade, foodRing, macroParts, energyRing,
     logReviewed, shrink, slotNow, SLOT, SLOTS, photoItemsFrom, fmtN, cap, sizeText, sheetHtml,

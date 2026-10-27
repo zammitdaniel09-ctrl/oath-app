@@ -115,7 +115,7 @@ test('a food with no grade from its source is graded by the shared maths, and ta
   const d = await get('/api/food/day?date=2027-05-09');
   const e = d.entries.find((x) => x.id === logged.entry.id);
   assert.equal(e.grade, N.nutriScore(nutrients, { liquid: false }).grade);
-  if (typeof N.foodTags === 'function') {
+  {
     assert.ok(e.tags.length > 0, 'tags come from the shared rules');
     assert.ok(e.tags.every((t) => t.label && ['good', 'neutral', 'warn'].includes(t.tone)));
   }

@@ -12,9 +12,10 @@ import { localNow, RuleError } from './engine.js';
 import {
   KEYS, NUTRIENT, NUTRIENTS, norm, scale, total, complete, line, recipeTotals, shareOf, batchPortion, batchLeft, unknown, round, amountText, unitsFor, resolve, show,
 } from '../public/nutrition.js';
-// Grades and tags come from the shared maths when it has them; read through the namespace so the
+// Grades come from the shared maths when it has them; read through the namespace so the
 // diary still works on a build without them.
 import * as NUT from '../public/nutrition.js';
+import { foodTags, tagKeys, cleanFacts, TAGS_VERSION } from '../public/food-tags.js';
 import { needRefs } from './body.js';
 
 // ---------- Schema ----------
@@ -227,6 +228,15 @@ create table if not exists food_lookups (
 -- v9: a recipe imported from a link keeps the page it came from, credited on its card (food-import.js).
 alter table recipes add column if not exists source_url text;
 alter table recipes add column if not exists source_name text;
+-- v16: what a record knows beyond its numbers (labels, allergens, traces, additives, ingredients analysis,
+-- categories, Green-Score: public/food-tags.js cleanFacts), when Open Food Facts last gave them, and the
+-- record's tags as the shared rules work them out, with the rules' version, so the catalogue can be
+-- browsed by tag and is worked out again when a rule changes (src/food-tags.js).
+alter table food_items add column if not exists facts jsonb not null default '{}';
+alter table food_items add column if not exists facts_at timestamptz;
+alter table food_items add column if not exists tags text[] not null default '{}';
+alter table food_items add column if not exists tags_v int not null default 0;
+create index if not exists food_items_tags_idx on food_items using gin (tags);
 `;
 
 export async function migrateFood() {
@@ -330,17 +340,21 @@ function gradeOfRow(r) {
   return computed ? { grade: computed.grade, from: 'computed' } : { grade: null, from: null };
 }
 
+// What the tag rules read from a row (public/food-tags.js).
+export const tagInput = (r, extra = {}) => ({
+  nutrients: r.nutrients, basis: r.basis, liquid: r.liquid, density: r.density, category: r.category, state: r.state, name: r.name, name_mt: r.name_mt,
+  brand: r.brand, kind: r.kind, source: r.source, market: r.market, nova: r.nova, portions: r.portions, serving: r.serving, pack: r.pack, facts: r.facts, ...extra,
+});
+
 // What the maths and the screens need from a row. `nutriscore` is a lower case letter, a to e, or null;
 // `nutriscoreFrom` says whether it came from the source or was worked out here; `tags` is the ordered
-// list of { key, label, tone, why } ("Protein packed", "Sugar rush", "Ultra-processed" ...).
-export function shapeItem(r) {
+// list of { key, label, tone, group, why } ("Protein packed", "Sugar rush", "Contains milk" ...), with
+// the diary's habits ("Your regular") when `habits` is given.
+export function shapeItem(r, habits = null) {
   if (!r) return null;
   const graded = gradeOfRow(r);
   const nova = Number(r.nova) >= 1 && Number(r.nova) <= 4 ? Number(r.nova) : null;
-  const tags = safeGrade(() => NUT.foodTags?.({
-    nutrients: r.nutrients, basis: r.basis, liquid: r.liquid, density: r.density, category: r.category, state: r.state, name: r.name, nutriscore: graded.grade, nova,
-    portions: r.portions, serving: r.serving, pack: r.pack,
-  })) || [];
+  const tags = safeGrade(() => foodTags(tagInput(r, { nutriscore: graded.grade, nova, habits }))) || [];
   return {
     nutriscore: graded.grade,
     nutriscoreFrom: graded.from,
@@ -375,6 +389,7 @@ export function shapeItem(r) {
     notes: r.notes,
     favourite: r.favourite,
     uses: r.uses,
+    facts: r.facts || {},
     last: r.last_unit ? { qty: r.last_qty, unit: r.last_unit } : null,
     units: unitsFor(r),
     // Only crowd-sourced, web and typed-in values are checked; USDA uses food-specific energy factors.
@@ -417,7 +432,7 @@ export function prepareItem(input) {
   const edible = n(Number(input.edible)) && input.edible > 0 && input.edible <= 1 ? Number(input.edible) : null;
   const density = n(Number(input.density)) && input.density > 0.3 && input.density < 3 ? Number(input.density) : null;
   const concentrate = input.concentrate && Number(input.concentrate.water) > 0 ? { water: Number(input.concentrate.water) } : null;
-  return {
+  const row = {
     key, kind, name, name_mt: input.name_mt ? clean(input.name_mt, 160) : null, aliases, name_norm: nameNorm, alias_norm: aliasNorm, search,
     brand: input.brand ? clean(input.brand, 80) : null,
     brand_norm: brandNorm,
@@ -436,7 +451,12 @@ export function prepareItem(input) {
     req: (input.req || []).map((x) => clean(x, 120)),
     nutriscore: gradeLetter(input.nutriscore),
     nova: novaGroup(input.nova),
+    facts: cleanFacts(input.facts),
   };
+  // The tags as stored for browsing: the shared rules on the record as saved, without the diary's habits.
+  row.tags = safeGrade(() => tagKeys(tagInput(row, { nutriscore: gradeOfRow(row).grade }))) || [];
+  row.tags_v = TAGS_VERSION;
+  return row;
 }
 
 // Inserts or updates one record by its key. Seeds and imports call this; Daniel's favourites, use
@@ -446,26 +466,28 @@ export async function upsertItem(input, tx = db()) {
   const [saved] = await tx`
     insert into food_items (key, kind, name, name_mt, aliases, name_norm, alias_norm, search, brand, brand_norm, barcode, market, category, state,
       basis, nutrients, portions, edible, refuse, density, pack, serving, concentrate, liquid, source, source_ref, source_date, status, notes, req,
-      nutriscore, nova)
+      nutriscore, nova, facts, facts_at, tags, tags_v)
     values (${row.key}, ${row.kind}, ${row.name}, ${row.name_mt}, ${row.aliases}::text[], ${row.name_norm}, ${row.alias_norm}::text[], ${row.search},
       ${row.brand}, ${row.brand_norm}, ${row.barcode}, ${row.market}, ${row.category}, ${row.state}, ${row.basis}, ${tx.json(row.nutrients)}, ${tx.json(row.portions)},
       ${row.edible}, ${row.refuse}, ${row.density}, ${row.pack ? tx.json(row.pack) : null}, ${row.serving ? tx.json(row.serving) : null},
       ${row.concentrate ? tx.json(row.concentrate) : null}, ${row.liquid}, ${row.source}, ${row.source_ref}, ${row.source_date}, ${row.status},
-      ${row.notes}, ${row.req}::text[], ${row.nutriscore}, ${row.nova})
+      ${row.notes}, ${row.req}::text[], ${row.nutriscore}, ${row.nova}, ${tx.json(row.facts)}, ${Object.keys(row.facts).length ? new Date() : null},
+      ${row.tags}::text[], ${row.tags_v})
     on conflict (key) do update set kind = excluded.kind, name = excluded.name, name_mt = excluded.name_mt, aliases = excluded.aliases,
       name_norm = excluded.name_norm, alias_norm = excluded.alias_norm, search = excluded.search, brand = excluded.brand, brand_norm = excluded.brand_norm,
       barcode = excluded.barcode, market = excluded.market, category = excluded.category, state = excluded.state, basis = excluded.basis, nutrients = excluded.nutrients,
       portions = excluded.portions, edible = excluded.edible, refuse = excluded.refuse, density = excluded.density, pack = excluded.pack,
       serving = excluded.serving, concentrate = excluded.concentrate, liquid = excluded.liquid, source = excluded.source,
       source_ref = excluded.source_ref, source_date = excluded.source_date, status = excluded.status, notes = excluded.notes, req = excluded.req,
-      nutriscore = excluded.nutriscore, nova = excluded.nova, updated_at = now()
+      nutriscore = excluded.nutriscore, nova = excluded.nova, facts = excluded.facts, facts_at = coalesce(excluded.facts_at, food_items.facts_at),
+      tags = excluded.tags, tags_v = excluded.tags_v, updated_at = now()
     returning *`;
   return saved;
 }
 
 const BULK_COLUMNS = ['key', 'kind', 'name', 'name_mt', 'aliases', 'name_norm', 'alias_norm', 'search', 'brand', 'brand_norm', 'barcode', 'market', 'category', 'state',
   'basis', 'nutrients', 'portions', 'edible', 'refuse', 'density', 'pack', 'serving', 'concentrate', 'liquid', 'source', 'source_ref', 'source_date', 'status', 'notes', 'req',
-  'nutriscore', 'nova'];
+  'nutriscore', 'nova', 'facts', 'tags', 'tags_v'];
 
 // The same upsert for thousands of records, in multi-row statements of about `batch` rows. A record that
 // fails validation is skipped and reported, never fatal; a repeated key keeps its last record. Favourites,
@@ -493,7 +515,7 @@ export async function upsertItems(inputs, tx = db(), { batch = 500 } = {}) {
         portions = excluded.portions, edible = excluded.edible, refuse = excluded.refuse, density = excluded.density, pack = excluded.pack,
         serving = excluded.serving, concentrate = excluded.concentrate, liquid = excluded.liquid, source = excluded.source,
         source_ref = excluded.source_ref, source_date = excluded.source_date, status = excluded.status, notes = excluded.notes, req = excluded.req,
-        nutriscore = excluded.nutriscore, nova = excluded.nova, updated_at = now()`;
+        nutriscore = excluded.nutriscore, nova = excluded.nova, facts = excluded.facts, tags = excluded.tags, tags_v = excluded.tags_v, updated_at = now()`;
   }
   return { saved: rows.length, rejected };
 }
@@ -512,7 +534,55 @@ async function itemByRef({ key, id }) {
 export async function getFood(ref) {
   const r = await itemByRef(ref);
   if (!r) throw new RuleError('That food is not in the catalogue.', 404);
-  return shapeItem(r);
+  return shapeItem(r, (await habitStats()).get(r.key) || null);
+}
+
+// ---------- Habits ----------
+
+// What the diary says about each food he has logged, for the "Your habits" tags: how many days of the
+// last 30 it was logged on, how its logs of the last 90 days split by meal, hour and weekday, when it was
+// first and last logged, and where it ranks for protein, energy and sugar over the last 30 days.
+// Late is 21:00 to 04:00, early 04:00 to 08:00, both in his time zone. Map of catalogue key to habits.
+export async function habitStats() {
+  const { today, tz } = await localNow();
+  const d30 = addDays(today, -30, tz);
+  const d90 = addDays(today, -90, tz);
+  const rows = await db()`
+    select l.ref_key as key, min(l.date) as first, max(l.date) as last, count(*)::int as total,
+      count(distinct l.date) filter (where l.date > ${d30})::int as days30,
+      count(*) filter (where l.date > ${d90})::int as logs90,
+      count(*) filter (where l.date > ${d90} and l.slot = 'breakfast')::int as breakfast,
+      count(*) filter (where l.date > ${d90} and l.slot = 'lunch')::int as lunch,
+      count(*) filter (where l.date > ${d90} and l.slot = 'dinner')::int as dinner,
+      count(*) filter (where l.date > ${d90} and l.slot = 'snacks')::int as snacks,
+      count(*) filter (where l.date > ${d90} and l.slot = 'drinks')::int as drinks,
+      count(*) filter (where l.date > ${d90} and (extract(hour from l.at at time zone ${tz}) >= 21 or extract(hour from l.at at time zone ${tz}) < 4))::int as late,
+      count(*) filter (where l.date > ${d90} and extract(hour from l.at at time zone ${tz}) >= 4 and extract(hour from l.at at time zone ${tz}) < 8)::int as early,
+      count(*) filter (where l.date > ${d90} and extract(isodow from l.date::date) in (6, 7))::int as weekend,
+      sum((l.nutrients->>'protein')::float) filter (where l.date > ${d30}) as protein30,
+      sum((l.nutrients->>'kcal')::float) filter (where l.date > ${d30}) as kcal30,
+      sum((l.nutrients->>'sugars')::float) filter (where l.date > ${d30}) as sugars30
+    from food_log l
+    where l.kind = 'item' and l.ref_key is not null and l.deleted_at is null and l.date <= ${today}
+    group by l.ref_key`;
+  const favourites = await db()`select key from food_items where favourite`;
+  const ago = (date) => Math.round(DateTime.fromISO(today).diff(DateTime.fromISO(date), 'days').days);
+  const rank = (field) => {
+    const order = rows.filter((r) => r[field] > 0).sort((a, b) => b[field] - a[field]);
+    return new Map(order.map((r, i) => [r.key, i + 1]));
+  };
+  const ranks = { protein: rank('protein30'), kcal: rank('kcal30'), sugars: rank('sugars30') };
+  const out = new Map();
+  for (const r of rows) {
+    out.set(r.key, {
+      days30: r.days30, logs90: r.logs90, total: r.total, late: r.late, early: r.early, weekend: r.weekend,
+      slots: { breakfast: r.breakfast, lunch: r.lunch, dinner: r.dinner, snacks: r.snacks, drinks: r.drinks },
+      firstDays: ago(r.first), lastDays: ago(r.last),
+      top: { protein: ranks.protein.get(r.key) || null, kcal: ranks.kcal.get(r.key) || null, sugars: ranks.sugars.get(r.key) || null },
+    });
+  }
+  for (const f of favourites) out.set(f.key, { ...(out.get(f.key) || {}), favourite: true });
+  return out;
 }
 
 // Words that carry no meaning in "large fries from Burger King", and the size words that point at a
@@ -997,8 +1067,9 @@ async function gradeEntries(entries) {
   const keys = [...new Set(entries.filter((e) => e.kind === 'item' && e.refKey).map((e) => e.refKey))];
   // The tagger needs the same fields shapeItem gives it: state for whole foods, density, portions,
   // serving and pack for the per-100 ml and drinks-portion rules.
-  const items = keys.length ? await db()`select key, kind, name, brand, category, state, basis, liquid, density, portions, serving, pack,
-    nutrients, nutriscore, nova, source from food_items where key = any(${keys})` : [];
+  const items = keys.length ? await db()`select key, kind, name, name_mt, brand, market, category, state, basis, liquid, density, portions, serving, pack,
+    nutrients, nutriscore, nova, source, facts from food_items where key = any(${keys})` : [];
+  const habits = keys.length ? await habitStats() : new Map();
   const byKey = new Map(items.map((i) => [i.key, i]));
   return entries.map((e) => {
     const it = e.kind === 'item' ? byKey.get(e.refKey) : null;
@@ -1010,7 +1081,7 @@ async function gradeEntries(entries) {
     }
     let grade = gradeOf(it?.nutriscore);
     if (!grade && base) grade = gradeOf(safely(() => NUT.nutriScore?.(base.nutrients, { category: base.category, liquid: base.liquid })));
-    const tags = base ? safely(() => NUT.foodTags?.({ ...base, nutriscore: grade })) : null;
+    const tags = base ? safely(() => foodTags({ ...base, nutriscore: grade, habits: it ? habits.get(it.key) || null : null })) : null;
     return { ...e, grade, nova: it?.nova ?? null, tags: Array.isArray(tags) ? tags : [] };
   });
 }

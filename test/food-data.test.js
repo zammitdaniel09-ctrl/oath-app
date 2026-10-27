@@ -7,7 +7,8 @@ import os from 'node:os';
 import path from 'node:path';
 import { performance } from 'node:perf_hooks';
 import EmbeddedPostgres from 'embedded-postgres';
-import { nutriScore, foodTags, NUTRIENTS, KEYS } from '../public/nutrition.js';
+import { nutriScore, NUTRIENTS, KEYS } from '../public/nutrition.js';
+import { foodTags } from '../public/food-tags.js';
 // Parallel checkouts run the suite at once with OATH_PORT_SHIFT set apart.
 const SHIFT = Number(process.env.OATH_PORT_SHIFT || 0);
 
@@ -212,7 +213,10 @@ test('tags: unknown values never produce a tag, and the list is ordered with a r
   // Only the values that are known speak: a record with salt alone gets a salt tag and nothing else.
   assert.deepEqual(keys(foodTags({ nutrients: { salt: 2 }, basis: 'g' })), ['salty']);
   const crisps = foodTags({ nutrients: { kcal: 536, protein: 6.6, carbs: 52, sugars: 0.5, fat: 34, satfat: 3.1, fibre: 4.4, salt: 1.4 }, basis: 'g', nova: 4, nutriscore: 'd', category: 'Snacks' });
-  assert.deepEqual(keys(crisps), ['eat-less', 'ultra-processed', 'source-fibre', 'sugar-free', 'high-fat', 'carb-heavy'].filter((k) => keys(crisps).includes(k)));
+  // The verdict first, then warnings, then what is good about it.
+  const lead = ['eat-less', 'ultra-processed', 'high-fat', 'source-fibre', 'sugar-free'];
+  assert.deepEqual(keys(crisps).filter((k) => lead.includes(k)), lead);
+  assert.ok(['eat-less', 'ultra-processed', 'source-fibre', 'sugar-free', 'high-fat'].every((k) => keys(crisps).includes(k)));
   assert.ok(keys(crisps).indexOf('eat-less') < keys(crisps).indexOf('high-fat'));
   for (const t of crisps) {
     assert.ok(['good', 'neutral', 'warn'].includes(t.tone));

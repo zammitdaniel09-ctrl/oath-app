@@ -31,6 +31,7 @@ import { readFoodPhoto, readFoodText } from './food-photo.js';
 import { foodTake } from './food-take.js';
 import { importApi } from './food-import.js';
 import { mailApi } from './mail.js';
+import { tagApi, retagCatalogue } from './food-tags.js';
 import { productByBarcode, searchOff } from './off.js';
 import * as passkeys from './passkeys.js';
 import { conditionalGet, publicFile } from './static.js';
@@ -327,6 +328,7 @@ api.get('/food/off-search', async (c) => c.json({ items: await searchOff(c.req.q
 api.get('/food/take', async (c) => c.json(await foodTake({ view: c.req.query('view'), date: c.req.query('date'), days: c.req.query('days') })));
 // A recipe from a link, as a draft for the editor; nothing is saved until Save.
 api.route('/', importApi);
+api.route('/', tagApi); // the tag database: browse foods by tag (food-tags.js)
 api.route('/', foodApi);
 // Real burn: his energy use measured from his weight trend and logged food.
 api.route('/', energyApi);
@@ -379,7 +381,8 @@ if (isMain) {
   await vapidKeys();
   initTelegram().catch((err) => console.error('telegram init failed:', err.message));
   checkCoach();
-  ensureFoodSeed().catch((err) => console.error('food seed failed:', err.message));
+  // The seed first, then any record tagged under older rules is tagged again.
+  ensureFoodSeed().then(() => retagCatalogue({ log: (m) => console.log(m) })).catch((err) => console.error('food seed failed:', err.message));
   const port = Number(process.env.PORT || 3000);
   const server = serve({ fetch: app.fetch, port, hostname: '0.0.0.0' }, () => console.log(`Oath listening on ${port}`));
   const loop = startLoop();

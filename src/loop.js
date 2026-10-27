@@ -14,6 +14,7 @@ import { setAutoEnrich, drainEnrichment } from './food-enrich.js';
 import { pruneSessions } from './auth.js';
 import { foodWeekReport } from './food-take.js';
 import { syncMail, MAIL_KEEP_DAYS } from './mail.js';
+import { collectFacts } from './food-tags.js';
 
 const BRIEF_TITLES = { morning: 'Morning brief', midday: 'Midday check', evening: 'Evening check' };
 // The Sunday food report: from 19:00 local time, for three hours, once a week.
@@ -261,6 +262,10 @@ export function startLoop(intervalMs = 30000) {
   const syncInbox = () => syncMail().catch((err) => console.error('mail sync failed', err.message));
   syncInbox();
   setInterval(syncInbox, 5 * 60000).unref();
+  // Products he eats that Open Food Facts has more to say about (labels, allergens, additives): three
+  // every ten minutes, well inside its rate limits.
+  const moreFacts = () => collectFacts().catch((err) => console.error('food facts failed', err.message));
+  setInterval(moreFacts, 10 * 60000).unref();
   // Food: new diary entries get their missing nutrients filled a moment after they are logged, and
   // older ones a few at a time on their own timer, so a slow lookup never delays judging. The first
   // pass waits one interval, giving the food seed time to load at boot.

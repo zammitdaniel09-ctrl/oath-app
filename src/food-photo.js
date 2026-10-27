@@ -26,6 +26,7 @@ import { searchFoods, FILL_KEYS, ESTIMATE_KEYS, MICRO_TEXT, cleanFill } from './
 import { productByBarcode } from './off.js';
 import { resolve, round, norm } from '../public/nutrition.js';
 import { lookupCode } from '../public/barcode.js';
+import { ALLERGENS, cleanFacts } from '../public/food-tags.js';
 
 const STR = { type: 'string' };
 const NUM = { type: 'number' };
@@ -33,6 +34,8 @@ const maybe = (s) => ({ anyOf: [s, { type: 'null' }] });
 const obj = (properties) => ({ type: 'object', additionalProperties: false, required: Object.keys(properties), properties });
 
 const LABEL_KEYS = ['kcal', 'kj', 'protein', 'carbs', 'sugars', 'fat', 'satfat', 'fibre', 'salt', 'caffeine_mg'];
+// The 14 EU allergens as the photo reading names them, and as Open Food Facts tags them (food-tags.js).
+const ALLERGEN_TAGS = Object.fromEntries(ALLERGENS.map(([key, , off]) => [key, off]));
 const UNITS = ['g', 'ml', 'piece'];
 
 // One food as the reading understood it. Text fields are empty strings when there is nothing to say
@@ -88,6 +91,14 @@ export const PHOTO_SCHEMA = obj({
     values: { type: 'array', items: obj({ key: { type: 'string', enum: LABEL_KEYS }, value: NUM }) },
   }),
   items: { type: 'array', items: obj(MEAL_ITEM) },
+  // The ingredient list, when one is in the photo: how many ingredients, the allergens it names or
+  // prints in bold, the "may contain" traces, and each additive's E number. Count 0 when none is seen.
+  ingredients: obj({
+    count: { type: 'integer' },
+    allergens: { type: 'array', items: { type: 'string', enum: Object.keys(ALLERGEN_TAGS) } },
+    traces: { type: 'array', items: { type: 'string', enum: Object.keys(ALLERGEN_TAGS) } },
+    additives: { type: 'array', items: STR },
+  }),
   question: STR,
 });
 
@@ -121,6 +132,8 @@ kind:
 - "label": a nutrition information table. Fill label with the values exactly as printed in the per 100 g or per 100 ml column; use the per serving column (basis "serving", with serving_size) only if there is no per 100 column. Copy numbers, never work them out. In values, list only what is printed, one entry per value (key and number); leave out anything not printed. Salt as printed; if only sodium is printed, leave salt out. caffeine_mg only if a caffeine amount is printed. Fill product from the packet if visible.
 - "meal": food or drink ready to eat (a plate, a bowl, a sandwich, a glass, a takeaway box). List each separate food in items, following the item rules below. Include visible oil, butter, sauces and dressings as their own items.
 - "unclear": you cannot tell what it is, or it is not food or drink. Put a short question in question.
+
+ingredients: whenever an ingredient list is readable, on any kind of photo. count is the number of ingredients at the top level of the list. allergens are those the list names or prints in bold or capitals, from: gluten (wheat, barley, rye, oats, spelt), crustaceans, eggs, fish, peanuts, soy, milk, nuts (almonds, hazelnuts, walnuts, cashews, pecans, brazil nuts, pistachios, macadamias), celery, mustard, sesame, sulphites, lupin, molluscs. traces are the allergens of a "may contain" line. additives are the E numbers as printed ("E330", "E951"); for an additive named without its number give the number only when you are certain (aspartame E951, sucralose E955, citric acid E330). With no readable ingredient list: count 0 and empty lists.
 
 Anything you cannot read stays empty: "" for text, 0 for a size or count, label basis "none" when there is no nutrition table, and product name "" when no packet is visible. Never guess a barcode digit, a brand or a label value. summary is one short line saying what you see. items is empty unless kind is "meal".
 
@@ -163,6 +176,7 @@ export function labelDraft(read, scanned = null) {
   if (nutrients.satfat !== null && nutrients.fat !== null && nutrients.satfat > nutrients.fat + 0.5) warnings.push('Saturates read higher than fat. Check both.');
   const p = read.product;
   return {
+    facts: ingredientFacts(read.ingredients),
     name: [p?.name, p?.variant].filter(Boolean).join(' ') || '',
     brand: p?.brand || '',
     barcode: scanned || lookupCode(read.barcode) || '',
@@ -172,6 +186,21 @@ export function labelDraft(read, scanned = null) {
     pack: p?.pack_size > 0 ? { size: p.pack_size, unit: p.pack_unit === 'ml' ? 'ml' : 'g', count: p.pack_count > 1 ? p.pack_count : null } : null,
     warnings,
   };
+}
+
+// What the ingredient list in a photo says, as facts the tags read (public/food-tags.js), in Open Food
+// Facts' tag form. Null when no ingredient list was read.
+export function ingredientFacts(ing) {
+  if (!ing || typeof ing !== 'object') return null;
+  const count = Number.isInteger(ing.count) && ing.count > 0 ? ing.count : 0;
+  const pick = (list) => [...new Set((Array.isArray(list) ? list : []).filter((k) => ALLERGEN_TAGS[k]).map((k) => ALLERGEN_TAGS[k]))];
+  const additives = [...new Set((Array.isArray(ing.additives) ? ing.additives : [])
+    .map((x) => String(x || '').toLowerCase().replace(/[^a-z0-9]/g, '').replace(/^e?(\d{3,4}[a-z]?)$/, 'e$1'))
+    .filter((x) => /^e\d{3,4}[a-z]?$/.test(x)).map((x) => `en:${x}`))];
+  const allergens = pick(ing.allergens);
+  const traces = pick(ing.traces);
+  if (!count && !allergens.length && !traces.length && !additives.length) return null;
+  return cleanFacts({ allergens, traces, additives, ...(count ? { ingredients: count } : {}), from: 'label' });
 }
 
 // ---------- 1. Understand ----------

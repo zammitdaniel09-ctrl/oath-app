@@ -23,6 +23,11 @@ const FIELDS = [
   'code', 'product_name', 'product_name_en', 'product_name_mt', 'generic_name', 'brands', 'quantity', 'product_quantity', 'product_quantity_unit',
   'serving_size', 'serving_quantity', 'serving_quantity_unit', 'nutriments', 'nutrition_data_per', 'countries_tags', 'categories_tags',
   'last_modified_t', 'no_nutrition_data', 'nutriscore_grade', 'nova_group',
+  // What the tags read beyond the numbers (public/food-tags.js): labels, allergens and traces, additives,
+  // the ingredients analysis (vegan, vegetarian, palm oil), the number of ingredients, origins and the
+  // Green-Score (named ecoscore_grade before 2025; both are asked for).
+  'labels_tags', 'allergens_tags', 'traces_tags', 'additives_tags', 'ingredients_analysis_tags', 'ingredients_n', 'origins_tags',
+  'environmental_score_grade', 'ecoscore_grade',
 ].join(',');
 
 let fetcher = (url, init) => fetch(url, init);
@@ -164,6 +169,11 @@ export function mapProduct(p) {
     source_date: p.last_modified_t ? new Date(p.last_modified_t * 1000).toISOString().slice(0, 10) : null,
     status: kcal === null ? 'incomplete' : 'ok',
     notes: `${notes}Open Food Facts, ODbL.`.trim(),
+    facts: {
+      labels: p.labels_tags, allergens: p.allergens_tags, traces: p.traces_tags, additives: p.additives_tags, analysis: p.ingredients_analysis_tags,
+      categories: p.categories_tags, origins: p.origins_tags, countries: p.countries_tags, ingredients: num(p.ingredients_n),
+      eco: p.environmental_score_grade || p.ecoscore_grade || null, from: 'off',
+    },
   };
 }
 
