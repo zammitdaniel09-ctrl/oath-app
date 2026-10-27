@@ -6,7 +6,9 @@ import { DateTime } from 'luxon';
 import { db, getKV, setKV, logEvent } from './db.js';
 import { localNow, RuleError } from './engine.js';
 import { validDate, addDays } from './time.js';
-import { metricDays } from './health.js';
+// health.js is loaded when first needed: importing it here closes a loop (health, push, telegram, coach,
+// coach-tools, food, body) that leaves food.js half-loaded when the server starts.
+const metricDays = async (...args) => (await import('./health.js')).metricDays(...args);
 import { personalNeeds, energyText, ACTIVITY, GOALS } from '../public/nutrition.js';
 
 const KEY = 'body';
