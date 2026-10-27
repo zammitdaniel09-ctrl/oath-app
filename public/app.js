@@ -11,13 +11,15 @@ import { parseCapture } from './parse.js';
 import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
 import { initData, loadDashboard, viewDashboard, dataClick, dataSubmit, AUTO_LABELS, autoValue } from './data.js';
 import { initFood, loadFood, viewFood, foodClick, foodSubmit, loadFoodToday, foodTodayCard } from './food.js';
+import { initCalendar, loadCalendar, viewCalendar, calendarClick, calendarSubmit } from './calendar.js';
 
 // ---------- Shell ----------
 
-// Five tabs on the phone with Food raised in the middle; Dashboard joins them in the sidebar and is
-// an icon in Today's header on the phone.
+// Five tabs on the phone with Food raised in the middle; Dashboard and Calendar join them in the
+// sidebar. Dashboard is an icon in Today's header on the phone, and Calendar a link in its schedule.
 const TABS = [
   ['today', 'Today', 'today'],
+  ['calendar', 'Calendar', 'calendar', 'wide'],
   ['plan', 'Plan', 'plan'],
   ['food', 'Food', 'food', 'centre'],
   ['goals', 'Goals', 'goals'],
@@ -25,12 +27,12 @@ const TABS = [
   ['coach', 'Coach', 'coach'],
 ];
 const WIDE_EXTRA = [['review', 'Review', 'review'], ['settings', 'Settings', 'settings']];
-const ROUTES = ['today', 'plan', 'food', 'goals', 'dashboard', 'coach', 'review', 'settings'];
+const ROUTES = ['today', 'calendar', 'plan', 'food', 'goals', 'dashboard', 'coach', 'review', 'settings'];
 
 function shell(inner) {
-  // One selected destination: on the phone Dashboard and Review sit under Today; the sidebar has its own rows.
+  // One selected destination: on the phone Dashboard, Calendar and Review sit under Today; the sidebar has its own rows.
   const wide = window.matchMedia('(min-width: 900px)').matches;
-  const active = ['review', 'dashboard'].includes(state.route) && !wide ? 'today' : state.route;
+  const active = ['review', 'dashboard', 'calendar'].includes(state.route) && !wide ? 'today' : state.route;
   // The Today tab carries a count of what is still open, so the next tick is never out of mind.
   const open = state.today?.progress?.open || 0;
   const badge = (id) => (id === 'today' && open ? `<b class="tab-badge"><span class="sr">, </span>${open}<span class="sr"> open</span></b>` : '');
@@ -50,7 +52,7 @@ function shell(inner) {
   $app.innerHTML = `${topbar}<main class="page page-${state.route}">${inner}</main>
     <nav class="tabbar" aria-label="Sections"><div class="tabbar-brand wide-only">${brandMark(30)}<span>Oath</span></div>${nav}${more}</nav>
     ${sheetHtml()}`;
-  document.body.classList.toggle('sheet-open', Boolean(state.sheet || state.sheetNode || state.foodSheet));
+  document.body.classList.toggle('sheet-open', Boolean(state.sheet || state.sheetNode || state.foodSheet || state.calSheet));
   drawRings();
   motion.afterShell(m);
 }
@@ -62,6 +64,7 @@ function skeleton(title) {
 initGoals({ shell, render: () => render(), go: () => go() });
 initData({ shell, render: () => render(), go: () => go() });
 initFood({ shell, render: () => render(), go: () => go() });
+initCalendar({ shell, render: () => render(), go: () => go() });
 
 // ---------- Today ----------
 
@@ -1283,7 +1286,7 @@ function showLock({ auto = true, offline = false } = {}) {
   // Nothing of the day stays in memory behind the lock.
   Object.assign(state, {
     today: null, plan: null, review: null, coach: null, goals: null, goal: null, settings: null,
-    sheet: null, sheetNode: null, sheetMode: null, foodSheet: null, dodging: null, pardoning: null, editingGoal: false,
+    sheet: null, sheetNode: null, sheetMode: null, foodSheet: null, calSheet: null, cal: null, dodging: null, pardoning: null, editingGoal: false,
   });
   document.body.classList.remove('sheet-open');
   window.scrollTo(0, 0);
@@ -1568,6 +1571,7 @@ async function load(route) {
   if (route === 'coach') state.coach = await api('GET', '/api/coach');
   if (route === 'review') state.review = await api('GET', '/api/review');
   if (route === 'dashboard') await loadDashboard();
+  if (route === 'calendar') await loadCalendar();
   if (route === 'goals') {
     if (state.param === 'new') return;
     if (state.param) await loadGoal(state.param);
@@ -1593,7 +1597,7 @@ function render() {
     if (state.param) return viewGoal();
     return viewGoals();
   }
-  const views = { today: viewToday, plan: viewPlan, food: viewFood, coach: viewCoach, review: viewReview, settings: viewSettings, dashboard: viewDashboard };
+  const views = { today: viewToday, calendar: viewCalendar, plan: viewPlan, food: viewFood, coach: viewCoach, review: viewReview, settings: viewSettings, dashboard: viewDashboard };
   (views[state.route] || viewToday)();
 }
 
@@ -1605,6 +1609,7 @@ function parseHash() {
   state.param = param || null;
   state.param2 = param2 ? decodeURIComponent(param2) : null;
   if (state.route !== 'food') state.foodSheet = null;
+  if (state.route !== 'calendar') state.calSheet = null;
   state.query = new URLSearchParams(qs || '');
 }
 
@@ -1903,6 +1908,7 @@ $app.addEventListener('click', async (e) => {
   if (await goalsClick(a, el)) return;
   if (await dataClick(a, el)) return;
   if (await foodClick(a, el)) return;
+  if (await calendarClick(a, el)) return;
   if (a === 'keep') {
     await keepHabit(el, id);
   } else if (a === 'keep-minimum') {
@@ -2112,6 +2118,7 @@ $app.addEventListener('submit', async (e) => {
     if (await goalsSubmit(kind, form)) return;
     if (await dataSubmit(kind, form)) return;
     if (await foodSubmit(kind, form)) return;
+    if (await calendarSubmit(kind, form)) return;
     if (kind === 'login') {
       try {
         await api('POST', '/api/login', form2obj(form));
@@ -2236,10 +2243,11 @@ $app.addEventListener('keydown', (e) => {
     e.preventDefault();
     e.target.form.requestSubmit();
   }
-  if (e.key === 'Escape' && (state.sheet || state.sheetNode || state.foodSheet)) {
+  if (e.key === 'Escape' && (state.sheet || state.sheetNode || state.foodSheet || state.calSheet)) {
     state.sheet = null;
     state.sheetNode = null;
     state.foodSheet = null;
+    state.calSheet = null;
     render();
   }
   const g = e.target.closest('g[data-action]');

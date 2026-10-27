@@ -1471,9 +1471,16 @@ function toOwnEvent(r, tz) {
 
 const given = (x) => x !== undefined && x !== null && x !== '';
 const flag = (x) => x === true || x === 'true' || x === 'on' || x === 1 || x === '1';
+// "18:00", "9:05", "18:00:00" and "6pm" all read as a time; anything else is not one.
 const hhmm = (x) => {
-  const m = /^(\d{1,2}):(\d{2})$/.exec(String(x ?? '').trim());
-  return m ? `${m[1].padStart(2, '0')}:${m[2]}` : '';
+  const m = /^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*(am|pm)?$/i.exec(String(x ?? '').trim());
+  if (!m || (!m[2] && !m[3])) return '';
+  let h = Number(m[1]);
+  if (m[3]) {
+    if (h < 1 || h > 12) return '';
+    h = (h % 12) + (m[3].toLowerCase() === 'pm' ? 12 : 0);
+  }
+  return `${String(h).padStart(2, '0')}:${m[2] || '00'}`;
 };
 const minutesOf = (hm) => Number(hm.slice(0, 2)) * 60 + Number(hm.slice(3));
 const notesText = (x) => String(x ?? '').replace(/\r\n?/g, '\n').trim().slice(0, 1000);

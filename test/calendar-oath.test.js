@@ -138,6 +138,11 @@ test('API: add, change and delete Oath events, with the defaults a quick phrase 
   assert.deepEqual([hour.start, hour.end], ['2026-11-02T09:05:00+01:00', '2026-11-02T10:05:00+01:00']);
   const mins = (await call('POST', '/api/calendar/events', { title: 'Run', date: '2026-11-03', start: '07:00', duration: 45 })).data.event;
   assert.equal(mins.endTime, '07:45');
+  // Times as people and models write them: "6:30 pm", "7:30pm", "18:00:00".
+  const pm = (await call('POST', '/api/calendar/events', { title: 'Pm', date: '2026-11-03', start: '6:30 pm', end: '7:30pm' })).data.event;
+  assert.deepEqual([pm.time, pm.endTime], ['18:30', '19:30']);
+  assert.equal((await call('POST', '/api/calendar/events', { title: 'Secs', date: '2026-11-03', start: '18:00:00', duration: 30 })).data.event.endTime, '18:30');
+  assert.equal((await call('POST', '/api/calendar/events', { title: 'Bare hour', start: '18' })).status, 400);
   // No start means all day, and a span keeps its last day inclusive like a feed event.
   const allDay = (await call('POST', '/api/calendar/events', { title: 'Gozo', date: '2026-11-06', end_date: '2026-11-08' })).data.event;
   assert.deepEqual([allDay.allDay, allDay.start, allDay.end, allDay.time], [true, '2026-11-06', '2026-11-08', null]);
