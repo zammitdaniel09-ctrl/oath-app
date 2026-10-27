@@ -1305,40 +1305,67 @@ button.hcard-ring:active { transform: scale(0.92); transition: transform var(--t
 
 /* ---------- Coach ---------- */
 
-/* The coach's own look, so it never passes for the food chat: a Merlot face in a header that stays at
-   the top, a red glow behind the page, the coach's words on graphite with a Merlot rim, and its typing
-   dots in Merlot. The briefs wait behind one small button in the header, beside Settings. */
+/* The coach chat in Bone and burgundy, so it never passes for the food chat: near-black warmed a
+   touch, bone for words, burgundy for the coach's face, your words and the key buttons. The header
+   stays at the top; the coach's words sit on warm graphite with a burgundy rim. The briefs wait
+   behind one small button in the header, beside Settings. */
 .cchat-page {
+  --card: #151313; --inset: #100f0f; --raised: #1f1c1c; --raised-hover: #282424; --sheet: #171414;
+  --text: #f5f1e8; --text-2: #bdb6a8; --text-3: #8c857a;
+  --line: #2a2626; --line-soft: #1f1c1c; --line-ctl: #6b6460; --line-strong: #77706a;
+  --fill: rgba(245, 241, 232, 0.05); --fill-2: rgba(245, 241, 232, 0.09);
+  --silver: #f5f1e8; --on-silver: #0b0b0b; --focus: #f5f1e8; --chrome-c: #e5ddcc;
+  --rim: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(245, 241, 232, 0.04);
+  --burgundy: #9e1b32; --burgundy-hi: #c4283f; --burgundy-lo: #6e0f22; --on-burgundy: #fbeff1;
+  --menthol: #b7cb8c; --cherry: #e0566e;
   margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter);
-  background: radial-gradient(70% 260px at 18% 0, rgba(225, 6, 0, 0.16), transparent 70%), radial-gradient(50% 220px at 92% 0, rgba(255, 90, 31, 0.07), transparent 70%);
+  background: radial-gradient(70% 260px at 18% 0, rgba(158, 27, 50, 0.2), transparent 70%), radial-gradient(50% 220px at 92% 0, rgba(229, 221, 204, 0.05), transparent 70%);
   background-repeat: no-repeat;
 }
+html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .chd-head {
   position: sticky; top: 0; z-index: 16;
   display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 12px;
   margin: calc(-1 * (env(safe-area-inset-top) + 8px)) calc(-1 * var(--gutter)) 0;
   padding: calc(env(safe-area-inset-top) + 10px) var(--gutter) 10px;
-  background: rgba(0, 0, 0, 0.78); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+  background: rgba(11, 11, 11, 0.86); box-shadow: 0 1px 0 rgba(245, 241, 232, 0.06);
 }
 @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  .chd-head { background: rgba(0, 0, 0, 0.6); -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4); }
+  .chd-head { background: rgba(11, 11, 11, 0.66); -webkit-backdrop-filter: blur(20px) saturate(1.3); backdrop-filter: blur(20px) saturate(1.3); }
 }
 .chd-av {
-  display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: #fff;
-  background: radial-gradient(110% 110% at 32% 18%, #ff6a4d 0%, var(--merlot-hi) 32%, var(--merlot) 64%, #8e0400 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 24px -4px rgba(225, 6, 0, 0.75);
+  display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--on-burgundy);
+  background: radial-gradient(110% 110% at 32% 18%, #d9475f 0%, var(--burgundy-hi) 30%, var(--burgundy) 64%, var(--burgundy-lo) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 0 24px -4px rgba(196, 40, 63, 0.7);
 }
 .chd-av .ic { width: 22px; height: 22px; stroke-width: 2; }
 .chd-head-text { min-width: 0; }
-.chd-head-text h1 { margin: 0; font-size: 1.25rem; font-weight: 760; letter-spacing: -0.02em; line-height: 1.2; }
+.chd-head-text h1 { margin: 0; font-size: 1.25rem; font-weight: 760; letter-spacing: -0.02em; line-height: 1.2; color: var(--text); }
 .chd-head-text p { margin: 1px 0 0; overflow: hidden; font-size: 0.8125rem; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
 .chd-actions { display: flex; align-items: center; gap: 8px; }
 .cchat { margin-top: 14px; }
-.cchat .msg.assistant {
-  background: radial-gradient(120% 70% at 0% 0%, rgba(225, 6, 0, 0.1), transparent 60%), linear-gradient(180deg, #17171b 0%, #101014 100%);
-  box-shadow: inset 0 0 0 1px rgba(255, 42, 23, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+/* Your words on burgundy, bone on it; the coach's on warm graphite with a burgundy rim. */
+.cchat .msg.user {
+  color: var(--on-burgundy);
+  background: linear-gradient(180deg, #b0223b 0%, var(--burgundy) 55%, #84162a 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 10px 24px -18px rgba(196, 40, 63, 0.75);
 }
-.cchat .typing i { background: var(--merlot-hi); }
+.cchat .msg.user time { color: rgba(251, 239, 241, 0.72); }
+.cchat .msg.assistant {
+  color: #ece6da;
+  background: radial-gradient(120% 70% at 0% 0%, rgba(158, 27, 50, 0.12), transparent 60%), linear-gradient(180deg, #181515 0%, #110f0f 100%);
+  box-shadow: inset 0 0 0 1px rgba(196, 40, 63, 0.18), inset 0 1px 0 rgba(245, 241, 232, 0.04);
+}
+.cchat .typing i { background: var(--burgundy-hi); }
+.cchat .typing i:nth-of-type(2) { background: #e5ddcc; }
+.cchat .confirm-row { background: rgba(158, 27, 50, 0.1); box-shadow: inset 0 0 0 1px rgba(196, 40, 63, 0.5); }
+.cchat-page .btn.chrome, .cchat-page .composer .send {
+  background: linear-gradient(180deg, var(--burgundy-hi) 0%, var(--burgundy) 55%, #84162a 100%); color: var(--on-burgundy);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 10px 26px -12px rgba(196, 40, 63, 0.7); text-shadow: none;
+}
+.cchat-page .composer { background: rgba(21, 19, 19, 0.9); box-shadow: inset 0 0 0 1px rgba(229, 221, 204, 0.18), 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
+.cchat-page .composer:focus-within { box-shadow: inset 0 0 0 1.5px var(--burgundy-hi), 0 0 0 4px rgba(196, 40, 63, 0.14), 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
+.cchat-page .qchip { background: rgba(31, 28, 28, 0.96); box-shadow: inset 0 0 0 1px rgba(229, 221, 204, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04); }
 .qchip-food { gap: 7px; text-decoration: none; }
 .qchip-food .ic { width: 16px; height: 16px; color: #d8cfbc; }
 @media (min-width: 900px) {
