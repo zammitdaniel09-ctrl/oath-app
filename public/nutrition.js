@@ -619,9 +619,16 @@ const DRINKS_ML_PER_KG = 35;
 // Digesting food takes about 10% of what is eaten, so resting plus active energy is 90% of the need.
 const TEF_SHARE = 0.9;
 
-// body: { sex, birthDate, heightCm, weightKg, bodyFat, activity, goal }. health, optional: Apple
-// Health's daily averages over the last 7 days, { activeAvg, restingAvg }, each null when it has fewer
-// than 4 days of it (src/body.js). Returns null when something needed is missing, or
+// Real burn (src/food-energy.js) is only used once it has at least a little data behind it.
+const BURN_LEVELS = new Set(['low', 'medium', 'high']);
+const realBurn = (x) => (num(x?.kcal) !== null && x.kcal >= 1200 && x.kcal <= 6000 && BURN_LEVELS.has(x.confidence) ? x : null);
+
+// body: { sex, birthDate, heightCm, weightKg, bodyFat, activity, goal, energyFrom }. health, optional:
+// Apple Health's daily averages over the last 7 days, { activeAvg, restingAvg }, each null when it has
+// fewer than 4 days of it (src/body.js), and `burn`, his real burn from his weight trend and logged food,
+// { kcal, confidence, days, missing } (src/food-energy.js). With energyFrom 'burn' and a confidence of
+// at least low, the real burn replaces the formula or Apple Health; below that the formula stays and
+// about.energy.burnWait says what is still missing. Returns null when something needed is missing, or
 // { refs: { key: amount a day }, about: { ... how energy was worked out } }.
 export function personalNeeds(body, today, health = null) {
   const b = body || {};
@@ -639,7 +646,10 @@ export function personalNeeds(body, today, health = null) {
   const active = num(health?.activeAvg) !== null && health.activeAvg >= 0 && health.activeAvg <= 6000 ? health.activeAvg : null;
   const healthRest = active !== null && num(health?.restingAvg) !== null && health.restingAvg >= 600 && health.restingAvg <= 5000 ? health.restingAvg : null;
   const rest = healthRest ?? formula;
-  const burn = active !== null ? (rest + active) / TEF_SHARE : rest * act.factor;
+  const usual = active !== null ? (rest + active) / TEF_SHARE : rest * act.factor;
+  const wantsBurn = b.energyFrom === 'burn';
+  const real = wantsBurn ? realBurn(health?.burn) : null;
+  const burn = real ? real.kcal : usual;
   const kcal = round((burn + goal.kcal) / 10) * 10;
   const mj = (kcal * KJ_PER_KCAL) / 1000;
   const refs = {
@@ -659,15 +669,21 @@ export function personalNeeds(body, today, health = null) {
     water: round((DRINKS_ML_PER_KG * w) / 10) * 10,
   };
   const method = lean ? 'Katch-McArdle' : 'Mifflin-St Jeor';
+  // Where the energy came from: Apple Health's activity, or the activity factor. `burn` is that day's
+  // burn before the goal, the figure real burn is measured against.
+  const usualEnergy = active !== null
+    ? { from: 'health', rest: round(rest), restFrom: healthRest !== null ? 'health' : method, active: round(active), goalKcal: goal.kcal, burn: round(usual) }
+    : { from: 'factor', rest: round(rest), restFrom: method, factor: act.factor, goalKcal: goal.kcal, burn: round(usual) };
   return {
     refs,
     about: {
-      age, sex, lean: lean === null ? null : round(lean, 1), rest: round(rest), factor: act.factor, method,
+      age, sex, lean: lean === null ? null : round(lean, 1), rest: round(rest), factor: act.factor, method: real ? 'Real burn' : method,
       goal: b.goal in GOALS ? b.goal : 'keep', proteinPerKg: goal.protein,
-      // Where the energy came from: Apple Health's activity, or the activity factor.
-      energy: active !== null
-        ? { from: 'health', rest: round(rest), restFrom: healthRest !== null ? 'health' : method, active: round(active), goalKcal: goal.kcal }
-        : { from: 'factor', rest: round(rest), restFrom: method, factor: act.factor, goalKcal: goal.kcal },
+      // Or his real burn, with the usual figure kept beside it; when he chose real burn but it is not
+      // ready, the usual figure stays and burnWait says what it still needs ('' when that is unknown).
+      energy: real
+        ? { from: 'burn', burn: round(real.kcal), confidence: real.confidence, days: num(real.days) || 28, goalKcal: goal.kcal, usual: usualEnergy }
+        : { ...usualEnergy, ...(wantsBurn ? { burnWait: String(health?.burn?.missing || '') } : {}) },
     },
   };
 }
@@ -677,16 +693,23 @@ const GOAL_WORDS = { gain: 'gain muscle', lose: 'lose fat' };
 
 // One line on how the energy need was worked out, for the Body card and the coach:
 // "2,690 kcal: resting 1,602 + 819 active on average (Apple Health, last 7 days); digesting food is the other 10%."
+// "3,150 kcal from your real burn of 2,850: weight trend and logged food over 28 days (medium confidence). Then ..."
 export function energyText(needs) {
   const e = needs?.about?.energy;
   if (!e) return '';
   const a = needs.about;
   const goal = e.goalKcal ? ` Then ${kcalText(Math.abs(e.goalKcal))} kcal ${e.goalKcal > 0 ? 'more' : 'less'} to ${GOAL_WORDS[a.goal] || 'meet the goal'}.` : '';
+  if (e.from === 'burn') {
+    const of = needs.refs.kcal === round(e.burn / 10) * 10 ? '' : ` of ${kcalText(e.burn)}`;
+    return `${kcalText(needs.refs.kcal)} kcal from your real burn${of}: weight trend and logged food over ${e.days} days (${e.confidence} confidence).${goal}`;
+  }
+  // He chose real burn but it is not ready: say so, and what it still needs.
+  const wait = e.burnWait === undefined ? '' : ` Real burn takes over once there is enough data${e.burnWait ? `: ${e.burnWait}` : ''}.`;
   const from = e.restFrom === 'health' ? '' : e.restFrom === 'Katch-McArdle' ? ` from ${a.lean} kg lean mass` : ' from height, weight and age';
   if (e.from === 'health') {
-    return `${kcalText(needs.refs.kcal)} kcal: resting ${kcalText(e.rest)}${from} + ${kcalText(e.active)} active on average (Apple Health, last 7 days); digesting food is the other 10%.${goal}`;
+    return `${kcalText(needs.refs.kcal)} kcal: resting ${kcalText(e.rest)}${from} + ${kcalText(e.active)} active on average (Apple Health, last 7 days); digesting food is the other 10%.${goal}${wait}`;
   }
-  return `${kcalText(needs.refs.kcal)} kcal: resting ${kcalText(e.rest)}${from}, × ${e.factor} for activity.${goal}`;
+  return `${kcalText(needs.refs.kcal)} kcal: resting ${kcalText(e.rest)}${from}, × ${e.factor} for activity.${goal}${wait}`;
 }
 
 // The amount 100% stands for: his own need when there is one, else the EU reference intake.

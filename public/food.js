@@ -10,6 +10,8 @@ import { NUTRIENT, NUTRIENTS, line, total, scale, show, unitsFor, round, amountT
 // Grades and tags come from the shared maths when it has them.
 import * as N from './nutrition.js';
 import { richHtml } from './rich.js';
+// Real burn: the Body tab's cards and the diary tile.
+import { burnCard, weightCard, burnTile, loadEnergy, energyClick, energySubmit } from './food-energy.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 
@@ -107,6 +109,7 @@ async function loadExtras() {
     api('GET', '/api/food/recent?drinks=1').then((r) => r.items).catch(() => null),
     api('GET', '/api/food/batches').then((r) => r.batches).catch(() => null),
     api('GET', '/api/food/history?days=7').catch(() => null),
+    loadEnergy(),
   ]);
   if (recent) store.set('oath.foodRecent', recent);
   if (drinks) store.set('oath.foodDrinks', drinks);
@@ -118,7 +121,11 @@ async function loadExtras() {
 
 async function loadTrends() {
   const F = f();
-  F.trend = await api('GET', `/api/food/history?days=${F.span || 7}${F.trendDate ? `&date=${F.trendDate}` : ''}`);
+  // The Body tab's real burn comes alongside (food-energy.js keeps it in the food state).
+  [F.trend] = await Promise.all([
+    api('GET', `/api/food/history?days=${F.span || 7}${F.trendDate ? `&date=${F.trendDate}` : ''}`),
+    trendTab() === 'body' ? loadEnergy() : null,
+  ]);
   loadTake('trends');
 }
 
@@ -626,7 +633,7 @@ function viewDiary() {
   const typing = document.activeElement?.matches?.('[data-food-text]');
   ctx.shell(`${head}${offline}${undo}<div class="split fdiary${anim}">
     <div class="fcol fcol-a"><div class="fd-cap">${captureHtml()}${takeHtml('day')}</div><div class="fd-meals">${pendingRows(d.date)}${slots}${empty}${repeat}</div></div>
-    <div class="fcol fcol-b"><div class="fd-sum">${daySummary(d)}</div><div class="fd-side">${trendPreview(F.week)}${plansHtml(d.plans)}${batchesHtml(F.batches)}</div></div>
+    <div class="fcol fcol-b"><div class="fd-sum">${daySummary(d)}</div><div class="fd-side">${burnTile(F.energy)}${trendPreview(F.week)}${plansHtml(d.plans)}${batchesHtml(F.batches)}</div></div>
     </div>${sheetHtml()}`);
   if (typing && !state.foodSheet) {
     const box = document.querySelector('[data-food-text]');
@@ -1455,16 +1462,18 @@ function caffeineCard(h) {
 const LAZY = {
   label: [labelCard, 300], micro: [microCard, 520, true], nlabel: [nutritionLabelCard, 420], rank: [rankCard, 260, true], sources: [sourcesCard, 300], timing: [timingCard, 250],
   advice: [adviceCard, 240, true], weekdays: [weekdayCard, 220], caffeine: [caffeineCard, 220], split: [splitCard, 300], compare: [compareCard, 330],
+  weight: [() => weightCard(f().energy), 470],
 };
 
 // Trends in four tabs. Each tab's first card is drawn at once and the rest as they come near the
 // screen. The tab is in the address (#/food/trends?tab=nutrients) and kept for the session.
-const TABS = [['overview', 'Overview'], ['nutrients', 'Nutrients'], ['foods', 'Foods'], ['timing', 'Timing']];
+const TABS = [['overview', 'Overview'], ['nutrients', 'Nutrients'], ['foods', 'Foods'], ['timing', 'Timing'], ['body', 'Body']];
 const TAB_CARDS = {
   overview: [(h, sel) => energyCard(h, sel), 'label'],
   nutrients: [(h) => microCard(h), 'nlabel', 'sources'],
   foods: [(h) => gradeCard(h), 'rank', 'advice'],
   timing: [(h) => timingCard(h), 'weekdays', 'caffeine', 'split', 'compare'],
+  body: [(h) => burnCard(f().energy), 'weight'],
 };
 const TAB_KEY = 'oath.trendsTab';
 function trendTab() {
@@ -1668,6 +1677,7 @@ function settle(el) {
 
 export async function foodClick(a, el) {
   if (!a.startsWith('food-')) return false;
+  if (a.startsWith('food-burn-')) return energyClick(a, el, refresh);
   const s = state.foodSheet;
   const F = f();
   switch (a) {
@@ -1889,6 +1899,7 @@ export async function foodClick(a, el) {
       history.replaceState(null, '', `#/food/trends${tab === 'overview' ? '' : `?tab=${tab}`}`);
       ctx.render();
       document.getElementById(`ftab-${tab}`)?.focus({ preventScroll: true });
+      if (tab === 'body' && !F.energy) loadEnergy().then(() => redrawIfIdle('food', ctx.render));
       return true;
     }
     case 'food-trend-day': {
@@ -2047,6 +2058,7 @@ async function finishPick(s, qty, unit) {
 
 export async function foodSubmit(kind, form) {
   if (!kind.startsWith('food-')) return false;
+  if (kind === 'food-weight') return energySubmit(kind, form, refresh);
   const s = state.foodSheet;
   const o = form2obj(form);
   switch (kind) {

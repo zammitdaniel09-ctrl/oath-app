@@ -566,3 +566,119 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
   .ftake.fresh .ftake-text { animation: none; }
   .ftake-wait i { animation-name: typing-fade; }
 }
+
+/* ---------- Real burn: energy use from his weight trend and logged food (food-energy.js) ---------- */
+
+/* The burn line uses the energy colour of the Today rings; the weight trend stays chrome. */
+.fburn, .fweight, .fburn-tile { --f-burn: var(--cv-kcal); }
+.fburn-wait { height: 168px; border-radius: var(--r-inset); background: var(--fill); animation: breathe 1.4s ease-in-out infinite; }
+.fconf { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; background: var(--fill); color: var(--text-2); box-shadow: inset 0 0 0 1px var(--line); }
+.fconf i { display: inline-flex; gap: 2px; }
+.fconf i::before { content: ''; width: 18px; height: 6px; border-radius: 3px; background: linear-gradient(90deg, currentColor 0 var(--lv, 0%), var(--fill-2) var(--lv, 0%)); }
+.fconf.c-low { --lv: 34%; color: var(--honey); }
+.fconf.c-medium { --lv: 67%; color: var(--chrome-c); }
+.fconf.c-high { --lv: 100%; color: var(--menthol); }
+.fburn-top { display: grid; gap: 6px; margin: -2px 0 16px; }
+.fburn-v { display: flex; align-items: baseline; gap: 6px; margin: 0; white-space: nowrap; }
+.fburn-v > span[aria-hidden] { font-size: 1.5rem; font-weight: 600; color: var(--text-3); }
+.fburn-v b { font-size: 2.25rem; font-weight: 760; line-height: 1; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; }
+.fburn-v small { font-size: 0.875rem; font-weight: 600; color: var(--text-2); }
+.fburn-pm { margin: 0; font-size: 0.8125rem; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.fburn-pm b { font-size: 0.9375rem; font-weight: 700; color: var(--text-2); }
+.fburn-plot { position: relative; }
+.fburn-line { stroke: var(--f-burn); stroke-width: 2; stroke-linecap: round; }
+.fx-val.fburn-lv { fill: var(--f-burn); font-weight: 750; }
+.fx-bar.fburn-out { opacity: 0.55; }
+.fk-burn { width: 14px; height: 0; border-radius: 0; vertical-align: 3px; border-top: 2px solid var(--f-burn); }
+.fburn-cmp { display: grid; gap: 0; margin: 14px 0 0; }
+.fburn-cmp > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line-soft); }
+.fburn-cmp dt { display: grid; gap: 1px; min-width: 0; font-size: 0.875rem; font-weight: 600; color: var(--text-2); overflow-wrap: anywhere; }
+.fburn-cmp dt small { font-size: 0.75rem; font-weight: 500; color: var(--text-3); }
+.fburn-cmp dd { margin: 0; font-size: 0.8125rem; color: var(--text-2); white-space: nowrap; }
+.fburn-cmp dd b { font-size: 1rem; font-weight: 720; color: var(--text); font-variant-numeric: tabular-nums; }
+.fburn-note, .fburn-basis, .fburn-intro { margin: 10px 0 0; font-size: 0.8125rem; line-height: 1.5; color: var(--text-3); }
+.fburn-intro { margin-top: 0; font-size: 0.9375rem; color: var(--text-2); }
+.fburn-basis b { color: var(--text-2); font-weight: 650; }
+.fburn-note a { color: var(--text-2); }
+.fburn-act { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-top: 14px; }
+.fburn-act .btn.small { min-height: 44px; }
+.fburn-using { display: inline-flex; align-items: center; gap: 7px; font-size: 0.9375rem; font-weight: 650; color: var(--menthol); }
+.fburn-using .ic { width: 18px; height: 18px; stroke-width: 2.2; }
+.fburn-prog { display: grid; gap: 12px; margin: 16px 0 4px; }
+.fprog { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 6px 12px; }
+.fprog-k { min-width: 0; font-size: 0.875rem; font-weight: 600; color: var(--text-2); }
+.fprog b { font-size: 1rem; font-weight: 720; font-variant-numeric: tabular-nums; }
+.fprog b small { font-size: 0.8125rem; font-weight: 600; color: var(--text-3); }
+.fprog-bar { grid-column: 1 / -1; position: relative; height: 6px; border-radius: 3px; background: var(--fill-2); overflow: hidden; }
+.fprog-bar i { position: absolute; inset: 0; border-radius: inherit; background: var(--chrome-c); transform-origin: 0 50%; transform: scaleX(var(--f)); }
+.fprog.done .fprog-bar i { background: var(--menthol); }
+.fburn .fburn-plot { margin-top: 16px; }
+.fburn .fburn-top + .fburn-plot { margin-top: 0; }
+
+/* Weight trend: scale readings as dots, the smoothed trend as a line; numbers at the right edge. */
+.fwt-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin: -2px 0 12px; }
+.fwt-v { display: flex; align-items: baseline; gap: 6px; margin: 0; white-space: nowrap; }
+.fwt-v b { font-size: 2rem; font-weight: 760; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.fwt-v small { font-size: 0.875rem; font-weight: 600; color: var(--text-2); }
+.fwt-sub { margin: 0; font-size: 0.75rem; line-height: 1.4; color: var(--text-2); text-align: right; }
+.fwt-plot { position: relative; margin-right: 36px; }
+.fwt-grid { stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 3; }
+.fwt-line { stroke: var(--text); stroke-width: 2.2; stroke-linecap: round; }
+.fwt-dot { fill: var(--text-3); stroke: var(--card); stroke-width: 1.5; }
+.fwt-dot.last { fill: var(--text-2); }
+.fwt-y { position: absolute; left: 100%; margin: -0.55em 0 0 8px; font-family: var(--mono); font-size: 0.625rem; color: var(--text-3); white-space: nowrap; }
+.fwt-axis { margin-right: 36px; }
+.fk-dot { width: 7px; height: 7px; border-radius: 50%; vertical-align: 0; background: var(--text-3); }
+.fk-trend { width: 14px; height: 0; border-radius: 0; vertical-align: 3px; border-top: 2px solid var(--text); }
+.fwt-goal { display: grid; gap: 2px; margin: 14px 0 0; padding: 10px 12px; border-radius: var(--r-ctl); background: var(--inset); box-shadow: inset 0 0 0 1px var(--line-soft); font-size: 0.9375rem; font-weight: 620; line-height: 1.4; }
+.fwt-goal-k { font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+.fwt-goal.ok { box-shadow: inset 3px 0 0 var(--menthol), inset 0 0 0 1px var(--line-soft); }
+.fwt-goal.off { box-shadow: inset 3px 0 0 var(--honey), inset 0 0 0 1px var(--line-soft); }
+.fwt-goal.wait { color: var(--text-2); }
+.fwt-sug { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; margin: 12px 0 0; font-size: 0.875rem; color: var(--text-2); }
+.fwt-sug > span { flex: 1 0 100%; font-size: 0.75rem; font-weight: 600; color: var(--text-3); }
+.fwt-sug b { font-size: 1.125rem; font-weight: 740; color: var(--text); font-variant-numeric: tabular-nums; }
+.fwt-sug small { flex: 1 0 100%; font-size: 0.75rem; color: var(--text-3); }
+.fwt-add { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line-soft); }
+.fwt-add-k { display: block; margin-bottom: 8px; font-size: 0.875rem; font-weight: 600; color: var(--text-2); }
+.fwt-row { display: grid; grid-template-columns: minmax(0, 9rem) auto auto; justify-content: start; align-items: center; gap: 8px; }
+.fwt-row .input { min-height: 44px; font-variant-numeric: tabular-nums; }
+.fwt-row .btn { min-height: 44px; }
+.fwt-unit { font-size: 0.875rem; font-weight: 600; color: var(--text-3); }
+
+/* The diary tile: a link to the Body tab, quieter while real burn is still gathering data. */
+.fburn-tile { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: var(--pad-sm); }
+.fd-side > .fburn-tile:first-child { margin-top: 14px; }
+.fburn-tile-ic { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: rgba(232, 138, 12, 0.12); color: var(--f-burn); box-shadow: inset 0 0 0 1px rgba(232, 138, 12, 0.22); }
+.fburn-tile-ic .ic { width: 19px; height: 19px; }
+.fburn-tile-w { display: grid; gap: 2px; min-width: 0; }
+.fburn-tile-v { min-width: 0; font-size: 0.875rem; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.fburn-tile-v b { font-size: 1.25rem; font-weight: 740; letter-spacing: -0.02em; color: var(--text); }
+.fburn-tile-v small { font-size: 0.8125rem; font-weight: 600; color: var(--text-2); }
+.fburn-tile-t { white-space: nowrap; }
+.fburn-tile-q { font-size: 0.9375rem; font-weight: 620; color: var(--text-2); }
+.fburn-tile.quiet { background: var(--card); }
+.fburn-tile.quiet .fburn-tile-ic { background: var(--fill); color: var(--text-3); box-shadow: inset 0 0 0 1px var(--line); }
+
+/* Settings, Body: where the energy need comes from. */
+.energy-from { margin-top: 16px; }
+.energy-from .seg { margin-top: 0; }
+.energy-from .seg button { flex: 0 0 auto; min-height: 44px; padding: 6px 14px; font-size: 0.875rem; white-space: nowrap; }
+.energy-from .seg button:disabled { opacity: 0.45; cursor: not-allowed; }
+.energy-from .need-how a { color: var(--text-2); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .f-enter .fprog-bar i { animation: f-grow 620ms var(--ease) both; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fburn-wait { animation: none; }
+}
+/* Five tabs share the width; on a narrow phone they tighten so the words stay on one line. */
+@media (max-width: 400px) {
+  .ftr-tabs { padding: 3px 2px; gap: 0; }
+  .ftr-tabs button { padding: 6px 2px; font-size: 0.8125rem; }
+}
+@media (max-width: 340px) {
+  .ftr-tabs button { font-size: 0.75rem; letter-spacing: -0.01em; }
+  .fburn-v b { font-size: 2rem; }
+}

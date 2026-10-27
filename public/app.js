@@ -1168,13 +1168,30 @@ function weightChart(list, today) {
     <div class="wt-axis" aria-hidden="true"><span>${esc(fmtDay(first.date, { day: 'numeric', month: 'short' }))}</span><span>Today</span></div></div>`;
 }
 
+// Where the energy need comes from: the formula (with Apple Health's activity when it has enough days),
+// or his real burn from his weight trend and logged food (src/food-energy.js), once it has enough data.
+function energyFromHtml(view) {
+  const e = view?.energy;
+  const on = view?.body?.energyFrom === 'burn';
+  const ready = Boolean(e) && e.confidence !== 'none';
+  const btn = (value, label, pressed, disabled) => `<button type="button" data-action="body-energy" data-value="${value}" aria-pressed="${pressed}"${disabled ? ' disabled' : ''}>${label}</button>`;
+  let why;
+  if (!e) why = 'Real burn could not be worked out just now.';
+  else if (ready) why = `Real burn: about ${fmtInt(e.burn)} kcal a day, ${e.confidence} confidence, from ${e.good} fully logged days and ${e.weighIns} weigh-ins.`;
+  else if (on) why = 'Chosen. The formula stands in until there is enough data.';
+  else why = `Real burn needs ${e.missing?.text || 'more fully logged days and weigh-ins'} first.`;
+  return `<div class="energy-from"><p class="need-h" id="energy-from-h">Energy from</p>
+    <div class="seg small" role="group" aria-labelledby="energy-from-h">${btn('auto', 'Formula and Health', !on, false)}${btn('burn', 'Real burn', on, !ready && !on)}</div>
+    <p class="need-how small">${esc(why)}${ready || on ? ' <a href="#/food/trends?tab=body">See it</a>' : ''}</p></div>`;
+}
+
 function bodyCard() {
   const b = state.body?.body || {};
   const n = state.body?.needs;
   const opt = (list, cur) => Object.entries(list).map(([k, x]) => `<option value="${k}"${cur === k ? ' selected' : ''}>${esc(x.label)}</option>`).join('');
   const amount = (k) => `${fmtInt(n.refs[k])}${NUTRIENT[k].unit === 'kcal' ? ' kcal' : ` ${NUTRIENT[k].unit}`}`;
   const needs = n ? `<div class="need-grid">${NEED_ROWS.map(([k, label]) => `<div class="need"><span>${label}</span><b>${amount(k)}</b></div>`).join('')}</div>
-      <p class="need-how small">${esc(energyText(n))}</p>
+      <p class="need-how small">${esc(energyText(n))}</p>${energyFromHtml(state.body)}
       <details class="need-more"><summary>Vitamins and minerals</summary><div class="need-grid">${MICRO_NEEDS.map((k) => `<div class="need"><span>${esc(NUTRIENT[k].label)}</span><b>${fmtDec(n.refs[k])} ${NUTRIENT[k].unit}</b></div>`).join('')}</div></details>`
     : '';
   return settingsCard('scale', 'Body', `<form data-form="body">
@@ -2123,6 +2140,16 @@ $app.addEventListener('click', async (e) => {
   } else if (a === 'triage') {
     const labels = { today: 'Moved to today.', tomorrow: 'Moved to tomorrow.', week: 'Moved to next Monday.', someday: 'Moved to someday.', drop: 'Dropped.' };
     if (await act(() => api('POST', `/api/tasks/${id}/triage`, { action: el.dataset.do }), labels[el.dataset.do])) await refreshCurrent();
+  } else if (a === 'body-energy') {
+    const to = el.dataset.value;
+    if (to === (state.body?.body?.energyFrom || 'auto')) return;
+    const r = await act(() => api('PUT', '/api/body', { energyFrom: to }));
+    if (r) {
+      state.body = r;
+      state.food = null;
+      toast(to === 'burn' ? `Saved. Your daily need now comes from your real burn: ${fmtInt(r.needs?.refs.kcal)} kcal.` : `Saved. Back to the formula: ${fmtInt(r.needs?.refs.kcal)} kcal a day.`);
+      render();
+    }
   } else if (a === 'dur') {
     state.focusMinutes = Number(el.dataset.min);
     render();

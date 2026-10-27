@@ -1044,8 +1044,9 @@ const HISTORY_KEYS = ['kcal', 'protein', 'carbs', 'sugars', 'fat', 'fibre', 'sal
 export const HISTORY_SPANS = [7, 30, 90];
 
 // One day's totals. A day with nothing logged is a gap: every value null, never zero. `incomplete`
-// means some lines had no value for a core nutrient, so those totals are floors.
-function dayStats(date, list) {
+// means some lines had no value for a core nutrient, so those totals are floors. Real burn
+// (food-energy.js) reads its days through this too.
+export function dayStats(date, list) {
   if (!list.length) {
     return { date, logged: false, entries: 0, ...Object.fromEntries(HISTORY_KEYS.map((k) => [k, null])), drinksMl: null, incomplete: false, estimates: 0 };
   }

@@ -9,6 +9,8 @@ import { validDate, addDays } from './time.js';
 // health.js is loaded when first needed: importing it here closes a loop (health, push, telegram, coach,
 // coach-tools, food, body) that leaves food.js half-loaded when the server starts.
 const metricDays = async (...args) => (await import('./health.js')).metricDays(...args);
+// Real burn (food-energy.js) reads the diary, and food.js imports this file, so it too is loaded when needed.
+const energy = () => import('./food-energy.js');
 import { personalNeeds, energyText, ACTIVITY, GOALS } from '../public/nutrition.js';
 
 const KEY = 'body';
@@ -50,6 +52,12 @@ export function cleanBody(b = {}) {
     if (!(b.goal in GOALS)) throw new RuleError('The goal is keep, gain or lose.');
     out.goal = b.goal;
   }
+  // Where the energy need comes from: 'auto' is the formula, or Apple Health's activity once it has
+  // enough days; 'burn' is his real burn from his weight trend and logged food (food-energy.js).
+  if (b.energyFrom !== undefined) {
+    if (!['auto', 'burn'].includes(b.energyFrom)) throw new RuleError('Energy comes from auto or burn.');
+    out.energyFrom = b.energyFrom;
+  }
   return out;
 }
 
@@ -66,16 +74,25 @@ export function energyAverages(days) {
 }
 
 // The 7 whole days before today: today is still going, so its active energy is only part of a day.
-async function healthEnergy(today, tz) {
+export async function healthEnergy(today, tz) {
   const days = await metricDays(['active_kcal', 'basal_kcal'], addDays(today, -HEALTH_DAYS, tz), addDays(today, -1, tz));
   return energyAverages(days);
+}
+
+// His needs, and the real burn report when he chose it (or `report` asks for it anyway). A report
+// that fails leaves the usual figure in place: real burn only ever replaces it when it is ready.
+async function needsFor(body, today, tz, report = body.energyFrom === 'burn') {
+  const health = await healthEnergy(today, tz);
+  const E = report ? await energy() : null;
+  const burn = E ? await E.energyReport({ today, tz, body, health }).catch((err) => { console.error('real burn failed:', err.message); return null; }) : null;
+  return { needs: personalNeeds(body, today, { ...health, burn: E?.burnInput(burn) ?? null }), burn };
 }
 
 // What the screens and the coach need: the body as saved and the daily needs worked out from it.
 export async function bodyNeeds() {
   const { today, tz } = await localNow();
   const body = await getBody();
-  return { body, needs: personalNeeds(body, today, await healthEnergy(today, tz)) };
+  return { body, needs: (await needsFor(body, today, tz)).needs };
 }
 
 // Weight over the last 90 days, one reading a day: what he saved in Oath (by hand or through the
@@ -97,10 +114,17 @@ export async function weightHistory(today, tz) {
   return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
 }
 
-// The Body card: the body, its needs and the weight chart.
+// The Body card: the body, its needs, the weight chart and, for the choice of where energy comes
+// from, how ready real burn is.
 async function bodyView() {
   const { today, tz } = await localNow();
-  return { ...(await bodyNeeds()), weights: await weightHistory(today, tz) };
+  const body = await getBody();
+  const { needs, burn } = await needsFor(body, today, tz, true);
+  const energySummary = burn && {
+    confidence: burn.confidence, burn: burn.burn, measured: burn.measured, range: burn.range, missing: burn.missing,
+    good: burn.counts.good, weighIns: burn.counts.weighIns, days: burn.window.days, using: needs?.about.energy.from === 'burn',
+  };
+  return { body, needs, weights: await weightHistory(today, tz), energy: energySummary || null };
 }
 
 // His needs a day, or null for the EU reference intakes.
@@ -115,18 +139,23 @@ export async function saveBody(input) {
   const body = { ...before, ...patch, updatedAt: new Date().toISOString() };
   if (patch.bodyFat === null) delete body.bodyFat;
   await setKV(KEY, body);
-  if (patch.weightKg !== undefined && patch.weightKg !== before.weightKg) await logEvent('weight', { kg: patch.weightKg });
+  // A changed weight is a new reading. A weigh-in (Trends' "Add today's weight") is one even when it
+  // matches the last, so a steady weight still counts towards the trend.
+  if (patch.weightKg !== undefined && (patch.weightKg !== before.weightKg || input?.weighIn === true)) await logEvent('weight', { kg: patch.weightKg });
   return bodyView();
 }
 
-// One line for the coach's snapshot.
+// One line for the coach's snapshot, and one on his real burn when there is anything to say.
 export async function bodyForCoach() {
-  const { body, needs } = await bodyNeeds();
-  if (!needs) return 'Body profile: not set, so food percentages are against the EU reference intakes.';
+  const { today, tz } = await localNow();
+  const body = await getBody();
+  const { needs, burn } = await needsFor(body, today, tz, true);
+  const real = burn && (burn.counts.good || burn.counts.weighIns) ? `\n${(await energy()).burnForCoach(burn, needs)}` : '';
+  if (!needs) return `Body profile: not set, so food percentages are against the EU reference intakes.${real}`;
   const r = needs.refs;
   return `Body profile: ${needs.about.sex}, ${needs.about.age}, ${body.heightCm} cm, ${body.weightKg} kg${body.bodyFat ? `, ${body.bodyFat}% body fat` : ''}, ${ACTIVITY[body.activity].label.toLowerCase()}, goal: ${GOALS[needs.about.goal].label.toLowerCase()}. `
     + `His daily needs (food percentages use these): ${r.kcal} kcal, protein ${r.protein} g, carbs ${r.carbs} g, fat ${r.fat} g, fibre ${r.fibre} g, salt under ${r.salt} g, sugars under ${r.sugars} g, water from drinks about ${r.water} ml. `
-    + `Energy: ${energyText(needs)}`;
+    + `Energy: ${energyText(needs)}${real}`;
 }
 
 export const bodyApi = new Hono();
