@@ -8,12 +8,22 @@ import { TOOL_DEFS, runTool, resolvePendingAction } from './coach-tools.js';
 
 const MODEL = () => process.env.COACH_MODEL || 'claude-sonnet-5-5';
 
+// The SDK waits ten minutes and retries twice by default. A minute and one retry is plenty for a
+// reply, and a call that hangs must not hold up whatever is waiting on it.
+export const CLIENT_LIMITS = { timeout: 60_000, maxRetries: 1 };
+
 let client = null;
 function anthropic() {
   if (!process.env.ANTHROPIC_API_KEY) return null;
-  if (!client) client = new Anthropic();
+  if (!client) client = new Anthropic(CLIENT_LIMITS);
   return client;
 }
+
+// What the live client is set to (for tests); null with no API key.
+export const clientLimits = () => {
+  const c = anthropic();
+  return c ? { timeout: c.timeout, maxRetries: c.maxRetries } : null;
+};
 
 export const aiEnabled = () => Boolean(process.env.ANTHROPIC_API_KEY);
 

@@ -1,10 +1,10 @@
-// Business: the morning numbers of Daniel's own sites (GoldenStraddler, Exposed FX Journal and any
-// later one) on one dashboard. Each site answers GET /api/oath/summary with its own Bearer token:
+// Business: the morning numbers of Daniel's own sites on one dashboard. Each site answers
+// GET /api/oath/summary with its own Bearer token:
 //   { site, url, generatedAt, metrics: [{ key, label, value, unit, format, change, series }],
 //     status: { ok, text }, events: [{ at, text }], alerts: [text] }
 //
 // BUSINESS_SOURCES is a JSON array in the environment:
-//   [{ "name": "GoldenStraddler", "url": "https://goldenstraddler.com/api/oath/summary", "token": "..." }]
+//   [{ "name": "Acme Store", "url": "https://shop.example.com/api/oath/summary", "token": "..." }]
 // Entries without a name, an https address (http only for this machine) or a token are ignored.
 //
 // All sources are fetched in parallel, 10 s each, and the result is kept in kv 'business':

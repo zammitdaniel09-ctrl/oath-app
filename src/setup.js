@@ -9,9 +9,17 @@ import { passkeyCount } from './passkeys.js';
 const DAY = 24 * 3600 * 1000;
 const iso = (d) => (d ? new Date(d).toISOString() : null);
 
-// The last failed request from Shortcuts or Health Auto Export.
+// At most one note this often, so a flood of failed requests cannot keep rewriting the record.
+const NOTE_GAP_MS = 10000;
+let lastNote = 0;
+
+// The last failed request from Shortcuts or Health Auto Export. Returns whether it was written.
 export async function noteIngestError(path, status, reason) {
+  const now = nowUTC().toMillis();
+  if (now >= lastNote && now - lastNote < NOTE_GAP_MS) return false;
+  lastNote = now;
   await setKV('ingest_error', { at: nowUTC().toISO(), path, status, reason: String(reason || '').slice(0, 200) });
+  return true;
 }
 
 export async function setupStatus() {

@@ -7,7 +7,7 @@ import * as auth from './auth.js';
 import * as engine from './engine.js';
 import { buildToday, buildPlan, buildLedger, buildReview, buildSeason } from './state.js';
 import * as goals from './goals.js';
-import { captureTask, createToken, revokeTokens, tokenCount, tokenValid, refusedKeyReason, doneByText, nextSay } from './capture.js';
+import { captureTask, createToken, revokeTokens, tokenCount, tokenValid, keyShapeOk, refusedKeyReason, doneByText, nextSay } from './capture.js';
 import { prepareReview, finishReview } from './review.js';
 import { db } from './db.js';
 import { vapidKeys, saveSubscription, removeSubscription, sendPush, subscriptionCount } from './push.js';
@@ -18,7 +18,7 @@ import * as drive from './drive.js';
 import { healthApi, healthShortcut } from './health.js';
 import { calendarApi, calendarPublic } from './calendar.js';
 import { businessApi } from './business.js';
-import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleUpdate, webhookSecret } from './telegram.js';
+import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleUpdate, webhookAllowed } from './telegram.js';
 import { setupStatus, noteIngestError } from './setup.js';
 import { foodApi, saveCustomFood } from './food.js';
 import { bodyApi } from './body.js';
@@ -27,7 +27,9 @@ import { readFoodPhoto, readFoodText } from './food-photo.js';
 import { foodTake } from './food-take.js';
 import { productByBarcode, searchOff } from './off.js';
 import * as passkeys from './passkeys.js';
+import { conditionalGet, publicFile } from './static.js';
 
+const PUBLIC = './public';
 const v = { validTime, validDate };
 const app = new Hono();
 
@@ -39,10 +41,18 @@ app.use('*', async (c, next) => {
   c.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 });
 
+// A failed Shortcuts or Health Auto Export request is noted on the setup list so Daniel can see what
+// went wrong. Anyone can send a bad key, so only one of the right shape is noted (and the note is
+// rate-limited): the rest is noise that must not overwrite a real diagnostic.
+async function noteShortcutFailure(c, status, reason) {
+  if (!keyShapeOk(c.req.header('authorization'))) return;
+  await noteIngestError(c.req.path, status, reason).catch(() => {});
+}
+
 // Mutating API calls must be JSON, which a cross-site form cannot send without a preflight.
 app.use('/api/*', async (c, next) => {
   if (c.req.method !== 'GET' && !(c.req.header('content-type') || '').includes('application/json')) {
-    if (c.req.path.startsWith('/api/shortcut')) await noteIngestError(c.req.path, 415, 'The request body was not sent as JSON.').catch(() => {});
+    if (c.req.path.startsWith('/api/shortcut')) await noteShortcutFailure(c, 415, 'The request body was not sent as JSON.');
     return c.json({ error: 'Send JSON.' }, 415);
   }
   await next();
@@ -112,8 +122,7 @@ app.post('/api/logout', async (c) => {
 const shortcut = new Hono();
 shortcut.use('*', async (c, next) => {
   if (!(await tokenValid(c.req.header('authorization'))) && !(await auth.isAuthed(c))) {
-    const reason = c.req.header('authorization') ? refusedKeyReason(c.req.header('authorization')) : 'No key was sent in the Authorization header.';
-    await noteIngestError(c.req.path, 401, reason).catch(() => {});
+    await noteShortcutFailure(c, 401, refusedKeyReason(c.req.header('authorization')));
     return c.json({ error: 'Bad token.', say: 'Oath did not accept the token. Make a new one in Oath settings.' }, 401);
   }
   await next();
@@ -316,8 +325,7 @@ app.route('/api', api);
 
 // Telegram calls this; it proves itself with the secret token set when the webhook was registered.
 app.post('/telegram/webhook', async (c) => {
-  const secret = await webhookSecret();
-  if (!secret || c.req.header('x-telegram-bot-api-secret-token') !== secret) return c.text('forbidden', 403);
+  if (!(await webhookAllowed(c.req.header('x-telegram-bot-api-secret-token')))) return c.text('forbidden', 403);
   const update = await c.req.json().catch(() => null);
   if (update && typeof update.update_id === 'number') {
     handleUpdate(update).catch((err) => console.error('telegram update failed', err));
@@ -338,8 +346,11 @@ app.use('*', async (c, next) => {
   const p = c.req.path;
   if (p === '/' || /\.(js|css|html|webmanifest)$/.test(p)) c.header('Cache-Control', 'no-cache');
 });
-app.use('*', serveStatic({ root: './public' }));
-app.get('*', serveStatic({ path: './public/index.html' }));
+// A file the browser already has answers 304 (ETag and If-Modified-Since), so opening the app does not
+// download every file again. The no-cache above still makes it ask every time.
+app.use('*', conditionalGet((c) => publicFile(PUBLIC, c.req.path)));
+app.use('*', serveStatic({ root: PUBLIC }));
+app.get('*', conditionalGet(() => publicFile(PUBLIC, '/index.html')), serveStatic({ path: `${PUBLIC}/index.html` }));
 
 export { app };
 

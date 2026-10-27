@@ -11,6 +11,7 @@ import { prepareReview } from './review.js';
 import { syncAllFeeds } from './calendar.js';
 import { refreshBusiness, businessSources } from './business.js';
 import { setAutoEnrich, drainEnrichment } from './food-enrich.js';
+import { pruneSessions } from './auth.js';
 
 const BRIEF_TITLES = { morning: 'Morning brief', midday: 'Midday check', evening: 'Evening check' };
 
@@ -57,22 +58,34 @@ async function scheduledBriefs() {
     }
   }
 
-  // No oath two hours after the morning brief: chase it once.
+  await chaseOath({ s, local, today, tz });
+}
+
+// With nothing open there is nothing to chase yet, but something may be added later in the day, so
+// that is looked at again after this long rather than on every tick.
+const CHASE_RECHECK_MS = 5 * 60000;
+let chaseLooked = { day: null, at: 0 };
+
+// No oath two hours after the morning brief: chase it once. buildToday is the heaviest read there
+// is, so it only runs while the nudge is still unsent, and not on every tick even then.
+export async function chaseOath({ s, local, today, tz }, build = buildToday) {
   const oathBy = deadlineAt(today, s.morningTime, tz).plus({ hours: 2 });
-  if (local >= oathBy && local < oathBy.plus({ hours: 10 })) {
-    const [plan] = await db()`select 1 from day_plans where date = ${today}`;
-    if (!plan) {
-      const t = await buildToday();
-      if (t.progress.open && (await claim(`oath-chase:${today}`))) {
-        await sendPush({
-          title: 'You have not taken today\'s oath',
-          body: `${t.progress.open} things due today, ${t.progress.atStake} HP at stake. Open Oath and pick your one thing.`,
-          tag: 'oath-chase',
-          url: '/#/today',
-        });
-      }
-    }
-  }
+  if (local < oathBy || local >= oathBy.plus({ hours: 10 })) return false;
+  const key = `oath-chase:${today}`;
+  if ((await db()`select 1 from reminders_sent where key = ${key}`).length) return false;
+  if ((await db()`select 1 from day_plans where date = ${today}`).length) return false;
+  const now = nowUTC().toMillis();
+  if (chaseLooked.day === today && now >= chaseLooked.at && now - chaseLooked.at < CHASE_RECHECK_MS) return false;
+  chaseLooked = { day: today, at: now };
+  const t = await build();
+  if (!t.progress.open || !(await claim(key))) return false;
+  await sendPush({
+    title: 'You have not taken today\'s oath',
+    body: `${t.progress.open} things due today, ${t.progress.atStake} HP at stake. Open Oath and pick your one thing.`,
+    tag: 'oath-chase',
+    url: '/#/today',
+  });
+  return true;
 }
 
 // A focus block that has run out gets one nudge asking whether it is done.
@@ -93,9 +106,53 @@ async function focusEnds() {
   }
 }
 
-let running = false;
+// Once a day: the tables that only ever grow are trimmed, and sessions nobody has used for half a
+// year are dropped. Reminder keys and Telegram update ids only matter for a day or two; 60 days is
+// generous. Events are an audit trail that nothing reads far back, except the Deaths list on the
+// review screen, so deaths are kept for good (a handful a year) and everything else for 400 days.
+const KEEP_DAYS = { reminders: 60, telegram: 60, events: 400 };
 
-export async function runOnce() {
+export async function pruneOld() {
+  const now = nowUTC();
+  const before = (days) => now.minus({ days }).toJSDate();
+  const sent = await db()`delete from reminders_sent where at < ${before(KEEP_DAYS.reminders)}`;
+  const updates = await db()`delete from telegram_updates where at < ${before(KEEP_DAYS.telegram)}`;
+  const events = await db()`delete from events where at < ${before(KEEP_DAYS.events)} and type <> 'death'`;
+  const sessions = await pruneSessions();
+  return { reminders: sent.count, telegram: updates.count, events: events.count, sessions };
+}
+
+let prunedOn = null;
+
+// Claimed per day like the briefs, and freed if it fails so a later tick tries again.
+export async function pruneDaily() {
+  const day = nowUTC().toISODate();
+  if (prunedOn === day) return null;
+  const key = `prune:${day}`;
+  if (!(await claim(key))) {
+    prunedOn = day;
+    return null;
+  }
+  try {
+    const gone = await pruneOld();
+    prunedOn = day;
+    const total = Object.values(gone).reduce((n, x) => n + x, 0);
+    if (total) console.log('pruned old rows', JSON.stringify(gone));
+    return gone;
+  } catch (err) {
+    await db()`delete from reminders_sent where key = ${key}`;
+    throw err;
+  }
+}
+
+// Judging has a lock of its own and nothing in it waits on Claude, so one slow API call can never
+// hold up a deadline. The briefs and the weekly review write with Claude, so they have a separate
+// lock: the next tick skips them while one is still being written, and the claim keeps each brief
+// to once a day.
+let running = false;
+let briefing = false;
+
+export async function judgeOnce() {
   if (running) return [];
   running = true;
   try {
@@ -114,11 +171,31 @@ export async function runOnce() {
       for (const n of notes) await sendPush({ url: '/#/today', ...n });
     }
     await focusEnds();
-    await scheduledBriefs();
     return notes;
   } finally {
     running = false;
   }
+}
+
+export async function briefsOnce() {
+  if (briefing) return;
+  briefing = true;
+  try {
+    // Independent jobs: a failing brief must not stop the daily upkeep, nor the other way round.
+    const jobs = await Promise.allSettled([scheduledBriefs(), pruneDaily()]);
+    const failed = jobs.find((j) => j.status === 'rejected');
+    if (failed) throw failed.reason;
+  } finally {
+    briefing = false;
+  }
+}
+
+// One full pass, judging first. The server runs the two halves side by side (see startLoop); this is
+// for tests and for anything that wants both done when it returns.
+export async function runOnce() {
+  const notes = await judgeOnce();
+  await briefsOnce();
+  return notes;
 }
 
 // If the database comes back empty (restored, recreated or moved), rebuild the schema without a restart.
@@ -132,10 +209,17 @@ export async function healIfEmpty(err) {
 }
 
 export function startLoop(intervalMs = 30000) {
-  const run = () => runOnce().catch(async (err) => {
-    if (await healIfEmpty(err).catch(() => false)) return;
-    console.error('tick failed', err);
-  });
+  // Judging and the briefs run side by side, each on its own lock. Only judging rebuilds an empty
+  // database, so the two never try to at once.
+  const run = () => {
+    judgeOnce().catch(async (err) => {
+      if (await healIfEmpty(err).catch(() => false)) return;
+      console.error('tick failed', err);
+    });
+    briefsOnce().catch((err) => {
+      if (err?.code !== '42P01') console.error('briefs failed', err);
+    });
+  };
   run();
   // Calendars every 15 minutes and business sites every 10, off the tick so a slow server never
   // delays judging.

@@ -24,9 +24,17 @@ async function call(method, body = {}) {
     body: JSON.stringify(body),
   });
   const data = await res.json().catch(() => ({}));
-  if (!data.ok) throw new Error(`telegram ${method} failed: ${data.description || res.status}`);
+  if (!data.ok) {
+    const err = new Error(`telegram ${method} failed: ${data.description || res.status}`);
+    err.description = data.description || '';
+    throw err;
+  }
   return data.result;
 }
+
+// Telegram says so when Daniel blocked the bot, deleted the chat or closed his account; every send
+// after that fails the same way.
+const chatGone = (err) => /blocked by the user|chat not found|user is deactivated/i.test(err?.description || '');
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 // The coach writes a little Markdown; Telegram gets it as its own small HTML set.
@@ -44,6 +52,16 @@ async function save(patch) {
 
 export async function webhookSecret() {
   return (await tgState()).secret || null;
+}
+
+// Both sides are hashed first, so the comparison takes the same time whatever is sent and the length
+// of the secret does not leak either.
+const digest = (s) => crypto.createHash('sha256').update(String(s ?? '')).digest();
+
+// Whether a webhook call carries the secret token set when the webhook was registered.
+export async function webhookAllowed(given) {
+  const secret = await webhookSecret();
+  return Boolean(secret) && crypto.timingSafeEqual(digest(given), digest(secret));
 }
 
 export async function initTelegram() {
@@ -135,14 +153,32 @@ export async function sendTelegram(note) {
     if (keyboard.length === 1 && note.item) keyboard[0].push(open);
     else keyboard.push([open]);
   }
-  await call('sendMessage', {
-    chat_id: s.chatId,
-    text: `<b>${esc(note.title)}</b>\n${md(note.fullText || note.body || '')}`,
-    parse_mode: 'HTML',
-    disable_web_page_preview: true,
-    reply_markup: keyboard.length ? { inline_keyboard: keyboard } : undefined,
-  });
+  try {
+    await call('sendMessage', {
+      chat_id: s.chatId,
+      text: `<b>${esc(note.title)}</b>\n${md(note.fullText || note.body || '')}`,
+      parse_mode: 'HTML',
+      disable_web_page_preview: true,
+      reply_markup: keyboard.length ? { inline_keyboard: keyboard } : undefined,
+    });
+  } catch (err) {
+    if (!chatGone(err)) throw err;
+    await dropChat(s.chatId, err.description);
+    return false;
+  }
   return true;
+}
+
+// Unlinks the chat, as Settings would, so a blocked bot stops failing on every brief. Logged once,
+// however many messages were in flight when Telegram refused them.
+let dropping = null;
+function dropChat(chatId, why) {
+  dropping ??= (async () => {
+    if ((await tgState()).chatId !== chatId) return;
+    await unlink();
+    console.warn(`telegram: ${why}. Unlinked the chat; link it again in Settings to get messages there.`);
+  })().finally(() => { dropping = null; });
+  return dropping;
 }
 
 // ---------- Messages ----------
