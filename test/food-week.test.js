@@ -7,6 +7,8 @@ import os from 'node:os';
 import path from 'node:path';
 import EmbeddedPostgres from 'embedded-postgres';
 import { DateTime } from 'luxon';
+// Parallel checkouts run the suite at once with OATH_PORT_SHIFT set apart.
+const SHIFT = Number(process.env.OATH_PORT_SHIFT || 0);
 
 const ZONE = 'Europe/Malta';
 // A Sunday evening.
@@ -16,7 +18,7 @@ const TODAY = '2027-03-14';
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'oath-foodweek-pg-'));
 fs.chmodSync(dir, 0o777);
 const pg = new EmbeddedPostgres({
-  databaseDir: path.join(dir, 'data'), user: 'postgres', password: 'test', port: 54421,
+  databaseDir: path.join(dir, 'data'), user: 'postgres', password: 'test', port: 54421 + SHIFT,
   persistent: false, createPostgresUser: process.platform !== 'win32', initdbFlags: ['--encoding=UTF8', '--locale=C'], postgresFlags: ['-c', 'io_method=sync'], onLog: () => {}, onError: () => {},
 });
 
@@ -48,7 +50,7 @@ before(async () => {
   await pg.initialise();
   await pg.start();
   await pg.createDatabase('oath');
-  process.env.DATABASE_URL = 'postgres://postgres:test@localhost:54421/oath';
+  process.env.DATABASE_URL = `postgres://postgres:test@localhost:${54421 + SHIFT}/oath`;
   process.env.SETUP_CODE = 'setup-code-for-tests-123';
   delete process.env.TELEGRAM_BOT_TOKEN;
   delete process.env.ANTHROPIC_API_KEY;

@@ -13,6 +13,8 @@ import { fileURLToPath } from 'node:url';
 import EmbeddedPostgres from 'embedded-postgres';
 import { DateTime, IANAZone } from 'luxon';
 import { Hono } from 'hono';
+// Parallel checkouts run the suite at once with OATH_PORT_SHIFT set apart.
+const SHIFT = Number(process.env.OATH_PORT_SHIFT || 0);
 
 const ZONE = 'Europe/Malta';
 let clock = DateTime.fromISO('2026-10-12T08:00', { zone: ZONE });
@@ -24,7 +26,7 @@ const fixture = (name) => fs.readFileSync(path.join(FIXTURES, name));
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'oath-calendar-pg-'));
 fs.chmodSync(dir, 0o777);
 const pg = new EmbeddedPostgres({
-  databaseDir: path.join(dir, 'data'), user: 'postgres', password: 'test', port: 54342,
+  databaseDir: path.join(dir, 'data'), user: 'postgres', password: 'test', port: 54342 + SHIFT,
   persistent: false, createPostgresUser: process.platform !== 'win32', initdbFlags: ['--encoding=UTF8', '--locale=C'], postgresFlags: ['-c', 'io_method=sync'], onLog: () => {}, onError: () => {},
 });
 
@@ -97,7 +99,7 @@ before(async () => {
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   port = server.address().port;
   base = `http://127.0.0.1:${port}`;
-  process.env.DATABASE_URL = 'postgres://postgres:test@localhost:54342/oath';
+  process.env.DATABASE_URL = `postgres://postgres:test@localhost:${54342 + SHIFT}/oath`;
   const time = await import('../src/time.js');
   time.setClock(() => clock.toUTC());
   dbmod = await import('../src/db.js');
