@@ -1340,7 +1340,7 @@ button.hcard-ring:active { transform: scale(0.92); transition: transform var(--t
 }
 .cchat .typing i { background: var(--merlot-hi); }
 .qchip-food { gap: 7px; text-decoration: none; }
-.qchip-food .ic { width: 16px; height: 16px; color: #d4f76a; }
+.qchip-food .ic { width: 16px; height: 16px; color: #d8cfbc; }
 @media (min-width: 900px) {
   .chd-head { margin: calc(-1 * (env(safe-area-inset-top) + 24px)) -32px 0; padding: 14px 32px 12px; }
   .cchat-page { margin: 0 -32px; padding: 0 32px; }

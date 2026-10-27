@@ -1,32 +1,48 @@
 /* Food: capture, the day, nutrition facts, grades and the Trends charts. Loaded after app.css. */
 
-/* Macro colours: aqua, azure and tangerine. Their deep steps are the identity, validated as a set on
-   the dark card (every pair at least 9 apart under protan and deutan simulation, 20 apart in full
-   colour, 3:1 or better on the card); the lit steps only ever carry the same hue to the head of a
-   gradient or a glow. Vitamins and minerals are violet, water sky. Unknown energy is always striped,
-   never a colour of its own. Nutri-Score and NOVA keep their official colours. */
+/* Smoky bone: the Food section's palette. Smoky black surfaces, bone and floral white for words and
+   the food chat, olive drab between. Protein is bone, carbs a darker stone, fat olive: told apart by
+   lightness as much as hue, validated as a set on the card (every pair at least 16 apart under protan
+   and deutan simulation and in full colour, 3:1 or better on the card); the lit steps only carry the
+   same colour to the head of a gradient. Water is the one cool note, a sage blue. Unknown energy is
+   always striped, never a colour of its own. Nutri-Score and NOVA keep their official colours. */
 :root {
-  --f-protein: #199e70;
-  --f-protein-hi: #4fefbf;
-  --f-carbs: #3987e5;
-  --f-carbs-hi: #8fcbff;
-  --f-fat: #d95926;
-  --f-fat-hi: #ffa46b;
-  --f-unknown: #5f6572;
-  --f-energy: #c9ced6;
-  --f-energy-hi: #ffffff;
-  --f-micro: #7466f0;
-  --f-micro-hi: #c5bcff;
-  --f-water: #2f8fe8;
-  --f-water-hi: #a8dcff;
-  /* The food chat's own colour: fresh lime to leaf green, with dark words on it. */
-  --fc-lime: #d4f76a;
-  --fc-leaf: #3fcf7f;
-  --fc-ink: #0a1a0c;
+  --f-protein: #d8cfbc;
+  --f-protein-hi: #fbf5e8;
+  --f-carbs: #a39b7e;
+  --f-carbs-hi: #cbc2a2;
+  --f-fat: #5f7139;
+  --f-fat-hi: #8fa25f;
+  --f-unknown: #5d5a50;
+  --f-energy: #d8cfbc;
+  --f-energy-hi: #fffbf4;
+  --f-micro: #8a8370;
+  --f-micro-hi: #f3ead8;
+  --f-water: #6f8b8d;
+  --f-water-hi: #bfd3d4;
+  /* The same colours as channels, for washes and glows at any strength. */
+  --f-protein-rgb: 216, 207, 188;
+  --f-carbs-rgb: 163, 155, 126;
+  --f-fat-rgb: 100, 119, 63;
+  --f-micro-rgb: 216, 207, 188;
+  --f-water-rgb: 159, 183, 184;
+  /* The food chat's own colour: floral white on smoky black, with smoky black words on it. */
+  --fc-lime: #fffbf4;
+  --fc-leaf: #d8cfbc;
+  --fc-hi: #ffffff;
+  --fc-ink: #11120d;
+  --fc-rgb: 216, 207, 188;
+  /* Good news (a whole food, a need met) in a sage that sits with the palette, not the app's menthol. */
+  --f-good: #b7cb8c;
+  --f-good-rgb: 183, 203, 140;
+  --fc-bubble-0: #201f19;
+  --fc-bubble-1: #17170f;
+  --fc-done-0: #1f2018;
+  --fc-done-1: #15160f;
   --f-bar: rgba(201, 206, 214, 0.42);
   --f-bar-prev: rgba(201, 206, 214, 0.3);
   --f-caf: var(--blaze);
-  --f-drink: rgba(120, 190, 255, 0.55);
+  --f-drink: rgba(var(--f-water-rgb), 0.55);
   --ns-a: #038141;
   --ns-b: #85bb2f;
   --ns-c: #fecb02;
@@ -36,12 +52,22 @@
   --nova-2: #ffcc00;
   --nova-3: #ff6600;
   --nova-4: #ff0000;
-  --hatch: repeating-linear-gradient(45deg, #8a909c 0 1.6px, transparent 1.6px 4px);
+  --hatch: repeating-linear-gradient(45deg, #7d786a 0 1.6px, transparent 1.6px 4px);
 }
+/* The section's own surfaces and words, warm smoky black in place of the app's cool graphite. */
+.page-food {
+  --card: #1a1b15; --inset: #13140f; --raised: #24251e; --raised-hover: #2d2e26; --sheet: #1c1d16;
+  --text: #fffbf4; --text-2: #c9c2b0; --text-3: #918b7b;
+  --line: #2d2e25; --line-soft: #23241c; --line-ctl: #6e6a5c; --line-strong: #77735f;
+  --fill: rgba(255, 251, 244, 0.05); --fill-2: rgba(255, 251, 244, 0.09);
+  --silver: #fffbf4; --on-silver: #11120d; --focus: #fffbf4; --chrome-c: #d8cfbc; --menthol: var(--f-good);
+  --rim: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 251, 244, 0.04);
+}
+html:has(.page-food), body:has(.page-food) { background: #11120d; }
 .m-protein { --m: var(--f-protein); --mh: var(--f-protein-hi); }
 .m-carbs { --m: var(--f-carbs); --mh: var(--f-carbs-hi); }
 .m-fat { --m: var(--f-fat); --mh: var(--f-fat-hi); }
-.m-unknown { --m: var(--f-unknown); --mh: #8a909c; }
+.m-unknown { --m: var(--f-unknown); --mh: #7d786a; }
 .m-energy { --m: var(--f-energy); --mh: var(--f-energy-hi); }
 
 .num, .fkpi b, .nf-v, .rirow-v, .fmicro-i b { font-variant-numeric: tabular-nums; }
@@ -65,8 +91,8 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .fcap-bar {
   display: grid; grid-template-columns: 46px minmax(0, 1fr) 40px; align-items: center; gap: 6px;
   padding: 6px; border-radius: 28px;
-  background: radial-gradient(80% 140% at 100% 50%, rgba(212, 247, 106, 0.07), transparent 60%), var(--card);
-  box-shadow: inset 0 0 0 1px rgba(212, 247, 106, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background: radial-gradient(80% 140% at 100% 50%, rgba(var(--fc-rgb), 0.07), transparent 60%), var(--card);
+  box-shadow: inset 0 0 0 1px rgba(var(--fc-rgb), 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   transition: box-shadow var(--t-ctl) var(--ease);
 }
 .fcap-open {
@@ -78,9 +104,10 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .fcap-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--fc-lime); box-shadow: 0 0 8px var(--fc-lime); }
 .fcap-open:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 12px; }
 .fcap-cam {
-  position: relative; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; color: #fff;
-  background: radial-gradient(110% 110% at 32% 18%, #ff5a40 0%, var(--merlot-hi) 30%, var(--merlot) 62%, #a10400 100%);
-  box-shadow: 0 8px 20px -10px rgba(225, 6, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.32), inset 0 -2px 6px rgba(80, 0, 0, 0.3);
+  position: relative; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  color: var(--fc-ink);
+  background: radial-gradient(110% 110% at 32% 18%, var(--fc-hi) 0%, var(--fc-lime) 40%, var(--fc-leaf) 100%);
+  box-shadow: 0 8px 20px -10px rgba(var(--fc-rgb), 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.6);
   transition: transform var(--spring-ms) var(--spring);
 }
 .fcap-cam .ic { width: 23px; height: 23px; stroke-width: 2; }
@@ -125,9 +152,9 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .fday {
   margin-top: 14px;
   background:
-    radial-gradient(70% 46% at 50% 0%, rgba(57, 135, 229, 0.09), transparent 70%),
-    radial-gradient(50% 40% at 18% 8%, rgba(25, 158, 112, 0.08), transparent 70%),
-    radial-gradient(50% 40% at 84% 10%, rgba(217, 89, 38, 0.07), transparent 70%),
+    radial-gradient(70% 46% at 50% 0%, rgba(var(--f-carbs-rgb), 0.09), transparent 70%),
+    radial-gradient(50% 40% at 18% 8%, rgba(var(--f-protein-rgb), 0.08), transparent 70%),
+    radial-gradient(50% 40% at 84% 10%, rgba(var(--f-fat-rgb), 0.07), transparent 70%),
     var(--card);
 }
 .fday-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: -6px -6px 12px 0; }
@@ -203,9 +230,9 @@ stop.g1 { stop-color: var(--mh); }
 .fmicro { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .fmicro-i {
   display: grid; gap: 4px; min-width: 0; padding: 9px 10px 11px; border-radius: 12px;
-  background: linear-gradient(180deg, rgba(116, 102, 240, 0.1), transparent 80%), var(--inset); box-shadow: inset 0 0 0 1px rgba(116, 102, 240, 0.16);
+  background: linear-gradient(180deg, rgba(var(--f-micro-rgb), 0.1), transparent 80%), var(--inset); box-shadow: inset 0 0 0 1px rgba(var(--f-micro-rgb), 0.16);
 }
-.fmicro-i.done { background: linear-gradient(180deg, rgba(150, 136, 255, 0.2), transparent 85%), var(--inset); box-shadow: inset 0 0 0 1px rgba(170, 158, 255, 0.34); }
+.fmicro-i.done { background: linear-gradient(180deg, rgba(var(--f-micro-rgb), 0.2), transparent 85%), var(--inset); box-shadow: inset 0 0 0 1px rgba(var(--f-micro-rgb), 0.34); }
 .fmicro-k { display: flex; align-items: center; overflow: hidden; font-size: 0.75rem; font-weight: 600; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
 .fmicro-k > span { overflow: hidden; text-overflow: ellipsis; }
 .fmicro-i b { display: inline-flex; align-items: center; gap: 4px; font-size: 1.0625rem; font-weight: 740; letter-spacing: -0.02em; line-height: 1.2; font-variant-numeric: tabular-nums; }
@@ -218,10 +245,10 @@ stop.g1 { stop-color: var(--mh); }
 .fwater-head .fday-k { margin: 0; }
 .fwater-v { font-size: 0.8125rem; color: var(--text-2); font-variant-numeric: tabular-nums; }
 .fwater-v b { font-size: 0.9375rem; font-weight: 700; color: var(--text); }
-.fwater-bar { position: relative; display: block; height: 10px; border-radius: 5px; background: var(--ring-water-t); box-shadow: inset 0 0 0 1px rgba(120, 190, 255, 0.12); overflow: hidden; }
+.fwater-bar { position: relative; display: block; height: 10px; border-radius: 5px; background: var(--ring-water-t); box-shadow: inset 0 0 0 1px rgba(var(--f-water-rgb), 0.12); overflow: hidden; }
 .fwater-bar i {
   position: absolute; inset: 0; overflow: hidden; border-radius: inherit; background: linear-gradient(90deg, var(--f-water), var(--f-water-hi));
-  box-shadow: 0 0 12px rgba(120, 190, 255, 0.45); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100));
+  box-shadow: 0 0 12px rgba(var(--f-water-rgb), 0.45); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100));
 }
 .fwater-bar i::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%); transform: translateX(-100%); }
 @media (prefers-reduced-motion: no-preference) { .fwater-bar i::after { animation: f-sheen 3.2s 1s var(--ease-in-out) infinite; } }
@@ -257,10 +284,7 @@ stop.g1 { stop-color: var(--mh); }
   background: color-mix(in srgb, var(--si) 15%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--si) 26%, transparent);
 }
 .fslot-ic .ic { width: 17px; height: 17px; stroke-width: 2; }
-.fslot-breakfast { --si: var(--honey); }
-.fslot-lunch { --si: var(--fc-lime); }
-.fslot-dinner { --si: #b4a9ff; }
-.fslot-snacks { --si: var(--f-fat-hi); }
+.fslot-breakfast, .fslot-lunch, .fslot-dinner, .fslot-snacks { --si: var(--f-protein); }
 .fslot-drinks { --si: var(--f-water-hi); }
 .fmeal { height: 6px; margin: -4px 2px 0; border-radius: 3px; background: rgba(255, 255, 255, 0.05); overflow: hidden; }
 .fmeal-bar { display: flex; gap: 2px; height: 100%; }
@@ -363,12 +387,12 @@ stop.g1 { stop-color: var(--mh); }
   transition: transform var(--spring-ms) var(--spring), background-color var(--t-ctl) var(--ease);
 }
 .ftag:active { transform: scale(0.95); transition: transform var(--t-press) var(--ease); }
-.ftag.t-good { background: rgba(63, 240, 185, 0.1); color: var(--menthol); box-shadow: inset 0 0 0 1px rgba(63, 240, 185, 0.24); }
+.ftag.t-good { background: rgba(var(--f-good-rgb), 0.1); color: var(--menthol); box-shadow: inset 0 0 0 1px rgba(var(--f-good-rgb), 0.24); }
 .ftag.t-warn { background: rgba(255, 140, 26, 0.12); color: #ffad5c; box-shadow: inset 0 0 0 1px rgba(255, 140, 26, 0.28); }
 .ftag[aria-expanded="true"] { background: var(--silver); color: var(--on-silver); box-shadow: none; }
 .ftag-why { flex: 1 1 100%; margin: 4px 2px 0; font-size: 0.875rem; line-height: 1.45; color: var(--text-2); }
 .ftag-mini { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 0.6875rem; font-weight: 700; line-height: 1.5; background: rgba(201, 206, 214, 0.1); color: var(--chrome-c); white-space: nowrap; }
-.ftag-mini.t-good { background: rgba(63, 240, 185, 0.1); color: var(--menthol); }
+.ftag-mini.t-good { background: rgba(var(--f-good-rgb), 0.1); color: var(--menthol); }
 .ftag-mini.t-warn { background: rgba(255, 140, 26, 0.13); color: #ffad5c; }
 
 /* ---------- A food: head, amount, nutrition facts ---------- */
@@ -411,7 +435,7 @@ stop.g1 { stop-color: var(--mh); }
 .ri-bar { position: relative; display: block; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, 0.07); }
 .ri-bar i { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi)); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100)); }
 .ri-bar .ri-mark { position: absolute; top: -3px; bottom: -3px; left: var(--at, 62%); width: 2px; margin-left: -1px; border-radius: 1px; background: rgba(244, 245, 248, 0.6); }
-.ri-bar.full i { background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi) 70%, #fff); box-shadow: 0 0 10px rgba(197, 188, 255, 0.5); }
+.ri-bar.full i { background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi) 70%, #fff); box-shadow: 0 0 10px rgba(var(--f-micro-rgb), 0.5); }
 .ri-bar.over i { background: linear-gradient(90deg, var(--honey), var(--ember)); box-shadow: 0 0 8px rgba(255, 140, 26, 0.4); }
 .ri-bar.none { background: repeating-linear-gradient(90deg, var(--fill-2) 0 4px, transparent 4px 7px); }
 
@@ -544,7 +568,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 .rirow-100 em { position: absolute; bottom: 2px; left: 4px; font-style: normal; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.04em; color: var(--text-3); }
 .rirow-legend { min-height: 16px; margin-bottom: 2px; }
 .rirow-v { font-size: 0.8125rem; font-weight: 700; text-align: right; white-space: nowrap; }
-.rirow.full .rirow-bar i { opacity: 1; background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi) 70%, #fff); box-shadow: 0 0 10px rgba(197, 188, 255, 0.4); }
+.rirow.full .rirow-bar i { opacity: 1; background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi) 70%, #fff); box-shadow: 0 0 10px rgba(var(--f-micro-rgb), 0.4); }
 .rirow.over .rirow-bar i { opacity: 1; background: linear-gradient(90deg, var(--honey), var(--ember)); }
 .rirow.best .rirow-v { color: var(--f-micro-hi); }
 .rirow.low .rirow-v { color: var(--honey); }
@@ -564,7 +588,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 .frank-list b { font-size: 0.875rem; font-weight: 700; color: var(--text-2); font-variant-numeric: tabular-nums; }
 .fadv-why { justify-self: end; max-width: 46vw; padding: 3px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
 .fadv-why small { margin-left: 3px; font-weight: 600; opacity: 0.75; }
-.fadv-why.t-good { background: rgba(63, 240, 185, 0.1); color: var(--menthol); }
+.fadv-why.t-good { background: rgba(var(--f-good-rgb), 0.1); color: var(--menthol); }
 .fadv-why.t-warn { background: rgba(255, 140, 26, 0.12); color: #ffad5c; }
 .hscroll { margin: 0 -4px 12px; padding: 0 4px; overflow-x: auto; scrollbar-width: none; }
 .hscroll::-webkit-scrollbar { display: none; }
@@ -704,7 +728,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 
 .ftake {
   margin-top: 14px; padding: var(--pad-sm) var(--pad); border-radius: var(--r-card);
-  background: linear-gradient(180deg, rgba(225, 6, 0, 0.075), rgba(225, 6, 0, 0.015) 70%), var(--card);
+  background: linear-gradient(180deg, rgba(var(--fc-rgb), 0.06), rgba(var(--fc-rgb), 0.01) 70%), var(--card);
   box-shadow: var(--rim);
 }
 .ftr-span + .ftake { margin-top: 16px; }
@@ -1066,7 +1090,7 @@ html.scan-open, html.scan-open body { overflow: hidden; }
   flex: none; display: inline-flex; align-items: stretch; min-height: 48px; max-width: 236px; border-radius: var(--r-inset);
   background: var(--raised); box-shadow: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
-.fu.combo { max-width: 268px; background: linear-gradient(180deg, rgba(31, 163, 122, 0.13), rgba(31, 163, 122, 0.03)), var(--raised); box-shadow: inset 0 0 0 1px rgba(31, 163, 122, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+.fu.combo { max-width: 268px; background: linear-gradient(180deg, rgba(var(--fc-rgb), 0.11), rgba(var(--fc-rgb), 0.02)), var(--raised); box-shadow: inset 0 0 0 1px rgba(var(--fc-rgb), 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.05); }
 .fu-log {
   display: grid; align-content: center; gap: 1px; min-width: 0; padding: 6px 8px 6px 13px; border: 0; border-radius: var(--r-inset) 0 0 var(--r-inset);
   background: none; color: var(--text); font: inherit; text-align: left; white-space: nowrap; cursor: pointer;
@@ -1276,8 +1300,8 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
 .fchat-page {
   margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter);
   background:
-    radial-gradient(60% 260px at 14% 0, rgba(212, 247, 106, 0.1), transparent 70%),
-    radial-gradient(50% 240px at 92% 0, rgba(63, 207, 127, 0.09), transparent 70%);
+    radial-gradient(60% 260px at 14% 0, rgba(var(--fc-rgb), 0.1), transparent 70%),
+    radial-gradient(50% 240px at 92% 0, rgba(var(--fc-rgb), 0.09), transparent 70%);
   background-repeat: no-repeat;
 }
 .fc-head {
@@ -1285,16 +1309,16 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
   display: grid; grid-template-columns: 40px 40px minmax(0, 1fr) auto; align-items: center; gap: 10px;
   margin: calc(-1 * (env(safe-area-inset-top) + 8px)) calc(-1 * var(--gutter)) 0;
   padding: calc(env(safe-area-inset-top) + 10px) var(--gutter) 10px;
-  background: rgba(0, 0, 0, 0.78); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+  background: rgba(17, 18, 13, 0.86); box-shadow: 0 1px 0 rgba(255, 251, 244, 0.06);
 }
 @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  .fc-head { background: rgba(0, 0, 0, 0.6); -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4); }
+  .fc-head { background: rgba(17, 18, 13, 0.66); -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4); }
 }
 .fc-back { width: 40px; height: 40px; }
 .fc-av {
   position: relative; display: grid; place-items: center; width: 40px; height: 40px; flex: none; border-radius: 50%; color: var(--fc-ink);
-  background: radial-gradient(120% 120% at 30% 18%, #f4ffc0 0%, var(--fc-lime) 36%, var(--fc-leaf) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 0 22px -4px rgba(170, 240, 90, 0.6);
+  background: radial-gradient(120% 120% at 30% 18%, var(--fc-hi) 0%, var(--fc-lime) 36%, var(--fc-leaf) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 0 22px -4px rgba(var(--fc-rgb), 0.6);
 }
 .fc-av .ic { width: 21px; height: 21px; stroke-width: 2.1; }
 .fc-av.big { width: 76px; height: 76px; }
@@ -1318,14 +1342,14 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
 /* Your words on lime, the reader's on graphite with a lime rim. */
 .fchat .msg.user {
   color: var(--fc-ink); font-weight: 560;
-  background: linear-gradient(160deg, #eaffa0 0%, var(--fc-lime) 40%, #8ee070 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 12px 26px -18px rgba(160, 235, 90, 0.85);
+  background: linear-gradient(160deg, var(--fc-hi) 0%, var(--fc-lime) 40%, var(--fc-leaf) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 12px 26px -18px rgba(var(--fc-rgb), 0.85);
 }
 .fchat .msg.user time { color: rgba(10, 26, 12, 0.62); }
 .fchat .msg.assistant {
   color: #e6e9ee;
-  background: radial-gradient(120% 70% at 0% 0%, rgba(212, 247, 106, 0.07), transparent 60%), linear-gradient(180deg, #16191d 0%, #0f1114 100%);
-  box-shadow: inset 0 0 0 1px rgba(212, 247, 106, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background: radial-gradient(120% 70% at 0% 0%, rgba(var(--fc-rgb), 0.07), transparent 60%), linear-gradient(180deg, var(--fc-bubble-0) 0%, var(--fc-bubble-1) 100%);
+  box-shadow: inset 0 0 0 1px rgba(var(--fc-rgb), 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 .fchat .fc-say.bad { box-shadow: inset 0 0 0 1px rgba(255, 45, 85, 0.4); }
 .fc-photo { padding: 5px; }
@@ -1352,7 +1376,7 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
 .fc-item-body { min-width: 0; }
 .fc-item-name { margin: 0; font-size: 0.9375rem; font-weight: 650; letter-spacing: -0.01em; line-height: 1.3; overflow-wrap: anywhere; }
 .fc-item-sub { margin: 1px 0 0; font-size: 0.75rem; color: var(--text-3); }
-.fc-item-sub .linkish { font-size: 0.75rem; color: var(--fc-lime); text-decoration-color: rgba(212, 247, 106, 0.4); }
+.fc-item-sub .linkish { font-size: 0.75rem; color: var(--fc-lime); text-decoration-color: rgba(var(--fc-rgb), 0.4); }
 .fc-item-side { display: flex; align-items: center; gap: 0; }
 .fc-kcal { font-size: 1rem; font-weight: 740; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .fc-x { position: relative; display: grid; place-items: center; width: 32px; height: 32px; margin-right: -6px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--text-3); cursor: pointer; }
@@ -1379,12 +1403,12 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
   transition: background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease), transform var(--spring-ms) var(--spring);
 }
 .fc-slot:active { transform: scale(0.94); transition: transform var(--t-press) var(--ease); }
-.fc-slot.on { color: var(--fc-ink); background: var(--fc-lime); box-shadow: 0 0 16px -4px rgba(212, 247, 106, 0.7); }
+.fc-slot.on { color: var(--fc-ink); background: var(--fc-lime); box-shadow: 0 0 16px -4px rgba(var(--fc-rgb), 0.7); }
 .fc-log {
   display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 50px; margin-top: 12px; border: 0; border-radius: 16px; cursor: pointer;
   font: inherit; font-size: 1rem; font-weight: 760; letter-spacing: -0.01em; color: var(--fc-ink);
-  background: linear-gradient(150deg, #efffad 0%, var(--fc-lime) 42%, var(--fc-leaf) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 28px -16px rgba(150, 235, 90, 0.95);
+  background: linear-gradient(150deg, var(--fc-hi) 0%, var(--fc-lime) 42%, var(--fc-leaf) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 28px -16px rgba(var(--fc-rgb), 0.95);
   transition: transform var(--spring-ms) var(--spring), opacity var(--t-ctl);
 }
 .fc-log .ic { width: 20px; height: 20px; stroke-width: 2.5; }
@@ -1401,11 +1425,11 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
 /* Logged: a lime tick, what went where, and where the day now stands. */
 .fchat .fc-logged {
   display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: start; gap: 12px; width: min(100%, 540px);
-  background: radial-gradient(120% 90% at 0% 0%, rgba(63, 207, 127, 0.16), transparent 60%), linear-gradient(180deg, #131a17 0%, #0d1110 100%);
-  box-shadow: inset 0 0 0 1px rgba(63, 207, 127, 0.32);
+  background: radial-gradient(120% 90% at 0% 0%, rgba(var(--fc-rgb), 0.16), transparent 60%), linear-gradient(180deg, var(--fc-done-0) 0%, var(--fc-done-1) 100%);
+  box-shadow: inset 0 0 0 1px rgba(var(--fc-rgb), 0.32);
 }
 .fc-tick svg { display: block; width: 34px; height: 34px; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.fc-tick circle { fill: rgba(212, 247, 106, 0.12); stroke: rgba(212, 247, 106, 0.5); stroke-width: 1.4; }
+.fc-tick circle { fill: rgba(var(--fc-rgb), 0.12); stroke: rgba(var(--fc-rgb), 0.5); stroke-width: 1.4; }
 .fc-tick path { stroke: var(--fc-lime); stroke-width: 2.6; stroke-dasharray: 16; }
 .fc-logged-t { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; margin: 6px 0 0; }
 .fc-logged-t b { font-weight: 700; }
@@ -1444,24 +1468,24 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
 .fc-examples { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 6px; }
 .fc-ex {
   min-height: 38px; padding: 0 14px; border: 0; border-radius: 999px; cursor: pointer;
-  font: inherit; font-size: 0.875rem; font-weight: 600; color: var(--text); background: rgba(212, 247, 106, 0.08); box-shadow: inset 0 0 0 1px rgba(212, 247, 106, 0.22);
+  font: inherit; font-size: 0.875rem; font-weight: 600; color: var(--text); background: rgba(var(--fc-rgb), 0.08); box-shadow: inset 0 0 0 1px rgba(var(--fc-rgb), 0.22);
 }
 
 /* The composer: the camera in lime, the words, and send. */
 .fc-dock .qchip { gap: 7px; }
 .fc-dock .qchip .ic { width: 16px; height: 16px; color: var(--fc-lime); }
-.fc-composer { box-shadow: inset 0 0 0 1px rgba(212, 247, 106, 0.3), 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
-.fc-composer:focus-within { box-shadow: inset 0 0 0 1.5px var(--fc-lime), 0 0 0 4px rgba(212, 247, 106, 0.12), 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
+.fc-composer { background: rgba(26, 27, 21, 0.9); box-shadow: inset 0 0 0 1px rgba(var(--fc-rgb), 0.3), 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
+.fc-composer:focus-within { box-shadow: inset 0 0 0 1.5px var(--fc-lime), 0 0 0 4px rgba(var(--fc-rgb), 0.12), 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
 .fc-cam {
   display: grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: 50%; cursor: pointer; color: var(--fc-ink);
-  background: radial-gradient(120% 120% at 30% 18%, #f4ffc0 0%, var(--fc-lime) 38%, var(--fc-leaf) 100%);
+  background: radial-gradient(120% 120% at 30% 18%, var(--fc-hi) 0%, var(--fc-lime) 38%, var(--fc-leaf) 100%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
   transition: transform var(--spring-ms) var(--spring);
 }
 .fc-cam:active { transform: scale(0.92); transition: transform var(--t-press) var(--ease); }
 .fc-cam .ic { width: 22px; height: 22px; stroke-width: 2; }
 .fc-cam:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
-.composer .fc-send { color: var(--fc-ink); background: var(--fc-lime); box-shadow: 0 6px 16px -8px rgba(212, 247, 106, 0.8); }
+.composer .fc-send { color: var(--fc-ink); background: var(--fc-lime); box-shadow: 0 6px 16px -8px rgba(var(--fc-rgb), 0.8); }
 .composer .fc-send .ic { width: 20px; height: 20px; stroke-width: 2.3; }
 .composer .fc-send:disabled { opacity: 0.4; }
 
