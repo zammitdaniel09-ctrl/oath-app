@@ -183,7 +183,7 @@ test('a day with an oath is never chased, and does not build Today', async () =>
 
 // ---------- Daily upkeep ----------
 
-test('upkeep trims reminders and Telegram updates after 60 days and events after 400, but keeps every death', async () => {
+test('upkeep trims reminders and Telegram updates after 60 days, email after 120 and events after 400, but keeps every death', async () => {
   setLocal('2026-10-20T03:00');
   const sql = dbmod.db();
   const ago = (days) => clock.minus({ days }).toJSDate();
@@ -195,9 +195,12 @@ test('upkeep trims reminders and Telegram updates after 60 days and events after
     ('habit_kept', '{}', ${ago(401)}), ('habit_kept', '{}', ${ago(399)}), ('habit_kept', '{}', ${ago(2)}),
     ('death', ${sql.json({ date: '2025-08-01', cause: 'Gym', deaths: 1, season: 2 })}, ${ago(445)})`;
   await sql`insert into sessions (token_hash, last_seen) values ('upkeep-stale', ${ago(181)}), ('upkeep-live', ${ago(179)})`;
+  await sql`delete from mail_messages`;
+  await sql`insert into mail_messages (uid_validity, uid, received_at) values ('1', 1, ${ago(121)}), ('1', 2, ${ago(119)})`;
 
   const gone = await loop.pruneOld();
-  assert.deepEqual(gone, { reminders: 1, telegram: 1, events: 1, sessions: 1 });
+  assert.deepEqual(gone, { reminders: 1, telegram: 1, events: 1, sessions: 1, mail: 1 });
+  assert.deepEqual((await sql`select uid::int as uid from mail_messages`).map((r) => r.uid), [2]);
   assert.deepEqual((await sql`select key from reminders_sent order by key`).map((r) => r.key), ['edge', 'new']);
   assert.deepEqual((await sql`select update_id::int as id from telegram_updates order by 1`).map((r) => r.id), [2, 3]);
   assert.equal((await sql`select count(*)::int as n from events where type = 'habit_kept'`)[0].n, 2);

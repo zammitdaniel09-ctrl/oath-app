@@ -13,6 +13,7 @@ import { parseCapture } from './parse.js';
 import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit, goalsBody, goalsHref } from './goals.js';
 import { initData, loadHealth, viewHealth, dataClick, dataSubmit, AUTO_LABELS, autoValue } from './data.js';
 import { initFood, loadFood, viewFood, foodClick, foodSubmit, loadFoodToday, flushFood } from './food.js';
+import { initMail, loadMail, viewMail, mailClick, mailSubmit, mailChange, mailChip } from './mail.js';
 import { initToday, ringHero, overview, nextTile, afterToday } from './today.js';
 import { initCalendar, loadCalendar, viewCalendar, calendarClick, calendarSubmit } from './calendar.js';
 
@@ -29,14 +30,14 @@ const TABS = [
   ['health', 'Health', 'heart', 'wide'],
   ['coach', 'Coach', 'coach'],
 ];
-const WIDE_EXTRA = [['review', 'Review', 'review'], ['settings', 'Settings', 'settings']];
-const ROUTES = ['today', 'calendar', 'plan', 'food', 'goals', 'health', 'coach', 'review', 'settings'];
+const WIDE_EXTRA = [['mail', 'Mail', 'mail'], ['review', 'Review', 'review'], ['settings', 'Settings', 'settings']];
+const ROUTES = ['today', 'calendar', 'plan', 'food', 'goals', 'health', 'coach', 'review', 'settings', 'mail'];
 
 function shell(inner) {
-  // One selected destination: on the phone Health and Review sit under Today and Goals under Plan;
-  // the sidebar has its own rows.
+  // One selected destination: on the phone Health, Mail and Review sit under Today and Goals under
+  // Plan; the sidebar has its own rows.
   const wide = window.matchMedia('(min-width: 900px)').matches;
-  const under = { review: 'today', health: 'today', goals: 'plan' };
+  const under = { review: 'today', health: 'today', mail: 'today', goals: 'plan' };
   const active = !wide && under[state.route] ? under[state.route] : state.route;
   // The Today tab carries a count of what is still open, so the next tick is never out of mind.
   const open = state.today?.progress?.open || 0;
@@ -69,6 +70,7 @@ function skeleton(title) {
 initGoals({ shell, render: () => render(), go: () => go() });
 initData({ shell, render: () => render(), go: () => go() });
 initFood({ shell, render: () => render(), go: () => go() });
+initMail({ shell, render: () => render() });
 initToday({ render: () => render() });
 initCalendar({ shell, render: () => render(), go: () => go() });
 
@@ -436,12 +438,13 @@ function remindersChip() {
   return `<button class="tchip act" data-action="push-on">${icon('bell')}Turn on reminders</button>`;
 }
 
-// Offline, reminders, a rest day and a waiting review: one row of small chips under the rings.
+// Offline, reminders, a rest day, a waiting review and important email: one row of small chips under the rings.
 function statusChips(t) {
   const chips = [
     state.offline ? `<button class="tchip warn" data-action="retry">${icon('clock')}Offline, ${t.today === realToday(t) ? 'today' : fmtDay(t.today)} as of ${fmtClock(state.offline)}<b>Retry</b></button>` : '',
     t.rest ? `<span class="tchip calm">${icon('moon')}Rest day</span>` : '',
     t.reviewDue ? `<a class="tchip act" href="#/review">${icon('review')}Review ready${icon('chevron', 'chev')}</a>` : '',
+    mailChip(t),
     remindersChip(),
   ].filter(Boolean);
   return chips.length ? `<div class="tchips" role="group" aria-label="Status">${chips.join('')}</div>` : '';
@@ -1305,6 +1308,7 @@ function viewSettings() {
       <a class="li li-plain li-nav" href="#/health?section=health"><span class="li-ic">${icon('heart')}</span><span class="li-body"><span class="li-title">Apple Health</span><span class="li-sub">Steps, workouts, sleep, heart</span></span>${icon('chevron', 'chev')}</a>
       <a class="li li-plain li-nav" href="#/health?section=calendars"><span class="li-ic">${icon('calendar')}</span><span class="li-body"><span class="li-title">Calendars and VLE deadlines</span><span class="li-sub">Google, iCloud, Outlook, UM VLE</span></span>${icon('chevron', 'chev')}</a>`}
       <a class="li li-plain li-nav" href="#/health?section=business"><span class="li-ic">${icon('business')}</span><span class="li-body"><span class="li-title">Business sites</span><span class="li-sub">GoldenStraddler, Exposed FX Journal</span></span>${icon('chevron', 'chev')}</a>
+      <a class="li li-plain li-nav" href="#/mail"><span class="li-ic">${icon('mail')}</span><span class="li-body"><span class="li-title">Gmail</span><span class="li-sub">Important email, sorted by the AI</span></span>${icon('chevron', 'chev')}</a>
     </div>
     <div class="form-actions"><a class="btn tinted" href="/api/export" download>${icon('download')}Download all my data</a></div>`);
   // Where the food numbers come from: credits and licences live here, not on the screens.
@@ -1706,6 +1710,7 @@ async function load(route) {
     if (!state.offline) loadFoodToday();
   }
   if (route === 'food') await loadFood();
+  if (route === 'mail') await loadMail();
   // Plan holds the goals too, as its third segment.
   if (route === 'plan') [state.plan] = await Promise.all([api('GET', '/api/plan'), loadGoals()]);
   if (route === 'coach') state.coach = await api('GET', '/api/coach');
@@ -1755,7 +1760,7 @@ function render() {
     if (state.param) return viewGoal();
     return viewGoals();
   }
-  const views = { today: viewToday, calendar: viewCalendar, plan: viewPlan, food: viewFood, coach: viewCoach, review: viewReview, settings: viewSettings, health: viewHealth };
+  const views = { today: viewToday, calendar: viewCalendar, plan: viewPlan, food: viewFood, coach: viewCoach, review: viewReview, settings: viewSettings, health: viewHealth, mail: viewMail };
   (views[state.route] || viewToday)();
 }
 
@@ -2124,6 +2129,7 @@ $app.addEventListener('click', async (e) => {
   if (await goalsClick(a, el)) return;
   if (await dataClick(a, el)) return;
   if (await foodClick(a, el)) return;
+  if (await mailClick(a, el)) return;
   if (await calendarClick(a, el)) return;
   if (await layoutClick(a, el)) return;
   if (a === 'keep') {
@@ -2330,6 +2336,7 @@ $app.addEventListener('click', async (e) => {
 $app.addEventListener('change', (e) => {
   const d = e.target.closest('[data-decide]');
   if (d) state.decisions[d.dataset.decide] = d.value;
+  if (e.target.matches('[data-mail-setting]')) mailChange(e.target);
 });
 
 // Live preview of what quick add understood: the date, time, estimate and goal.
@@ -2357,6 +2364,7 @@ $app.addEventListener('submit', async (e) => {
     if (await goalsSubmit(kind, form)) return;
     if (await dataSubmit(kind, form)) return;
     if (await foodSubmit(kind, form)) return;
+    if (await mailSubmit(kind, form)) return;
     if (await calendarSubmit(kind, form)) return;
     if (kind === 'login') {
       try {

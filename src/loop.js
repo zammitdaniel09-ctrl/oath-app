@@ -13,6 +13,7 @@ import { refreshBusiness, businessSources } from './business.js';
 import { setAutoEnrich, drainEnrichment } from './food-enrich.js';
 import { pruneSessions } from './auth.js';
 import { foodWeekReport } from './food-take.js';
+import { syncMail, MAIL_KEEP_DAYS } from './mail.js';
 
 const BRIEF_TITLES = { morning: 'Morning brief', midday: 'Midday check', evening: 'Evening check' };
 // The Sunday food report: from 19:00 local time, for three hours, once a week.
@@ -136,7 +137,7 @@ async function focusEnds() {
 // year are dropped. Reminder keys and Telegram update ids only matter for a day or two; 60 days is
 // generous. Events are an audit trail that nothing reads far back, except the Deaths list on the
 // review screen, so deaths are kept for good (a handful a year) and everything else for 400 days.
-const KEEP_DAYS = { reminders: 60, telegram: 60, events: 400 };
+const KEEP_DAYS = { reminders: 60, telegram: 60, events: 400, mail: MAIL_KEEP_DAYS };
 
 export async function pruneOld() {
   const now = nowUTC();
@@ -145,7 +146,8 @@ export async function pruneOld() {
   const updates = await db()`delete from telegram_updates where at < ${before(KEEP_DAYS.telegram)}`;
   const events = await db()`delete from events where at < ${before(KEEP_DAYS.events)} and type <> 'death'`;
   const sessions = await pruneSessions();
-  return { reminders: sent.count, telegram: updates.count, events: events.count, sessions };
+  const mail = await db()`delete from mail_messages where received_at < ${before(KEEP_DAYS.mail)}`;
+  return { reminders: sent.count, telegram: updates.count, events: events.count, sessions, mail: mail.count };
 }
 
 let prunedOn = null;
@@ -255,6 +257,10 @@ export function startLoop(intervalMs = 30000) {
   syncBusiness();
   setInterval(syncCalendars, 15 * 60000).unref();
   setInterval(syncBusiness, 10 * 60000).unref();
+  // Gmail every 5 minutes, when it is connected (mail.js does nothing otherwise).
+  const syncInbox = () => syncMail().catch((err) => console.error('mail sync failed', err.message));
+  syncInbox();
+  setInterval(syncInbox, 5 * 60000).unref();
   // Food: new diary entries get their missing nutrients filled a moment after they are logged, and
   // older ones a few at a time on their own timer, so a slow lookup never delays judging. The first
   // pass waits one interval, giving the food seed time to load at boot.

@@ -30,6 +30,7 @@ import { ensureFoodSeed } from './food-seed.js';
 import { readFoodPhoto, readFoodText } from './food-photo.js';
 import { foodTake } from './food-take.js';
 import { importApi } from './food-import.js';
+import { mailApi } from './mail.js';
 import { productByBarcode, searchOff } from './off.js';
 import * as passkeys from './passkeys.js';
 import { conditionalGet, publicFile } from './static.js';
@@ -335,6 +336,7 @@ api.route('/', usualApi); // "Usually now": one-tap predictions from his own dia
 // What to eat next and "Rich in…": his gaps, his own foods and common catalogue foods, no AI.
 api.route('/', foodNextApi);
 api.route('/', bodyApi);
+api.route('/', mailApi); // Gmail, read over IMAP and sorted by importance (mail.js)
 
 app.route('/api', api);
 

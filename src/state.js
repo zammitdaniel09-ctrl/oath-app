@@ -287,6 +287,8 @@ export async function buildToday() {
     goals,
     weekFocus: review?.done_at ? review.focus : null,
     reviewDue: !review?.done_at && hadLastWeek >= 4 && weekday(today, tz) <= 2,
+    // Important email waiting, for the chip under the rings (mail.js).
+    mail: await (await import('./mail.js')).mailBadge().catch(() => null),
     localHour: local.hour,
   };
 }
@@ -523,6 +525,8 @@ export async function coachSnapshot() {
   if (foodText) lines.push(foodText);
   const bodyText = await bodyForCoach().catch(() => '');
   if (bodyText) lines.push(bodyText);
+  const mailText = await (await import('./mail.js')).mailForCoach().catch(() => '');
+  if (mailText) lines.push(mailText);
   const goals = await listGoals();
   if (goals.length) {
     lines.push('Active goals (WOOP):');
