@@ -124,6 +124,8 @@ kind:
 
 Anything you cannot read stays empty: "" for text, 0 for a size or count, label basis "none" when there is no nutrition table, and product name "" when no packet is visible. Never guess a barcode digit, a brand or a label value. summary is one short line saying what you see. items is empty unless kind is "meal".
 
+Daniel may add a note to the photo. His note is the best evidence there is: use it for what each food is (the name, the brand, how it was cooked) and above all for how much ("about 100 g of rice", "half of it", "I ate two of the four", "a 330 ml can"). Never replace an amount he gives with your own estimate from the photo, and keep his number in amount and weight. When the note names a food you cannot see (the oil it was cooked in, a drink beside it), list it too.
+
 Item rules:
 ${ITEM_RULES}`;
 
@@ -415,6 +417,7 @@ For each item you get what was understood (name, brand or restaurant, variety, p
 6. A version that changes what is in it is a different food: zero, diet, sugar free, light, decaf, alcohol free. Never pick the regular version for one of these (Capri Sun for a Capri Sun Zero, Coke for a Coke Zero), or one of these for the regular food. With no record of the right version, key "".
 
 Unit and qty, from the chosen record's units only, written exactly as listed:
+- When he gave the amount himself, in what he said or his note on a photo ("about 100 g", "a 330 ml can"), keep his number: "g" or "ml" with that qty.
 - When his size word matches a portion ("large" and "p:1 large serving"), use that portion, with qty how many of it (usually 1).
 - Otherwise a portion whose weight fits the estimate, with qty how many of it, or "g" (or "ml" for a drink measured by volume) with qty the estimated amount.
 - qty is more than zero.
@@ -550,7 +553,7 @@ export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg
     schema: PHOTO_SCHEMA,
     content: [
       { type: 'image', source: { type: 'base64', media_type: mediaType, data: image } },
-      { type: 'text', text: said ? `Daniel says: ${said}` : 'What is in this photo?' },
+      { type: 'text', text: said ? `Daniel's note about this photo: "${said}"` : 'What is in this photo?' },
     ],
     maxTokens: 10000,
   });
@@ -588,7 +591,7 @@ export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg
   }
 
   if (read.kind === 'meal' && read.items?.length) {
-    const context = [read.summary, said && `Daniel says: ${said}`].filter(Boolean).join('. ');
+    const context = [read.summary, said && `his note on the photo: "${said}"`].filter(Boolean).join('. ');
     const items = await matchItems(read.items.slice(0, 12).map(understood), { context });
     return { kind: 'meal', summary: read.summary, items };
   }

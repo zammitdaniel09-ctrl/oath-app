@@ -23,7 +23,8 @@ const fmt = (v) => D.fmtN(v);
 
 function chat() {
   const F = D.f();
-  if (!F.chat) F.chat = { msgs: D.store.get(KEY, null)?.msgs || [], busy: null, image: null };
+  // staged: a photo waiting in the composer for an optional note, kept only while the app is open.
+  if (!F.chat) F.chat = { msgs: D.store.get(KEY, null)?.msgs || [], busy: null, image: null, note: '', staged: null };
   return F.chat;
 }
 
@@ -129,7 +130,8 @@ async function readText(text, before, open) {
   render();
 }
 
-// A photo: shown in the thread at once, read by the same reader as the sheet.
+// A photo waits in the composer first, so a note can go with it ("about 100 g of rice", "no sauce");
+// Send reads them together. With no note it is read on its own.
 export async function chatPhoto(input) {
   const file = input.files?.[0];
   input.value = '';
@@ -143,20 +145,32 @@ export async function chatPhoto(input) {
     toast(err.message || 'That photo could not be opened.', true);
     return;
   }
-  push({ role: 'me', kind: 'photo', thumb: `data:image/jpeg;base64,${thumb}` });
-  haptic('send');
-  await readPhoto(image);
+  chat().staged = { image, thumb: `data:image/jpeg;base64,${thumb}` };
+  haptic('toggle');
+  render();
 }
 
-async function readPhoto(image) {
+async function sendPhoto(note) {
+  const c = chat();
+  const { image, thumb } = c.staged;
+  c.staged = null;
+  D.f().text = '';
+  push({ role: 'me', kind: 'photo', thumb, text: note || null });
+  haptic('send');
+  await readPhoto(image, note);
+}
+
+async function readPhoto(image, note = '') {
   const c = chat();
   setBusy('photo');
   try {
-    const r = await api('POST', '/api/food/photo', { image, media_type: 'image/jpeg' });
+    const r = await api('POST', '/api/food/photo', { image, media_type: 'image/jpeg', ...(note ? { note } : {}) });
     c.image = null;
     answerPhoto(r);
   } catch (err) {
-    c.image = image; // kept for Try again while the app is open, never on the phone
+    // Kept for Try again while the app is open, never on the phone.
+    c.image = image;
+    c.note = note;
     push({ role: 'food', kind: 'say', tone: 'bad', text: err.status === 0 ? 'Reading photos needs a connection.' : err.message, retry: { photo: true } });
   }
   c.busy = null;
@@ -293,7 +307,8 @@ function helloHtml() {
 
 function meHtml(m) {
   if (m.kind === 'photo') {
-    return `<div class="msg user fc-photo">${m.thumb ? `<img src="${m.thumb}" alt="Your photo" loading="lazy">` : `<span class="fc-photo-gone">${icon('image')}Photo</span>`}<time>${timeOf(m.at)}</time></div>`;
+    return `<div class="msg user fc-photo">${m.thumb ? `<img src="${m.thumb}" alt="Your photo" loading="lazy">` : `<span class="fc-photo-gone">${icon('image')}Photo</span>`}
+      ${m.text ? `<span class="msg-text fc-photo-note">${esc(m.text)}</span>` : ''}<time>${timeOf(m.at)}</time></div>`;
   }
   return `<div class="msg user"><span class="msg-text">${esc(m.text)}</span><time>${timeOf(m.at)}</time></div>`;
 }
@@ -408,7 +423,12 @@ function threadHtml() {
 function composerHtml() {
   const c = chat();
   const open = openCard();
-  return `<div class="composer-dock fc-dock">
+  const staged = c.staged ? `<div class="fc-staged"><span class="fc-staged-img"><img src="${c.staged.thumb}" alt="Photo to send">
+      <button type="button" class="fc-staged-x" data-action="food-chat-unstage" aria-label="Remove the photo">${icon('close')}</button></span>
+      <span class="fc-staged-words"><b>Add a note to help</b><small>Optional: what it is, how much ("about 100 g of rice"), anything hidden. Or just send.</small></span></div>` : '';
+  const hint = c.staged ? 'About 100 g, cooked in olive oil…' : open ? 'Change it, or add to it' : 'What did you eat?';
+  return `<div class="composer-dock fc-dock${c.staged ? ' staging' : ''}">
+    ${staged}
     <div class="quick-replies fc-tools" role="group" aria-label="More ways to log">
       <button type="button" class="qchip" data-action="food-scan">${icon('barcode')}Scan</button>
       <label class="qchip">${icon('image')}From photos<input class="vh" type="file" accept="image/*" data-chat-photo></label>
@@ -418,7 +438,7 @@ function composerHtml() {
     <form class="composer fc-composer" data-form="food-chat-send">
       <label class="fc-cam" title="Snap your food">${icon('camera')}<span class="sr">Snap your food</span><input class="vh" type="file" accept="image/*" capture="environment" data-chat-photo></label>
       <label class="sr" for="fchat-text">What did you eat?</label>
-      <textarea id="fchat-text" class="input" name="text" rows="1" maxlength="600" placeholder="${open ? 'Change it, or add to it' : 'What did you eat?'}" data-food-text enterkeyhint="send" autocomplete="off">${esc(D.f().text || '')}</textarea>
+      <textarea id="fchat-text" class="input" name="text" rows="1" maxlength="600" placeholder="${hint}" data-food-text enterkeyhint="send" autocomplete="off">${esc(D.f().text || '')}</textarea>
       <button class="btn send fc-send" type="submit" aria-label="Send"${c.busy ? ' disabled' : ''}>${icon('send')}</button>
     </form>
   </div>`;
@@ -513,13 +533,17 @@ export async function chatClick(a, el) {
     case 'food-chat-label':
       if (m?.draft) D.openSheet({ kind: 'custom', draft: m.draft, fromLabel: true });
       return true;
+    case 'food-chat-unstage':
+      chat().staged = null;
+      render();
+      return true;
     case 'food-chat-retry': {
       if (!m?.retry || chat().busy) return true;
       const { retry } = m;
       chat().msgs = chat().msgs.filter((x) => x !== m);
       save();
       if (retry.photo) {
-        if (chat().image) await readPhoto(chat().image);
+        if (chat().image) await readPhoto(chat().image, chat().note);
         else toast('Take the photo again.', true);
       } else {
         await readText(retry.text, retry.before, openCard());
@@ -538,7 +562,12 @@ export async function chatClick(a, el) {
 
 export async function chatSubmit(form) {
   const text = String(form.text.value || '').replace(/\s+/g, ' ').trim();
-  if (!text || chat().busy) return true;
+  if (chat().busy) return true;
+  if (chat().staged) {
+    await sendPhoto(text.slice(0, 300));
+    return true;
+  }
+  if (!text) return true;
   await send(text);
   return true;
 }

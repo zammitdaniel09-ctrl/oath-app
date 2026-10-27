@@ -264,8 +264,9 @@ test('the caption goes to the reading as the typed hint', async () => {
   await tg.handleUpdate(photoMessage({ caption: 'brown rice, not white' }));
   const content = claude.requests[0].messages[0].content;
   assert.equal(content[1].type, 'text');
-  assert.equal(content[1].text, 'Daniel says: brown rice, not white');
+  assert.equal(content[1].text, 'Daniel\'s note about this photo: "brown rice, not white"');
   assert.match(claude.requests[1].messages[0].content[0].text, /brown rice, not white/, 'the choice sees it too');
+  assert.match(JSON.stringify(claude.requests[0].system), /Never replace an amount he gives with your own estimate/, 'his note outranks what the photo looks like');
   // An image sent as a file is read too.
   coach.setCoachClient(plate());
   calls = [];
