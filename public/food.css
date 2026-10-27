@@ -1479,6 +1479,8 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
 }
 
 /* The composer: the camera in lime, the words, and send. */
+/* The fade under the composer is the page's own smoky black, not the app's. */
+.fc-dock::before { background: linear-gradient(180deg, rgba(17, 18, 13, 0), rgba(17, 18, 13, 0.92) 46%); }
 .fc-dock .qchip { gap: 7px; }
 .fc-dock .qchip .ic { width: 16px; height: 16px; color: var(--fc-lime); }
 .fc-composer { background: rgba(26, 27, 21, 0.9); box-shadow: inset 0 0 0 1px rgba(var(--fc-rgb), 0.3), 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
