@@ -1333,6 +1333,16 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 
 .scard { padding: 20px; }
 .scard-h { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 1.0625rem; }
+/* Body: the form, then the daily needs worked out from it. */
+.body-needs { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+.need-h { margin: 0 0 10px; font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); }
+.need-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 132px), 1fr)); gap: 8px; }
+.need { display: grid; gap: 2px; padding: 10px 12px; border-radius: 12px; background: var(--inset); box-shadow: inset 0 0 0 1px var(--line-soft); }
+.need span { font-size: 0.75rem; color: var(--text-2); }
+.need b { font-size: 1.0625rem; font-weight: 720; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.need-how { margin-top: 10px; color: var(--text-3); line-height: 1.5; }
+.need-more { margin-top: 12px; }
+.need-more summary { cursor: pointer; font-weight: 620; color: var(--text-2); margin-bottom: 10px; }
 .sic {
   width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; flex: none;
   background: var(--raised); color: var(--text); box-shadow: inset 0 0 0 1px var(--line);

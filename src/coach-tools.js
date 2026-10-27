@@ -586,6 +586,19 @@ const TOOLS = {
       return `Rules changed: ${Object.entries(patch).map(([k, x]) => `${RULES[k].name} ${x}`).join(', ')}`;
     },
   },
+  update_body: {
+    description: 'Save his body profile, which sets his daily nutrition needs (every food percentage is against them): sex, birth date, height in cm, weight in kg, body fat %, activity (sedentary, light, moderate, very, athlete) and goal (keep, gain, lose). Give only what changed; use it whenever he mentions a new weight or a change in training.',
+    properties: {
+      sex: E(['male', 'female']), birth_date: DATE, height_cm: N(), weight_kg: N(), body_fat: N(),
+      activity: E(['sedentary', 'light', 'moderate', 'very', 'athlete']), goal: E(['keep', 'gain', 'lose']),
+    },
+    async run(input) {
+      const { saveBody } = await import('./body.js');
+      const r = await saveBody({ sex: input.sex, birthDate: input.birth_date, heightCm: input.height_cm, weightKg: input.weight_kg, bodyFat: input.body_fat, activity: input.activity, goal: input.goal });
+      const n = r.needs?.refs;
+      return n ? `Body saved. His needs a day now: ${n.kcal} kcal, protein ${n.protein} g, carbs ${n.carbs} g, fat ${n.fat} g, fibre ${n.fibre} g` : 'Body saved; more is needed (sex, birth date, height, weight, activity) before his needs can be worked out';
+    },
+  },
   set_health_targets: {
     description: 'Set his daily Apple Health targets.',
     properties: { steps: I(), exercise_min: I(), active_kcal: I(), sleep_hours: N(), stand_hours: I() },

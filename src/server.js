@@ -21,6 +21,7 @@ import { businessApi } from './business.js';
 import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleUpdate, webhookSecret } from './telegram.js';
 import { setupStatus, noteIngestError } from './setup.js';
 import { foodApi, saveCustomFood } from './food.js';
+import { bodyApi } from './body.js';
 import { ensureFoodSeed } from './food-seed.js';
 import { readFoodPhoto, readFoodText } from './food-photo.js';
 import { foodTake } from './food-take.js';
@@ -309,6 +310,7 @@ api.get('/food/off-search', async (c) => c.json({ items: await searchOff(c.req.q
 // The coach's take on the Food tab or Trends, kept until the numbers behind it change.
 api.get('/food/take', async (c) => c.json(await foodTake({ view: c.req.query('view'), date: c.req.query('date'), days: c.req.query('days') })));
 api.route('/', foodApi);
+api.route('/', bodyApi);
 
 app.route('/api', api);
 

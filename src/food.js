@@ -15,6 +15,7 @@ import {
 // Grades and tags come from the shared maths when it has them; read through the namespace so the
 // diary still works on a build without them.
 import * as NUT from '../public/nutrition.js';
+import { needRefs } from './body.js';
 
 // ---------- Schema ----------
 
@@ -1029,6 +1030,8 @@ export async function foodDay(date) {
     estimates: entries.filter((e) => e.estimate).length,
     grades: gradeMix(entries),
     plans: plans.filter((p) => !p.loggedId),
+    // What 100% stands for on this screen: his daily needs, or null for the EU reference intakes.
+    needs: await needRefs(),
   };
 }
 
@@ -1107,7 +1110,8 @@ export async function foodHistory({ days = 7, date = null } = {}) {
     counts.set(key, c);
   }
   const top = [...counts.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)).slice(0, 6);
-  const insights = periodInsights(await gradeEntries(rows.filter((r) => r.date >= from)), { series, today, tz });
+  const refs = await needRefs();
+  const insights = periodInsights(await gradeEntries(rows.filter((r) => r.date >= from)), { series, today, tz, refs });
 
   // The chosen day by local hour. A drink with no caffeine value is counted apart, not as zero.
   const dayRows = byDate.get(chosen) || [];
@@ -1127,12 +1131,14 @@ export async function foodHistory({ days = 7, date = null } = {}) {
     top,
     ...insights,
     chosen: { ...dayStats(chosen, dayRows), today: chosen === today, hours },
+    needs: refs,
   };
 }
 
 // ---------- Insights: what the period's food adds up to ----------
 
-const RI_LIST = NUTRIENTS.filter((x) => x.ri);
+// The nutrients with a daily amount to measure against: his own needs when his body is set, else the EU RIs.
+const refList = (refs) => NUTRIENTS.filter((x) => NUT.refOf(x.key, refs));
 export const SOURCE_KEYS = ['sugars', 'salt', 'satfat', 'protein', 'fibre'];
 const LIMIT_KEYS = ['sugars', 'salt', 'satfat'];
 const weekday = (date) => (new Date(`${date}T12:00:00Z`).getUTCDay() + 6) % 7; // Monday 0
@@ -1159,18 +1165,19 @@ function foodsEaten(entries) {
   return [...foods.values()];
 }
 
-// Average % of the EU reference intake per nutrient over complete logged days. A day with no value
+// Average % of his daily need (or the EU reference intake) per nutrient over complete logged days. A day with no value
 // for a nutrient is left out of its average, and `partial` counts the days that were unknown or a
 // floor, so the screen can say the average is at least that. `est` is the share of it, in %, that was
 // filled (from a similar USDA food, the web or an estimate) rather than on the records themselves.
-function coverageOf(totals, est = {}) {
-  return RI_LIST.map((x) => {
+function coverageOf(totals, est = {}, refs = null) {
+  return refList(refs).map((x) => {
+    const ri = NUT.refOf(x.key, refs);
     const vals = totals.map((t) => n(t[x.key])).filter((v) => v !== null);
     const avg = vals.length ? vals.reduce((a, v) => a + v, 0) / vals.length : null;
     return {
-      key: x.key, label: x.label, group: x.group, unit: x.unit, ri: x.ri,
+      key: x.key, label: x.label, group: x.group, unit: x.unit, ri,
       avg: avg === null ? null : round(avg, 3),
-      pct: avg === null ? null : round((avg / x.ri) * 100, 1),
+      pct: avg === null ? null : round((avg / ri) * 100, 1),
       days: vals.length,
       partial: totals.filter((t) => n(t[x.key]) === null || t.missing?.[x.key]).length,
       est: avg === null ? 0 : est[x.key] || 0,
@@ -1237,12 +1244,12 @@ function adviceFrom(foods, coverage, sources) {
 // Everything the Trends screen draws past the energy bars: reference-intake coverage, the grade mix
 // by day, best and worst foods, top sources, eat more or less, meal timing and weekday averages.
 // Averages use complete logged days (not today); counts, sources and grades use the whole period.
-function periodInsights(entries, { series, today, tz }) {
+function periodInsights(entries, { series, today, tz, refs = null }) {
   const completeDates = new Set(series.filter((d) => d.logged && d.date !== today).map((d) => d.date));
   const byDate = new Map();
   for (const e of entries) byDate.set(e.date, [...(byDate.get(e.date) || []), e]);
   const totals = [...completeDates].map((d) => total((byDate.get(d) || []).map((e) => e.nutrients)));
-  const coverage = coverageOf(totals, filledShare([...completeDates].flatMap((d) => byDate.get(d) || [])));
+  const coverage = coverageOf(totals, filledShare([...completeDates].flatMap((d) => byDate.get(d) || [])), refs);
 
   const grades = { total: gradeMix(entries), days: series.map((d) => ({ date: d.date, ...gradeMix(byDate.get(d.date) || []) })) };
 

@@ -2,7 +2,7 @@
 // detail; the day's own lists follow below them (app.js). Plain strings, drawn on every redraw, so
 // anything that moves remembers where it was and never replays on a redraw.
 import { state, esc, api, icon, rings, RING_MS, ringEase, ringFx, fmtInt, fmtDay, fmtHours, daysBetween, miniRing, safeColor } from './ui.js';
-import { NUTRIENT } from './nutrition.js';
+import { NUTRIENT, refOf } from './nutrition.js';
 
 let ctx = { render: () => {} };
 export function initToday(c) {
@@ -177,16 +177,23 @@ export function ringHero(t, food, foot) {
   ], { set: 'day', center: `<b${g.hp >= 100 ? ' class="wide"' : ''}>${tn('hp-c', g.hp)}</b><span>HP</span>` });
 
   const n = food?.total || null;
-  const fuel = [
+  // With his body set, each ring is against his own daily need, and energy may close too.
+  const need = food?.needs || null;
+  const fuel = need ? [
+    ['kcal', 'Energy', 'r-kcal', refOf('kcal', need), ' kcal', 'need', true],
+    ['protein', 'Protein', 'r-pro', refOf('protein', need), ' g', 'need', true],
+    ['fibre', 'Fibre', 'r-fib', refOf('fibre', need), ' g', 'need', true],
+  ] : [
     ['kcal', 'Energy', 'r-kcal', NUTRIENT.kcal.ri, ' kcal', 'RI', false],
     ['protein', 'Protein', 'r-pro', NUTRIENT.protein.ri, ' g', 'RI', true],
     ['fibre', 'Fibre', 'r-fib', FIBRE_REF, ' g', 'ref', true],
-  ].map(([k, label, cls, ref, unit, word, close]) => {
+  ];
+  const fuelRows = fuel.map(([k, label, cls, ref, unit, word, close]) => {
     const v = num(n?.[k]);
     const plus = v !== null && n?.missing?.[k] ? '<i class="lg-plus" title="Some entries have no value">+</i>' : '';
     const pct = v === null ? 0 : (v / ref) * 100;
-    // Against an RI the line says "92% of RI"; fibre names its reference, as it is not an RI.
-    const of = word === 'RI' ? 'RI' : `${fmtInt(ref)}${unit}`;
+    // "92% of your need", "92% of RI"; fibre without a body names its reference, as it is not an RI.
+    const of = word === 'need' ? 'your need' : word === 'RI' ? 'RI' : `${fmtInt(ref)}${unit}`;
     const sub = v === null ? (food?.entries?.length === 0 && k === 'kcal' ? 'Nothing logged yet' : `${fmtInt(ref)}${unit} ${word}`) : `${Math.round(pct)}% of ${of}`;
     return {
       ring: { pct, cls, close },
@@ -195,7 +202,7 @@ export function ringHero(t, food, foot) {
   });
   // The food day arrives a moment after the rest: until then its rings wait, so its arrival is their
   // first sweep and not a change to celebrate.
-  const fuelSet = rings(fuel.map((f) => f.ring), { set: 'fuel', center: icon('food'), ready: Boolean(food) });
+  const fuelSet = rings(fuelRows.map((f) => f.ring), { set: 'fuel', center: icon('food'), ready: Boolean(food) });
 
   return `<section class="card rings-card${lowHp ? ' low' : ''}${ticked ? ' ticked' : ''}">
     <div class="rc-set rc-day">${daySet}<div class="legend">
@@ -203,7 +210,7 @@ export function ringHero(t, food, foot) {
       ${lg(`r-day${dayDone ? ' done' : ''}`, 'Today', tn('done', p.done), `/${p.total}`, daySub)}
       ${move.legend}
     </div></div>
-    <a class="rc-set rc-fuel" href="#/food">${fuelSet}<div class="legend">${fuel.map((f) => f.legend).join('')}</div>${icon('chevron', 'chev')}</a>
+    <a class="rc-set rc-fuel" href="#/food">${fuelSet}<div class="legend">${fuelRows.map((f) => f.legend).join('')}</div>${icon('chevron', 'chev')}</a>
     ${foot ? `<p class="rings-foot">${foot}</p>` : ''}
   </section>`;
 }

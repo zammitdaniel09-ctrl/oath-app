@@ -299,8 +299,12 @@ function withFill(item, fill) {
   return { item: { ...item, nutrients }, filled };
 }
 
+// What 100% stands for: his own daily need once his body is set (Settings, Body), else the EU RI.
+const needs = () => f().day?.needs || f().trend?.needs || state.foodToday?.needs || null;
+const refAt = (k) => N.refOf(k, needs());
+const riWord = () => (needs() ? 'need' : 'RI');
 const riPct = (n, k) => {
-  const ri = NUTRIENT[k]?.ri;
+  const ri = refAt(k);
   const v = num(n?.[k]);
   return ri && v !== null ? (v / ri) * 100 : null;
 };
@@ -335,7 +339,7 @@ function factRow(n, k, sub, filled) {
   const p = riPct(n, k);
   const unknown = num(n?.[k]) === null;
   return `<div class="nf-row${sub ? ' sub' : ''}${unknown ? ' unk' : ''}"><span class="nf-k">${esc(FACT_NAME[k] || d.label)}</span>
-    <span class="nf-v">${val(n, k, filled)}</span><span class="nf-ri">${d.ri ? `${riBar(p, k)}<small>${p === null ? '' : pctText(p, n?.missing?.[k])}</small>` : ''}</span></div>`;
+    <span class="nf-v">${val(n, k, filled)}</span><span class="nf-ri">${refAt(k) ? `${riBar(p, k)}<small>${p === null ? '' : pctText(p, n?.missing?.[k])}</small>` : ''}</span></div>`;
 }
 
 function factsHtml(n, filled = null) {
@@ -350,7 +354,7 @@ function factsHtml(n, filled = null) {
       ${rest ? `<p class="nf-none">${known.length ? `${rest} more not on record` : 'Not on record'}</p>` : ''}</div>`;
   };
   const other = ['caffeine', 'alcohol'].filter((k) => num(n?.[k]) > 0);
-  return `<div class="nf-group nf-label"><div class="nf-cols" aria-hidden="true"><span></span><span></span><span>% RI</span></div>
+  return `<div class="nf-group nf-label"><div class="nf-cols" aria-hidden="true"><span></span><span></span><span>% ${riWord()}</span></div>
       ${label.map(([k, sub]) => factRow(n, k, sub, fl)).join('')}</div>
     ${group('mineral', 'Minerals')}${group('vitamin', 'Vitamins')}
     ${other.length ? `<div class="nf-group"><h4 class="nf-h">Other</h4>${other.map((k) => factRow(n, k, false, fl)).join('')}</div>` : ''}`;
@@ -685,7 +689,7 @@ function daySummary(d) {
       <button class="icon-btn" data-action="food-day" data-step="-1" aria-label="Previous day">${icon('back')}</button>
       <button class="icon-btn" data-action="food-day" data-step="1" aria-label="Next day"${d.today ? ' disabled' : ''}>${icon('chevron')}</button></div></div>
     <div class="fday-main">${donut(t, { size: 112, sw: 12, center, label: `${show(t, 'kcal')}, energy from` })}<dl class="fmac">${rows}</dl></div>
-    ${has ? `<div class="fday-sec"><p class="fday-k">Reference intake</p>${micros}</div>` : ''}
+    ${has ? `<div class="fday-sec"><p class="fday-k">${needs() ? 'Your daily needs' : 'Reference intake'}</p>${micros}</div>` : ''}
     ${has && gradeMix(d.grades) ? `<div class="fday-sec"><p class="fday-k">Nutri-Score</p>${gradeMix(d.grades)}</div>` : ''}
     ${has ? `<div class="fday-sec">${facts}</div>` : ''}
     ${has ? `<div class="fday-foot">${infoBtn('day')}<button class="gh-link" data-action="food-daynut">All nutrients${icon('chevron')}</button></div>${infoLine('day')}` : ''}
@@ -1240,7 +1244,7 @@ function riRows(list, { max = 150, best = new Set(), low = new Set() } = {}) {
 }
 
 function riLegend(max = 150) {
-  return `<div class="rirow rirow-legend" aria-hidden="true"><span></span><span class="rirow-bar bare"><b class="rirow-100" style="left:${((100 / max) * 100).toFixed(2)}%"><em>RI</em></b></span><span></span></div>`;
+  return `<div class="rirow rirow-legend" aria-hidden="true"><span></span><span class="rirow-bar bare"><b class="rirow-100" style="left:${((100 / max) * 100).toFixed(2)}%"><em>${needs() ? 'Need' : 'RI'}</em></b></span><span></span></div>`;
 }
 
 // The average day against the label's reference intakes.
@@ -1303,7 +1307,7 @@ function adviceCard(h) {
   if (!a) return '';
   const row = (x, more) => {
     const why = more
-      ? (x.nutrient ? `${esc(shortLabel(x.nutrient))} <small>${fmtN(x.pct)}% RI</small>` : esc(x.reason))
+      ? (x.nutrient ? `${esc(shortLabel(x.nutrient))} <small>${fmtN(x.pct)}% ${riWord()}</small>` : esc(x.reason))
       : (x.nutrient ? `${esc(shortLabel(x.nutrient))} <small>${fmtN(x.share)}% of yours</small>` : `${esc(x.reason)} <small>×${x.count}</small>`);
     return `<li>${gradeDot(x.grade)}<span class="fadv-name">${esc(x.name)}</span><span class="fadv-why ${more ? 't-good' : 't-warn'}">${why}</span></li>`;
   };
@@ -1492,7 +1496,7 @@ function viewTrends() {
   const seg = `<div class="seg small ftr-span" role="group" aria-label="Period">${SPANS.map((n) => `<button type="button" data-action="food-span" data-days="${n}" class="${span === n ? 'on' : ''}" aria-pressed="${span === n}">${n} days</button>`).join('')}</div>`;
   if (!h) return ctx.shell(`${head}${seg}<div class="skeleton"><i></i><i></i><i class="short"></i></div>`);
   const sel = h.chosen.date;
-  const legend = infoLine('trends', '<span><b>RI</b> EU reference intake</span>');
+  const legend = infoLine('trends', h.needs ? '<span><b>100%</b> your daily need, from your body</span>' : '<span><b>RI</b> EU reference intake</span>');
   ctx.shell(`${head}${legend}${seg}
     ${takeHtml('trends')}
     ${kpiRow(h)}

@@ -570,3 +570,75 @@ export function foodTags(item) {
 
   return tags;
 }
+
+// ---------- His own needs, from his body ----------
+// With a body profile every percentage is against what his body needs, not the EU reference intakes
+// (set for an average adult on 2,000 kcal). Each value names its source:
+// - energy: resting energy by Katch-McArdle from lean mass when body fat is known, else Mifflin-St Jeor,
+//   times an activity factor, then the goal (keep, or about 300 kcal more to gain, 400 less to lose);
+// - protein: 1.6 g per kg to keep, 1.8 to gain, 2.0 to lose (ISSN position stand: 1.4 to 2.0 g/kg for
+//   people who train); carbohydrate 55% and fat 30% of energy (inside EFSA's 45 to 60% and 20 to 35%);
+// - sugars and saturates: the EU RIs scaled to his energy; salt 6 g (EU RI); fibre 14 g per 1,000 kcal (US IOM);
+// - vitamins and minerals: EFSA dietary reference values for adults, the PRI where there is one, else the
+//   AI; thiamin and niacin scale with energy as EFSA sets them. Under 18 the EU RIs stay.
+export const ACTIVITY = {
+  sedentary: { factor: 1.2, label: 'Mostly sitting' },
+  light: { factor: 1.375, label: 'Light: 1 to 3 sessions a week' },
+  moderate: { factor: 1.55, label: 'Moderate: 3 to 5 sessions a week' },
+  very: { factor: 1.725, label: 'Very active: hard sport most days' },
+  athlete: { factor: 1.9, label: 'Athlete: twice a day or physical work' },
+};
+export const GOALS = { keep: { kcal: 0, protein: 1.6, label: 'Keep my weight' }, gain: { kcal: 300, protein: 1.8, label: 'Gain muscle' }, lose: { kcal: -400, protein: 2.0, label: 'Lose fat' } };
+
+export function ageOn(birthDate, today) {
+  const [by, bm, bd] = String(birthDate || '').split('-').map(Number);
+  const [ty, tm, td] = String(today || '').split('-').map(Number);
+  if (!by || !ty) return null;
+  return ty - by - (tm < bm || (tm === bm && td < bd) ? 1 : 0);
+}
+
+const EFSA = {
+  male: { iron: 11, magnesium: 350, zinc: 11.7, vita: 750, vitc: 110, vite: 13, b6: 1.7 },
+  female: { iron: 16, magnesium: 300, zinc: 9.3, vita: 650, vitc: 95, vite: 11, b6: 1.6 },
+  both: { potassium: 3500, phosphorus: 550, selenium: 70, vitd: 15, vitk: 70, b2: 1.6, folate: 330, b12: 4 },
+};
+
+// body: { sex, birthDate, heightCm, weightKg, bodyFat, activity, goal }. Returns null when something
+// needed is missing, or { refs: { key: amount a day }, about: { ... how energy was worked out } }.
+export function personalNeeds(body, today) {
+  const b = body || {};
+  const w = Number(b.weightKg);
+  const h = Number(b.heightCm);
+  const age = ageOn(b.birthDate, today);
+  const sex = b.sex === 'female' ? 'female' : b.sex === 'male' ? 'male' : null;
+  const act = ACTIVITY[b.activity];
+  const goal = GOALS[b.goal] || GOALS.keep;
+  if (!sex || !(w > 0) || !(h > 0) || age === null || age < 18 || !act) return null;
+  const fat = Number(b.bodyFat);
+  const lean = fat > 0 && fat < 70 ? w * (1 - fat / 100) : null;
+  const rest = lean ? 370 + 21.6 * lean : 10 * w + 6.25 * h - 5 * age + (sex === 'male' ? 5 : -161);
+  const kcal = round((rest * act.factor + goal.kcal) / 10) * 10;
+  const mj = (kcal * KJ_PER_KCAL) / 1000;
+  const refs = {
+    kcal,
+    protein: round(w * goal.protein),
+    carbs: round((kcal * 0.55) / 4),
+    fat: round((kcal * 0.3) / 9),
+    sugars: round((90 * kcal) / 2000),
+    satfat: round((20 * kcal) / 2000),
+    salt: 6,
+    fibre: round((14 * kcal) / 1000),
+    calcium: age < 25 ? 1000 : 950,
+    ...EFSA.both,
+    ...EFSA[sex],
+    b1: round(0.1 * mj, 2),
+    b3: round(1.6 * mj, 1),
+  };
+  return {
+    refs,
+    about: { age, sex, lean: lean === null ? null : round(lean, 1), rest: round(rest), factor: act.factor, method: lean ? 'Katch-McArdle' : 'Mifflin-St Jeor', goal: b.goal in GOALS ? b.goal : 'keep', proteinPerKg: goal.protein },
+  };
+}
+
+// The amount 100% stands for: his own need when there is one, else the EU reference intake.
+export const refOf = (k, refs = null) => refs?.[k] ?? NUTRIENT[k]?.ri ?? null;

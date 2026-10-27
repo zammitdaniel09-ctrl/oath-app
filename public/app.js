@@ -8,6 +8,7 @@ import {
 import { soundsOn, setSounds } from './sound.js';
 import * as motion from './motion.js';
 import { richHtml } from './rich.js';
+import { ACTIVITY, GOALS, NUTRIENT } from './nutrition.js';
 import { parseCapture } from './parse.js';
 import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
 import { initData, loadDashboard, viewDashboard, dataClick, dataSubmit, AUTO_LABELS, autoValue } from './data.js';
@@ -1064,6 +1065,36 @@ function settingsCard(ic, title, body, id = '') {
   return `<div class="card scard"${id ? ` id="${id}"` : ''}><h3 class="scard-h"><span class="sic sic-${ic}">${icon(ic)}</span>${title}</h3>${body}</div>`;
 }
 
+// His body sets his daily needs, and every food percentage is a share of them (nutrition.js personalNeeds).
+const NEED_ROWS = [['kcal', 'Energy'], ['protein', 'Protein'], ['carbs', 'Carbs'], ['fat', 'Fat'], ['fibre', 'Fibre'], ['sugars', 'Sugars, at most'], ['satfat', 'Saturates, at most'], ['salt', 'Salt, at most']];
+const MICRO_NEEDS = ['calcium', 'iron', 'magnesium', 'potassium', 'zinc', 'vitc', 'vitd', 'b12', 'folate'];
+function bodyCard() {
+  const b = state.body?.body || {};
+  const n = state.body?.needs;
+  const opt = (list, cur) => Object.entries(list).map(([k, x]) => `<option value="${k}"${cur === k ? ' selected' : ''}>${esc(x.label)}</option>`).join('');
+  const amount = (k) => `${fmtInt(n.refs[k])}${NUTRIENT[k].unit === 'kcal' ? ' kcal' : ` ${NUTRIENT[k].unit}`}`;
+  const needs = n ? `<div class="need-grid">${NEED_ROWS.map(([k, label]) => `<div class="need"><span>${label}</span><b>${amount(k)}</b></div>`).join('')}</div>
+      <p class="need-how small">${n.about.method === 'Katch-McArdle' ? `Resting ${fmtInt(n.about.rest)} kcal from ${fmtDec(n.about.lean)} kg lean mass` : `Resting ${fmtInt(n.about.rest)} kcal from height, weight and age`}, × ${n.about.factor} for activity. Protein ${n.about.proteinPerKg} g per kg.</p>
+      <details class="need-more"><summary>Vitamins and minerals</summary><div class="need-grid">${MICRO_NEEDS.map((k) => `<div class="need"><span>${esc(NUTRIENT[k].label)}</span><b>${fmtDec(n.refs[k])} ${NUTRIENT[k].unit}</b></div>`).join('')}</div>
+        <p class="need-how small">EFSA values for a ${n.about.age}-year-old ${n.about.sex === 'female' ? 'woman' : 'man'}.</p></details>`
+    : '<p class="muted small">Fill these in and every food percentage becomes a share of what your body needs.</p>';
+  return settingsCard('scale', 'Body', `<form data-form="body">
+      <div class="grid2">
+        <label class="field"><span>Sex</span><select class="input" name="sex" required><option value="">Choose</option><option value="male"${b.sex === 'male' ? ' selected' : ''}>Male</option><option value="female"${b.sex === 'female' ? ' selected' : ''}>Female</option></select></label>
+        <label class="field"><span>Born</span><input class="input" type="date" name="birthDate" value="${esc(b.birthDate || '')}" required></label>
+      </div>
+      <div class="grid3">
+        <label class="field"><span>Height, cm</span><input class="input" name="heightCm" inputmode="decimal" value="${esc(b.heightCm ?? '')}" required></label>
+        <label class="field"><span>Weight, kg</span><input class="input" name="weightKg" inputmode="decimal" value="${esc(b.weightKg ?? '')}" required></label>
+        <label class="field"><span>Body fat, %</span><input class="input" name="bodyFat" inputmode="decimal" value="${esc(b.bodyFat ?? '')}" placeholder="Optional"></label>
+      </div>
+      <label class="field"><span>Activity</span><select class="input" name="activity" required><option value="">Choose</option>${opt(ACTIVITY, b.activity)}</select></label>
+      <label class="field"><span>Goal</span><select class="input" name="goal">${opt(GOALS, b.goal || 'keep')}</select></label>
+      <div class="form-actions"><button class="btn primary" type="submit">Save</button></div>
+    </form>
+    <div class="body-needs"><h4 class="need-h">Your daily needs</h4>${needs}</div>`, 'body');
+}
+
 // Sounds belong to the device, not the account: the choice is kept in this browser's storage (sound.js).
 function soundsCard() {
   return settingsCard('sound', 'Sounds', `<label class="switch-row"><span class="switch-text"><b>Play sounds on this device</b>
@@ -1158,7 +1189,8 @@ function viewSettings() {
   const sources = settingsCard('food', 'Data sources', `<div class="group flush">
       ${src('USDA FoodData Central', 'Generic foods and their nutrients', 'public domain')}
       ${src('Open Food Facts', 'Packaged products', '© Open Food Facts contributors, ODbL')}
-      ${src('EU reference intakes', 'The % RI on every label', 'Regulation (EU) 1169/2011, Annex XIII')}
+      ${src('Your daily needs', 'Energy: Katch-McArdle or Mifflin-St Jeor × activity; protein: ISSN position stand; vitamins and minerals: EFSA dietary reference values', '', '#/settings?section=body')}
+      ${src('EU reference intakes', 'The % RI until your body is set', 'Regulation (EU) 1169/2011, Annex XIII')}
       ${src('Nutri-Score', 'Grades A to E', 'Santé publique France')}
       ${src('NOVA', 'Processing groups 1 to 4', 'Monteiro et al., as given by Open Food Facts')}
       ${src('Recipe library', 'Written for Oath by AI, not kitchen-tested', '')}
@@ -1166,6 +1198,7 @@ function viewSettings() {
     </div>`, 'data-sources');
   shell(`${pageHead('Settings')}
     <div class="split"><div>
+      ${bodyCard()}
       ${connections}
       ${faceIdCard()}
       ${pushCard()}
@@ -1538,6 +1571,7 @@ async function load(route) {
       state.faceIdRegister = await api('POST', '/api/passkey/register/options', {}).then((options) => ({ options, at: Date.now() })).catch(() => null);
     }
     state.settings = await api('GET', '/api/settings');
+    state.body = await api('GET', '/api/body').catch(() => state.body);
     state.telegram = { ...(state.telegram || {}), ...(await api('GET', '/api/telegram')) };
     state.tokens = await api('GET', '/api/tokens');
     await refreshPushState();
@@ -2205,6 +2239,14 @@ $app.addEventListener('submit', async (e) => {
       if (patch.maxHp !== undefined && patch.maxHp < (state.settings?.maxHp ?? 0)
         && !confirm(`Lower max HP to ${patch.maxHp}? If you have more HP than that now, it comes down with it.`)) return;
       if (await act(() => api('PATCH', '/api/settings', patch), 'Rules saved. They apply from now on.')) await go();
+    } else if (kind === 'body') {
+      const r = await act(() => api('PUT', '/api/body', form2obj(form)));
+      if (r) {
+        state.body = r;
+        state.food = null;
+        toast(r.needs ? `Saved. You need about ${fmtInt(r.needs.refs.kcal)} kcal and ${r.needs.refs.protein} g of protein a day.` : 'Saved.');
+        render();
+      }
     } else if (kind === 'settings') {
       if (await act(() => api('PATCH', '/api/settings', form2obj(form)), 'Schedule saved.')) await go();
     } else if (kind === 'alerts') {

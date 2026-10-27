@@ -6,7 +6,8 @@ import { db } from './db.js';
 import { localNow, RuleError } from './engine.js';
 import { validDate } from './time.js';
 import { foodDay, foodHistory, HISTORY_SPANS } from './food.js';
-import { NUTRIENT } from '../public/nutrition.js';
+import { NUTRIENT, refOf } from '../public/nutrition.js';
+import { needRefs } from './body.js';
 import { aiEnabled, writeTake } from './coach.js';
 
 const DAY_KEYS = ['kcal', 'protein', 'carbs', 'sugars', 'fat', 'satfat', 'fibre', 'salt'];
@@ -15,14 +16,20 @@ const SLOT_WORDS = { breakfast: 'breakfast', lunch: 'lunch', dinner: 'dinner', s
 
 const num = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
 const fmt = (v, dec = 0) => (num(v) === null ? 'unknown' : Number(v.toFixed(dec)).toLocaleString('en-GB'));
-const pctOf = (k, v) => (num(v) !== null && NUTRIENT[k]?.ri ? Math.round((v / NUTRIENT[k].ri) * 100) : null);
+// 100% is his own daily need when his body is set (refs), else the EU reference intake.
+let refs = null;
+const pctOf = (k, v) => (num(v) !== null && refOf(k, refs) ? Math.round((v / refOf(k, refs)) * 100) : null);
+const PCT = () => (refs ? '% of his need' : '% RI');
+const REF_LINE = () => (refs
+  ? 'Percentages are of his own daily needs, worked out from his body profile: reach them for protein, fibre, vitamins and minerals; stay under them for sugars, saturates and salt. A "+" means at least that, as some items have no value.'
+  : 'RI is the EU reference intake for an average adult: a guide, not his target. A "+" means at least that, as some items have no value.');
 
 // "Protein 84 g (168% RI)"; a "+" marks a total missing some lines, so it is at least that.
 function amount(k, v, missing) {
   const x = NUTRIENT[k];
   if (num(v) === null) return `${x.label} unknown`;
   const p = pctOf(k, v);
-  return `${x.label} ${fmt(v, x.dec)}${missing ? '+' : ''} ${x.unit}${p === null ? '' : ` (${p}% RI)`}`;
+  return `${x.label} ${fmt(v, x.dec)}${missing ? '+' : ''} ${x.unit}${p === null ? '' : ` (${p}${PCT()})`}`;
 }
 
 function partOfDay(hour) {
@@ -45,6 +52,7 @@ function averagesLine(avg, keys = ['kcal', 'protein', 'fibre', 'sugars', 'salt']
 }
 
 async function dayFacts(date) {
+  refs = await needRefs();
   const { local, today } = await localNow();
   const d = await foodDay(date);
   const week = await foodHistory({ days: 7 });
@@ -62,7 +70,7 @@ async function dayFacts(date) {
     const t = d.total;
     lines.push(`Totals: ${DAY_KEYS.map((k) => amount(k, num(t[k]), t.missing?.[k])).join('; ')}.`);
     const micros = MICRO_KEYS.map((k) => [k, pctOf(k, num(t[k]))]).filter(([, p]) => p !== null);
-    if (micros.length) lines.push(`Vitamins and minerals, % of reference intake: ${micros.map(([k, p]) => `${NUTRIENT[k].label} ${p}%`).join(', ')}.`);
+    if (micros.length) lines.push(`Vitamins and minerals, ${refs ? '% of his need' : '% of reference intake'}:${micros.map(([k, p]) => `${NUTRIENT[k].label} ${p}%`).join(', ')}.`);
     const g = gradeLine(d.grades);
     if (g) lines.push(g);
     const caf = num(t.caffeine);
@@ -71,7 +79,7 @@ async function dayFacts(date) {
     lines.push(`Nothing logged ${isToday ? 'yet today' : 'that day'}.`);
   }
   if (week.loggedDays) lines.push(`This past week, today left out (${week.loggedDays} logged days): average ${averagesLine(week.avg)}.`);
-  lines.push('RI is the EU reference intake for an average adult: a guide, not his target. A "+" means at least that, as some items have no value.');
+  lines.push(REF_LINE());
   const ask = isToday
     ? 'Give your take on his food so far today, as if glancing at his diary with him: two to four short sentences. Say what stands out, good or not, and if it helps, one easy idea for the rest of the day. If it is early and little is logged, keep it brief and look ahead. Do not list every food or number. No greeting, no sign-off, no question.'
     : 'Give your take on what he ate that day, as if looking back at his diary with him: two to four short sentences. What stood out, good or not, and one easy idea for next time if there is one. No greeting, no sign-off, no question.';
@@ -79,6 +87,7 @@ async function dayFacts(date) {
 }
 
 async function trendFacts(days) {
+  refs = await needRefs();
   const h = await foodHistory({ days });
   if (!h.loggedDays && !h.series.some((s) => s.logged)) return null;
   const lines = [`The Food Trends screen: the last ${h.days} days, ${h.loggedDays} of them fully logged (today is left out of averages).`];
@@ -86,7 +95,7 @@ async function trendFacts(days) {
   if (h.prev?.loggedDays) lines.push(`The ${h.days} days before (${h.prev.loggedDays} logged): ${averagesLine(h.prev.avg)}.`);
   const cov = (h.coverage || []).filter((c) => ['mineral', 'vitamin'].includes(c.group) && c.pct !== null);
   const low = [...cov].sort((a, b) => a.pct - b.pct).slice(0, 4);
-  if (low.length) lines.push(`Lowest vitamins and minerals, % RI on an average day: ${low.map((c) => `${c.label} ${Math.round(c.pct)}%`).join(', ')}.`);
+  if (low.length) lines.push(`Lowest vitamins and minerals, ${PCT()} on an average day: ${low.map((c) => `${c.label} ${Math.round(c.pct)}%`).join(', ')}.`);
   const g = gradeLine(h.grades?.total);
   if (g) lines.push(g);
   if (h.rank?.best?.length) lines.push(`Best graded foods he ate: ${h.rank.best.map((f) => `${f.name} (${f.grade.toUpperCase()}, ${f.count}x)`).join(', ')}.`);
@@ -96,7 +105,7 @@ async function trendFacts(days) {
     if (top.length) lines.push(`Top ${NUTRIENT[k].label.toLowerCase()} sources: ${top.map((s) => `${s.name} ${s.share === null ? '' : `${Math.round(s.share)}%`}`.trim()).join(', ')}.`);
   }
   if (h.top?.length) lines.push(`Most logged: ${h.top.map((f) => `${f.name} (${f.count}x)`).join(', ')}.`);
-  lines.push('RI is the EU reference intake for an average adult: a guide, not his target. A "+" means at least that, as some items have no value.');
+  lines.push(REF_LINE());
   const ask = `Give your take on how he has been eating over these ${h.days} days, as a friend looking at the charts with him: three to five short sentences. The pattern, what is going well, and one or two concrete ideas built on foods he already eats. A number or two, not all of them. No greeting, no sign-off, no question.`;
   return { facts: lines.join('\n'), ask, date: h.today };
 }

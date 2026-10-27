@@ -8,6 +8,7 @@ import { listGoals } from './goals.js';
 import { busyMinutes, calendarForCoach, eventsForDate } from './calendar.js';
 import { businessForCoach } from './business.js';
 import { foodForCoach } from './food.js';
+import { bodyForCoach } from './body.js';
 
 // health.js is imported lazily: state > health > push > telegram > state would be a cycle.
 const health = () => import('./health.js');
@@ -520,6 +521,8 @@ export async function coachSnapshot() {
   if (calendarText) lines.push(calendarText);
   const foodText = await foodForCoach().catch(() => '');
   if (foodText) lines.push(foodText);
+  const bodyText = await bodyForCoach().catch(() => '');
+  if (bodyText) lines.push(bodyText);
   const goals = await listGoals();
   if (goals.length) {
     lines.push('Active goals (WOOP):');
