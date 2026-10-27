@@ -943,20 +943,30 @@ export async function editEntry(id, input) {
   return { entry: shapeEntry(r) };
 }
 
-// Copies a day's entries (or one meal of it) to another day, as new entries.
-export async function repeatDay({ from, to, slot = null }) {
-  const { today } = await localNow();
+// Copies a day's entries (or one meal of it) to another day, as new entries at the same times of day.
+// With an `id` from the phone (an offline copy is replayed later), each copy's id is worked out from it
+// and the entry copied, so the same copy sent twice lands once.
+export async function repeatDay({ from, to, slot = null, id = null }) {
+  const { today, tz } = await localNow();
   const target = to || today;
   if (!validDate(from) || !validDate(target)) throw new RuleError('Bad date.');
+  if (id && !idOk(id)) throw new RuleError('Bad entry id.');
   const sql = db();
   const rows = await sql`select * from food_log where date = ${from} and deleted_at is null ${slot ? sql`and slot = ${slot}` : sql``} order by at`;
   if (!rows.length) throw new RuleError('Nothing was logged then.');
+  const copyId = (r) => (id ? crypto.createHash('sha256').update(`${id}:${r.id}`).digest('base64url').slice(0, 32) : newId());
+  // A copy into the same day must not copy its own copies when it is sent again.
+  const mine = id ? new Set(rows.map(copyId)) : new Set();
   const out = [];
+  let duplicate = false;
   for (const r of rows) {
-    const e = { ...r, id: newId(), date: target, at: ts(), source: 'repeat', plan_id: null };
-    out.push((await insertEntry(e)).entry);
+    if (mine.has(r.id)) continue;
+    const at = DateTime.fromISO(`${target}T${DateTime.fromJSDate(r.at, { zone: tz }).toFormat('HH:mm:ss')}`, { zone: tz }).toUTC().toJSDate();
+    const res = await insertEntry({ ...r, id: copyId(r), date: target, at, source: 'repeat', plan_id: null });
+    duplicate = duplicate || res.duplicate;
+    out.push(res.entry);
   }
-  return { entries: out };
+  return { entries: out, ...(duplicate ? { duplicate: true } : {}) };
 }
 
 // ---------- Grades: Nutri-Score, NOVA and tags for what was eaten ----------
@@ -1918,7 +1928,7 @@ foodApi.post('/food/sync', async (c) => {
   const results = [];
   for (const op of ops.slice(0, 200)) {
     try {
-      const fn = { log: logFood, quick: quickAdd, meal: logMeal, recipe: logRecipe, batch: logBatch }[op.op];
+      const fn = { log: logFood, quick: quickAdd, meal: logMeal, recipe: logRecipe, batch: logBatch, repeat: repeatDay }[op.op];
       if (op.op === 'delete') results.push({ id: op.id, ok: true, ...(await deleteEntry(op.data?.id || op.id)) });
       else if (fn) results.push({ id: op.id, ok: true, ...(await fn(op.data || {})) });
       else results.push({ id: op.id, ok: false, error: 'Unknown step.' });

@@ -10,6 +10,10 @@ import { NUTRIENT, NUTRIENTS, line, total, scale, show, unitsFor, round, amountT
 // Grades and tags come from the shared maths when it has them.
 import * as N from './nutrition.js';
 import { richHtml } from './rich.js';
+// One-tap logging, water, what is left today, per-meal copy and add, swipe to remove.
+import {
+  initUsual, loadUsual, usualHtml, usualClick, usualSubmit, usualSheet, undoLog, waterHtml, leftHtml, slotAction, emptySlotsHtml,
+} from './food-usual.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 
@@ -51,7 +55,7 @@ const store = {
 const QUEUE = 'oath.foodQueue';
 const queue = () => store.get(QUEUE, []);
 
-const PATHS = { log: '/api/food/log', quick: '/api/food/quick', meal: '/api/food/meals/log', recipe: '/api/food/recipes/log', batch: '/api/food/batches/log' };
+const PATHS = { log: '/api/food/log', quick: '/api/food/quick', meal: '/api/food/meals/log', recipe: '/api/food/recipes/log', batch: '/api/food/batches/log', repeat: '/api/food/repeat' };
 
 // Every diary write carries an id made here, so a write sent again (or replayed after being offline)
 // lands once. Without a connection it waits on the phone and syncs later.
@@ -102,6 +106,7 @@ async function loadDay() {
 }
 
 async function loadExtras() {
+  loadUsual(); // in the background: the chips draw from the phone's copy until it lands
   const [recent, drinks, batches, week] = await Promise.all([
     api('GET', '/api/food/recent').then((r) => r.items).catch(() => null),
     api('GET', '/api/food/recent?drinks=1').then((r) => r.items).catch(() => null),
@@ -556,7 +561,7 @@ function dateLabel(d) {
 function entryRow(e) {
   const fl = filledSet(e.filled);
   const est = e.estimate || fl.has('kcal');
-  return `<button class="li li-plain food-row" data-action="food-entry" data-eid="${esc(e.id)}">
+  return `<button class="li li-plain food-row" data-action="food-entry" data-eid="${esc(e.id)}" data-swipe="remove">
     ${gradeDot(e.grade)}
     <span class="li-body"><span class="li-title">${esc(e.name)}${e.brand ? ` <small class="faint">${esc(e.brand)}</small>` : ''}</span>
     <span class="li-sub">${esc(e.amountText || '')}${topTag(e.tags) ? ` ${tagMini(topTag(e.tags))}` : ''}</span></span>
@@ -617,15 +622,15 @@ function viewDiary() {
   const slots = SLOTS.map(([s, label]) => {
     const sl = d.slots.find((x) => x.slot === s);
     if (!sl?.entries.length) return '';
-    return `<section class="section fslot"><div class="gh"><h2>${label}</h2><span class="gh-count">${kcal(sl.total)}</span></div>${mealBar(sl.total, num(t.kcal))}<div class="group">${sl.entries.map(entryRow).join('')}</div></section>`;
+    return `<section class="section fslot"><div class="gh"><h2>${label}</h2><span class="gh-side"><span class="gh-count">${kcal(sl.total)}</span>${slotAction(d, s)}</span></div>${mealBar(sl.total, num(t.kcal))}<div class="group">${sl.entries.map(entryRow).join('')}</div></section>`;
   }).join('');
-  const undo = F.undo ? `<div class="banner food-undo"><span>Removed ${esc(F.undo.name)}.</span><button class="btn tinted small" data-action="food-undo">Undo</button></div>` : '';
+  const undo = F.undo ? `<div class="banner food-undo"><span>${F.undo.verb || 'Removed'} ${esc(F.undo.name)}.</span><button class="btn tinted small" data-action="food-undo">Undo</button></div>` : '';
   const empty = !d.entries.length ? `<div class="card fempty"><p>Nothing logged${d.today ? ' yet' : ''}</p></div>` : '';
   const offline = F.offline ? `<div class="banner offline">${icon('clock')}<span><b>Offline.</b> New entries sync later.</span></div>` : '';
   const repeat = d.today ? `<div class="form-actions food-repeat"><button class="btn tinted small" data-action="food-repeat">${icon('review')}Repeat yesterday</button></div>` : '';
   const typing = document.activeElement?.matches?.('[data-food-text]');
   ctx.shell(`${head}${offline}${undo}<div class="split fdiary${anim}">
-    <div class="fcol fcol-a"><div class="fd-cap">${captureHtml()}${takeHtml('day')}</div><div class="fd-meals">${pendingRows(d.date)}${slots}${empty}${repeat}</div></div>
+    <div class="fcol fcol-a"><div class="fd-cap">${captureHtml()}${takeHtml('day')}</div><div class="fd-meals">${pendingRows(d.date)}${slots}${empty}${emptySlotsHtml(d)}${repeat}</div></div>
     <div class="fcol fcol-b"><div class="fd-sum">${daySummary(d)}</div><div class="fd-side">${trendPreview(F.week)}${plansHtml(d.plans)}${batchesHtml(F.batches)}</div></div>
     </div>${sheetHtml()}`);
   if (typing && !state.foodSheet) {
@@ -650,6 +655,7 @@ function captureHtml() {
       <textarea id="food-text" class="fcap-input" name="text" rows="1" maxlength="600" placeholder="What did you eat?" data-food-text enterkeyhint="send" autocomplete="off">${esc(f().text || '')}</textarea>
       <button class="fcap-send" type="submit" aria-label="Work it out">${icon('send')}</button>
     </form>
+    ${usualHtml()}
     <div class="fcap-tools" role="group" aria-label="More ways to log">${tools.map(([a, ic, l, extra]) => `<button type="button" class="fcap-tool" data-action="${a}"${extra}>${icon(ic)}<span>${l}</span></button>`).join('')}</div>
     ${trayHtml(f().recent)}
   </section>`;
@@ -673,21 +679,17 @@ function daySummary(d) {
   }).join('')}</div>`;
   const extra = [['sugars'], ['satfat'], ['salt'], ['fibre'], ['caffeine'], ['alcohol']];
   const facts = `<dl class="fday-strip">${extra.map(([k]) => `<div><dt>${shortLabel(k)}</dt><dd>${val(t, k, fl)}</dd></div>`).join('')}</dl>`;
-  // Water from drinks against a reference (35 ml per kg, else 2,000 ml). No drinks logged is "—", not none.
-  const wref = N.drinksRef(needs());
-  const ml = num(d.drinksMl) > 0 ? d.drinksMl : null;
-  const wp = ml === null ? null : (ml / wref) * 100;
-  const water = `<div class="fwater"><p class="fwater-head"><span class="fday-k">Water from drinks</span>
-      <span class="fwater-v"><b>${ml === null ? '—' : fmtN(ml)}</b> of ${fmtN(wref)} ml ref${wp === null ? '' : ` · ${fmtN(wp)}%`}</span></p>
-    <span class="fwater-bar" role="img" aria-label="${esc(`Water from drinks: ${ml === null ? 'none logged' : `${fmtN(ml)} ml`}, reference ${fmtN(wref)} ml`)}"><i style="--p:${Math.min(100, wp || 0).toFixed(1)}"></i></span></div>`;
+  // Water from drinks against a reference (35 ml per kg, else 2,000 ml), with one-tap water on today.
+  const water = waterHtml(d);
   return `<section class="card fday" aria-label="${esc(dateLabel(d))}">
     <div class="fday-head"><h2>${esc(dateLabel(d))}</h2><div class="fday-nav">
       <button class="icon-btn" data-action="food-day" data-step="-1" aria-label="Previous day">${icon('back')}</button>
       <button class="icon-btn" data-action="food-day" data-step="1" aria-label="Next day"${d.today ? ' disabled' : ''}>${icon('chevron')}</button></div></div>
+    ${leftHtml(d)}
     <div class="fday-main">${donut(t, { size: 112, sw: 12, center, label: `${show(t, 'kcal')}, energy from` })}<dl class="fmac">${rows}</dl></div>
     ${has ? `<div class="fday-sec"><p class="fday-k">${needs() ? 'Your daily needs' : 'Reference intake'}</p>${micros}</div>` : ''}
     ${has && gradeMix(d.grades) ? `<div class="fday-sec"><p class="fday-k">Nutri-Score</p>${gradeMix(d.grades)}</div>` : ''}
-    ${has ? `<div class="fday-sec">${water}${facts}</div>` : ''}
+    ${has ? `<div class="fday-sec">${water}${facts}</div>` : d.today ? `<div class="fday-sec">${water}</div>` : ''}
     ${has ? `<div class="fday-foot">${infoBtn('day')}<button class="gh-link" data-action="food-daynut">All nutrients${icon('chevron')}</button></div>${infoLine('day')}` : ''}
   </section>`;
 }
@@ -1013,7 +1015,8 @@ function sheetHtml() {
   const s = state.foodSheet;
   if (!s) return '';
   switch (s.kind) {
-    case 'search': return sheetWrap(s.pick ? 'Choose a food' : s.drinks ? 'Drinks' : 'Search', searchBody(s), 'tall');
+    case 'search': return sheetWrap(s.pick ? 'Choose a food' : s.slot ? `Add to ${SLOT[s.slot].toLowerCase()}` : s.drinks ? 'Drinks' : 'Search', searchBody(s), 'tall');
+    case 'usual': return usualSheet(s, sheetWrap);
     case 'food': return sheetWrap(s.item.name, foodBody(s), 'tall');
     case 'quick': return sheetWrap('Quick add', quickBody(s));
     case 'custom': return sheetWrap(s.fromLabel ? 'Check the label' : 'A food of your own', customBody(s), 'tall');
@@ -1568,7 +1571,8 @@ async function pickItem(key) {
   const s = state.foodSheet;
   const item = await itemFor(key);
   const d = defaults(item);
-  openSheet({ kind: 'food', item, qty: d.qty, unit: d.unit, pick: s?.pick || null, back: s?.pick ? s.back : null });
+  // A search opened from a meal's "+" keeps that meal for the log.
+  openSheet({ kind: 'food', item, qty: d.qty, unit: d.unit, pick: s?.pick || null, back: s?.pick ? s.back : null, slot: s?.slot });
 }
 
 function backToBuilder(s, mutate) {
@@ -1668,6 +1672,7 @@ function settle(el) {
 
 export async function foodClick(a, el) {
   if (!a.startsWith('food-')) return false;
+  if (await usualClick(a, el)) return true;
   const s = state.foodSheet;
   const F = f();
   switch (a) {
@@ -1714,7 +1719,7 @@ export async function foodClick(a, el) {
       openSheet({ kind: 'search', q: '', drinks: el.dataset.drinks === '1', results: null });
       return true;
     case 'food-quick':
-      openSheet({ kind: 'quick' });
+      openSheet({ kind: 'quick', slot: s?.slot });
       return true;
     case 'food-custom':
       openSheet({ kind: 'custom', draft: el.dataset.fromPhoto && s?.result ? { name: [s.result.read?.name, s.result.read?.variant].filter(Boolean).join(' '), brand: s.result.read?.brand || '', barcode: s.result.barcode || '', pack: s.result.read?.pack_size ? { size: s.result.read.pack_size, count: s.result.read.pack_count } : null, basis: s.result.read?.pack_unit === 'ml' ? 'ml' : 'g' } : { name: s?.q || '' } });
@@ -1789,6 +1794,10 @@ export async function foodClick(a, el) {
     case 'food-undo': {
       const u = F.undo;
       F.undo = null;
+      if (u?.kind === 'log') {
+        await undoLog(u);
+        return true;
+      }
       if (u && await act(() => api('POST', `/api/food/log/${enc(u.id)}/restore`, {}), 'Back in the diary.')) await refresh();
       return true;
     }
@@ -2047,6 +2056,7 @@ async function finishPick(s, qty, unit) {
 
 export async function foodSubmit(kind, form) {
   if (!kind.startsWith('food-')) return false;
+  if (await usualSubmit(kind, form)) return true;
   const s = state.foodSheet;
   const o = form2obj(form);
   switch (kind) {
@@ -2370,4 +2380,8 @@ export function initFood(c) {
   $app.addEventListener('change', onChange);
   $app.addEventListener('keydown', onKey);
   window.addEventListener('online', () => flushFood());
+  initUsual({
+    f, store, queue, QUEUE, foodPost, uuid, itemFor, openSheet, slotSelect, unitOptions, SLOT, SLOTS, click: foodClick,
+    refresh: () => refresh(), render: () => ctx.render(),
+  });
 }
