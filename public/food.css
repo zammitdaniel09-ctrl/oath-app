@@ -77,6 +77,15 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
   scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-padding-inline: var(--gutter);
 }
 .fcap-tools::-webkit-scrollbar { display: none; }
+/* The tools and the tray run to the screen edge; they fade on the side with more to see (app.css). */
+.fcap-tools, .fcap .tray {
+  --fade-r: 28px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+}
+@supports (animation-timeline: scroll()) {
+  .fcap-tools, .fcap .tray { --fade-r: 0px; animation: edge-fade linear both !important; animation-timeline: scroll(self inline) !important; }
+}
 .fcap-tool {
   flex: none; display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 14px 0 11px; border: 0; border-radius: 999px;
   background: var(--raised); color: var(--text); font: inherit; font-size: 0.875rem; font-weight: 620; cursor: pointer; white-space: nowrap;
@@ -87,7 +96,7 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .fcap-tool:active { transform: scale(0.95); transition: transform var(--t-press) var(--ease); }
 @media (hover: hover) { .fcap-tool:hover { background: var(--raised-hover); } }
 .fcap .tray { margin-top: 8px; }
-.fcap .tray-chip { min-height: 48px; padding: 7px 13px; border-radius: 14px; background: var(--card); }
+.fcap .tray-chip { min-height: 48px; padding: 7px 13px; border-radius: var(--r-inset); background: var(--card); }
 .meal-tools { margin-top: 14px; }
 
 /* ---------- The day: ring and macros, reference intakes, grades, the rest in a strip ---------- */
@@ -161,7 +170,7 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .fempty { margin-top: 12px; padding: 22px var(--pad); text-align: center; color: var(--text-2); }
 
 /* The link to Trends. */
-.ftrend { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 14px 16px; }
+.ftrend { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: var(--pad-sm); }
 .ftrend-bars { display: block; overflow: visible; }
 .ftrend-words { display: grid; gap: 2px; min-width: 0; }
 .ftrend-words b { font-size: 1.25rem; font-weight: 740; letter-spacing: -0.02em; }
@@ -171,7 +180,7 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 /* ---------- Grades: Nutri-Score, NOVA, the grade mix ---------- */
 
 .ns-dot {
-  display: inline-grid; place-items: center; justify-content: center; align-content: center; flex: none; width: 22px; height: 22px; border-radius: 7px;
+  display: inline-grid; place-items: center; justify-content: center; align-content: center; flex: none; width: 22px; height: 22px; border-radius: var(--r-badge);
   font-size: 0.75rem; font-weight: 800; line-height: 1; color: #fff; letter-spacing: 0;
 }
 .ns-dot.sm { width: 16px; height: 16px; border-radius: 5px; font-size: 0.625rem; }
@@ -185,7 +194,7 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .gx-none { background: var(--hatch); box-shadow: inset 0 0 0 1px rgba(138, 144, 156, 0.6); }
 
 /* As on packs: five letters, the food's own one raised and ringed. */
-.nscore { display: inline-grid; gap: 3px; padding: 6px 8px 7px; border-radius: 12px; background: var(--inset); box-shadow: inset 0 0 0 1px var(--line); }
+.nscore { display: inline-grid; gap: 3px; padding: 6px 8px 7px; border-radius: var(--r-ctl); background: var(--inset); box-shadow: inset 0 0 0 1px var(--line); }
 .nscore-name { font-size: 0.5625rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); }
 .nscore-row { display: flex; align-items: center; }
 .nscore-row i {
@@ -194,12 +203,12 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .nscore-row i:first-child { border-radius: 6px 0 0 6px; }
 .nscore-row i:last-child { border-radius: 0 6px 6px 0; }
 .nscore-row i.on {
-  position: relative; z-index: 1; width: 28px; height: 30px; margin: -4px -2px; border-radius: 8px; opacity: 1; font-size: 1rem; color: #fff;
+  position: relative; z-index: 1; width: 28px; height: 30px; margin: -4px -2px; border-radius: var(--r-badge); opacity: 1; font-size: 1rem; color: #fff;
   box-shadow: 0 0 0 2px var(--inset), 0 0 0 3.5px rgba(255, 255, 255, 0.85), 0 6px 14px -6px rgba(0, 0, 0, 0.9);
 }
 .nscore-row i.on.ns-c, .nscore-row i.on.ns-b { color: #1d2105; }
 .nova {
-  display: inline-grid; justify-items: center; align-content: center; gap: 1px; min-width: 42px; height: 50px; padding: 0 8px; border-radius: 12px;
+  display: inline-grid; justify-items: center; align-content: center; gap: 1px; min-width: 42px; height: 50px; padding: 0 8px; border-radius: var(--r-ctl);
   background: var(--inset); box-shadow: inset 0 0 0 1px var(--line);
 }
 .nova small { font-size: 0.5625rem; font-weight: 800; letter-spacing: 0.12em; color: var(--text-3); }
@@ -337,12 +346,12 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .ftr-span { margin-top: 10px; }
 .ftr-span button { flex: 0 0 auto; min-width: 82px; white-space: nowrap; }
 .fkpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
-.fkpi { display: grid; gap: 2px; min-width: 0; padding: 14px 16px; border-radius: var(--r-tile); background: var(--card); box-shadow: var(--rim); }
+.fkpi { display: grid; gap: 2px; min-width: 0; padding: var(--pad-sm); border-radius: var(--r-tile); background: var(--card); box-shadow: var(--rim); }
 .fkpi b { font-size: 1.5rem; font-weight: 740; letter-spacing: -0.025em; line-height: 1.15; }
 .fkpi b small { margin-left: 1px; font-size: 0.875rem; font-weight: 600; letter-spacing: 0; color: var(--text-3); }
 .fkpi span { font-size: 0.8125rem; color: var(--text-2); }
 .ftr-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 12px; }
-.fcard { margin-top: 0; padding: 16px 18px; min-width: 0; }
+.fcard { margin-top: 0; padding: var(--pad); min-width: 0; }
 .fcard-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 14px; }
 .fcard-head h2 { font-size: 1.0625rem; font-weight: 680; letter-spacing: -0.01em; }
 .fcard-side { display: inline-flex; flex-wrap: wrap; gap: 4px 12px; font-size: 0.8125rem; color: var(--text-2); }
@@ -473,12 +482,10 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
   .fmicro { gap: 10px; }
   .ftrend { grid-template-columns: 84px minmax(0, 1fr) auto; gap: 12px; }
   .ftrend-bars { width: 84px; }
-  .fcard { padding: 14px; }
   .fcmp-row { grid-template-columns: 60px minmax(0, 1fr) 50px; gap: 8px; }
   .rirow { grid-template-columns: 78px minmax(0, 1fr) 46px; gap: 8px; }
   .nf-cols, .nf-row { grid-template-columns: minmax(0, 1fr) auto 74px; gap: 8px; }
   .nf-ri { grid-template-columns: minmax(0, 1fr) 34px; }
-  .fkpi { padding: 12px 14px; }
   .fkpi b { font-size: 1.3125rem; }
 }
 
@@ -522,7 +529,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 /* ---------- The coach's take: a few lines on the day, or on the period in Trends ---------- */
 
 .ftake {
-  margin-top: 14px; padding: 13px 16px 15px; border-radius: 20px;
+  margin-top: 14px; padding: var(--pad-sm) var(--pad); border-radius: var(--r-card);
   background: linear-gradient(180deg, rgba(225, 6, 0, 0.075), rgba(225, 6, 0, 0.015) 70%), var(--card);
   box-shadow: var(--rim);
 }

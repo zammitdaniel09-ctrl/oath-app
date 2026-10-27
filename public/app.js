@@ -10,32 +10,34 @@ import * as motion from './motion.js';
 import { richHtml } from './rich.js';
 import { ACTIVITY, GOALS, NUTRIENT } from './nutrition.js';
 import { parseCapture } from './parse.js';
-import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
-import { initData, loadDashboard, viewDashboard, dataClick, dataSubmit, AUTO_LABELS, autoValue } from './data.js';
+import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit, goalsBody, goalsHref } from './goals.js';
+import { initData, loadHealth, viewHealth, dataClick, dataSubmit, AUTO_LABELS, autoValue } from './data.js';
 import { initFood, loadFood, viewFood, foodClick, foodSubmit, loadFoodToday } from './food.js';
 import { initToday, ringHero, overview, nextTile, afterToday } from './today.js';
 import { initCalendar, loadCalendar, viewCalendar, calendarClick, calendarSubmit } from './calendar.js';
 
 // ---------- Shell ----------
 
-// Five tabs on the phone with Food raised in the middle; Dashboard and Calendar join them in the
-// sidebar. Dashboard is an icon in Today's header on the phone, and Calendar a link in its schedule.
+// Five tabs on the phone with Food raised in the middle; Goals and Health join them in the sidebar.
+// On the phone Goals is a segment of Plan, and Health an icon in Today's header.
 const TABS = [
   ['today', 'Today', 'today'],
-  ['calendar', 'Calendar', 'calendar', 'wide'],
   ['plan', 'Plan', 'plan'],
+  ['goals', 'Goals', 'goals', 'wide'],
   ['food', 'Food', 'food', 'centre'],
-  ['goals', 'Goals', 'goals'],
-  ['dashboard', 'Dashboard', 'dashboard', 'wide'],
+  ['calendar', 'Calendar', 'calendar'],
+  ['health', 'Health', 'heart', 'wide'],
   ['coach', 'Coach', 'coach'],
 ];
 const WIDE_EXTRA = [['review', 'Review', 'review'], ['settings', 'Settings', 'settings']];
-const ROUTES = ['today', 'calendar', 'plan', 'food', 'goals', 'dashboard', 'coach', 'review', 'settings'];
+const ROUTES = ['today', 'calendar', 'plan', 'food', 'goals', 'health', 'coach', 'review', 'settings'];
 
 function shell(inner) {
-  // One selected destination: on the phone Dashboard, Calendar and Review sit under Today; the sidebar has its own rows.
+  // One selected destination: on the phone Health and Review sit under Today and Goals under Plan;
+  // the sidebar has its own rows.
   const wide = window.matchMedia('(min-width: 900px)').matches;
-  const active = ['review', 'dashboard', 'calendar'].includes(state.route) && !wide ? 'today' : state.route;
+  const under = { review: 'today', health: 'today', goals: 'plan' };
+  const active = !wide && under[state.route] ? under[state.route] : state.route;
   // The Today tab carries a count of what is still open, so the next tick is never out of mind.
   const open = state.today?.progress?.open || 0;
   const badge = (id) => (id === 'today' && open ? `<b class="tab-badge"><span class="sr">, </span>${open}<span class="sr"> open</span></b>` : '');
@@ -200,22 +202,6 @@ function taskRow(k, t) {
   </div>`;
 }
 
-function hpBars(days, n = 14) {
-  const list = days.slice(-n);
-  if (!list.length) return '<p class="muted small">Your first day closes at midnight.</p>';
-  // 0 HP is drawn as a dashed baseline, so a death never looks like a little HP left.
-  const kind = (d) => (d.rest ? 'rest' : d.clean ? 'clean' : d.missed > 0 ? 'dirty' : '');
-  const bars = list.map((d) => `<i class="${kind(d)}${d.hp_end <= 0 ? ' zero' : ''}" style="height:${Math.max(0, Math.min(100, d.hp_end))}%" title="${fmtDay(d.date)}: ${d.hp_end} HP${d.rest ? ', rest day' : d.clean ? ', clean' : ''}"></i>`).join('');
-  const low = list.reduce((a, d) => (d.hp_end < a.hp_end ? d : a), list[0]);
-  const label = `HP at the end of each of the last ${list.length} days, from ${list[0].hp_end} on ${fmtDay(list[0].date)} to ${list[list.length - 1].hp_end} on ${fmtDay(list[list.length - 1].date)}. Lowest ${low.hp_end} on ${fmtDay(low.date)}.`;
-  const seen = new Set(list.map((d) => (d.hp_end <= 0 ? 'zero' : kind(d))));
-  const key = [['clean', 'Clean day'], ['dirty', 'Missed something'], ['rest', 'Rest day'], ['zero', '0 HP']]
-    .filter(([k]) => seen.has(k)).map(([k, l]) => `<span><i class="k-${k}"></i>${l}</span>`).join('');
-  return `<div class="bars" role="img" aria-label="${label}">${bars}</div>
-    <div class="bars-legend" aria-hidden="true"><span>${fmtDay(list[0].date)}</span><span>${fmtDay(list[list.length - 1].date)}</span></div>
-    ${key ? `<div class="bars-key" aria-hidden="true">${key}</div>` : ''}`;
-}
-
 const REASONS = ['Tired', 'No time', 'Don\'t feel like it', 'Waiting on something', 'Scared of it'];
 const DURATIONS = [15, 25, 45, 60];
 
@@ -242,13 +228,22 @@ function ringsCard(t) {
   return ringHero(t, state.foodToday, foot);
 }
 
-// The morning oath, compact: one choice from a list, when and where, and a tap. The habit list
-// below stays tickable whether or not the oath has been taken.
+// The morning oath on Today is one compact row; the oath itself opens in a sheet. The habit list
+// stays tickable whether or not the oath has been taken.
+function oathCard(t) {
+  const n = t.openDue.length;
+  return `<section class="card oath-mini">
+    <span class="oath-ic" aria-hidden="true">${icon('sun')}</span>
+    <span class="oath-mini-text"><b>Take today's oath</b><span>${n} ${n === 1 ? 'thing' : 'things'} open</span></span>
+    <button class="btn chrome small" data-action="oath-open">Swear</button>
+  </section>`;
+}
+
+// The oath in its sheet: one choice from a list, when and where, and a tap.
 function oathView(t) {
   const open = [...t.openDue].sort((a, b) => (a.dueAt || '9').localeCompare(b.dueAt || '9'));
   const options = open.map((i) => `<option value="${i.kind}:${i.id}">${esc(i.title)}, by ${dueLabel(i.deadline)}${i.heavy ? `, ${i.penalty} HP` : ''}</option>`).join('');
-  return `<section class="card oath">
-    <p class="eyebrow">${icon('sun')}Morning oath</p>
+  return `<div class="oath">
     <h2 class="oath-title">One thing that matters <em class="serif">most</em> today.</h2>
     <p class="oath-sub">${open.length} ${open.length === 1 ? 'thing stands' : 'things stand'} between you and a clean day.</p>
     ${t.lastNight ? `<p class="last-night">Last night you planned: <b>${esc(t.lastNight)}</b></p>` : ''}
@@ -259,7 +254,7 @@ function oathView(t) {
         <input class="input" name="intention" maxlength="300" autocomplete="off" required value="${esc(t.lastNight || '')}" placeholder="10:00 at my desk, phone in the kitchen"></label>
       <button type="submit" class="btn chrome big">Take the oath</button>
     </form>
-  </section>`;
+  </div>`;
 }
 
 // "Not now" needs a reason. The same form serves Up next and a row swiped to the left.
@@ -432,13 +427,24 @@ function nextOnCalendar(t) {
 }
 
 // Reminders only reach the phone from the Home Screen app with notifications allowed, so Today says so.
-function remindersPrompt() {
+function remindersChip() {
   if (isIOS() && !isStandalone()) {
-    return `<div class="banner">${icon('bell')}<span><b>Add Oath to your Home Screen</b> for reminders: Share, then Add to Home Screen.</span></div>`;
+    return `<span class="tchip" title="Share, then Add to Home Screen">${icon('bell')}Add to Home Screen for reminders</span>`;
   }
   const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
   if (!supported || Notification.permission !== 'default') return '';
-  return `<div class="banner">${icon('bell')}<span><b>Reminders are off</b></span><button class="btn small primary" data-action="push-on">Turn on</button></div>`;
+  return `<button class="tchip act" data-action="push-on">${icon('bell')}Turn on reminders</button>`;
+}
+
+// Offline, reminders, a rest day and a waiting review: one row of small chips under the rings.
+function statusChips(t) {
+  const chips = [
+    state.offline ? `<button class="tchip warn" data-action="retry">${icon('clock')}Offline, ${t.today === realToday(t) ? 'today' : fmtDay(t.today)} as of ${fmtClock(state.offline)}<b>Retry</b></button>` : '',
+    t.rest ? `<span class="tchip calm">${icon('moon')}Rest day</span>` : '',
+    t.reviewDue ? `<a class="tchip act" href="#/review">${icon('review')}Review ready${icon('chevron', 'chev')}</a>` : '',
+    remindersChip(),
+  ].filter(Boolean);
+  return chips.length ? `<div class="tchips" role="group" aria-label="Status">${chips.join('')}</div>` : '';
 }
 
 // One row per connection: green once it works, otherwise what is missing, linking to where to fix it.
@@ -474,24 +480,24 @@ function planCard(t) {
   </details>`;
 }
 
+// One row a task with the two common moves; next week and drop wait under More.
 function triageCard(t) {
   if (!t.triage.length) return '';
-  const rows = t.triage.slice(0, 5).map((k) => `<div class="triage-row">
-      <span class="li-title">${esc(k.title)}</span>
-      <span class="li-sub">${k.dueDate ? `Was due ${fmtDay(k.dueDate)}` : `No date for ${k.ageDays} days`}</span>
-      <div class="triage-actions" role="group" aria-label="Decide">
-        <button class="btn tinted small" data-action="triage" data-do="today" data-id="${k.id}">Today</button>
-        <button class="btn tinted small" data-action="triage" data-do="tomorrow" data-id="${k.id}">Tomorrow</button>
-        <button class="btn tinted small" data-action="triage" data-do="week" data-id="${k.id}">Next week</button>
-        <button class="btn plain small danger-text" data-action="triage" data-do="drop" data-id="${k.id}">Drop</button>
-      </div></div>`).join('');
+  const list = t.triage.slice(0, 5);
+  const row = (k, sub, btns) => `<div class="tri-row">
+      <span class="tri-text"><span class="li-title">${esc(k.title)}</span>${sub ? `<span class="li-sub">${sub}</span>` : ''}</span>
+      <span class="tri-btns" role="group" aria-label="${esc(k.title)}">${btns}</span></div>`;
+  const move = (k, to, label, cls = 'tinted') => `<button class="btn ${cls} small" data-action="triage" data-do="${to}" data-id="${k.id}">${label}</button>`;
+  const rows = list.map((k) => row(k, k.dueDate ? `Was due ${fmtDay(k.dueDate)}` : `No date for ${k.ageDays} days`,
+    `${move(k, 'today', 'Today')}${move(k, 'tomorrow', 'Tomorrow')}`)).join('');
+  const more = list.map((k) => row(k, '', `${move(k, 'week', 'Next week')}${move(k, 'drop', 'Drop', 'plain danger-text')}`)).join('');
   return `<section class="section"><div class="gh"><h2>Clear the backlog</h2><span class="gh-count">${t.triage.length} waiting</span></div>
-    <div class="card triage">${rows}</div></section>`;
+    <div class="group tri">${rows}<details class="tri-more"><summary>More</summary>${more}</details></div></section>`;
 }
 
 function goalsStrip(goals) {
   if (!goals?.length) return '';
-  return `<section class="section"><div class="gh"><h2>Goals</h2><a class="gh-link" href="#/goals">All goals</a></div>
+  return `<section class="section"><div class="gh"><h2>Goals</h2><a class="gh-link" href="${goalsHref()}">All goals</a></div>
     <div class="goal-mini">${goals.map((g) => `<a href="#/goals/${g.id}" class="goal-mini-row">
       ${miniRing(g.pct ?? 0, 34)}<span><span class="goal-mini-title">${esc(g.title)}</span><span class="goal-mini-label">${g.pct === null ? '' : `${g.pct}%, `}${esc(g.label)}</span></span>${icon('chevron', 'chev')}</a>`).join('')}</div></section>`;
 }
@@ -540,8 +546,9 @@ function nextDock(t) {
   if (!n || t.focus) return '';
   const l = n.dueAt ? left(n.dueAt) : null;
   // A redraw keeps the dock where it was, so it never blinks out and back in after a tick.
+  // Two short lines, the time left beside the label, so the dock and the tabs cover little of the day.
   return `<div class="next-dock u-${urgency(n.dueAt)}"${n.dueAt ? ` data-due="${n.dueAt}"` : ''} id="next-dock" role="region" aria-label="Up next" data-next="${n.kind}:${n.id}"${dockShown ? '' : ' hidden'}>
-    <span class="dock-text"><span class="dock-label">Up next</span><b>${esc(n.title)}</b>${l ? `<span class="dock-left ${l.cls}" data-left="${n.dueAt}">${l.text}</span>` : ''}</span>
+    <span class="dock-text"><span class="dock-label">Up next${l ? `<span class="dock-left ${l.cls}" data-left="${n.dueAt}">${l.text}</span>` : ''}</span><b>${esc(n.title)}</b></span>
     <button class="btn chrome small" data-action="now-done" data-kind="${n.kind}" data-id="${n.id}">${icon('check')}Done</button>
   </div>`;
 }
@@ -581,16 +588,11 @@ function viewToday() {
   const part = t.localHour < 12 ? 'Morning' : t.localHour < 18 ? 'Afternoon' : 'Evening';
   const head = pageHead(`${part}, <em>${esc(t.settings.ownerName || 'Daniel')}</em>`, {
     over: fmtDay(t.today, { weekday: 'long', day: 'numeric', month: 'long' }),
-    actions: `<span class="only-narrow-flex">${iconLink('#/dashboard', 'dashboard', 'Dashboard')}</span>${iconLink('#/settings', 'settings', 'Settings')}`,
+    actions: `<span class="only-narrow-flex">${iconLink('#/health', 'heart', 'Health')}</span>${iconLink('#/settings', 'settings', 'Settings')}`,
   });
-  const banners = [
-    state.offline ? `<div class="banner offline">${icon('clock')}<span><b>Offline.</b> ${t.today === realToday(t) ? 'Today' : fmtDay(t.today)} as of ${fmtClock(state.offline)}.</span><button class="btn small" data-action="retry">Retry</button></div>` : '',
-    remindersPrompt(),
-    t.rest ? `<div class="banner calm">${icon('moon')}<span><b>Rest day</b></span></div>` : '',
-    t.reviewDue ? `<a class="banner action" href="#/review">${icon('review')}<span><b>Weekly review is ready</b></span>${icon('chevron', 'chev')}</a>` : '',
-  ].join('');
+  const banners = statusChips(t);
 
-  // No oath yet and something is due: the oath card sits under Up next, and the lists stay tickable.
+  // No oath yet and something is due: the oath row sits under Up next, and the lists stay tickable.
   const needsOath = !t.plan && t.progress.open > 0;
 
   // The overview leads: the rings, then what is next, then the small charts. The lists follow.
@@ -637,7 +639,7 @@ function viewToday() {
       ${ringsCard(t)}
       ${banners}
       ${nowPanel(t)}
-      ${needsOath ? oathView(t) : ''}
+      ${needsOath ? oathCard(t) : ''}
       ${ov}
       ${askCoach('today')}
       ${t.plan ? capacityLine(t.capacity, t.settings) : ''}
@@ -777,20 +779,29 @@ function habitCard(h, p) {
     h.auto ? ['Health', `${fmtInt(h.auto.target)} ${(AUTO_LABELS[h.auto.metric] || {}).unit || ''}${h.auto.filter ? `, ${esc(h.auto.filter)}` : ''}`] : null,
     h.goalTitle ? ['Goal', `<a href="#/goals/${h.goalId}">${esc(h.goalTitle)}</a>`] : null,
   ].filter(Boolean);
-  return `<div class="card hcard${h.non_negotiable ? ' heavy' : ''}${h.archivedFrom ? ' leaving' : ''}">
+  // Compact by default: the history (the heatmap) opens from the strength ring or the History toggle,
+  // and Remove lives in the edit sheet.
+  const heat = heatmap(h.heat, p.today);
+  const open = Boolean(heat) && historyOpen(h.id);
+  const ringCls = `hcard-ring ${h.strength >= 80 ? 'strong' : h.strength >= 40 ? 'mid' : 'new'}`;
+  const ringInner = `${miniRing(h.strength, 42)}<b>${h.strength}<small>%</small></b>`;
+  const ring = heat
+    ? `<button class="${ringCls}" data-action="habit-history" data-id="${h.id}" aria-expanded="${open}" aria-controls="heat-${h.id}" aria-label="Strength ${h.strength}%, history">${ringInner}</button>`
+    : `<div class="${ringCls}" role="img" aria-label="Strength ${h.strength}%">${ringInner}</div>`;
+  return `<div class="card hcard${h.non_negotiable ? ' heavy' : ''}${h.archivedFrom ? ' leaving' : ''}${open ? ' history-open' : ''}" data-habit="${h.id}">
     <div class="hcard-top">
       <div class="hcard-text"><h3>${esc(h.name)}</h3>
-        <p class="li-sub">${sched}${h.non_negotiable ? ', <span class="bad">non-negotiable</span>' : ''}, minus ${h.penalty} HP</p></div>
-      <div class="hcard-ring ${h.strength >= 80 ? 'strong' : h.strength >= 40 ? 'mid' : 'new'}">${miniRing(h.strength, 48)}<b>${h.strength}<small>%</small></b></div>
+        <p class="li-sub">${sched}${h.non_negotiable ? ', <span class="bad">non-negotiable</span>' : ''}, minus ${h.penalty}&nbsp;HP</p></div>
+      ${ring}
     </div>
     ${facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}
-    ${heatmap(h.heat, p.today)}
+    ${heat ? `<div class="hcard-heat" id="heat-${h.id}"${open ? '' : ' hidden'}>${heat}</div>` : ''}
     ${pending}
     <div class="hcard-foot">${h.archivedFrom
       ? `<span class="small leaving">Leaves your list tomorrow. Today still counts.</span>
         <button class="btn tinted small" data-action="restore-habit" data-id="${h.id}">Keep it</button>`
       : `<span class="faint small">${building}${h.streak ? ` ${h.streak} ${weekly ? 'week' : 'day'} streak.` : ''}</span>
-        <span class="hcard-btns"><button class="btn plain small danger-text" data-action="remove-habit" data-id="${h.id}">Remove</button>
+        <span class="hcard-btns">${heat ? `<button class="btn plain small hist-btn" data-action="habit-history" data-id="${h.id}" aria-expanded="${open}" aria-controls="heat-${h.id}">History</button>` : ''}
         <button class="btn tinted small" data-action="sheet" data-kind="habit" data-id="${h.id}">Edit</button></span>`}</div>
   </div>`;
 }
@@ -834,13 +845,19 @@ function viewPlan() {
       <span class="li-body"><span class="li-title">${k.createdBy === 'vle' ? '<span class="tag uni">VLE</span>' : ''}${esc(k.title)}</span><span class="li-sub">${due}${extras ? `, ${extras}` : ''}</span></span>
       ${icon('chevron', 'chev')}</button>`;
   }).join('');
+  // Goals are Plan's third segment on the phone; the sidebar keeps its own Goals row.
+  const goals = state.goals || p.goals;
+  const segBtn = (id, label) => `<button role="tab" aria-selected="${tab === id}" data-action="plan-tab" data-tab="${id}">${label}</button>`;
   const seg = `<div class="seg plan-seg only-narrow-flex" role="tablist" aria-label="Show">
-      <button role="tab" aria-selected="${tab === 'habits'}" data-action="plan-tab" data-tab="habits">Habits</button>
-      <button role="tab" aria-selected="${tab === 'tasks'}" data-action="plan-tab" data-tab="tasks">Tasks</button>
+      ${segBtn('habits', 'Habits')}${segBtn('tasks', 'Tasks')}${segBtn('goals', 'Goals')}
     </div>`;
-  const add = `<button class="icon-btn accent" data-action="sheet" data-kind="${tab === 'tasks' ? 'task' : 'habit'}" aria-label="New ${tab === 'tasks' ? 'task' : 'habit'}">${icon('plus')}</button>`;
+  // Two columns from 1240px show habits and tasks, so + adds a habit there.
+  const add = tab === 'goals' && !window.matchMedia('(min-width: 1240px)').matches
+    ? `<a class="icon-btn accent" href="#/goals/new" aria-label="New goal">${icon('plus')}</a>`
+    : `<button class="icon-btn accent" data-action="sheet" data-kind="${tab === 'tasks' ? 'task' : 'habit'}" aria-label="New ${tab === 'tasks' ? 'task' : 'habit'}">${icon('plus')}</button>`;
+  const activeGoals = goals.filter((g) => g.status === 'active').length;
 
-  shell(`${pageHead('Plan', { over: `${p.habits.length} habits, ${p.tasks.length} open tasks`, actions: add })}
+  shell(`${pageHead('Plan', { over: `${p.habits.length} habits, ${p.tasks.length} tasks, ${activeGoals} ${activeGoals === 1 ? 'goal' : 'goals'}`, actions: add })}
     ${seg}
     ${askCoach('plan')}
     <div class="split plan-split tab-${tab}">
@@ -857,6 +874,7 @@ function viewPlan() {
         <div class="group">${quickAdd('plan-quick')}${tasks}</div>
       </section>
     </aside>
+    <div class="pane-goals">${goalsBody(goals, '<div class="gh"><h2>Goals</h2><a class="gh-link" href="#/goals/new">New goal</a></div>')}</div>
   </div>`);
 }
 
@@ -886,6 +904,14 @@ function sheetHtml() {
     if (!n) return '';
     title = 'Not now?';
     body = `<div class="dodge-sheet"><p class="dodge-title">${esc(n.title)}</p>${dodgeForm(n)}</div>`;
+  } else if (s.kind === 'oath') {
+    if (!state.today) return '';
+    title = 'Morning oath';
+    body = oathView(state.today);
+  } else if (s.kind === 'briefs') {
+    title = 'Briefs';
+    body = `<div class="group">${BRIEFS.map(([kind, ic, label]) => `<button class="li li-plain li-nav" data-action="brief" data-kind="${kind}">
+      <span class="li-ic">${icon(ic)}</span><span class="li-body"><span class="li-title">${label}</span></span>${icon('chevron', 'chev')}</button>`).join('')}</div>`;
   } else {
     return '';
   }
@@ -918,6 +944,9 @@ const TYPING = '<div class="msg assistant typing" role="status"><span class="sr"
 // One tap for the things most often asked.
 const QUICK = ['What\'s next?', 'Plan my day', 'How am I doing?', 'Log food'];
 
+// The briefs the coach writes on its own, on demand; they sit in a sheet behind one button.
+const BRIEFS = [['morning', 'sun', 'Morning brief'], ['midday', 'clock', 'Midday check'], ['evening', 'moon', 'Evening check']];
+
 function viewCoach() {
   const c = state.coach;
   if (!c) return shell(skeleton('Coach'));
@@ -925,13 +954,9 @@ function viewCoach() {
   const ask = state.query.get('ask') || '';
   const empty = emptyState({ icon: 'coach', title: 'Talk to your coach' });
   const quick = QUICK.map((q) => `<button type="button" class="qchip" data-action="coach-quick" data-text="${esc(q)}"${state.sending ? ' disabled' : ''}>${esc(q)}</button>`).join('');
-  shell(`${pageHead('Coach', { over: c.aiEnabled ? '' : 'Offline', actions: iconLink('#/settings', 'settings', 'Settings') })}
+  const briefs = `<button class="btn tinted small briefs-btn" data-action="briefs-open"${state.sending ? ' disabled' : ''}>${icon('sun')}Briefs</button>`;
+  shell(`${pageHead('Coach', { over: c.aiEnabled ? '' : 'Offline', actions: `${briefs}${iconLink('#/settings', 'settings', 'Settings')}` })}
       ${c.aiEnabled ? '' : '<div class="banner warn">The coach is offline: no Anthropic API key in Railway.</div>'}
-      <div class="brief-buttons">
-        <button class="btn tinted small" data-action="brief" data-kind="morning">${icon('sun')}Morning brief</button>
-        <button class="btn tinted small" data-action="brief" data-kind="midday">${icon('clock')}Midday check</button>
-        <button class="btn tinted small" data-action="brief" data-kind="evening">${icon('moon')}Evening check</button>
-      </div>
       <div class="chat" id="chat">${msgs || empty}${state.sending ? TYPING : ''}</div>
       <div class="composer-dock">
         <div class="quick-replies" role="group" aria-label="Quick replies">${quick}</div>
@@ -994,11 +1019,47 @@ function reviewCard(r) {
     </div></section>`;
 }
 
+// HP over the last 30 days as a filled line on a fixed 0 to max scale, deaths marked at 0.
+function hpArea(days, maxHp) {
+  if (days.length < 2) return '<p class="muted small">Not enough days yet</p>';
+  const w = 300;
+  const h = 84;
+  const step = w / (days.length - 1);
+  const y = (hp) => (h - 4 - (Math.max(0, hp) / maxHp) * (h - 10)).toFixed(1);
+  const pts = days.map((d, i) => `${(i * step).toFixed(1)} ${y(d.hp_end)}`);
+  const line = `M${pts.join(' L')}`;
+  const deaths = days.map((d, i) => (d.hp_end <= 0 ? `<line x1="${(i * step).toFixed(1)}" x2="${(i * step).toFixed(1)}" y1="0" y2="${h}" class="hp-death"/>` : '')).join('');
+  const low = days.reduce((a, d) => (d.hp_end < a.hp_end ? d : a), days[0]);
+  const label = `HP at the end of each of the last ${days.length} days, from ${days[0].hp_end} to ${days[days.length - 1].hp_end}, lowest ${low.hp_end} on ${fmtDay(low.date)}.`;
+  return `<svg class="hp-area" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="${label}">
+    <defs><linearGradient id="hp-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:rgba(225,6,0,0.45)"/><stop offset="1" style="stop-color:rgba(225,6,0,0)"/></linearGradient></defs>
+    ${deaths}<path d="${line} L${w} ${h} L0 ${h} Z" fill="url(#hp-fill)"/><path d="${line}" class="hp-line"/></svg>
+    <div class="bc-axis" aria-hidden="true"><span>${fmtDay(days[0].date)}</span><span class="last">${fmtDay(days[days.length - 1].date)}</span></div>`;
+}
+
+// The season at the head of the review: HP now and over 30 days, pardons, and the longest streaks.
+function seasonCard(s) {
+  if (!s) return '';
+  const g = s.game;
+  const streaks = s.streaks.map((x) => `<li><span class="li-ic">${icon('flame')}</span><span class="streak-name">${esc(x.name)}</span><b>${x.streak}</b><span class="faint small">${x.weekly ? (x.streak === 1 ? 'week' : 'weeks') : (x.streak === 1 ? 'day' : 'days')}</span></li>`).join('');
+  return `<section class="section season" id="season">
+    <div class="gh"><h2>Season ${g.season}</h2><span class="gh-count">Day ${s.seasonDay}${g.deaths ? `, ${g.deaths} ${g.deaths === 1 ? 'death' : 'deaths'} so far` : ''}</span></div>
+    <div class="card season-card${g.hp <= 30 ? ' low' : ''}">
+      <div class="season-top">
+        <div class="season-hp"><b data-count="season-hp">${g.hp}</b><span>of ${g.maxHp} HP</span></div>
+        <dl class="season-stats">
+          <div><dt>Pardons</dt><dd><b>${g.pardonsLeft}</b> left this month</dd></div>
+        </dl>
+      </div>
+      ${hpArea(s.days, g.maxHp)}
+      ${streaks ? `<p class="season-sub">Longest streaks</p><ul class="streaks">${streaks}</ul>` : ''}
+    </div>
+  </section>`;
+}
+
 function viewReview() {
   const r = state.review;
   if (!r) return shell(skeleton('Review'));
-  const g = r.game;
-  const days = [...r.days].reverse();
   const strengthRows = r.habitStrength.map((h) => `<div class="li li-plain"><span class="li-body"><span class="li-title">${esc(h.name)}</span><span class="li-sub">Kept ${h.kept14} of ${h.sched14} in 14 days</span></span><span class="li-side">${strengthChip(h.strength)}</span></div>`).join('');
   const dayRows = r.days.slice(0, 30).map((d) => `<tr><td>${fmtDay(d.date)}${d.rest ? ' <span class="faint">rest</span>' : ''}</td><td class="num">${d.kept}</td><td class="num">${d.missed ? `<span class="bad">${d.missed}</span>` : 0}</td><td class="num">${d.hp_end}${d.bonus ? ` <span class="faint">(+${d.bonus})</span>` : ''}</td></tr>`).join('');
   const missRows = r.misses.slice(0, 40).map((m) => `<div class="li li-plain">
@@ -1014,21 +1075,15 @@ function viewReview() {
 
   shell(`${pageHead('Review', { actions: iconLink('#/settings', 'settings', 'Settings') })}
     <div class="split"><div>
+      ${seasonCard(state.season)}
       ${reviewCard(r)}
       <section class="section"><div class="gh"><h2>This week so far</h2></div><div class="card">${weekStats(r.thisWeek)}</div></section>
       ${stale ? `<section class="section"><div class="gh"><h2>Clear the backlog</h2><span class="gh-count">${r.stale.length}</span></div><div class="card triage">${stale}</div></section>` : ''}
       <section class="section"><div class="gh"><h2>Habit strength</h2></div>
         ${strengthRows ? `<div class="group">${strengthRows}</div>` : emptyState({ icon: 'plan', title: 'No habits yet', small: true })}
       </section>
-      <section class="section"><div class="gh"><h2>HP, last 30 days</h2></div><div class="card">${hpBars(days, 30)}</div></section>
     </div><aside>
       ${goalsStrip(r.goals)}
-      <section class="section"><div class="gh"><h2>Ledger</h2></div>
-        <div class="stats">
-          <div class="stat"><b>${g.season}</b><span>Season</span></div>
-          <div class="stat"><b>${g.deaths}</b><span>${g.deaths === 1 ? 'Death' : 'Deaths'}</span></div>
-          <div class="stat"><b>${g.pardonsLeft}</b><span>Pardons left</span></div>
-        </div></section>
       <section class="section"><div class="gh"><h2>Days</h2></div>
         ${dayRows ? `<div class="card flush table-wrap"><table class="table"><thead><tr><th>Day</th><th class="num">Kept</th><th class="num">Missed</th><th class="num">HP</th></tr></thead><tbody>${dayRows}</tbody></table></div>` : '<div class="card muted">Your first day closes at midnight.</div>'}
       </section>
@@ -1179,9 +1234,9 @@ function viewSettings() {
   const connections = settingsCard('link', 'Your data', `
     <div class="group flush">
       ${state.setup ? setupRows(state.setup) : `
-      <a class="li li-plain li-nav" href="#/dashboard?section=health"><span class="li-ic">${icon('heart')}</span><span class="li-body"><span class="li-title">Apple Health</span><span class="li-sub">Steps, workouts, sleep, heart</span></span>${icon('chevron', 'chev')}</a>
-      <a class="li li-plain li-nav" href="#/dashboard?section=calendars"><span class="li-ic">${icon('calendar')}</span><span class="li-body"><span class="li-title">Calendars and VLE deadlines</span><span class="li-sub">Google, iCloud, Outlook, UM VLE</span></span>${icon('chevron', 'chev')}</a>`}
-      <a class="li li-plain li-nav" href="#/dashboard"><span class="li-ic">${icon('business')}</span><span class="li-body"><span class="li-title">Business sites</span><span class="li-sub">GoldenStraddler, Exposed FX Journal</span></span>${icon('chevron', 'chev')}</a>
+      <a class="li li-plain li-nav" href="#/health?section=health"><span class="li-ic">${icon('heart')}</span><span class="li-body"><span class="li-title">Apple Health</span><span class="li-sub">Steps, workouts, sleep, heart</span></span>${icon('chevron', 'chev')}</a>
+      <a class="li li-plain li-nav" href="#/health?section=calendars"><span class="li-ic">${icon('calendar')}</span><span class="li-body"><span class="li-title">Calendars and VLE deadlines</span><span class="li-sub">Google, iCloud, Outlook, UM VLE</span></span>${icon('chevron', 'chev')}</a>`}
+      <a class="li li-plain li-nav" href="#/health?section=business"><span class="li-ic">${icon('business')}</span><span class="li-body"><span class="li-title">Business sites</span><span class="li-sub">GoldenStraddler, Exposed FX Journal</span></span>${icon('chevron', 'chev')}</a>
     </div>
     <div class="form-actions"><a class="btn tinted" href="/api/export" download>${icon('download')}Download all my data</a></div>`);
   // Where the food numbers come from: credits and licences live here, not on the screens.
@@ -1554,10 +1609,16 @@ async function load(route) {
     if (!state.offline) loadFoodToday();
   }
   if (route === 'food') await loadFood();
-  if (route === 'plan') state.plan = await api('GET', '/api/plan');
+  // Plan holds the goals too, as its third segment.
+  if (route === 'plan') [state.plan] = await Promise.all([api('GET', '/api/plan'), loadGoals()]);
   if (route === 'coach') state.coach = await api('GET', '/api/coach');
-  if (route === 'review') state.review = await api('GET', '/api/review');
-  if (route === 'dashboard') await loadDashboard();
+  if (route === 'review') {
+    // The season (HP over 30 days, the longest streaks) heads the review.
+    const [r, season] = await Promise.all([api('GET', '/api/review'), api('GET', '/api/season').catch(() => null)]);
+    state.review = r;
+    state.season = season;
+  }
+  if (route === 'health') await loadHealth();
   if (route === 'calendar') await loadCalendar();
   if (route === 'goals') {
     if (state.param === 'new') return;
@@ -1585,7 +1646,7 @@ function render() {
     if (state.param) return viewGoal();
     return viewGoals();
   }
-  const views = { today: viewToday, calendar: viewCalendar, plan: viewPlan, food: viewFood, coach: viewCoach, review: viewReview, settings: viewSettings, dashboard: viewDashboard };
+  const views = { today: viewToday, calendar: viewCalendar, plan: viewPlan, food: viewFood, coach: viewCoach, review: viewReview, settings: viewSettings, health: viewHealth };
   (views[state.route] || viewToday)();
 }
 
@@ -1593,12 +1654,15 @@ function parseHash() {
   const raw = location.hash.replace(/^#\/?/, '');
   const [path, qs] = raw.split('?');
   const [route, param, param2] = (path || 'today').split('/');
-  state.route = ROUTES.includes(route) ? route : route === 'ledger' ? 'review' : route === 'health' ? 'dashboard' : 'today';
+  // The Dashboard became Health: old links and notifications land there, with their section.
+  if (route === 'dashboard') history.replaceState(null, '', `#/health${qs ? `?${qs}` : ''}`);
+  state.route = ROUTES.includes(route) ? route : route === 'ledger' ? 'review' : route === 'dashboard' ? 'health' : 'today';
   state.param = param || null;
   state.param2 = param2 ? decodeURIComponent(param2) : null;
   if (state.route !== 'food') state.foodSheet = null;
   if (state.route !== 'calendar') state.calSheet = null;
   state.query = new URLSearchParams(qs || '');
+  if (state.route === 'plan' && ['habits', 'tasks', 'goals'].includes(state.query.get('tab'))) state.planTab = state.query.get('tab');
 }
 
 // top: a new screen starts at the top (scrolled inside the transition, so the old screen leaves from
@@ -1899,6 +1963,47 @@ function closeSheet() {
   render();
 }
 
+// A habit's history opens from its strength ring or the History toggle, and stays as it was left.
+const shownHistory = new Map();
+function historyOpen(id) {
+  if (!shownHistory.has(id)) {
+    let open = false;
+    try { open = localStorage.getItem(`oath.history.${id}`) === '1'; } catch { /* storage unavailable */ }
+    shownHistory.set(id, open);
+  }
+  return shownHistory.get(id);
+}
+function toggleHistory(id) {
+  const open = !historyOpen(id);
+  shownHistory.set(id, open);
+  try { localStorage.setItem(`oath.history.${id}`, open ? '1' : '0'); } catch { /* storage unavailable */ }
+  const card = $app.querySelector(`.hcard[data-habit="${id}"]`);
+  if (!card) return;
+  card.classList.toggle('history-open', open);
+  card.querySelector('.hcard-heat').hidden = !open;
+  card.querySelectorAll('[data-action="habit-history"]').forEach((b) => b.setAttribute('aria-expanded', String(open)));
+}
+
+// Taps for the layout's own pieces: the oath and briefs sheets and a habit's history.
+async function layoutClick(a, el) {
+  if (a === 'oath-open' || a === 'briefs-open') {
+    state.sheet = { kind: a === 'oath-open' ? 'oath' : 'briefs' };
+    render();
+    return true;
+  }
+  // A brief asked for from its sheet: the sheet closes and the brief arrives in the chat as before.
+  if (a === 'brief' && state.sheet?.kind === 'briefs') {
+    state.sheet = null;
+    render();
+    return false;
+  }
+  if (a === 'habit-history') {
+    toggleHistory(Number(el.dataset.id));
+    return true;
+  }
+  return false;
+}
+
 $app.addEventListener('click', async (e) => {
   const el = e.target.closest('[data-action]');
   if (!el) return;
@@ -1908,6 +2013,7 @@ $app.addEventListener('click', async (e) => {
   if (await dataClick(a, el)) return;
   if (await foodClick(a, el)) return;
   if (await calendarClick(a, el)) return;
+  if (await layoutClick(a, el)) return;
   if (a === 'keep') {
     await keepHabit(el, id);
   } else if (a === 'keep-minimum') {
@@ -2297,6 +2403,7 @@ async function takeOath(form) {
   if (r) {
     haptic('success');
     toast('Sworn. Now do it.', false, 3500, true);
+    if (state.sheet?.kind === 'oath') state.sheet = null;
     await refreshToday();
     window.scrollTo({ top: 0 });
   }
