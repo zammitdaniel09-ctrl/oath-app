@@ -6,8 +6,9 @@
 // Web Animations, so the work stays on the compositor. Springs use Apple's two numbers, damping and
 // response, sampled into a CSS linear() easing; when a drag lets go, the finger's speed is handed to
 // the spring so there is no seam. Reduced motion keeps the meaning (fades) and drops the travel.
+// The same moments are heard: sheets and taps ask sound.js for their sounds through fx().
 
-import { state, haptic, icon } from './ui.js';
+import { state, haptic, icon, fx } from './ui.js';
 
 const $app = document.getElementById('app');
 const RM = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -111,7 +112,6 @@ let wasLoading = false;
 const entered = new Set();
 let inTransition = false;
 let navToken = 0;
-let flipWanted = false;
 let lead = null;
 let tickAt = 0;
 let dragDismissed = false;
@@ -153,7 +153,8 @@ export function beforeShell() {
   }
   if (same) {
     snap.segs = readSegs();
-    if (flipWanted) snap.rows = readRows();
+    snap.rows = readRows();
+    snap.width = document.documentElement.clientWidth;
     snap.chat = chatCount();
   }
   return snap;
@@ -170,19 +171,18 @@ export function afterShell(snap) {
   sheetsAfter(snap, jobs);
   pillAfter(snap, jobs);
   if (snap.rows) rowsAfter(snap, jobs);
-  else if (snap.same) rowsCarry(jobs);
   chatAfter(snap, jobs);
   nextAfter(snap, page, jobs);
   growAfter(jobs);
   badgeAfter(jobs);
   if (!loading) entranceAfter(snap, page, jobs);
   countsAfter(jobs);
+  rollAfter(snap, jobs);
   topbarAfter(page);
   jobs.forEach((job) => job());
   prune();
   lastView = snap.view;
   wasLoading = loading;
-  flipWanted = false;
 }
 
 // ---------- Navigation ----------
@@ -218,17 +218,33 @@ export function navigate(update, { native = false } = {}) {
   const kind = reduced() ? 'fade' : navKind(lastView, to);
   const token = (navToken += 1);
   root.dataset.nav = kind;
+  // Tabs sit side by side, so a new tab drifts in from the side it is on.
+  const dir = kind === 'tab' ? tabDir(lastView, to) : '';
+  if (dir) root.dataset.dir = dir;
+  else delete root.dataset.dir;
+  const clear = () => {
+    delete root.dataset.nav;
+    delete root.dataset.dir;
+  };
   try {
     const t = document.startViewTransition(() => {
       inTransition = true;
       try { update(); } finally { inTransition = false; }
     });
     t.ready.catch(() => {}); // a transition skipped by the next one is not an error
-    t.finished.finally(() => { if (navToken === token) delete root.dataset.nav; });
+    t.finished.finally(() => { if (navToken === token) clear(); });
   } catch {
-    delete root.dataset.nav;
+    clear();
     update();
   }
+}
+
+// Which way along the tab bar a move goes: 'r' to a tab further right, 'l' to one further left.
+function tabDir(from, to) {
+  const tabs = [...$app.querySelectorAll('.tabbar .tab')].map((a) => (a.getAttribute('href') || '').slice(2));
+  const a = tabs.indexOf((from || '').split('/')[0]);
+  const b = tabs.indexOf(to.split('/')[0]);
+  return a < 0 || b < 0 || a === b ? '' : b > a ? 'r' : 'l';
 }
 
 // ---------- First view: a gentle stagger, once per screen per session ----------
@@ -322,6 +338,53 @@ function count(key, node, from, to, ms) {
     else counters.delete(key);
   };
   requestAnimationFrame(step);
+}
+
+// ---------- Numbers that change roll: the old one leaves upward, the new one comes up behind it ----------
+
+// For small counts that tick up and down (the open count on the tab, a day's calories, done of total).
+// Mark any other with data-roll. The ones that count up from zero (data-count) have their own motion.
+const ROLL = '[data-roll], .tab-badge, .ft-kcal, .ftc-kcal, .fring-c > b, .lg-val:not([data-count])';
+const rolled = new Map();
+
+function rollAfter(snap, jobs) {
+  const seen = {};
+  $app.querySelectorAll(ROLL).forEach((el) => {
+    const node = [...el.childNodes].find((n) => n.nodeType === 3 && /\d/.test(n.nodeValue));
+    if (!node) return;
+    const name = el.dataset.roll || el.classList[0] || el.tagName;
+    seen[name] = (seen[name] || 0) + 1;
+    const key = `${name}#${seen[name]}`;
+    const text = node.nodeValue.trim();
+    const prev = rolled.get(key);
+    rolled.set(key, text);
+    const id = `roll:${key}`;
+    const moved = prev !== undefined && prev !== text && snap.same && !reduced();
+    const carrying = !moved && runs.has(id) && !reduced(); // a redraw in the middle of a roll
+    if (!moved && !carrying) return;
+    const wrap = document.createElement('span');
+    wrap.className = 'roll';
+    const now = document.createElement('span');
+    now.className = 'roll-in';
+    now.textContent = node.nodeValue;
+    wrap.append(now);
+    node.replaceWith(wrap);
+    if (carrying) {
+      jobs.push(() => replay(id, now));
+      return;
+    }
+    const was = document.createElement('span');
+    was.className = 'roll-out';
+    was.setAttribute('aria-hidden', 'true');
+    was.textContent = prev;
+    wrap.append(was);
+    const dir = parseFloat(text.replace(/[^\d.-]/g, '')) >= parseFloat(prev.replace(/[^\d.-]/g, '')) ? 1 : -1;
+    jobs.push(() => {
+      playKeyed(id, now, [{ opacity: 0, transform: `translateY(${dir * 70}%)` }, { opacity: 1, transform: 'none' }], { ...spring(0.9, 0.34), fill: 'backwards' });
+      const a = play(was, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateY(${dir * -70}%)` }], { duration: 200, easing: EASE_OUT, fill: 'forwards' });
+      after(a, () => was.remove());
+    });
+  });
 }
 
 // ---------- The tab bar: the selection slides, the new icon gives a small bounce ----------
@@ -528,6 +591,7 @@ function carryEnter(sheet, backdrop) {
 // its last frame is kept on screen, inert, and slides out over the new page.
 function exitSheet(snap) {
   const { sheet, backdrop } = snap;
+  fx('sheet-close');
   stop(sheet);
   stop(backdrop);
   const ghost = document.createElement('div');
@@ -563,7 +627,10 @@ function sheetsAfter(snap, jobs) {
   const backdrop = sheet ? $app.querySelector('.sheet-backdrop') : null;
   if (sheet) bindSheetTouch(sheet);
   if (sheet && (!snap.sheet || dragDismissed || !snap.same)) {
-    jobs.push(() => enterSheet(sheet, backdrop));
+    jobs.push(() => {
+      enterSheet(sheet, backdrop);
+      fx('sheet-open');
+    });
   } else if (sheet) {
     // Drawn again: the same sheet keeps its scroll; new contents in the same sheet cross-fade.
     const same = snap.label === sheet.getAttribute('aria-label');
@@ -617,6 +684,7 @@ function letGo() {
   const dismiss = d.off > 4 && v > -0.05 && d.off + project(v) > d.h * 0.5;
   const bFrom = d.backdrop?.style.opacity || '1';
   if (dismiss) {
+    fx('sheet-close');
     const to = d.h + 24;
     const s = reduced() ? { duration: 160, easing: 'ease-out' } : spring(1, 0.3, (v * 1000) / Math.max(1, to - d.off));
     const a = play(d.sheet, [{ transform: `translate3d(0, ${d.off}px, 0)` }, { transform: `translate3d(0, ${to}px, 0)` }], { ...s, fill: 'forwards' });
@@ -699,8 +767,66 @@ function bindSheetTouch(sheet) {
 
 export function ticked(row) {
   tickAt = performance.now();
-  flipWanted = true;
   lead = row?.dataset?.key || null;
+  // Sparks leave the check. When the tap was somewhere else (the Done button in Up next) they leave
+  // the finger instead, and with nothing to go by they stay home.
+  const r = row?.querySelector('.chk')?.getBoundingClientRect();
+  const box = row?.getBoundingClientRect();
+  const touched = performance.now() - tap.at < 1500;
+  const onRow = touched && box && tap.x >= box.left && tap.x <= box.right && tap.y >= box.top && tap.y <= box.bottom;
+  const seen = r?.width && r.bottom > 0 && r.top < window.innerHeight && (onRow || !touched);
+  const at = seen ? [r.left + r.width / 2, r.top + r.height / 2] : touched ? [tap.x, tap.y] : null;
+  if (!at) return;
+  sparkAt = { x: at[0], y: at[1], t: performance.now() };
+  spark(at[0], at[1], 8, 34, 6);
+}
+
+// ---------- Sparks: a small burst where a tick lands, a bigger one when the day is done ----------
+
+const SPARK = ['#3ff0b9', '#8dffdc', '#f4f5f8', '#3ff0b9', '#ffc233'];
+let sparkLayer = null;
+let sparkAt = null;
+const tap = { x: 0, y: 0, at: -1e9 };
+
+// n specks fly out from (x, y), slow as they go and fade; fall pulls them down at the end. A layer of
+// its own on top of everything, so a redraw never cuts a burst off.
+function spark(x, y, n, reach, size, fall = 0) {
+  if (reduced() || document.visibilityState !== 'visible') return;
+  if (!sparkLayer) {
+    sparkLayer = document.createElement('div');
+    sparkLayer.className = 'spark-layer';
+    sparkLayer.setAttribute('aria-hidden', 'true');
+    document.body.append(sparkLayer);
+  }
+  const specks = [];
+  for (let i = 0; i < n; i += 1) {
+    const dot = document.createElement('i');
+    dot.className = 'spark';
+    const s = size * (0.7 + Math.random() * 0.6);
+    dot.style.cssText = `width:${s}px;height:${fall ? s * (i % 3 ? 1 : 1.8) : s}px;margin:${-s / 2}px 0 0 ${-s / 2}px;background:${SPARK[i % SPARK.length]}`;
+    const ang = (i / n) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
+    const dist = reach * (0.55 + Math.random() * 0.6);
+    const dx = Math.cos(ang) * dist;
+    const dy = Math.sin(ang) * dist;
+    const spin = fall ? Math.round((Math.random() - 0.5) * 540) : 0;
+    specks.push([dot, [
+      { transform: `translate3d(${x}px, ${y}px, 0) rotate(0deg) scale(1)`, opacity: 1, easing: EASE_OUT },
+      { transform: `translate3d(${x + dx}px, ${y + dy}px, 0) rotate(${spin / 2}deg) scale(1)`, opacity: 1, offset: 0.5, easing: 'cubic-bezier(0.55, 0, 1, 0.45)' },
+      { transform: `translate3d(${x + dx * 1.1}px, ${y + dy * 1.1 + fall}px, 0) rotate(${spin}deg) scale(0.4)`, opacity: 0 },
+    ], Math.round((fall ? 900 : 520) + Math.random() * 220)]);
+  }
+  specks.forEach(([dot, frames, duration]) => {
+    sparkLayer.append(dot);
+    after(play(dot, frames, { duration, fill: 'both' }), () => dot.remove());
+  });
+}
+
+// The last thing due today is done: a fountain of sparks from the middle of the screen, at the height
+// of the last tick, that rise and fall back.
+export function celebrate() {
+  const vh = window.innerHeight;
+  const y = sparkAt && performance.now() - sparkAt.t < 5000 ? sparkAt.y : vh * 0.45;
+  spark(window.innerWidth / 2, Math.min(Math.max(y, vh * 0.3), vh * 0.6), 28, Math.min(150, window.innerWidth * 0.4), 7, 90);
 }
 
 // Resolves once the check has finished drawing, so a redraw never cuts it off.
@@ -709,13 +835,19 @@ export function tickSettled() {
   return left > 0 && !reduced() ? new Promise((r) => { setTimeout(r, left); }) : Promise.resolve();
 }
 
+// Where each keyed row of Today sits in its list: its top within the group, its height, and which
+// group it is in (counted from the first), so a redraw can tell a row that moved from one that came
+// or went. Measured from the group, so a change above the list moves nothing.
+const ROWS = '.page-today .group > [data-key]';
 function readRows() {
   const out = new Map();
-  const tops = new Map();
-  $app.querySelectorAll('.group > [data-key]').forEach((row) => {
-    const g = row.parentElement;
-    if (!tops.has(g)) tops.set(g, g.getBoundingClientRect().top);
-    out.set(row.dataset.key, row.getBoundingClientRect().top - tops.get(g));
+  const groups = new Map();
+  $app.querySelectorAll(ROWS).forEach((row) => {
+    const group = row.parentElement;
+    if (!groups.has(group)) groups.set(group, { top: group.getBoundingClientRect().top, at: groups.size });
+    const g = groups.get(group);
+    const r = row.getBoundingClientRect();
+    out.set(row.dataset.key, { top: r.top - g.top, h: r.height, g: g.at, el: row, group });
   });
   return out;
 }
@@ -727,30 +859,70 @@ function moveRow(row, a, isLead) {
   after(a, () => row.classList.remove('is-moving', 'is-lead'));
 }
 
+// After a redraw: rows that moved slide to their new place, a row that is new settles in, and a row
+// that has gone fades away where it was (a copy of it, held in its group for a moment).
 function rowsAfter(snap, jobs) {
-  if (reduced()) return;
+  // A sheet hides or shows the page's scrollbar on a desktop, which can re-wrap text: not the rows' doing.
+  if (reduced() || snap.width !== document.documentElement.clientWidth) return;
   const now = readRows();
   const moves = [];
-  for (const [key, top] of now) {
+  const fresh = [];
+  const gone = [];
+  for (const [key, r] of now) {
     const was = snap.rows.get(key);
-    if (was !== undefined && Math.abs(was - top) > 2) moves.push([key, was - top]);
+    if (!was || was.g !== r.g) fresh.push(key);
+    else if (Math.abs(was.top - r.top) > 2) moves.push([key, was.top - r.top]);
   }
-  if (!moves.length) return;
-  const s = spring(1, 0.4);
-  jobs.push(() => moves.forEach(([key, dy]) => {
-    const row = $app.querySelector(`.group > [data-key="${key}"]`);
-    if (row) moveRow(row, playKeyed(`row:${key}`, row, [{ transform: `translateY(${dy}px)` }, { transform: 'none' }], s), key === lead);
-  }));
+  for (const [key, was] of snap.rows) if (!now.has(key)) gone.push(was);
+  // A whole list swapped for another is a new screen's business, not the rows'.
+  const few = snap.rows.size > 0 && now.size > 0 && fresh.length <= 3 && gone.length <= 3 && !wasLoading;
+  jobs.push(() => {
+    const s = spring(1, 0.4);
+    moves.forEach(([key, dy]) => {
+      const row = now.get(key).el;
+      moveRow(row, playKeyed(`row:${key}`, row, [{ transform: `translateY(${dy}px)` }, { transform: 'none' }], s), key === lead);
+    });
+    if (few) {
+      fresh.forEach((key) => {
+        const row = now.get(key).el;
+        moveRow(row, playKeyed(`row:${key}`, row, [{ opacity: 0, transform: 'scale(0.96)' }, { opacity: 1, transform: 'none' }], { ...spring(0.8, 0.42), fill: 'backwards' }), false);
+      });
+      gone.forEach((was) => {
+        const group = [...now.values()].find((r) => r.g === was.g)?.group;
+        if (group) fadeRow(group, was);
+      });
+    }
+    rowsCarry(now);
+  });
+}
+
+// A copy of a row that has gone, laid where it was, that slips away to the left and leaves.
+function fadeRow(group, was) {
+  const ghost = was.el.cloneNode(true);
+  ghost.classList.remove('pending', 'is-moving', 'is-lead', 'is-swiping');
+  ghost.classList.add('row-ghost');
+  ghost.removeAttribute('data-key');
+  ghost.removeAttribute('data-action');
+  ghost.removeAttribute('data-due');
+  ghost.setAttribute('aria-hidden', 'true');
+  ghost.inert = true;
+  ghost.style.top = `${was.top}px`;
+  ghost.style.height = `${was.h}px`;
+  group.append(ghost);
+  const a = play(ghost, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(-20px)' }], { duration: 260, easing: EASE_OUT, fill: 'forwards' });
+  const end = () => ghost.remove();
+  after(a, end);
+  setTimeout(end, 600);
 }
 
 // A redraw while rows are still settling: they carry on settling.
-function rowsCarry(jobs) {
+function rowsCarry(now) {
   if (![...runs.keys()].some((k) => k.startsWith('row:'))) return;
-  jobs.push(() => $app.querySelectorAll('.group > [data-key]').forEach((row) => {
-    const key = `row:${row.dataset.key}`;
-    if (!runs.has(key) || row.getAnimations().length) return;
-    if (replay(key, row)) moveRow(row, row.getAnimations()[0], row.dataset.key === lead);
-  }));
+  for (const [key, r] of now) {
+    const id = `row:${key}`;
+    if (!runs.has(id) || r.el.getAnimations().length) continue;
+    if (replay(id, r.el)) moveRow(r.el, r.el.getAnimations()[0], key === lead);
+  }
 }
 
 // Up next changed to a new item: its words arrive like the next card in a deck, in the card and the dock.
@@ -1012,6 +1184,9 @@ function initPull() {
 // ---------- Wiring ----------
 
 function onPointerDown(e) {
+  tap.x = e.clientX;
+  tap.y = e.clientY;
+  tap.at = performance.now();
   if (e.button !== 0 || drag || swipe) return;
   const t = e.target;
   const head = !WIDE.matches && t.closest?.('.sheet .sheet-grab, .sheet .sheet-head');
@@ -1041,6 +1216,16 @@ function onClickCapture(e) {
     return;
   }
   if (e.target.closest?.('.topbar-title')) window.scrollTo({ top: 0, behavior: reduced() ? 'auto' : 'smooth' });
+  // Heard, barely: moving between tabs and screens, and picking from a segmented control.
+  if (e.target.closest?.('.tabbar .tab:not([aria-current="page"]), a.back, .topbar-back')) fx('nav');
+  else if (e.target.closest?.('.seg button:not([aria-selected="true"]):not(.on):not([aria-pressed="true"])')) fx('toggle');
+}
+
+// A switch, a tick box, a day, a chip, a choice: each answers with a small click. data-fx="off" opts
+// out, and the Sounds switch makes its own.
+function onChange(e) {
+  const input = e.target;
+  if (input.matches?.('input[type="checkbox"], input[type="radio"]') && input.closest('#app') && !input.closest('[data-fx="off"]') && input.dataset.action !== 'sounds') fx('toggle');
 }
 
 // Someone is mid-gesture: background refreshes wait, so the thing under the finger stays put.
@@ -1055,6 +1240,7 @@ export function initMotion(callbacks = {}) {
   window.addEventListener('pointerup', onPointerEnd, { passive: true });
   window.addEventListener('pointercancel', onPointerEnd, { passive: true });
   document.addEventListener('change', onSegChange, true);
+  document.addEventListener('change', onChange);
   document.addEventListener('click', onClickCapture, true);
   initPull();
 }

@@ -83,9 +83,16 @@ function showToast(t) {
   }, t.ms);
 }
 
+// Feedback for the senses: sound.js listens for this. Kinds: tick, untick, all-done, ring-close,
+// log-food, send, receive, sheet-open, sheet-close, success, error, nav, toggle.
+export const fx = (kind) => document.dispatchEvent(new CustomEvent('oath:fx', { detail: kind }));
+
+// Only a failure is heard from here. A plain toast is information, and an action that worked (act with a
+// message, a tick, a logged meal) has its own sound.
 export function toast(msg, bad = false, ms = null, big = false) {
   const t = { msg, bad, big, ms: ms || (bad ? 4200 : 2600) };
   if (toastShowing?.msg === msg || toastQueue.some((q) => q.msg === msg)) return;
+  if (bad) fx('error');
   if (!toastShowing || bad) return showToast(t);
   toastQueue.push(t);
   if (toastQueue.length > 3) toastQueue.shift();
@@ -98,7 +105,10 @@ export function react(r) {
 export async function act(fn, okMsg) {
   try {
     const r = await fn();
-    if (okMsg) toast(typeof okMsg === 'function' ? okMsg(r) : okMsg);
+    if (okMsg) {
+      toast(typeof okMsg === 'function' ? okMsg(r) : okMsg);
+      fx('success');
+    }
     return r;
   } catch (err) {
     if (err.status !== 401) toast(err.message, true);
@@ -175,9 +185,11 @@ export const isStandalone = () => window.matchMedia('(display-mode: standalone)'
 export const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
 // A light tap of haptic feedback. iOS Safari (17.4+) gives a system tick when a switch toggles;
-// elsewhere this does nothing. Progressive enhancement only: never the sole signal.
+// elsewhere this does nothing. Progressive enhancement only: never the sole signal. kind pairs the
+// tap with a sound (see fx), so the two always arrive together.
 let hapticEl = null;
-export function haptic() {
+export function haptic(kind) {
+  if (kind) fx(kind);
   try {
     if (!hapticEl) {
       hapticEl = document.createElement('label');
@@ -281,6 +293,7 @@ const ICONS = {
   copy: '<rect x="8.5" y="8.5" width="11" height="11" rx="2.4"/><path d="M15.5 8.5V6.2c0-.9-.8-1.7-1.7-1.7H6.2c-.9 0-1.7.8-1.7 1.7v7.6c0 .9.8 1.7 1.7 1.7h2.3"/>',
   trash: '<path d="M5 7h14M10 4.5h4M7 7l.9 12c.1.9.8 1.5 1.7 1.5h4.8c.9 0 1.6-.6 1.7-1.5L17 7"/>',
   star: '<path d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/>',
+  sound: '<path d="M4.5 9.8h3L12 6v12l-4.5-3.8h-3z"/><path d="M15.5 9.2a4 4 0 0 1 0 5.6M18 7a7.2 7.2 0 0 1 0 10"/>',
 };
 
 // The Oath mark: a ring cut down the middle and slid apart. Chrome is the word, Merlot is the deed,
@@ -327,7 +340,7 @@ export function rings(list, size = 128) {
   const now = performance.now();
   // A redraw in the middle of a sweep carries on with it rather than jumping to the end.
   const going = sweep && now - sweep.t0 < RING_MS && list.every((ring) => sweep.to[ring.cls] === Math.max(0, Math.min(1, (ring.pct || 0) / 100))) ? sweep : null;
-  const next = { t0: now, from: {}, to: {} };
+  const next = { t0: now, from: {}, to: {}, closing: false };
   let moving = false;
   const defs = list.map(({ cls }) => RING_STOPS[cls] && `<linearGradient id="rg-${cls}" x1="0" y1="0" x2="1" y2="1">${RING_STOPS[cls]
     .map((c, i) => `<stop offset="${i / 2}" style="stop-color:${c}"/>`).join('')}</linearGradient>`).filter(Boolean).join('');
@@ -341,6 +354,7 @@ export function rings(list, size = 128) {
     next.from[ring.cls] = from;
     next.to[ring.cls] = p;
     if (from !== p) moving = true;
+    if (!first && from < p && p >= 1) next.closing = true; // a ring has just been closed
     return `<g class="ring ${ring.cls}">
       <circle cx="${size / 2}" cy="${size / 2}" r="${r.toFixed(2)}" class="ring-track" stroke-width="${sw}" fill="none"/>
       <circle cx="${size / 2}" cy="${size / 2}" r="${r.toFixed(2)}" class="ring-fill" stroke-width="${sw}" fill="none" stroke-linecap="round"
@@ -356,6 +370,10 @@ export function rings(list, size = 128) {
 // pick the sweep up where it was). Reduced motion shows the value at once.
 export function drawRings() {
   const svg = document.querySelector('svg.rings');
+  if (svg && sweep?.closing && !sweep.heard) {
+    sweep.heard = true;
+    fx('ring-close');
+  }
   if (!svg || !sweep || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const t = performance.now() - sweep.t0;
   if (t >= RING_MS) return;

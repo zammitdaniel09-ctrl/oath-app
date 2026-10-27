@@ -428,7 +428,7 @@ export async function dataSubmit(kind, form) {
       toast('Checking the calendar');
       const r = await act(() => api('POST', '/api/calendar/feeds', { url: f.url.trim(), kind: f.kind || undefined }));
       if (r) {
-        haptic();
+        haptic('success');
         toast(`Added ${r.feed.name}: ${r.events} events${r.created ? `, ${r.created} deadlines added as tasks` : ''}.`);
         await loadDashboard();
         ctx.render();
