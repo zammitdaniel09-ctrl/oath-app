@@ -1305,8 +1305,47 @@ button.hcard-ring:active { transform: scale(0.92); transition: transform var(--t
 
 /* ---------- Coach ---------- */
 
-/* The briefs wait behind one small button in the header, beside Settings. */
-.btn.briefs-btn { align-self: center; min-height: 44px; border-radius: 999px; padding: 0 16px 0 13px; }
+/* The coach's own look, so it never passes for the food chat: a Merlot face in a header that stays at
+   the top, a red glow behind the page, the coach's words on graphite with a Merlot rim, and its typing
+   dots in Merlot. The briefs wait behind one small button in the header, beside Settings. */
+.cchat-page {
+  margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter);
+  background: radial-gradient(70% 260px at 18% 0, rgba(225, 6, 0, 0.16), transparent 70%), radial-gradient(50% 220px at 92% 0, rgba(255, 90, 31, 0.07), transparent 70%);
+  background-repeat: no-repeat;
+}
+.chd-head {
+  position: sticky; top: 0; z-index: 16;
+  display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  margin: calc(-1 * (env(safe-area-inset-top) + 8px)) calc(-1 * var(--gutter)) 0;
+  padding: calc(env(safe-area-inset-top) + 10px) var(--gutter) 10px;
+  background: rgba(0, 0, 0, 0.78); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .chd-head { background: rgba(0, 0, 0, 0.6); -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4); }
+}
+.chd-av {
+  display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: #fff;
+  background: radial-gradient(110% 110% at 32% 18%, #ff6a4d 0%, var(--merlot-hi) 32%, var(--merlot) 64%, #8e0400 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 24px -4px rgba(225, 6, 0, 0.75);
+}
+.chd-av .ic { width: 22px; height: 22px; stroke-width: 2; }
+.chd-head-text { min-width: 0; }
+.chd-head-text h1 { margin: 0; font-size: 1.25rem; font-weight: 760; letter-spacing: -0.02em; line-height: 1.2; }
+.chd-head-text p { margin: 1px 0 0; overflow: hidden; font-size: 0.8125rem; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
+.chd-actions { display: flex; align-items: center; gap: 8px; }
+.cchat { margin-top: 14px; }
+.cchat .msg.assistant {
+  background: radial-gradient(120% 70% at 0% 0%, rgba(225, 6, 0, 0.1), transparent 60%), linear-gradient(180deg, #17171b 0%, #101014 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 42, 23, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.cchat .typing i { background: var(--merlot-hi); }
+.qchip-food { gap: 7px; text-decoration: none; }
+.qchip-food .ic { width: 16px; height: 16px; color: #d4f76a; }
+@media (min-width: 900px) {
+  .chd-head { margin: calc(-1 * (env(safe-area-inset-top) + 24px)) -32px 0; padding: 14px 32px 12px; }
+  .cchat-page { margin: 0 -32px; padding: 0 32px; }
+}
+.btn.briefs-btn { align-self: center; min-height: 40px; border-radius: 999px; padding: 0 14px 0 11px; }
 .briefs-btn .ic { color: var(--honey); }
 .chat { display: grid; gap: 10px; margin-top: 20px; }
 .chat > .empty-state { margin-top: 0; }

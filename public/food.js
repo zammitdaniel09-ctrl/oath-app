@@ -16,15 +16,20 @@ import { wantLinks, linksSleepCard, linksTrainingCard, linksAlcoholCard, linksWi
 import { initScan, scanClick, scanMissBody, scanMissTitle } from './scan.js';
 // One-tap logging, water, what is left today, per-meal copy and add, swipe to remove.
 import {
-  initUsual, loadUsual, usualHtml, usualItemKeys, usualClick, usualSubmit, usualSheet, undoLog, waterHtml, leftHtml, slotAction, emptySlotsHtml,
+  initUsual, loadUsual, usualHtml, usualItemKeys, usualClick, usualSubmit, usualSheet, undoLog, waterHtml, slotAction, emptySlotsHtml,
 } from './food-usual.js';
 import { initNext, loadNext, nextCardHtml, nextClick, richBody, richTitle } from './food-next.js';
 import { importBody, importNotice, importedRow, importFields, importSubmit, importClick, importTyped, needsFix, sourceCredit, fixExtras } from './food-import.js';
+// The food chat: "What did you eat?" as a conversation, opened from the bar on the diary.
+import {
+  initChat, viewChat, openChat, chatClick, chatSubmit, chatInput, chatPhoto, chatAfterLog, chatPicked, chatWaiting, loadChatDay,
+} from './food-chat.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 
 const SLOTS = [['breakfast', 'Breakfast'], ['lunch', 'Lunch'], ['dinner', 'Dinner'], ['snacks', 'Snacks'], ['drinks', 'Drinks']];
 const SLOT = Object.fromEntries(SLOTS);
+const SLOT_ICON = { breakfast: 'sun', lunch: 'food', dinner: 'moon', snacks: 'bowl', drinks: 'drink' };
 const KIND = { generic: 'Generic', product: 'Product', custom: 'Yours', label: 'From your label', estimate: 'Estimate' };
 const STRIP = ['protein', 'carbs', 'fat', 'sugars', 'fibre', 'salt'];
 const FAMILIES = {
@@ -211,6 +216,8 @@ export async function loadFood() {
     f().report = await api('GET', '/api/food/report');
   } else if (p === 'trends') {
     await loadTrends();
+  } else if (p === 'chat') {
+    await loadChatDay();
   }
 }
 
@@ -322,9 +329,13 @@ const pctText = (p, floor) => (p === null ? '–' : `${fmtN(p, p > 0 && p < 10 ?
 const LIMITS = new Set(['satfat', 'sugars', 'salt']);
 const REACH = (k) => k === 'protein' || ['mineral', 'vitamin'].includes(NUTRIENT[k]?.group);
 const riTone = (p, k) => (p === null || p < 100 ? '' : LIMITS.has(k) ? ' over' : REACH(k) ? ' full' : '');
+// Where a % of need sits along a bar: straight up to the need, which sits at RI_AT of the width; past
+// it the scale eases off, so 150%, 300% and 1,000% all fit and still read apart (300% is near 87%).
+const RI_AT = 62;
+const riPos = (p) => (p <= 100 ? (Math.max(0, p) / 100) * RI_AT : RI_AT + (100 - RI_AT) * (1 - 100 / p));
 function riBar(p, k) {
   if (p === null) return '<span class="ri-bar none" aria-hidden="true"></span>';
-  return `<span class="ri-bar${riTone(p, k)}" aria-hidden="true"><i style="--p:${Math.min(100, Math.max(0, p)).toFixed(1)}"></i></span>`;
+  return `<span class="ri-bar${riTone(p, k)}" aria-hidden="true" style="--at:${RI_AT}%"><i style="--p:${riPos(p).toFixed(1)}"></i><b class="ri-mark"></b></span>`;
 }
 
 const SHORT = {
@@ -398,28 +409,108 @@ function macroParts(n) {
   return { parts, sum: parts.reduce((a, p) => a + p.kcal, 0) };
 }
 
-// The macro energy split as a ring, with whatever goes in the middle.
-function donut(n, { size = 112, sw = 12, center = '', label = 'Energy split' } = {}) {
+// Parts laid end to end round a ring from twelve o'clock, each a rounded arc with a hair of gap before
+// the next. Each arc carries a gradient along its length, deep where it starts and lit where it ends;
+// unknown energy is striped. `reach` (0 to 1) is how much of the circle they fill together.
+function ringArcs({ size, sw, parts, reach = 1, id, hatch }) {
+  const c0 = size / 2;
+  const r = (size - sw) / 2;
+  const live = parts.filter((p) => p.v > 0);
+  const sum = live.reduce((a, p) => a + p.v, 0);
+  const span = Math.min(1, Math.max(0, reach)) * 2 * Math.PI;
+  if (!(sum > 0) || !(span > 0)) return { defs: '', arcs: '' };
+  const cap = sw / 2 / r;
+  const gap = live.length > 1 ? 2.5 / r : 0;
+  const closed = span > 2 * Math.PI - 1e-6;
+  const room = span - gap * (closed ? live.length : live.length - 1);
+  const pt = (a) => `${(c0 + r * Math.cos(a)).toFixed(2)} ${(c0 + r * Math.sin(a)).toFixed(2)}`;
+  let at = -Math.PI / 2;
+  let defs = '';
+  const arcs = live.map((p, i) => {
+    const len = (p.v / sum) * room;
+    const a0 = at;
+    at += len + gap;
+    // The round caps sit inside the part's own length; a part too short for them is a dot.
+    const lone = closed && live.length === 1;
+    const s = lone ? a0 : a0 + Math.min(cap, len / 2);
+    const e = lone ? a0 + len - 1e-3 : a0 + len - Math.min(cap, len / 2);
+    const big = e - s > Math.PI ? 1 : 0;
+    const d = lone ? `M${pt(s)} A${r} ${r} 0 1 1 ${pt(s + Math.PI)} A${r} ${r} 0 1 1 ${pt(s)}` : `M${pt(s)} A${r} ${r} 0 ${big} 1 ${pt(e)}`;
+    let paint = `url(#${hatch})`;
+    if (p.key !== 'unknown') {
+      const gid = `${id}g${i}`;
+      const far = e - s > 4.5 ? s + Math.PI : e;
+      defs += `<linearGradient id="${gid}" gradientUnits="userSpaceOnUse" x1="${pt(s).split(' ')[0]}" y1="${pt(s).split(' ')[1]}" x2="${pt(far).split(' ')[0]}" y2="${pt(far).split(' ')[1]}">
+        <stop offset="0" class="g0 m-${p.key}"/><stop offset="1" class="g1 m-${p.key}"/></linearGradient>`;
+      paint = `url(#${gid})`;
+    }
+    return `<path d="${d}" class="fr-arc m-${p.key}" stroke="${paint}" stroke-width="${sw}" stroke-linecap="${lone ? 'butt' : 'round'}" fill="none"/>`;
+  }).join('');
+  return { defs, arcs };
+}
+
+// A ring of rounded arcs with its glow, a track, and whatever goes in the middle. `grow` draws it in.
+function ringSvg({ size, sw, parts, reach = 1, label, center = '', grow = false, glow = true, cls = '' }) {
+  const id = nextId('fr');
+  const hatch = `${id}h`;
+  const c0 = size / 2;
+  const r = (size - sw) / 2;
+  const { defs, arcs } = ringArcs({ size, sw, parts, reach, id, hatch });
+  // The draw-in mask reaches past the ring so the glow round it is not cut off.
+  const pad = size / 4;
+  const mask = grow ? `<mask id="${id}m" maskUnits="userSpaceOnUse" x="${-pad}" y="${-pad}" width="${size + 2 * pad}" height="${size + 2 * pad}"><circle cx="${c0}" cy="${c0}" r="${r}" fill="none" stroke="#fff"
+      stroke-width="${sw * 3}" pathLength="1" class="fr-draw" transform="rotate(-90 ${c0} ${c0})"/></mask>` : '';
+  const halo = glow && arcs ? `<filter id="${id}f" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="${(sw / 2.4).toFixed(1)}"/></filter>` : '';
+  const body = `${halo ? `<g class="fr-glow" filter="url(#${id}f)">${arcs}</g>` : ''}${arcs}`;
+  return `<div class="fring${cls}" style="width:${size}px;height:${size}px">
+    <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-label="${esc(label)}">
+      <defs>${hatchDef(hatch)}${defs}${mask}${halo}</defs><circle cx="${c0}" cy="${c0}" r="${r}" fill="none" stroke-width="${sw}" class="fr-track"/>
+      <g${grow ? ` mask="url(#${id}m)"` : ''}>${body}</g></svg>
+    ${center ? `<span class="fring-c" aria-hidden="true">${center}</span>` : ''}</div>`;
+}
+
+const macroArcParts = (n) => macroParts(n).parts.map((p) => ({ key: p.key, v: p.kcal }));
+const spokenSplit = (n) => {
   const { parts, sum } = macroParts(n);
+  return sum > 0 ? parts.filter((p) => p.kcal > 0).map((p) => `${MACRO_LABEL[p.key]} ${share(p.kcal, sum)}%`).join(', ') : 'nothing logged';
+};
+
+// The macro energy split as a whole ring, with whatever goes in the middle.
+function donut(n, { size = 112, sw = 12, center = '', label = 'Energy split', grow = false } = {}) {
+  return ringSvg({ size, sw, parts: macroArcParts(n), label: `${label}: ${spokenSplit(n)}`, center, grow });
+}
+
+// The day's energy against its need: the arc goes as far round as he has eaten, split by where the
+// energy came from. At the need it closes.
+function energyRing(t, need, { size = 168, sw = 15, center = '', grow = false, glow = true } = {}) {
+  const kcal = num(t?.kcal) || 0;
+  const reach = need > 0 ? kcal / need : kcal > 0 ? 1 : 0;
+  const label = `${show(t, 'kcal')} of ${fmtN(need)} kcal, energy from ${spokenSplit(t)}`;
+  return ringSvg({ size, sw, parts: macroArcParts(t), reach, label, center, grow, glow, cls: ' fring-energy' });
+}
+
+// A food's own small ring: where its energy comes from, with its Nutri-Score letter in the middle.
+export function foodRing(n, grade = null) {
+  const size = 36;
+  const sw = 3.6;
   const c0 = size / 2;
   const r = (size - sw) / 2;
   const c = 2 * Math.PI * r;
+  const { parts, sum } = macroParts(n);
   const live = parts.filter((p) => p.kcal > 0);
-  const gap = live.length > 1 ? 3 : 0;
-  const hatch = nextId('fh');
+  const gap = live.length > 1 ? 2.2 : 0;
   let off = 0;
   const arcs = sum > 0 ? live.map((p) => {
     const len = (p.kcal / sum) * c;
-    const arc = `<circle cx="${c0}" cy="${c0}" r="${r}" fill="none" stroke-width="${sw}" class="fr-seg m-${p.key}"${p.key === 'unknown' ? ` style="stroke:url(#${hatch})"` : ''}
-      stroke-dasharray="${Math.max(0.5, len - gap).toFixed(2)} ${c.toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 ${c0} ${c0})"/>`;
+    const arc = `<circle cx="${c0}" cy="${c0}" r="${r}" fill="none" stroke-width="${sw}" class="fr-seg m-${p.key}" stroke-dasharray="${Math.max(0.6, len - gap).toFixed(2)} ${c.toFixed(2)}"
+      stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 ${c0} ${c0})"/>`;
     off += len;
     return arc;
   }).join('') : '';
-  const spoken = sum > 0 ? live.map((p) => `${MACRO_LABEL[p.key]} ${share(p.kcal, sum)}%`).join(', ') : 'nothing logged';
-  return `<div class="fring" style="width:${size}px;height:${size}px">
-    <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-label="${esc(`${label}: ${spoken}`)}">
-      <defs>${hatchDef(hatch)}</defs><circle cx="${c0}" cy="${c0}" r="${r}" fill="none" stroke-width="${sw}" class="fr-track"/>${arcs}</svg>
-    ${center ? `<span class="fring-c" aria-hidden="true">${center}</span>` : ''}</div>`;
+  const g = gradeOf(grade);
+  return `<span class="fmini${g ? ` g-${g}` : ''}" role="img" aria-label="${esc(`${g ? `Nutri-Score ${g.toUpperCase()}. ` : ''}Energy from ${spokenSplit(n)}`)}">
+    <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" aria-hidden="true"><circle cx="${c0}" cy="${c0}" r="${r}" fill="none" stroke-width="${sw}" class="fr-track"/>${arcs}</svg>
+    ${g ? `<b aria-hidden="true">${g.toUpperCase()}</b>` : ''}</span>`;
 }
 
 // Energy by Nutri-Score grade as one stacked bar, with each grade's share under it.
@@ -445,36 +536,41 @@ function mealBar(n, dayKcal) {
   return `<div class="fmeal" role="img" aria-label="${share(k, dayKcal)}% of the day's energy"><span class="fmeal-bar" style="width:${pc.toFixed(1)}%">${segs}</span></div>`;
 }
 
-// Bars in a percentage-wide SVG with no viewBox: widths stretch with the card, heights and corners
-// stay in real pixels. A day with nothing logged is a small dashed gap mark, never a zero bar.
-function dayBars(series, { height = 132, top = 22, sel = null, values = false, selValue = true, avg = null, rx = 3, hatch }) {
+// Energy per day as columns, each split by where its energy came from (protein at the foot, then
+// carbs, fat, and striped for energy with no macros on record), or one plain column with `plain`. A day
+// with nothing logged is a short dashed mark on the baseline, never a zero bar. Columns are HTML, so
+// their rounded tops stay round at any width; the scale tops out at a round number with headroom.
+function barsHtml(series, { height = 150, sel = null, values = false, selValue = true, avg = null, plain = false, mini = false } = {}) {
   const n = series.length || 1;
   const vals = series.map((d) => (d.logged ? num(d.kcal) : null));
   const peak = Math.max(...vals.map((v) => v || 0), num(avg) || 0, 1);
   const step = peak > 1500 ? 500 : peak > 300 ? 100 : 50;
-  const max = Math.ceil(peak / step) * step;
-  const y = (v) => height - ((height - top) * v) / max;
-  const slot = 100 / n;
-  const bw = slot * (n > 40 ? 0.72 : 0.62);
-  const corner = n > 40 ? 1 : rx;
-  const parts = series.map((d, i) => {
-    const x = (i * slot + (slot - bw) / 2).toFixed(3);
+  const max = Math.ceil((peak * (mini ? 1 : 1.1)) / step) * step;
+  const pc = (v) => ((v / max) * 100).toFixed(2);
+  const cols = series.map((d, i) => {
     const v = vals[i];
-    if (v === null) return `<rect x="${x}%" y="${height - 2}" width="${bw.toFixed(3)}%" height="2" class="fx-gap"/>`;
-    const bh = Math.max(2, height - y(v));
-    const cls = `fx-bar${d.incomplete ? ' inc' : ''}${d.date === sel ? ' sel' : ''}`;
-    const delay = Math.round((i * 320) / n);
-    const fill = d.incomplete ? `fill:url(#${hatch});` : '';
-    let label = '';
-    if ((values || (selValue && d.date === sel)) && v > 0) {
-      const cx = (i + 0.5) * slot;
-      const anchor = cx > 88 ? 'end' : cx < 12 ? 'start' : 'middle';
-      label = `<text x="${anchor === 'end' ? Math.min(100, (i + 1) * slot) : anchor === 'start' ? i * slot : cx}%" y="${(height - bh - 6).toFixed(1)}" text-anchor="${anchor}" class="fx-val${d.date === sel ? ' sel' : ''}">${fmtN(v)}${d.missing?.kcal ? '+' : ''}</text>`;
+    const cls = `fxb-c${d.date === sel ? ' sel' : ''}${d.incomplete ? ' inc' : ''}`;
+    if (v === null) return `<span class="${cls} gap"></span>`;
+    let segs = '<i class="m-energy"></i>';
+    if (!plain) {
+      const { parts, sum } = macroParts(d);
+      segs = sum > 0 ? parts.filter((p) => p.kcal > 0).map((p) => `<i class="m-${p.key}" style="flex-grow:${p.kcal.toFixed(1)}"></i>`).join('') : '<i class="m-unknown"></i>';
     }
-    return `<rect x="${x}%" y="${(height - bh).toFixed(1)}" width="${bw.toFixed(3)}%" height="${bh.toFixed(1)}" rx="${corner}" class="${cls}" style="${fill}animation-delay:${delay}ms"/>${label}`;
+    const label = (values || (selValue && d.date === sel)) && v > 0 ? `<b class="fxb-v">${fmtN(v)}${d.missing?.kcal ? '+' : ''}</b>` : '';
+    return `<span class="${cls}" style="--h:${pc(Math.max(v, max / 80))}%;--d:${Math.round((i * 320) / n)}ms">${label}<span class="fxb-bar">${segs}</span></span>`;
   }).join('');
-  const avgLine = num(avg) !== null ? `<line x1="0" x2="100%" y1="${y(avg).toFixed(1)}" y2="${y(avg).toFixed(1)}" class="fx-avg"/>` : '';
-  return { svg: `${avgLine}${parts}`, max };
+  const avgLine = num(avg) !== null ? `<span class="fxb-avg" style="bottom:${pc(avg)}%"></span>` : '';
+  return `<div class="fxb${mini ? ' mini' : ''}${n > 40 ? ' dense' : n > 14 ? ' mid' : ''}" style="height:${height}px" aria-hidden="true">${avgLine}
+    <div class="fxb-cols" style="grid-template-columns:repeat(${n},minmax(0,1fr))">${cols}</div></div>`;
+}
+
+// The key under a chart of split columns: the parts that are on it, and the average line.
+function barKeys(series, avgText = '') {
+  const on = new Set(series.filter((d) => d.logged).flatMap((d) => macroParts(d).parts.filter((p) => p.kcal > 0).map((p) => p.key)));
+  const keys = ['protein', 'carbs', 'fat', 'unknown'].filter((k) => on.has(k)).map((k) => `<span><i class="fdot m-${k}"></i>${MACRO_LABEL[k]}</span>`);
+  if (series.some((d) => !d.logged)) keys.push('<span><i class="fk fk-gap"></i>No log</span>');
+  if (avgText) keys.push(`<span><i class="fk fk-avg"></i>${avgText}</span>`);
+  return keys.length ? `<p class="fx-keys">${keys.join('')}</p>` : '';
 }
 
 function axisLabels(series, today) {
@@ -578,11 +674,12 @@ function dateLabel(d) {
 function entryRow(e) {
   const fl = filledSet(e.filled);
   const est = e.estimate || fl.has('kcal');
+  const tag = topTag(e.tags);
   return `<button class="li li-plain food-row" data-action="food-entry" data-eid="${esc(e.id)}" data-swipe="remove">
-    ${gradeDot(e.grade)}
-    <span class="li-body"><span class="li-title">${esc(e.name)}${e.brand ? ` <small class="faint">${esc(e.brand)}</small>` : ''}</span>
-    <span class="li-sub">${esc(e.amountText || '')}${topTag(e.tags) ? ` ${tagMini(topTag(e.tags))}` : ''}</span></span>
-    <span class="li-side"><b>${est ? '<i class="est">~</i>' : ''}${show(e.nutrients, 'kcal', { unit: false })}</b> kcal</span></button>`;
+    ${foodRing(e.nutrients, e.grade)}
+    <span class="li-body"><span class="li-title">${esc(e.name)}</span>
+    <span class="li-sub">${e.brand ? `<span class="fr-brand">${esc(e.brand)}</span>` : ''}<span class="fr-amt">${esc(e.amountText || '')}</span>${tag ? tagMini(tag) : ''}</span></span>
+    <span class="li-side"><b>${est ? '<i class="est">~</i>' : ''}${show(e.nutrients, 'kcal', { unit: false })}</b><small>kcal</small></span></button>`;
 }
 
 function pendingRows(date) {
@@ -640,40 +737,35 @@ function viewDiary() {
   const slots = SLOTS.map(([s, label]) => {
     const sl = d.slots.find((x) => x.slot === s);
     if (!sl?.entries.length) return '';
-    return `<section class="section fslot"><div class="gh"><h2>${label}</h2><span class="gh-side"><span class="gh-count">${kcal(sl.total)}</span>${slotAction(d, s)}</span></div>${mealBar(sl.total, num(t.kcal))}<div class="group">${sl.entries.map(entryRow).join('')}</div></section>`;
+    return `<section class="section fslot fslot-${s}"><div class="gh"><h2><span class="fslot-ic" aria-hidden="true">${icon(SLOT_ICON[s])}</span>${label}</h2><span class="gh-side"><span class="gh-count">${kcal(sl.total)}</span>${slotAction(d, s)}</span></div>${mealBar(sl.total, num(t.kcal))}<div class="group">${sl.entries.map(entryRow).join('')}</div></section>`;
   }).join('');
   const undo = F.undo ? `<div class="banner food-undo"><span>${F.undo.verb || 'Removed'} ${esc(F.undo.name)}.</span><button class="btn tinted small" data-action="food-undo">Undo</button></div>` : '';
   const empty = !d.entries.length ? `<div class="card fempty"><p>Nothing logged${d.today ? ' yet' : ''}</p></div>` : '';
   const offline = F.offline ? `<div class="banner offline">${icon('clock')}<span><b>Offline.</b> New entries sync later.</span></div>` : '';
   const repeat = d.today ? `<div class="form-actions food-repeat"><button class="btn tinted small" data-action="food-repeat">${icon('review')}Repeat yesterday</button></div>` : '';
-  const typing = document.activeElement?.matches?.('[data-food-text]');
   ctx.shell(`${head}${offline}${undo}<div class="split fdiary${anim}">
     <div class="fcol fcol-a"><div class="fd-cap">${captureHtml()}${takeHtml('day')}</div><div class="fd-meals">${pendingRows(d.date)}${slots}${empty}${emptySlotsHtml(d)}${repeat}</div></div>
     <div class="fcol fcol-b"><div class="fd-sum">${daySummary(d)}</div><div class="fd-side">${nextCardHtml(d)}${burnTile(F.energy)}${trendPreview(F.week)}${plansHtml(d.plans)}${batchesHtml(F.batches)}</div></div>
     </div>${sheetHtml()}`);
-  if (typing && !state.foodSheet) {
-    const box = document.querySelector('[data-food-text]');
-    box?.focus({ preventScroll: true });
-    box?.setSelectionRange(box.value.length, box.value.length);
-  }
-  sizeText();
 }
 
-// The two ways in sit in one bar: the camera, and a few typed words. Everything else is a tap below.
+// The two ways in sit in one bar: the camera, and the words, which open the food chat. A photo taken
+// here is read in the chat too. Everything else is a tap below.
 function captureHtml() {
   const tools = [
     ['food-scan', 'barcode', 'Scan', ''],
     ['food-search', 'search', 'Search', ''], ['food-quick', 'bolt', 'Quick add', ''], ['food-search', 'drink', 'Drinks', ' data-drinks="1"'],
     ['food-builder', 'blend', 'Shake', ' data-mode="shake"'], ['food-builder', 'bowl', 'Bowl', ' data-mode="bowl"'], ['food-builder', 'food', 'Plate', ' data-mode="plate"'],
   ];
+  const waiting = chatWaiting();
   return `<section class="fcap" aria-label="Log food">
-    <form class="fcap-bar" data-form="food-describe">
+    <div class="fcap-bar">
       <label class="fcap-cam" title="Snap your food">${icon('camera')}<span class="sr">Snap your food: a plate, a label or a barcode</span>
-        <input class="vh" type="file" accept="image/*" capture="environment" data-food-photo></label>
-      <label class="sr" for="food-text">What did you eat?</label>
-      <textarea id="food-text" class="fcap-input" name="text" rows="1" maxlength="600" placeholder="What did you eat?" data-food-text enterkeyhint="send" autocomplete="off">${esc(f().text || '')}</textarea>
-      <button class="fcap-send" type="submit" aria-label="Work it out">${icon('send')}</button>
-    </form>
+        <input class="vh" type="file" accept="image/*" capture="environment" data-chat-photo></label>
+      <button type="button" class="fcap-open" data-action="food-chat-open"><span class="fcap-q">What did you eat?</span>
+        <span class="fcap-hint">${waiting ? `<i class="fcap-dot" aria-hidden="true"></i>${esc(waiting)}` : 'Type it the way you would say it'}</span></button>
+      <button type="button" class="fcap-send" data-action="food-chat-open" aria-label="Open the food chat">${icon('chat')}</button>
+    </div>
     ${usualHtml()}
     <div class="fcap-tools" role="group" aria-label="More ways to log">${tools.map(([a, ic, l, extra]) => `<button type="button" class="fcap-tool" data-action="${a}"${extra}>${icon(ic)}<span>${l}</span></button>`).join('')}</div>
     ${trayHtml(f().recent, usualItemKeys())}
@@ -682,34 +774,71 @@ function captureHtml() {
 
 const KEY_MICROS = ['iron', 'calcium', 'potassium', 'vitc', 'vitd', 'b12'];
 
-// The day at a glance: the energy ring and macros, six vitamins and minerals against their reference
-// intakes, and how the energy splits by Nutri-Score.
+// What the day's energy and macros are measured against, said the way the card says it.
+const ofNeed = () => (needs() ? 'of your need' : 'of the RI');
+
+// Protein, carbs and fat under the ring: grams so far against the day's amount, and each one's share of
+// the energy. Protein is one to reach; carbs and fat only say so when they go past theirs.
+function macroCols(t, fl) {
+  const { parts, sum } = macroParts(t);
+  return `<div class="fmcs">${MACROS.map(([k]) => {
+    const ref = refAt(k);
+    const v = num(t[k]);
+    const p = ref && v !== null ? (v / ref) * 100 : null;
+    const kc = parts.find((x) => x.key === k)?.kcal || 0;
+    const tone = p === null ? ' unk' : p >= 100 ? (k === 'protein' ? ' full' : ' over') : '';
+    const spoken = `${MACRO_LABEL[k]}: ${v === null ? 'not known' : `${show(t, k)}${ref ? ` of ${fmtN(ref)} g, ${fmtN(p)}%` : ''}`}${sum > 0 ? `, ${share(kc, sum)}% of the energy` : ''}`;
+    return `<div class="fmc m-${k}${tone}" role="img" aria-label="${esc(spoken)}">
+      <span class="fmc-k" aria-hidden="true"><span>${MACRO_LABEL[k]}</span>${sum > 0 && kc > 0 ? `<small>${share(kc, sum)}%</small>` : ''}</span>
+      <b class="fmc-v" aria-hidden="true">${v === null ? '–' : `${fl.has(k) ? '<i class="est">~</i>' : ''}${fmtN(v)}${t.missing?.[k] ? '+' : ''}<small>g</small>`}</b>
+      <span class="fmc-bar" aria-hidden="true"><i style="--p:${Math.min(100, p ?? 0).toFixed(1)}"></i></span>
+      <span class="fmc-of" aria-hidden="true">${ref ? `of ${fmtN(ref)} g` : ''}</span></div>`;
+  }).join('')}</div>`;
+}
+
+// The day at a glance. The ring is the day's energy against its need, its arc split by where the
+// energy came from; under it protein, carbs and fat against theirs; then six vitamins and minerals on
+// the eased scale, the energy by Nutri-Score, water from drinks, and the rest in a strip.
 function daySummary(d) {
   const t = d.total;
   const has = d.entries.length > 0;
-  const { parts, sum } = macroParts(t);
   const fl = new Set(d.entries.flatMap((e) => e.filled || []));
-  const rows = parts.map((p) => `<div class="fmac-row"><dt><i class="fdot m-${p.key}"></i>${MACRO_LABEL[p.key]}</dt>
-    <dd>${p.key === 'unknown' ? `${fmtN(p.kcal)} kcal` : val(t, p.key, fl)}<small>${has ? `${share(p.kcal, sum)}%` : ''}</small></dd></div>`).join('');
-  const center = `<b>${has ? show(t, 'kcal', { unit: false }) : '0'}</b><small>kcal</small>`;
+  const need = refAt('kcal');
+  const kcal = num(t.kcal);
+  const floor = Boolean(t.missing?.kcal);
+  const center = `<b>${has ? show(t, 'kcal', { unit: false }) : '0'}</b><small>${need ? `of ${fmtN(need)} kcal` : 'kcal'}</small>`;
+  let left = '';
+  if (need && kcal !== null && has) {
+    const diff = need - kcal;
+    if (!d.today) left = `<p class="fday-left"><b>${fmtN((kcal / need) * 100)}%${floor ? '+' : ''}</b> ${ofNeed()}</p>`;
+    else if (diff >= 0) left = `<p class="fday-left"><b>${floor ? 'At most ' : ''}${fmtN(diff)}</b> kcal left</p>`;
+    else left = `<p class="fday-left over"><b>${floor ? 'At least ' : ''}${fmtN(-diff)}</b> kcal over</p>`;
+  } else if (d.today && need) left = `<p class="fday-left"><b>${fmtN(need)}</b> kcal to go</p>`;
+  const unknown = macroParts(t).parts.find((p) => p.key === 'unknown');
+  const unk = unknown ? `<p class="fday-unk"><i class="fdot m-unknown" aria-hidden="true"></i><span><b>${fmtN(unknown.kcal)} kcal</b> from foods with no protein, carbs or fat on record</span></p>` : '';
   // Each tile opens the foods richest in it.
   const micros = `<div class="fmicro">${KEY_MICROS.map((k) => {
     const p = riPct(t, k);
-    return `<button type="button" class="fmicro-i${p === null ? ' unk' : ''}" data-action="food-rich" data-key="${k}" aria-label="${esc(`${shortLabel(k)} ${pctText(p, t.missing?.[k])}. Foods rich in it`)}">
-      <span class="fmicro-k"><span>${shortLabel(k)}</span>${icon('chevron', 'tap-hint')}</span><b>${pctText(p, t.missing?.[k])}</b>${riBar(p, k)}</button>`;
+    const done = p !== null && p >= 100;
+    return `<button type="button" class="fmicro-i${p === null ? ' unk' : ''}${done ? ' done' : ''}" data-action="food-rich" data-key="${k}" aria-label="${esc(`${shortLabel(k)} ${pctText(p, t.missing?.[k])}. Foods rich in it`)}">
+      <span class="fmicro-k"><span>${shortLabel(k)}</span>${icon('chevron', 'tap-hint')}</span><b>${pctText(p, t.missing?.[k])}${done ? icon('check', 'fmicro-ok') : ''}</b>${riBar(p, k)}</button>`;
   }).join('')}</div>`;
-  const extra = [['sugars'], ['satfat'], ['salt'], ['fibre'], ['caffeine'], ['alcohol']];
-  const facts = `<dl class="fday-strip">${extra.map(([k]) => `<div><dt>${shortLabel(k)}</dt><dd>${val(t, k, fl)}</dd></div>`).join('')}</dl>`;
+  const extra = ['sugars', 'satfat', 'salt', 'fibre', 'caffeine', 'alcohol'];
+  const facts = `<dl class="fday-strip">${extra.map((k) => {
+    const p = riPct(t, k);
+    return `<div class="fst${riTone(p, k)}"><dt>${shortLabel(k)}</dt><dd>${val(t, k, fl)}</dd>${refAt(k) && p !== null ? riBar(p, k) : ''}</div>`;
+  }).join('')}</dl>`;
   // Water from drinks against a reference (35 ml per kg, else 2,000 ml), with one-tap water on today.
   const water = waterHtml(d);
+  const mix = has ? gradeMix(d.grades) : '';
   return `<section class="card fday" aria-label="${esc(dateLabel(d))}">
     <div class="fday-head"><h2>${esc(dateLabel(d))}</h2><div class="fday-nav">
       <button class="icon-btn" data-action="food-day" data-step="-1" aria-label="Previous day">${icon('back')}</button>
       <button class="icon-btn" data-action="food-day" data-step="1" aria-label="Next day"${d.today ? ' disabled' : ''}>${icon('chevron')}</button></div></div>
-    ${leftHtml(d)}
-    <div class="fday-main">${donut(t, { size: 112, sw: 12, center, label: `${show(t, 'kcal')}, energy from` })}<dl class="fmac">${rows}</dl></div>
-    ${has ? `<div class="fday-sec"><p class="fday-k">${needs() ? 'Your daily needs' : 'Reference intake'}</p>${micros}</div>` : ''}
-    ${has && gradeMix(d.grades) ? `<div class="fday-sec"><p class="fday-k">Nutri-Score</p>${gradeMix(d.grades)}</div>` : ''}
+    <div class="fday-hero">${energyRing(t, need, { center, grow: Boolean(enter(`ring-${d.date}`)) })}${left}</div>
+    ${macroCols(t, fl)}${unk}
+    ${has ? `<div class="fday-sec"><p class="fday-k"><span>Vitamins and minerals</span><small>% ${ofNeed()}</small></p>${micros}</div>` : ''}
+    ${mix ? `<div class="fday-sec"><p class="fday-k"><span>Nutri-Score</span><small>share of energy</small></p>${mix}</div>` : ''}
     ${has ? `<div class="fday-sec">${water}${facts}</div>` : d.today ? `<div class="fday-sec">${water}</div>` : ''}
     ${has ? `<div class="fday-foot">${infoBtn('day')}<button class="gh-link" data-action="food-daynut">All nutrients${icon('chevron')}</button></div>${infoLine('day')}` : ''}
   </section>`;
@@ -718,11 +847,9 @@ function daySummary(d) {
 // A small link to Trends: the last seven days as bars and their average.
 function trendPreview(w) {
   if (!w?.series) return '';
-  const hatch = nextId('fp');
-  const { svg } = dayBars(w.series, { height: 40, top: 4, sel: w.today, selValue: false, avg: w.avg?.kcal, rx: 2, hatch });
   const avg = num(w.avg?.kcal);
   return `<a class="card ftrend" href="#/food/trends">
-    <svg class="ftrend-bars" width="104" height="40" aria-hidden="true"><defs>${hatchDef(hatch)}</defs>${svg}</svg>
+    <span class="ftrend-bars">${barsHtml(w.series, { height: 44, sel: w.today, selValue: false, avg: w.avg?.kcal, mini: true })}</span>
     <span class="ftrend-words"><span class="eyebrow">Trends</span><b>${avg === null ? '–' : `${fmtN(avg)}${w.avg.missing?.kcal ? '+' : ''}`}<small> kcal a day</small></b></span>
     ${icon('chevron', 'chev')}</a>`;
 }
@@ -769,7 +896,7 @@ function searchBody(s) {
 // A food: its grades and tags, the amount, then the full nutrition facts per portion or per 100.
 function foodBody(s) {
   const it = s.item;
-  const pickText = s.pick ? (s.pick.purpose === 'recipe-swap' ? 'Swap in' : 'Add') : 'Log it';
+  const pickText = s.pick ? ({ 'recipe-swap': 'Swap in', chat: 'Use this' }[s.pick.purpose] || 'Add') : 'Log it';
   const g = itemGrade(it);
   const nova = novaBadge(it.nova);
   const sub = [it.brand, it.pack ? amountText(1, 'pack', it) : null, it.state ? it.state.replace(/-/g, ' ') : null].filter(Boolean).map(esc).join(' · ');
@@ -880,16 +1007,10 @@ function reviewBody(s) {
 }
 
 function photoBody(s) {
-  if (s.busy && s.source === 'text') return `<div class="photo-busy"><div class="msg assistant typing" aria-label="Working it out"><i></i><i></i><i></i></div><p class="note">"${esc(s.text)}"</p></div>`;
   if (s.busy) return '<div class="photo-busy"><div class="msg assistant typing" aria-label="Reading the photo"><i></i><i></i><i></i></div></div>';
   const r = s.result;
   if (!r) return '';
   if (r.kind === 'meal') return reviewBody(s);
-  if (s.source === 'text') {
-    return `<p class="note">${esc(r.question || 'What did you eat?')}</p><div class="sheet-actions">
-      <button class="btn tinted" data-action="food-text-edit">${icon('back')}Change what you typed</button>
-      <button class="btn tinted" data-action="food-search">${icon('search')}Search</button><button class="btn tinted" data-action="food-quick">${icon('bolt')}Quick add</button></div>`;
-  }
   if (r.kind === 'product') {
     return `${r.summary ? `<p class="note">${esc(r.summary)}</p>` : ''}<div class="group">${resultRow(r.item)}</div>`;
   }
@@ -1044,9 +1165,7 @@ function sheetHtml() {
     case 'quick': return sheetWrap('Quick add', quickBody(s));
     case 'custom': return sheetWrap(s.fromLabel ? 'Check the label' : 'A food of your own', customBody(s), 'tall');
     case 'photo': {
-      const title = s.source === 'text'
-        ? (s.busy ? 'Working it out' : s.result?.kind === 'meal' ? 'What you ate' : 'What did you eat?')
-        : (s.busy ? 'Reading the photo' : s.result?.kind === 'meal' ? 'On the plate' : s.result?.kind === 'product' ? 'Found it' : 'From the photo');
+      const title = s.busy ? 'Reading the photo' : s.result?.kind === 'meal' ? 'On the plate' : s.result?.kind === 'product' ? 'Found it' : 'From the photo';
       return sheetWrap(title, photoBody(s), 'tall');
     }
     case 'scan-miss': return sheetWrap(scanMissTitle(s), scanMissBody(s));
@@ -1206,21 +1325,18 @@ function kpiRow(h) {
     ${tile(`${logged}<small>/${h.days}</small>`, 'days logged')}</div>`;
 }
 
-// Energy per day: bars, the average as a dashed line, the chosen day bright. Tap a day to choose it.
+// Energy per day, each column split by macro; the average as a dashed line, the chosen day lit and the
+// rest dimmed. Tap a day to choose it.
 function energyCard(h, sel) {
-  const hatch = nextId('fx');
   const avg = num(h.avg.kcal);
-  const height = 150;
-  const { svg } = dayBars(h.series, { height, top: 24, sel, values: h.days <= 7, avg, hatch });
   const hits = h.series.map((d) => `<button type="button" data-action="food-trend-day" data-date="${d.date}" aria-pressed="${d.date === sel}"
-    aria-label="${esc(`${d.date === h.today ? 'Today' : shortDay(d.date)}: ${d.logged ? `${fmtN(d.kcal)} kcal${d.incomplete ? ', incomplete' : ''}` : 'nothing logged'}`)}"></button>`).join('');
-  const keys = [h.series.some((d) => d.incomplete) ? '<span><i class="fk fk-inc"></i>Incomplete</span>' : '', h.series.some((d) => !d.logged) ? '<span><i class="fk fk-gap"></i>No log</span>' : ''].join('');
+    aria-label="${esc(`${d.date === h.today ? 'Today' : shortDay(d.date)}: ${d.logged ? `${fmtN(d.kcal)} kcal${d.incomplete ? ', incomplete' : ''}, ${spokenSplit(d)}` : 'nothing logged'}`)}"></button>`).join('');
   const side = `<span><i class="fk fk-avg"></i>${avg === null ? '–' : `<b>${fmtN(avg)}${h.avg.missing?.kcal ? '+' : ''}</b> avg`}</span>`;
   return `<section class="card fcard ftr-energy f-wide">${cardHead('Energy', side)}
-    <div class="fx-plot"><svg class="fx-svg" width="100%" height="${height}" aria-hidden="true"><defs>${hatchDef(hatch)}</defs><line x1="0" x2="100%" y1="${height - 0.5}" y2="${height - 0.5}" class="fx-base"/>${svg}</svg>
+    <div class="fx-plot">${barsHtml(h.series, { height: 168, sel, values: h.days <= 7, avg })}
       <div class="fx-hits" style="grid-template-columns:repeat(${h.series.length},minmax(0,1fr))">${hits}</div></div>
     ${axisLabels(h.series, h.today)}
-    ${keys ? `<p class="fx-keys">${keys}</p>` : ''}
+    ${barKeys(h.series)}
   </section>`;
 }
 
@@ -1256,11 +1372,11 @@ function gradeCard(h) {
 
 // Bars against the reference intake, with a mark at 100%.
 // With `tap`, each row is a button that opens the foods richest in it.
-function riRows(list, { max = 150, best = new Set(), low = new Set(), tap = false } = {}) {
-  const at = ((100 / max) * 100).toFixed(2);
+function riRows(list, { best = new Set(), low = new Set(), tap = false } = {}) {
+  const at = RI_AT;
   return list.map((c, i) => {
     const p = num(c.pct);
-    const w = p === null ? 0 : Math.min(p, max) / max;
+    const w = p === null ? 0 : riPos(p) / 100;
     const tone = `${riTone(p, c.key)}${best.has(c.key) ? ' best' : ''}${low.has(c.key) ? ' low' : ''}`;
     // "~" when some of it was filled from a similar food, the web or an estimate rather than on record.
     const est = p !== null && c.est > 0 ? `<i class="est" title="${c.est >= 100 ? 'Estimated' : `About ${fmtN(c.est)}% estimated`}">~</i>` : '';
@@ -1271,8 +1387,8 @@ function riRows(list, { max = 150, best = new Set(), low = new Set(), tap = fals
   }).join('');
 }
 
-function riLegend(max = 150) {
-  return `<div class="rirow rirow-legend" aria-hidden="true"><span></span><span class="rirow-bar bare"><b class="rirow-100" style="left:${((100 / max) * 100).toFixed(2)}%"><em>${needs() ? 'Need' : 'RI'}</em></b></span><span></span></div>`;
+function riLegend() {
+  return `<div class="rirow rirow-legend" aria-hidden="true"><span></span><span class="rirow-bar bare"><b class="rirow-100" style="left:${RI_AT}%"><em>${needs() ? 'Need' : 'RI'}</em></b></span><span></span></div>`;
 }
 
 // The average day against the label's reference intakes.
@@ -1375,15 +1491,12 @@ function timingCard(h) {
 function weekdayCard(h) {
   const w = h.weekdays;
   if (!w?.some((x) => x.n)) return '';
-  const hatch = nextId('fw');
-  const series = w.map((x) => ({ date: `w${x.day}`, logged: x.n > 0, kcal: x.kcal }));
-  const height = 120;
-  const { svg } = dayBars(series, { height, top: 22, values: true, avg: num(h.avg.kcal), hatch });
+  const series = w.map((x) => ({ date: `w${x.day}`, logged: x.n > 0, kcal: x.kcal, protein: x.protein, carbs: x.carbs, fat: x.fat }));
   const best = [...w].filter((x) => x.n).sort((a, b) => b.kcal - a.kcal)[0];
   return `<section class="card fcard">${cardHead('By weekday', best ? `<span>Most on <b>${WEEK[best.day]}</b></span>` : '')}
-    <svg class="fx-svg" width="100%" height="${height}" aria-hidden="true"><defs>${hatchDef(hatch)}</defs><line x1="0" x2="100%" y1="${height - 0.5}" y2="${height - 0.5}" class="fx-base"/>${svg}</svg>
+    ${barsHtml(series, { height: 132, values: true, avg: num(h.avg.kcal) })}
     <div class="fx-axis cols" style="grid-template-columns:repeat(7,minmax(0,1fr))" aria-hidden="true">${WEEK.map((d) => `<span>${d}</span>`).join('')}</div>
-    <p class="fx-keys"><span><i class="fk fk-avg"></i>Average day</span></p></section>`;
+    ${barKeys(series, 'Average day')}</section>`;
 }
 
 // The chosen day's macro split against the period's average.
@@ -1581,6 +1694,7 @@ export function viewFood() {
   if (p === 'recipe') return viewRecipe();
   if (p === 'meals') return viewMeals();
   if (p === 'report') return viewReport();
+  if (p === 'chat') return viewChat();
   return viewDiary();
 }
 
@@ -1620,14 +1734,49 @@ function backToBuilder(s, mutate) {
   openSheet(b);
 }
 
-async function afterLog(r, name) {
+async function afterLog(r, name, info = {}) {
   haptic('log-food');
+  if (state.route === 'food' && state.param === 'chat') {
+    await chatAfterLog({ name, nutrients: info.nutrients, queued: r?.queued, duplicate: r?.duplicate });
+    return;
+  }
   if (r?.queued) toast(`${name} saved on this phone. It syncs when you are back online.`);
   else toast(r?.duplicate ? 'Already logged.' : `Logged ${name}.`);
   state.foodSheet = null;
   state.foodToday = null;
   if (state.route === 'food' && !state.param) await refresh().catch(() => ctx.render());
   else ctx.render();
+}
+
+// Logs reviewed foods, a photo's from its sheet or a meal's from the food chat: a matched food at its
+// amount, and a food with no record as an estimated quick add. Says how many landed and whether any is
+// waiting on this phone.
+async function logReviewed(items, slot) {
+  let n = 0;
+  let queued = false;
+  for (const it of items) {
+    const m = reviewItem(it);
+    let r = null;
+    if (m.mode === 'match') {
+      // The matched record's gaps, estimated per 100, go back with the line so the server keeps them.
+      const body = { key: it.match.key, qty: Number(it.qty), unit: it.unit, slot, estimate: !it.edited, id: it.logId, ...(it.fill ? { fill: it.fill } : {}) };
+      r = await act(() => foodPost('log', body, { name: it.match.name, amount: amountText(it.qty, it.unit, it.match), kcal: m.line.nutrients.kcal }));
+    } else if (m.mode === 'rough') {
+      // Not in the catalogue: the estimate per 100 and its weight go in the diary as a quick add
+      // marked as an estimate. Without a profile or a weight, the rough totals stand in.
+      const g = it.guess;
+      const name = cap(it.name);
+      const amount = roughAmount(g);
+      const drink = it.fill?.basis === 'ml' || g.unit === 'ml';
+      const weight = num(g.weight) ?? (['g', 'ml'].includes(g.unit) ? num(g.amount) : null);
+      const body = { name, amount, slot, estimate: true, id: it.logId, ...(drink ? { ml: weight } : { grams: weight }) };
+      if (it.fill && weight) body.fill = it.fill;
+      else Object.assign(body, { kcal: round(g.kcal, 0), protein: g.protein, carbs: g.carbs, sugars: g.sugars, fat: g.fat, fibre: g.fibre, salt: g.salt });
+      r = await act(() => foodPost('quick', body, { name, amount, kcal: g.kcal }));
+    } else if (m.error) toast(`${it.match.name}: ${m.error}`, true);
+    if (r) { n += 1; queued = queued || r.queued; }
+  }
+  return { n, queued };
 }
 
 // Each reviewed item carries the id its entry will be logged under, so Log all sent again (a failed try,
@@ -1670,7 +1819,7 @@ async function readPhoto(input) {
 }
 
 // About 1,600 px on the long side as a JPEG: plenty for a label, small enough to send quickly.
-async function shrink(file) {
+async function shrink(file, long = 1600, quality = 0.82) {
   let src;
   let w;
   let h;
@@ -1688,12 +1837,12 @@ async function shrink(file) {
     w = src.naturalWidth;
     h = src.naturalHeight;
   }
-  const s = Math.min(1, 1600 / Math.max(w, h));
+  const s = Math.min(1, long / Math.max(w, h));
   const c = document.createElement('canvas');
   c.width = Math.round(w * s);
   c.height = Math.round(h * s);
   c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
-  return c.toDataURL('image/jpeg', 0.82).split(',')[1];
+  return c.toDataURL('image/jpeg', quality).split(',')[1];
 }
 
 async function openBuilderFromLines(base, lines) {
@@ -1719,6 +1868,7 @@ function settle(el) {
 
 export async function foodClick(a, el) {
   if (!a.startsWith('food-')) return false;
+  if (a.startsWith('food-chat-')) return chatClick(a, el);
   if (a.startsWith('food-burn-')) return energyClick(a, el, refresh);
   if (a.startsWith('food-scan')) return scanClick(a, el);
   if (await usualClick(a, el)) return true;
@@ -1924,13 +2074,6 @@ export async function foodClick(a, el) {
       if (q && !alts.length) await runSearch(q, true);
       return true;
     }
-    case 'food-text-edit': {
-      closeSheet();
-      const box = document.querySelector('[data-food-text]');
-      box?.focus();
-      box?.setSelectionRange(box.value.length, box.value.length);
-      return true;
-    }
     case 'food-span': {
       const days = Number(el.dataset.days);
       if (days === (F.span || 7)) return true;
@@ -2107,6 +2250,8 @@ async function finishPick(s, qty, unit) {
   } else if (p.purpose === 'photo') {
     // A food he picked himself: the estimate made for the old match no longer applies.
     backToBuilder(s, (b) => Object.assign(b.items[p.index], { match: s.item, qty: Number(qty), unit, edited: true, fill: null, why: null, brand: null, size: null }));
+  } else if (p.purpose === 'chat') {
+    chatPicked(p, s.item, qty, unit);
   } else if (p.purpose === 'recipe-swap') {
     f().opts.swap[p.index] = { ref: 'item', ref_key: s.item.key, qty: Number(qty), unit };
     state.foodSheet = null;
@@ -2117,6 +2262,7 @@ async function finishPick(s, qty, unit) {
 export async function foodSubmit(kind, form) {
   if (!kind.startsWith('food-')) return false;
   if (kind === 'food-weight') return energySubmit(kind, form, refresh);
+  if (kind === 'food-chat-send') return chatSubmit(form);
   if (await usualSubmit(kind, form)) return true;
   const s = state.foodSheet;
   const o = form2obj(form);
@@ -2133,12 +2279,12 @@ export async function foodSubmit(kind, form) {
         return true;
       }
       const r = await act(() => foodPost('log', { key: s.item.key, qty: Number(o.qty), unit: o.unit, slot: o.slot, ...(s.fill ? { fill: s.fill } : {}) }, { name: s.item.name, amount: amountText(o.qty, o.unit, s.item), kcal: l.nutrients.kcal }));
-      if (r) await afterLog(r, s.item.name);
+      if (r) await afterLog(r, s.item.name, { nutrients: l.nutrients });
       return true;
     }
     case 'food-quick': {
       const r = await act(() => foodPost('quick', o, { name: o.name || 'Quick add', amount: o.ml ? `${o.ml} ml` : '', kcal: Number(o.kcal) }));
-      if (r) await afterLog(r, o.name || 'it');
+      if (r) await afterLog(r, o.name || 'it', { nutrients: { kcal: Number(o.kcal) } });
       return true;
     }
     case 'food-custom': {
@@ -2157,54 +2303,9 @@ export async function foodSubmit(kind, form) {
       }
       return true;
     }
-    case 'food-describe': {
-      const text = String(o.text || '').trim();
-      if (!text) { toast('Type what you ate first.', true); return true; }
-      f().text = text;
-      const sheet = { kind: 'photo', source: 'text', busy: true, text };
-      state.foodSheet = sheet;
-      ctx.render();
-      try {
-        const result = await api('POST', '/api/food/describe', { text });
-        if (state.foodSheet !== sheet) return true;
-        state.foodSheet = { kind: 'photo', source: 'text', text, result, items: photoItemsFrom(result) };
-        ctx.render();
-      } catch (err) {
-        if (state.foodSheet === sheet) state.foodSheet = null;
-        ctx.render();
-        toast(err.status === 0 ? 'Working out a typed meal needs a connection. Quick add works offline.' : err.message, true);
-      }
-      return true;
-    }
     case 'food-photo-log': {
-      let n = 0;
-      let queued = false;
-      for (const it of s.items) {
-        const m = reviewItem(it);
-        let r = null;
-        if (m.mode === 'match') {
-          // The matched record's gaps, estimated per 100, go back with the line so the server keeps them.
-          const body = { key: it.match.key, qty: Number(it.qty), unit: it.unit, slot: o.slot, estimate: !it.edited, id: it.logId, ...(it.fill ? { fill: it.fill } : {}) };
-          r = await act(() => foodPost('log', body, { name: it.match.name, amount: amountText(it.qty, it.unit, it.match), kcal: m.line.nutrients.kcal }));
-        } else if (m.mode === 'rough') {
-          // Not in the catalogue: the estimate per 100 and its weight go in the diary as a quick add
-          // marked as an estimate. Without a profile or a weight, the rough totals stand in.
-          const g = it.guess;
-          const name = cap(it.name);
-          const amount = roughAmount(g);
-          const drink = it.fill?.basis === 'ml' || g.unit === 'ml';
-          const weight = num(g.weight) ?? (['g', 'ml'].includes(g.unit) ? num(g.amount) : null);
-          const body = { name, amount, slot: o.slot, estimate: true, id: it.logId, ...(drink ? { ml: weight } : { grams: weight }) };
-          if (it.fill && weight) body.fill = it.fill;
-          else Object.assign(body, { kcal: round(g.kcal, 0), protein: g.protein, carbs: g.carbs, sugars: g.sugars, fat: g.fat, fibre: g.fibre, salt: g.salt });
-          r = await act(() => foodPost('quick', body, { name, amount, kcal: g.kcal }));
-        } else if (m.error) toast(`${it.match.name}: ${m.error}`, true);
-        if (r) { n += 1; queued = queued || r.queued; }
-      }
-      if (n) {
-        if (s.source === 'text') f().text = '';
-        await afterLog({ queued }, `${n} ${n === 1 ? 'item' : 'items'}`);
-      }
+      const { n, queued } = await logReviewed(s.items, o.slot);
+      if (n) await afterLog({ queued }, `${n} ${n === 1 ? 'item' : 'items'}`);
       return true;
     }
     case 'food-entry-edit': {
@@ -2345,6 +2446,10 @@ function onInput(e) {
     sizeText(el);
     return null;
   }
+  if (el.matches('[data-chat-cid]')) {
+    chatInput(el);
+    return null;
+  }
   if (el.matches('[data-recipe-q]')) {
     f().filter.q = el.value;
     clearTimeout(searchTimer);
@@ -2398,6 +2503,14 @@ function onChange(e) {
   const el = e.target;
   if (el.matches('[data-food-photo]')) {
     readPhoto(el);
+    return;
+  }
+  if (el.matches('[data-chat-photo]')) {
+    chatPhoto(el);
+    return;
+  }
+  if (el.matches('[data-chat-cid]')) {
+    chatInput(el);
     return;
   }
   if (el.matches('[data-recipe-family]')) {
@@ -2459,5 +2572,10 @@ export function initFood(c) {
   initUsual({
     f, store, queue, QUEUE, foodPost, uuid, itemFor, openSheet, slotSelect, unitOptions, SLOT, SLOTS, click: foodClick,
     refresh: () => refresh(), render: () => ctx.render(),
+  });
+  initChat({
+    f, store, uuid, openSheet, runSearch, defaults, reviewItem, reviewKcal, roughAmount, unitOptions, itemGrade, foodRing, macroParts, energyRing,
+    logReviewed, shrink, slotNow, SLOT, SLOTS, photoItemsFrom, fmtN, cap, sizeText, sheetHtml,
+    shell: (html) => ctx.shell(html), render: () => ctx.render(),
   });
 }

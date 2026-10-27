@@ -423,6 +423,8 @@ const ICONS = {
   sound: '<path d="M4.5 9.8h3L12 6v12l-4.5-3.8h-3z"/><path d="M15.5 9.2a4 4 0 0 1 0 5.6M18 7a7.2 7.2 0 0 1 0 10"/>',
   barcode: '<path d="M3.8 8V6.3c0-1.4 1.1-2.5 2.5-2.5H8M16 3.8h1.7c1.4 0 2.5 1.1 2.5 2.5V8M20.2 16v1.7c0 1.4-1.1 2.5-2.5 2.5H16M8 20.2H6.3c-1.4 0-2.5-1.1-2.5-2.5V16"/><path d="M7.8 8.3v7.4M10.6 8.3v7.4M12.8 8.3v7.4M16.2 8.3v7.4"/>',
   torch: '<path d="M8 3.5h8v3.2l-2 3V20a.8.8 0 0 1-.8.8h-2.4A.8.8 0 0 1 10 20V9.7l-2-3z"/><path d="M8 6.7h8M12 13v2.2"/>',
+  chat: '<path d="M12 4.5c4.7 0 8.5 3 8.5 6.9s-3.8 6.9-8.5 6.9c-1 0-2-.1-2.9-.4L5 19.5l.9-3.4c-1.5-1.2-2.4-2.9-2.4-4.7 0-3.9 3.8-6.9 8.5-6.9z"/><path d="M8.5 11.4h.01M12 11.4h.01M15.5 11.4h.01"/>',
+  image: '<rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="M20.5 15.5l-4.6-4.6-8.4 8.6"/>',
 };
 
 // The Oath mark: a ring cut down the middle and slid apart. Chrome is the word, Merlot is the deed,

@@ -1,17 +1,32 @@
 /* Food: capture, the day, nutrition facts, grades and the Trends charts. Loaded after app.css. */
 
-/* Macro colours: one step of teal, amber and violet, checked for colour-blind separation on the dark
-   card. Unknown energy is always striped, never a colour of its own. Nutri-Score and NOVA keep their
-   official colours. */
+/* Macro colours: aqua, azure and tangerine. Their deep steps are the identity, validated as a set on
+   the dark card (every pair at least 9 apart under protan and deutan simulation, 20 apart in full
+   colour, 3:1 or better on the card); the lit steps only ever carry the same hue to the head of a
+   gradient or a glow. Vitamins and minerals are violet, water sky. Unknown energy is always striped,
+   never a colour of its own. Nutri-Score and NOVA keep their official colours. */
 :root {
-  --f-protein: #1fa37a;
-  --f-carbs: #bf8a12;
-  --f-fat: #8a6cf0;
+  --f-protein: #199e70;
+  --f-protein-hi: #4fefbf;
+  --f-carbs: #3987e5;
+  --f-carbs-hi: #8fcbff;
+  --f-fat: #d95926;
+  --f-fat-hi: #ffa46b;
   --f-unknown: #5f6572;
+  --f-energy: #c9ced6;
+  --f-energy-hi: #ffffff;
+  --f-micro: #7466f0;
+  --f-micro-hi: #c5bcff;
+  --f-water: #2f8fe8;
+  --f-water-hi: #a8dcff;
+  /* The food chat's own colour: fresh lime to leaf green, with dark words on it. */
+  --fc-lime: #d4f76a;
+  --fc-leaf: #3fcf7f;
+  --fc-ink: #0a1a0c;
   --f-bar: rgba(201, 206, 214, 0.42);
   --f-bar-prev: rgba(201, 206, 214, 0.3);
   --f-caf: var(--blaze);
-  --f-drink: rgba(201, 206, 214, 0.5);
+  --f-drink: rgba(120, 190, 255, 0.55);
   --ns-a: #038141;
   --ns-b: #85bb2f;
   --ns-c: #fecb02;
@@ -23,10 +38,11 @@
   --nova-4: #ff0000;
   --hatch: repeating-linear-gradient(45deg, #8a909c 0 1.6px, transparent 1.6px 4px);
 }
-.m-protein { --m: var(--f-protein); }
-.m-carbs { --m: var(--f-carbs); }
-.m-fat { --m: var(--f-fat); }
-.m-unknown { --m: var(--f-unknown); }
+.m-protein { --m: var(--f-protein); --mh: var(--f-protein-hi); }
+.m-carbs { --m: var(--f-carbs); --mh: var(--f-carbs-hi); }
+.m-fat { --m: var(--f-fat); --mh: var(--f-fat-hi); }
+.m-unknown { --m: var(--f-unknown); --mh: #8a909c; }
+.m-energy { --m: var(--f-energy); --mh: var(--f-energy-hi); }
 
 .num, .fkpi b, .nf-v, .rirow-v, .fmicro-i b { font-variant-numeric: tabular-nums; }
 i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right: 1px; }
@@ -43,14 +59,24 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .fd-meals > .section:first-child .gh { margin-top: 28px; }
 .fslot .gh { margin-top: 28px; }
 
-/* Capture: the camera and a few typed words in one bar, the other ways in a tap below. */
+/* Capture: the camera, and the words that open the food chat, in one bar; the other ways in a tap
+   below. The bar wears the chat's lime at its edge. */
 .fcap { margin-top: 8px; }
 .fcap-bar {
-  display: grid; grid-template-columns: 46px minmax(0, 1fr) 40px; align-items: end; gap: 6px;
-  padding: 6px; border-radius: 28px; background: var(--card); box-shadow: var(--rim);
+  display: grid; grid-template-columns: 46px minmax(0, 1fr) 40px; align-items: center; gap: 6px;
+  padding: 6px; border-radius: 28px;
+  background: radial-gradient(80% 140% at 100% 50%, rgba(212, 247, 106, 0.07), transparent 60%), var(--card);
+  box-shadow: inset 0 0 0 1px rgba(212, 247, 106, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   transition: box-shadow var(--t-ctl) var(--ease);
 }
-.fcap-bar:focus-within { box-shadow: inset 0 0 0 1.5px var(--focus), 0 0 0 4px rgba(244, 245, 248, 0.1); }
+.fcap-open {
+  display: grid; gap: 1px; min-width: 0; min-height: 46px; margin: 0; padding: 4px 4px 4px 2px; border: 0; background: none; color: inherit;
+  font: inherit; text-align: left; cursor: text;
+}
+.fcap-q { font-size: 1.0625rem; color: var(--text-2); line-height: 1.3; }
+.fcap-hint { display: inline-flex; align-items: center; gap: 6px; overflow: hidden; font-size: 0.75rem; color: var(--text-3); white-space: nowrap; text-overflow: ellipsis; }
+.fcap-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--fc-lime); box-shadow: 0 0 8px var(--fc-lime); }
+.fcap-open:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 12px; }
 .fcap-cam {
   position: relative; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; color: #fff;
   background: radial-gradient(110% 110% at 32% 18%, #ff5a40 0%, var(--merlot-hi) 30%, var(--merlot) 62%, #a10400 100%);
@@ -60,17 +86,12 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .fcap-cam .ic { width: 23px; height: 23px; stroke-width: 2; }
 .fcap-cam:active { transform: scale(0.92); transition: transform var(--t-press) var(--ease); }
 .fcap-cam:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
-.fcap-input {
-  display: block; width: 100%; min-height: 46px; max-height: 132px; margin: 0; padding: 12px 4px 11px; border: 0; resize: none; overflow-y: auto;
-  background: transparent; color: var(--text); font: inherit; font-size: 1.0625rem; line-height: 1.35; outline: none;
-}
-.fcap-input::placeholder { color: var(--text-3); opacity: 1; }
 .fcap-send {
-  width: 40px; height: 40px; margin: 0 0 3px; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
-  background: var(--silver); color: var(--on-silver); box-shadow: 0 6px 16px -10px rgba(237, 241, 247, 0.6);
+  width: 40px; height: 40px; margin: 0; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  background: linear-gradient(150deg, var(--fc-lime), var(--fc-leaf)); color: var(--fc-ink); box-shadow: 0 6px 18px -8px rgba(120, 220, 110, 0.75);
   transition: transform var(--spring-ms) var(--spring), opacity var(--t-ctl);
 }
-.fcap-send .ic { width: 20px; height: 20px; stroke-width: 2.2; }
+.fcap-send .ic { width: 20px; height: 20px; stroke-width: 2.1; }
 .fcap-send:active { transform: scale(0.9); transition: transform var(--t-press) var(--ease); }
 .fcap-tools, .fcap .tray {
   display: flex; gap: 8px; overflow-x: auto; margin: 10px calc(var(--gutter) * -1) 0; padding: 2px var(--gutter) 2px;
@@ -101,40 +122,95 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 
 /* ---------- The day: ring and macros, reference intakes, grades, the rest in a strip ---------- */
 
-.fday { margin-top: 14px; }
+.fday {
+  margin-top: 14px;
+  background:
+    radial-gradient(70% 46% at 50% 0%, rgba(57, 135, 229, 0.09), transparent 70%),
+    radial-gradient(50% 40% at 18% 8%, rgba(25, 158, 112, 0.08), transparent 70%),
+    radial-gradient(50% 40% at 84% 10%, rgba(217, 89, 38, 0.07), transparent 70%),
+    var(--card);
+}
 .fday-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: -6px -6px 12px 0; }
 .fday-head h2 { min-width: 0; font-size: 1.125rem; font-weight: 700; letter-spacing: -0.014em; overflow-wrap: anywhere; }
 .fday-nav { display: flex; gap: 6px; flex: none; }
 .fday-nav .icon-btn { width: 38px; height: 38px; }
 .fday-nav .icon-btn .ic { width: 18px; height: 18px; }
 .fday-nav .icon-btn:disabled { opacity: 0.3; cursor: default; }
-.fday-main { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 18px; }
+/* Rings: rounded arcs with a gradient along each, a soft glow of their own colour under them, on a
+   dark track. The day's ring draws itself in the first time it is seen. */
 .fring { position: relative; flex: none; }
-.fring svg { display: block; width: 100%; height: 100%; }
-.fr-track { stroke: var(--fill-2); }
+.fring svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.fr-track { stroke: rgba(255, 255, 255, 0.06); }
 .fr-seg { stroke: var(--m, var(--f-unknown)); }
-.fh-bg { fill: rgba(255, 255, 255, 0.03); }
-.fh-line { fill: #8a909c; }
+stop.g0 { stop-color: var(--m); }
+stop.g1 { stop-color: var(--mh); }
+.fr-glow { opacity: 0.6; }
+.fr-draw { stroke-dasharray: 1 1; }
+.fh-bg { fill: rgba(255, 255, 255, 0.025); }
+.fh-line { fill: #7d8390; }
 .fh-line.caf { fill: var(--f-caf); }
 .fring-c { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; line-height: 1.1; text-align: center; }
 .fring-c b { font-size: 1.5rem; font-weight: 780; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
 .fring-c small { font-size: 0.75rem; font-weight: 600; color: var(--text-2); }
-.fmac { display: grid; gap: 8px; margin: 0; min-width: 0; }
-.fmac-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-bottom: 7px; box-shadow: 0 1px 0 var(--line-soft); }
-.fmac-row:last-child { padding-bottom: 0; box-shadow: none; }
-.fmac dt { display: inline-flex; align-items: center; gap: 8px; min-width: 0; font-size: 0.875rem; font-weight: 600; color: var(--text-2); }
-.fmac dd { margin: 0; font-size: 1.0625rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.fmac dd small { margin-left: 6px; font-size: 0.75rem; font-weight: 600; color: var(--text-3); }
-.fdot { display: inline-block; flex: none; width: 10px; height: 10px; border-radius: 3px; background: var(--m); }
+.fdot { display: inline-block; flex: none; width: 10px; height: 10px; border-radius: 3px; background: linear-gradient(135deg, var(--mh), var(--m)); }
 .fdot.m-unknown { background: var(--hatch); box-shadow: inset 0 0 0 1px #8a909c; }
 
+/* The hero: the day's energy ring, and under it what is left or over. */
+.fday-hero { position: relative; display: grid; justify-items: center; gap: 12px; margin: 2px 0 18px; }
+.fday-hero .fring-c b { font-size: 2.375rem; font-weight: 760; letter-spacing: -0.045em; line-height: 1; }
+.fday-hero .fring-c small { margin-top: 5px; font-size: 0.8125rem; font-weight: 600; color: var(--text-2); }
+.fday-left {
+  margin: 0; padding: 6px 14px; border-radius: 999px; font-size: 0.875rem; font-weight: 560; color: var(--text-2);
+  background: rgba(255, 255, 255, 0.05); box-shadow: inset 0 0 0 1px var(--line);
+}
+.fday-left b { font-weight: 740; color: var(--text); font-variant-numeric: tabular-nums; }
+.fday-left.over b { color: var(--honey); }
+
+/* Protein, carbs and fat: three tiles washed in their own colour, each with its grams, a bar to the
+   day's amount and its share of the energy. */
+.fmcs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.fmc {
+  display: grid; align-content: start; gap: 5px; min-width: 0; padding: 11px 11px 10px; border-radius: var(--r-inset);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--m) 17%, transparent), transparent 78%), var(--inset);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--m) 26%, var(--line-soft)), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.fmc-k { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; min-width: 0; font-size: 0.8125rem; font-weight: 650; color: var(--text-2); }
+.fmc-k > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fmc-k small { flex: none; font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; color: color-mix(in srgb, var(--mh) 70%, var(--text-2)); }
+.fmc-v { font-size: 1.375rem; font-weight: 740; letter-spacing: -0.03em; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fmc-v small { margin-left: 2px; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0; color: var(--text-3); }
+.fmc-bar { position: relative; display: block; height: 6px; margin-top: 2px; border-radius: 3px; background: rgba(255, 255, 255, 0.07); }
+.fmc-bar i {
+  position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--m), var(--mh));
+  box-shadow: 0 0 10px -1px color-mix(in srgb, var(--mh) 55%, transparent); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100));
+}
+.fmc-of { font-size: 0.75rem; color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fmc.full .fmc-of { color: var(--f-protein-hi); }
+.fmc.over .fmc-of { color: #ffad5c; }
+.fmc.unk .fmc-v { color: var(--text-3); font-weight: 600; }
+.fday-unk { display: flex; align-items: flex-start; gap: 8px; margin: 10px 0 0; font-size: 0.8125rem; line-height: 1.4; color: var(--text-3); }
+.fday-unk .fdot { margin-top: 4px; }
+.fday-unk b { font-weight: 650; color: var(--text-2); }
+
 .fday-sec { margin-top: 16px; padding-top: 14px; box-shadow: 0 -1px 0 var(--line-soft); }
-.fday-k { margin: 0 0 10px; font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
-.fmicro { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 14px; }
-.fmicro-i { display: grid; gap: 3px; min-width: 0; }
-.fmicro-k { overflow: hidden; font-size: 0.75rem; font-weight: 600; color: var(--text-3); text-overflow: ellipsis; white-space: nowrap; }
-.fmicro-i b { font-size: 1rem; font-weight: 720; letter-spacing: -0.01em; line-height: 1.2; }
-.fmicro-i .ri-bar { width: 100%; margin-top: 3px; }
+.fday-k {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  margin: 0 0 10px; font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3);
+}
+.fday-k small { font-family: var(--font); font-size: 0.75rem; font-weight: 500; letter-spacing: 0; text-transform: none; }
+
+/* Six vitamins and minerals as violet tiles; one that has reached its need is lit and ticked. */
+.fmicro { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.fmicro-i {
+  display: grid; gap: 4px; min-width: 0; padding: 9px 10px 11px; border-radius: 12px;
+  background: linear-gradient(180deg, rgba(116, 102, 240, 0.1), transparent 80%), var(--inset); box-shadow: inset 0 0 0 1px rgba(116, 102, 240, 0.16);
+}
+.fmicro-i.done { background: linear-gradient(180deg, rgba(150, 136, 255, 0.2), transparent 85%), var(--inset); box-shadow: inset 0 0 0 1px rgba(170, 158, 255, 0.34); }
+.fmicro-k { display: flex; align-items: center; overflow: hidden; font-size: 0.75rem; font-weight: 600; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
+.fmicro-k > span { overflow: hidden; text-overflow: ellipsis; }
+.fmicro-i b { display: inline-flex; align-items: center; gap: 4px; font-size: 1.0625rem; font-weight: 740; letter-spacing: -0.02em; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.fmicro-ok { width: 15px; height: 15px; stroke-width: 2.6; color: var(--f-micro-hi); }
+.fmicro-i .ri-bar { width: 100%; margin-top: 4px; }
 .fmicro-i.unk b { color: var(--text-3); font-weight: 600; }
 /* Water from drinks: a bar in the Today ring's water colour, to its reference. */
 .fwater { margin-bottom: 14px; }
@@ -142,11 +218,22 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .fwater-head .fday-k { margin: 0; }
 .fwater-v { font-size: 0.8125rem; color: var(--text-2); font-variant-numeric: tabular-nums; }
 .fwater-v b { font-size: 0.9375rem; font-weight: 700; color: var(--text); }
-.fwater-bar { position: relative; display: block; height: 8px; border-radius: 4px; background: var(--ring-water-t); overflow: hidden; }
-.fwater-bar i { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--ring-water-0), var(--ring-water-1)); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100)); }
-.fday-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 14px; margin: 0; }
+.fwater-bar { position: relative; display: block; height: 10px; border-radius: 5px; background: var(--ring-water-t); box-shadow: inset 0 0 0 1px rgba(120, 190, 255, 0.12); overflow: hidden; }
+.fwater-bar i {
+  position: absolute; inset: 0; overflow: hidden; border-radius: inherit; background: linear-gradient(90deg, var(--f-water), var(--f-water-hi));
+  box-shadow: 0 0 12px rgba(120, 190, 255, 0.45); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100));
+}
+.fwater-bar i::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%); transform: translateX(-100%); }
+@media (prefers-reduced-motion: no-preference) { .fwater-bar i::after { animation: f-sheen 3.2s 1s var(--ease-in-out) infinite; } }
+@keyframes f-sheen { 0% { transform: translateX(-100%); } 55%, 100% { transform: translateX(100%); } }
+/* The rest in a strip: the amounts to stay under carry a bar to their limit, honey once past it. */
+.fday-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 14px; margin: 0; }
 .fday-strip dt { font-size: 0.75rem; font-weight: 600; color: var(--text-3); }
-.fday-strip dd { margin: 2px 0 0; font-size: 0.9375rem; font-weight: 680; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.fday-strip dd { margin: 2px 0 0; font-size: 0.9375rem; font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.fst .ri-bar { margin-top: 6px; height: 4px; }
+.fst .ri-bar i { background: linear-gradient(90deg, #5f6572, var(--chrome-c)); box-shadow: none; }
+.fst.over .ri-bar i { background: linear-gradient(90deg, var(--honey), var(--ember)); box-shadow: 0 0 8px rgba(255, 140, 26, 0.45); }
+.fst.over dd { color: var(--honey); }
 .fday-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
 .fday-foot .gh-link { margin: -10px -8px -10px 0; font-size: 0.875rem; }
 .fday-foot .gh-link .ic { width: 14px; height: 14px; }
@@ -163,23 +250,56 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .finfo { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 10px 0 0; font-size: 0.8125rem; color: var(--text-2); }
 .finfo b, .finfo i.est { color: var(--text); font-weight: 700; margin-right: 4px; }
 
-/* A meal's share of the day, split by macro. */
-.fmeal { height: 6px; margin: -4px 2px 0; border-radius: 3px; background: var(--fill); overflow: hidden; }
+/* A meal: its own small icon tile, then its share of the day split by macro. */
+.fslot .gh h2 { display: flex; align-items: center; gap: 10px; }
+.fslot-ic {
+  display: grid; place-items: center; width: 30px; height: 30px; flex: none; border-radius: 10px; color: var(--si);
+  background: color-mix(in srgb, var(--si) 15%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--si) 26%, transparent);
+}
+.fslot-ic .ic { width: 17px; height: 17px; stroke-width: 2; }
+.fslot-breakfast { --si: var(--honey); }
+.fslot-lunch { --si: var(--fc-lime); }
+.fslot-dinner { --si: #b4a9ff; }
+.fslot-snacks { --si: var(--f-fat-hi); }
+.fslot-drinks { --si: var(--f-water-hi); }
+.fmeal { height: 6px; margin: -4px 2px 0; border-radius: 3px; background: rgba(255, 255, 255, 0.05); overflow: hidden; }
 .fmeal-bar { display: flex; gap: 2px; height: 100%; }
-.fmeal-bar i { display: block; min-width: 2px; background: var(--m); }
+.fmeal-bar i { display: block; min-width: 2px; background: linear-gradient(90deg, var(--m), var(--mh)); }
+.fmeal-bar i:first-child { border-radius: 3px 0 0 3px; }
+.fmeal-bar i:last-child { border-radius: 0 3px 3px 0; }
 .fmeal-bar i.m-unknown { background: var(--hatch); }
 .fmeal + .group { margin-top: 10px; }
 
-/* Diary rows: the grade, the food and its top tag, the energy. */
-.food-row, .fr { grid-template-columns: 22px minmax(0, 1fr) auto; gap: 4px 12px; }
-.food-row + .food-row::before, .fr + .fr::before { left: 50px; }
-.food-row .li-side b { font-variant-numeric: tabular-nums; }
-.food-row .li-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; }
+/* Diary rows: the food's own ring (where its energy comes from, its Nutri-Score letter inside), the
+   food and its amount, the energy. */
+.food-row { grid-template-columns: 36px minmax(0, 1fr) auto; gap: 3px 12px; min-height: 62px; }
+.food-row + .food-row::before { left: 64px; }
+.fr { grid-template-columns: 22px minmax(0, 1fr) auto; gap: 4px 12px; }
+.fr + .fr::before { left: 50px; }
+.food-row .li-title { font-size: 1rem; font-weight: 640; letter-spacing: -0.012em; line-height: 1.3; }
+.food-row .li-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; margin-top: 1px; font-size: 0.8125rem; color: var(--text-2); }
+.fr-brand { font-weight: 650; color: var(--text-3); }
+.fr-brand + .fr-amt::before { content: '·'; margin-right: 8px; color: var(--text-3); }
+.food-row .li-side { display: grid; justify-items: end; gap: 1px; line-height: 1.1; }
+.food-row .li-side b { font-size: 1.0625rem; font-weight: 740; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.food-row .li-side small { font-family: var(--mono); font-size: 0.625rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
+.fmini { position: relative; display: grid; place-items: center; width: 36px; height: 36px; flex: none; }
+.fmini svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.fmini b {
+  position: relative; display: grid; place-items: center; width: 19px; height: 19px; border-radius: 50%;
+  font-size: 0.6875rem; font-weight: 800; line-height: 1; color: #fff; background: var(--g);
+}
+.fmini.g-a { --g: var(--ns-a); }
+.fmini.g-b { --g: var(--ns-b); }
+.fmini.g-c { --g: var(--ns-c); }
+.fmini.g-d { --g: var(--ns-d); }
+.fmini.g-e { --g: var(--ns-e); }
+.fmini.g-b b, .fmini.g-c b { color: #1d2105; }
 .fempty { margin-top: 12px; padding: 22px var(--pad); text-align: center; color: var(--text-2); }
 
 /* The link to Trends. */
 .ftrend { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: var(--pad-sm); }
-.ftrend-bars { display: block; overflow: visible; }
+.ftrend-bars { display: block; width: 104px; }
 .ftrend-words { display: grid; gap: 2px; min-width: 0; }
 .ftrend-words b { font-size: 1.25rem; font-weight: 740; letter-spacing: -0.02em; }
 .ftrend-words b small { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0; color: var(--text-2); }
@@ -227,8 +347,9 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .nova-4 b { background: var(--nova-4); }
 
 .gmix { display: grid; gap: 9px; }
-.gmix-bar { display: flex; gap: 2px; height: 10px; border-radius: 5px; overflow: hidden; }
-.gmix-bar i { display: block; min-width: 3px; }
+.gmix-bar { display: flex; gap: 2px; height: 12px; border-radius: 6px; overflow: hidden; }
+.gmix-bar i { display: block; min-width: 3px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+.gmix-bar i.gx-none { background: repeating-linear-gradient(45deg, rgba(138, 144, 156, 0.32) 0 1.5px, rgba(255, 255, 255, 0.03) 1.5px 4.5px); box-shadow: none; }
 /* Equal columns, so all six usually sit in one row; only the row items flex, never the letter badges inside them. */
 .gmix-key { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 8px 6px; font-size: 0.8125rem; font-weight: 650; color: var(--text-2); font-variant-numeric: tabular-nums; }
 .gmix-key > span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
@@ -287,10 +408,11 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 
 /* % of reference intake as a short bar: Menthol once a vitamin, mineral or protein reaches it,
    Honey once sugars, saturates or salt pass it. */
-.ri-bar { position: relative; display: block; height: 4px; border-radius: 2px; background: var(--fill-2); overflow: hidden; }
-.ri-bar i { position: absolute; inset: 0; border-radius: inherit; background: var(--chrome-c); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100)); }
-.ri-bar.full i { background: var(--menthol); }
-.ri-bar.over i { background: var(--honey); }
+.ri-bar { position: relative; display: block; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, 0.07); }
+.ri-bar i { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi)); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100)); }
+.ri-bar .ri-mark { position: absolute; top: -3px; bottom: -3px; left: var(--at, 62%); width: 2px; margin-left: -1px; border-radius: 1px; background: rgba(244, 245, 248, 0.6); }
+.ri-bar.full i { background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi) 70%, #fff); box-shadow: 0 0 10px rgba(197, 188, 255, 0.5); }
+.ri-bar.over i { background: linear-gradient(90deg, var(--honey), var(--ember)); box-shadow: 0 0 8px rgba(255, 140, 26, 0.4); }
 .ri-bar.none { background: repeating-linear-gradient(90deg, var(--fill-2) 0 4px, transparent 4px 7px); }
 
 /* ---------- Review of a photographed or typed meal ---------- */
@@ -310,11 +432,42 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 
 /* ---------- Charts ---------- */
 
+/* Split columns (energy by day and by weekday, the small one on the diary): each column a stack of
+   rounded parts with a hairline of card between them, the chosen day lit and glowing, the rest a step
+   back. A faint grid sits behind them; the average is a dashed line across. */
+.fxb {
+  position: relative; padding-top: 22px;
+  background: repeating-linear-gradient(0deg, transparent 0 calc(25% - 1px), rgba(255, 255, 255, 0.04) calc(25% - 1px) 25%);
+  background-origin: content-box; background-clip: content-box; box-shadow: 0 1px 0 var(--line);
+}
+.fxb-cols { position: relative; display: grid; height: 100%; align-items: end; }
+.fxb-c { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; min-width: 0; }
+.fxb-bar {
+  display: flex; flex-direction: column-reverse; gap: 1.5px; width: 62%; max-width: 34px; height: var(--h); min-height: 3px;
+  border-radius: 6px 6px 2px 2px; overflow: hidden; opacity: 0.6; transition: opacity var(--t-ctl) var(--ease);
+}
+.fxb-bar i { display: block; flex: 1 1 0; min-height: 1.5px; background: linear-gradient(180deg, var(--mh), var(--m)); }
+.fxb-bar i.m-unknown { background: var(--hatch); box-shadow: inset 0 0 0 1px rgba(138, 144, 156, 0.4); }
+.fxb-c.sel .fxb-bar { opacity: 1; filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.16)); }
+.fxb:not(:has(.sel)) .fxb-bar { opacity: 0.88; }
+.fxb-c.inc .fxb-bar { outline: 1px dashed rgba(201, 206, 214, 0.5); outline-offset: 1px; }
+.fxb-c.gap::after { content: ''; width: 50%; height: 2px; background: repeating-linear-gradient(90deg, var(--text-3) 0 2px, transparent 2px 4px); }
+.fxb-v {
+  position: absolute; left: 50%; bottom: calc(var(--h) + 5px); transform: translateX(-50%);
+  font-size: 0.6875rem; font-weight: 650; color: var(--text-3); white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.fxb-c.sel .fxb-v { font-weight: 760; color: var(--text); }
+.fxb-c:first-child .fxb-v { left: 0; transform: none; }
+.fxb-c:last-child .fxb-v { left: auto; right: 0; transform: none; }
+.fxb-avg { position: absolute; left: 0; right: 0; z-index: 1; height: 0; border-top: 1px dashed rgba(244, 245, 248, 0.5); pointer-events: none; }
+.fxb.mid .fxb-bar { width: 66%; border-radius: 4px 4px 1px 1px; }
+.fxb.dense .fxb-bar { width: 74%; gap: 1px; border-radius: 2px 2px 0 0; }
+.fxb.mini { padding-top: 0; background: none; box-shadow: none; }
+.fxb.mini .fxb-bar { width: 64%; gap: 1px; border-radius: 3px 3px 1px 1px; opacity: 0.55; }
+.fxb.mini .fxb-c.sel .fxb-bar { opacity: 1; filter: none; }
+.fxb.mini .fxb-avg { border-top-color: rgba(244, 245, 248, 0.35); }
+
 .fx-svg { display: block; overflow: visible; }
-.fx-bar { fill: var(--f-bar); }
-.fx-bar.sel { fill: var(--silver); }
-.fx-bar.inc { stroke: rgba(201, 206, 214, 0.75); stroke-width: 1; }
-.fx-bar.inc.sel { stroke: var(--silver); stroke-width: 1.5; }
 .fx-gap { fill: none; stroke: var(--text-3); stroke-width: 1; stroke-dasharray: 2 2; }
 .fx-avg { stroke: var(--text-2); stroke-width: 1; stroke-dasharray: 4 4; }
 .fx-base { stroke: var(--line); stroke-width: 1; }
@@ -324,7 +477,7 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 }
 .fx-val.sel { fill: var(--text); }
 .fx-plot, .fc-plot { position: relative; }
-.fx-hits { position: absolute; inset: 0; display: grid; }
+.fx-hits { position: absolute; inset: 22px 0 0; display: grid; }
 .fx-hits button { min-width: 0; margin: 0; padding: 0; border: 0; border-radius: 6px; background: transparent; cursor: pointer; }
 .fx-hits button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 @media (hover: hover) { .fx-hits button:hover { background: var(--fill); } }
@@ -339,12 +492,12 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .fk-inc { background: repeating-linear-gradient(45deg, rgba(201, 206, 214, 0.6) 0 1.6px, transparent 1.6px 4px); box-shadow: inset 0 0 0 1px rgba(201, 206, 214, 0.75); }
 .fk-gap { height: 2px; border-radius: 0; vertical-align: 3px; background: repeating-linear-gradient(90deg, var(--text-3) 0 2px, transparent 2px 4px); }
 .fk-avg { width: 14px; height: 0; border-radius: 0; vertical-align: 3px; border-top: 1px dashed var(--text-2); }
-.fk-now { background: var(--silver); }
+.fk-now { background: linear-gradient(90deg, var(--chrome-c), #fff); }
 .fk-prev { background: var(--f-bar-prev); }
 .fk-caf { background: var(--f-caf); }
 .fk-drink { background: var(--f-drink); }
 .fk-unk { background: repeating-linear-gradient(45deg, var(--f-caf) 0 1.6px, transparent 1.6px 4px); box-shadow: inset 0 0 0 1px var(--f-caf); }
-.fk-best { width: 8px; height: 8px; border-radius: 50%; background: var(--menthol); vertical-align: 0; }
+.fk-best { width: 8px; height: 8px; border-radius: 50%; background: var(--f-micro-hi); vertical-align: 0; }
 .fk-low { width: 8px; height: 8px; border-radius: 50%; background: var(--honey); vertical-align: 0; }
 
 /* ---------- Trends ---------- */
@@ -378,20 +531,22 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .gx-e { fill: var(--ns-e); }
 rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 
-/* Against the reference intake: a bar on a 0 to 150% track, with a tick at 100%. */
+/* Against the reference intake: a violet bar to the need, which is marked; past it the scale eases off
+   so 150%, 300% and more still fit and read apart. */
 .rirow { display: grid; grid-template-columns: 92px minmax(0, 1fr) 50px; align-items: center; gap: 10px; min-height: 26px; }
 .rirow + .rirow { margin-top: 2px; }
 .rirow-k { overflow: hidden; font-size: 0.8125rem; font-weight: 620; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
-.rirow-bar { position: relative; height: 8px; border-radius: 4px; background: var(--fill); }
-.rirow-bar i { position: absolute; inset: 0; border-radius: inherit; background: rgba(201, 206, 214, 0.62); transform-origin: 0 50%; transform: scaleX(var(--f)); }
+.rirow-bar { position: relative; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.06); }
+.rirow-bar i { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi)); opacity: 0.8; transform-origin: 0 50%; transform: scaleX(var(--f)); }
 .rirow-bar.bare { height: 14px; background: none; }
-.rirow-100 { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 1px dashed var(--text-3); }
+.rirow-100 { position: absolute; top: -4px; bottom: -4px; z-index: 1; width: 0; border-left: 1.5px solid rgba(244, 245, 248, 0.55); }
+.rirow-bar.bare .rirow-100 { border-left-style: dashed; border-left-width: 1px; }
 .rirow-100 em { position: absolute; bottom: 2px; left: 4px; font-style: normal; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.04em; color: var(--text-3); }
 .rirow-legend { min-height: 16px; margin-bottom: 2px; }
 .rirow-v { font-size: 0.8125rem; font-weight: 700; text-align: right; white-space: nowrap; }
-.rirow.full .rirow-bar i { background: var(--menthol); }
-.rirow.over .rirow-bar i { background: var(--honey); }
-.rirow.best .rirow-v { color: var(--menthol); }
+.rirow.full .rirow-bar i { opacity: 1; background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi) 70%, #fff); box-shadow: 0 0 10px rgba(197, 188, 255, 0.4); }
+.rirow.over .rirow-bar i { opacity: 1; background: linear-gradient(90deg, var(--honey), var(--ember)); }
+.rirow.best .rirow-v { color: var(--f-micro-hi); }
 .rirow.low .rirow-v { color: var(--honey); }
 .rirow.unk .rirow-v { color: var(--text-3); font-weight: 600; }
 .rirow-none { margin: 12px 0 0; padding-top: 10px; box-shadow: 0 -1px 0 var(--line-soft); font-size: 0.8125rem; line-height: 1.5; color: var(--text-3); }
@@ -426,7 +581,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 /* Meal timing: a day of hours, a row per weekday, warmer where more energy lands. */
 .fheat-grid { display: grid; grid-template-columns: 14px repeat(24, minmax(0, 1fr)); gap: 2px; align-items: center; }
 .fheat-d { font-size: 0.625rem; font-weight: 700; color: var(--text-3); }
-.fheat-grid i { display: block; aspect-ratio: 1; border-radius: 2px; background: rgba(255, 58, 32, calc(0.06 + var(--a, 0) * 0.94)); }
+.fheat-grid i { display: block; aspect-ratio: 1; border-radius: 3px; background: color-mix(in srgb, var(--blaze) calc(var(--a, 0) * 100%), rgba(255, 255, 255, 0.05)); }
 .fheat-grid i.na { background: none; box-shadow: inset 0 0 0 1px var(--line-soft); }
 .fheat-axis { display: flex; justify-content: space-between; margin: 6px 0 0 16px; font-family: var(--mono); font-size: 0.6875rem; color: var(--text-3); }
 
@@ -447,7 +602,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 .fcmp-bars { display: grid; gap: 4px; min-width: 0; }
 .fcmp-bar { display: flex; align-items: center; gap: 6px; height: 14px; min-width: 0; }
 .fcmp-bar i { display: block; flex: none; width: calc((100% - 54px) * var(--f)); min-width: 2px; height: 8px; border-radius: 4px; }
-.fcmp-bar.cur i { background: var(--silver); }
+.fcmp-bar.cur i { background: linear-gradient(90deg, var(--chrome-c), #fff); box-shadow: 0 0 10px rgba(255, 255, 255, 0.18); }
 .fcmp-bar.prev i { background: var(--f-bar-prev); }
 .fcmp-bar b { font-size: 0.75rem; font-weight: 650; color: var(--text-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .fcmp-bar.cur b { color: var(--text); }
@@ -469,8 +624,12 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 
 @media (prefers-reduced-motion: no-preference) {
   .f-enter .fx-bar, .f-enter .fc-bar, .f-enter .gx-col { transform-box: fill-box; transform-origin: 50% 100%; animation: f-rise 560ms var(--ease) both; }
+  .f-enter .fxb-bar, .f-in .fxb-bar { transform-origin: 50% 100%; animation: f-rise 640ms var(--ease) both; animation-delay: var(--d, 0ms); }
+  .f-enter .fxb-v, .f-in .fxb-v { animation: f-fade 360ms 320ms var(--ease) both; }
+  .fr-draw { animation: fr-draw 1100ms var(--ease) both; }
+  .f-enter .fmc-bar i, .f-enter .fmeal-bar { transform-origin: left center; animation: f-grow 720ms 240ms var(--ease) both; }
   .f-enter .fd-bar { transform-box: fill-box; transform-origin: 50% 0; animation: f-rise 560ms var(--ease) both; }
-  .f-enter .fring svg { animation: f-turn 640ms var(--ease) both; }
+  .f-enter .fsplit .fring svg { animation: f-turn 640ms var(--ease) both; }
   .f-enter .fmeal-bar, .f-enter .fcmp-bar i, .f-enter .gmix-bar, .f-enter .ri-bar i, .f-enter .rirow-bar i, .f-enter .fsrc-bar i, .f-enter .fwater-bar i { transform-origin: left center; animation: f-grow 620ms var(--ease) both; }
   .f-enter .rirow-bar i { animation-delay: calc(var(--i, 0) * 24ms); }
   .f-enter .fx-val { animation: f-fade 360ms 280ms var(--ease) both; }
@@ -478,6 +637,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
   .f-in { animation: f-card 420ms var(--ease) both; }
 }
 @keyframes f-rise { from { transform: scaleY(0); } }
+@keyframes fr-draw { from { stroke-dashoffset: 1; } }
 @keyframes f-grow { from { transform: scaleX(0); } }
 @keyframes f-turn { from { opacity: 0; transform: rotate(-50deg) scale(0.94); } }
 @keyframes f-fade { from { opacity: 0; } }
@@ -486,11 +646,13 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 /* ---------- Sizes ---------- */
 
 @media (max-width: 380px) {
-  .fday-main { gap: 14px; }
-  .fday .fring { width: 98px !important; height: 98px !important; }
-  .fday .fring-c b { font-size: 1.25rem; }
-  .fmac dd { font-size: 1rem; }
-  .fmicro { gap: 10px; }
+  .fmcs, .fmicro { gap: 6px; }
+  .fmc { padding: 10px 9px 9px; }
+  .fmc-v { font-size: 1.1875rem; }
+  .fmicro-i { padding: 8px 8px 10px; }
+  /* A reached tile says so by being lit; its tick would not fit beside the number. */
+  .fmicro-i b { font-size: 1rem; }
+  .fmicro-ok { display: none; }
   .ftrend { grid-template-columns: 84px minmax(0, 1fr) auto; gap: 12px; }
   .ftrend-bars { width: 84px; }
   .fcmp-row { grid-template-columns: 60px minmax(0, 1fr) 50px; gap: 8px; }
@@ -502,7 +664,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 
 @media (max-width: 360px) {
   .ftr-tabs button { font-size: 0.8125rem; }
-  .fmac dd small { display: none; }
+  .fmc-k small { display: none; }
   .fsrc-list li { grid-template-columns: 22px minmax(0, 1fr) 36px; }
   .fsrc-bar { display: none; }
 }
@@ -933,27 +1095,6 @@ html.scan-open, html.scan-open body { overflow: hidden; }
 .fu-servings { display: flex; align-items: center; gap: 10px; }
 .fu-servings .input { width: 96px; }
 
-/* What is left today: energy, protein, carbs and fat against his needs, in the macro colours of the ring. */
-.fleft { margin: 0 0 16px; }
-.fleft-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
-.fleft-ref { font-family: var(--font); font-size: 0.75rem; letter-spacing: 0; text-transform: none; color: var(--text-3); }
-.fleft-row { display: grid; grid-template-columns: 54px minmax(36px, 1fr) auto; align-items: center; gap: 10px; min-height: 24px; }
-.fleft-row + .fleft-row { margin-top: 5px; }
-.fleft-k { font-size: 0.8125rem; font-weight: 620; color: var(--text-2); }
-.fleft-bar { position: relative; display: block; height: 8px; border-radius: 4px; background: var(--fill-2); overflow: hidden; }
-.fleft-bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: inherit; background: var(--m, var(--chrome-c)); transform-origin: 0 50%; }
-.fleft-row.m-kcal .fleft-bar i { background: var(--chrome-c); }
-.fleft-bar.none { background: repeating-linear-gradient(90deg, var(--fill-2) 0 4px, transparent 4px 7px); }
-.fleft-v { font-size: 0.8125rem; color: var(--text-2); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.fleft-v b { font-size: 0.9375rem; font-weight: 720; color: var(--text); }
-.fleft-row.over:not(.m-protein) .fleft-v b { color: #ffad5c; }
-.fleft-row.over.m-protein .fleft-v b { color: var(--menthol); }
-.fleft-row.unk .fleft-v { color: var(--text-3); }
-/* With the left bars above it, the ring and its amounts sit a little tighter. */
-.fleft + .fday-main { gap: 16px; }
-.fleft + .fday-main .fmac { gap: 6px; }
-.fleft + .fday-main .fmac-row { padding-bottom: 5px; }
-
 /* One-tap water beside the water bar; the bar's fill is a width, so it grows from where it was. */
 .fwater-row { display: flex; align-items: center; gap: 10px; }
 .fwater-row .fwater-bar { flex: 1 1 auto; min-width: 48px; }
@@ -1044,11 +1185,14 @@ html.scan-open, html.scan-open body { overflow: hidden; }
 /* Nutrients shown with a % of need open "Rich in…". They are real buttons that keep their look, with a
    small chevron by the name and a press state; rows grow to a 44 px target. */
 .tap-hint { width: 11px !important; height: 11px !important; flex: none; color: var(--text-3); stroke-width: 2.4; }
-button.fmicro-i, button.nf-row, button.rirow {
+button.nf-row, button.rirow {
   width: 100%; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer;
   transition: background-color var(--t-ctl) var(--ease);
 }
-button.fmicro-i { margin: -6px; width: calc(100% + 12px); padding: 6px; border-radius: 10px; }
+button.fmicro-i {
+  width: 100%; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer;
+  transition: transform var(--spring-ms) var(--spring), filter var(--t-ctl) var(--ease);
+}
 button.fmicro-i .fmicro-k, button.rirow .rirow-k { display: flex; align-items: center; gap: 2px; min-width: 0; }
 button.fmicro-i .fmicro-k > span, button.rirow .rirow-k > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 button.nf-row { min-height: 44px; padding: 6px 0; border-radius: 0; }
@@ -1056,9 +1200,13 @@ button.nf-row .tap-hint { margin-left: 4px; vertical-align: -1px; }
 .nf-label button.nf-row:first-of-type { box-shadow: 0 -1px 0 var(--line-soft); }
 button.rirow { min-height: 44px; margin: 0; padding: 0; border-radius: 8px; }
 .rirow + button.rirow { margin-top: 0; }
-button.fmicro-i:active, button.nf-row:active, button.rirow:active { background: var(--fill-2); transition-duration: 0s; }
+button.nf-row:active, button.rirow:active { background: var(--fill-2); transition-duration: 0s; }
+button.fmicro-i:active { transform: scale(0.96); filter: brightness(1.2); transition: transform var(--t-press) var(--ease), filter 0s; }
 button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; }
-@media (hover: hover) { button.fmicro-i:hover, button.nf-row:hover, button.rirow:hover { background: var(--fill); } }
+@media (hover: hover) {
+  button.nf-row:hover, button.rirow:hover { background: var(--fill); }
+  button.fmicro-i:hover { filter: brightness(1.15); }
+}
 
 /* The sheet: per portion or per 100 kcal, his foods first, then more ideas. */
 .frich-seg { margin-top: 0; }
@@ -1117,4 +1265,218 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
 @media (max-width: 400px) {
   .rimp-list li { grid-template-columns: minmax(0, 1fr); }
   .rimp-list .btn { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 6px; }
+}
+
+/* ---------- The food chat ---------- */
+
+/* Fresh beside the coach's Merlot: lime and leaf green, a little light at the top of the page, your
+   words on lime, the food reader's answers as cards that carry each food's ring and the macros in their
+   colours. The header stays at the top with today's energy in a small ring. */
+.page-food:has(.fchat-page) { padding-bottom: calc(var(--tabbar) + env(safe-area-inset-bottom) + 18px); }
+.fchat-page {
+  margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter);
+  background:
+    radial-gradient(60% 260px at 14% 0, rgba(212, 247, 106, 0.1), transparent 70%),
+    radial-gradient(50% 240px at 92% 0, rgba(63, 207, 127, 0.09), transparent 70%);
+  background-repeat: no-repeat;
+}
+.fc-head {
+  position: sticky; top: 0; z-index: 16;
+  display: grid; grid-template-columns: 40px 40px minmax(0, 1fr) auto; align-items: center; gap: 10px;
+  margin: calc(-1 * (env(safe-area-inset-top) + 8px)) calc(-1 * var(--gutter)) 0;
+  padding: calc(env(safe-area-inset-top) + 10px) var(--gutter) 10px;
+  background: rgba(0, 0, 0, 0.78); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .fc-head { background: rgba(0, 0, 0, 0.6); -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4); }
+}
+.fc-back { width: 40px; height: 40px; }
+.fc-av {
+  position: relative; display: grid; place-items: center; width: 40px; height: 40px; flex: none; border-radius: 50%; color: var(--fc-ink);
+  background: radial-gradient(120% 120% at 30% 18%, #f4ffc0 0%, var(--fc-lime) 36%, var(--fc-leaf) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 0 22px -4px rgba(170, 240, 90, 0.6);
+}
+.fc-av .ic { width: 21px; height: 21px; stroke-width: 2.1; }
+.fc-av.big { width: 76px; height: 76px; }
+.fc-av.big .ic { width: 38px; height: 38px; stroke-width: 1.9; }
+.fc-head-text { min-width: 0; }
+.fc-head-text h1 { margin: 0; font-size: 1.125rem; font-weight: 740; letter-spacing: -0.02em; line-height: 1.2; }
+.fc-head-text p { margin: 1px 0 0; overflow: hidden; font-size: 0.8125rem; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fc-head .fring { margin-right: 2px; }
+
+.fchat { gap: 10px; margin-top: 12px; }
+.fc-clear {
+  justify-self: center; min-height: 32px; padding: 0 12px; border: 0; border-radius: 999px; background: none;
+  font: inherit; font-size: 0.75rem; font-weight: 600; color: var(--text-3); cursor: pointer;
+}
+.fc-daysep { display: flex; justify-content: center; margin: 8px 0 0; }
+.fc-daysep span {
+  padding: 3px 10px; border-radius: 999px; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-3); background: rgba(255, 255, 255, 0.04);
+}
+
+/* Your words on lime, the reader's on graphite with a lime rim. */
+.fchat .msg.user {
+  color: var(--fc-ink); font-weight: 560;
+  background: linear-gradient(160deg, #eaffa0 0%, var(--fc-lime) 40%, #8ee070 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 12px 26px -18px rgba(160, 235, 90, 0.85);
+}
+.fchat .msg.user time { color: rgba(10, 26, 12, 0.62); }
+.fchat .msg.assistant {
+  color: #e6e9ee;
+  background: radial-gradient(120% 70% at 0% 0%, rgba(212, 247, 106, 0.07), transparent 60%), linear-gradient(180deg, #16191d 0%, #0f1114 100%);
+  box-shadow: inset 0 0 0 1px rgba(212, 247, 106, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.fchat .fc-say.bad { box-shadow: inset 0 0 0 1px rgba(255, 45, 85, 0.4); }
+.fc-photo { padding: 5px; }
+.fc-photo img { display: block; width: min(230px, 62vw); max-height: 300px; object-fit: cover; border-radius: 17px; }
+.fc-photo time { padding: 0 9px 3px; }
+.fc-photo-gone { display: inline-flex; align-items: center; gap: 6px; padding: 8px 10px; font-weight: 650; }
+.fc-photo-gone .ic { width: 18px; height: 18px; }
+
+/* The reader thinking: three dots in the macro colours. */
+.fchat .fc-typing { gap: 6px; min-height: 46px; padding: 0 16px; }
+.fchat .fc-typing i { opacity: 1; }
+.fchat .fc-typing i:nth-of-type(1) { background: var(--f-protein-hi); }
+.fchat .fc-typing i:nth-of-type(2) { background: var(--f-carbs-hi); }
+.fchat .fc-typing i:nth-of-type(3) { background: var(--f-fat-hi); }
+.fc-typing span { margin-left: 6px; font-size: 0.8125rem; color: var(--text-3); }
+
+/* A card: what the reader found, each food on its own line with its amount, the total, the meal, Log. */
+.fchat .fc-card { width: min(100%, 540px); max-width: 100%; padding: 14px; }
+.fc-reply { margin: 0 2px 10px; font-size: 0.9375rem; line-height: 1.45; color: var(--text); white-space: normal; }
+.fc-items { display: grid; margin: 0; padding: 0; list-style: none; border-radius: 14px; background: rgba(0, 0, 0, 0.38); box-shadow: inset 0 0 0 1px var(--line-soft); }
+.fc-item { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: center; gap: 2px 10px; padding: 10px; }
+.fc-item + .fc-item { box-shadow: 0 -1px 0 var(--line-soft); }
+.fc-item.none { opacity: 0.7; }
+.fc-item-body { min-width: 0; }
+.fc-item-name { margin: 0; font-size: 0.9375rem; font-weight: 650; letter-spacing: -0.01em; line-height: 1.3; overflow-wrap: anywhere; }
+.fc-item-sub { margin: 1px 0 0; font-size: 0.75rem; color: var(--text-3); }
+.fc-item-sub .linkish { font-size: 0.75rem; color: var(--fc-lime); text-decoration-color: rgba(212, 247, 106, 0.4); }
+.fc-item-side { display: flex; align-items: center; gap: 0; }
+.fc-kcal { font-size: 1rem; font-weight: 740; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fc-x { position: relative; display: grid; place-items: center; width: 32px; height: 32px; margin-right: -6px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--text-3); cursor: pointer; }
+.fc-x::before { content: ''; position: absolute; inset: -6px; }
+.fc-x .ic { width: 15px; height: 15px; }
+.fc-amount { grid-column: 2 / -1; display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 6px; margin-top: 6px; }
+.fc-amount .input { min-height: 38px; padding: 6px 10px; border-radius: 10px; font-size: 0.9375rem; }
+.fc-empty { padding: 14px; font-size: 0.875rem; color: var(--text-3); }
+.fc-total { margin: 12px 2px 0; }
+.fc-total-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.fc-total-top span { font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+.fc-total-top b { font-size: 1.375rem; font-weight: 760; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.fc-total-top b small { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0; color: var(--text-2); }
+.fc-mbar { display: flex; gap: 2px; height: 8px; margin-top: 8px; border-radius: 4px; overflow: hidden; }
+.fc-mbar i { display: block; min-width: 2px; background: linear-gradient(90deg, var(--m), var(--mh)); }
+.fc-mbar i.m-unknown { background: var(--hatch); }
+.fc-macros { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 8px 0 0; font-size: 0.8125rem; color: var(--text-2); }
+.fc-macros span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.fc-macros b { font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.fc-slots { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.fc-slot {
+  min-height: 34px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 0.8125rem; font-weight: 650; color: var(--text-2); background: rgba(255, 255, 255, 0.05); box-shadow: inset 0 0 0 1px var(--line);
+  transition: background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease), transform var(--spring-ms) var(--spring);
+}
+.fc-slot:active { transform: scale(0.94); transition: transform var(--t-press) var(--ease); }
+.fc-slot.on { color: var(--fc-ink); background: var(--fc-lime); box-shadow: 0 0 16px -4px rgba(212, 247, 106, 0.7); }
+.fc-log {
+  display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 50px; margin-top: 12px; border: 0; border-radius: 16px; cursor: pointer;
+  font: inherit; font-size: 1rem; font-weight: 760; letter-spacing: -0.01em; color: var(--fc-ink);
+  background: linear-gradient(150deg, #efffad 0%, var(--fc-lime) 42%, var(--fc-leaf) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 28px -16px rgba(150, 235, 90, 0.95);
+  transition: transform var(--spring-ms) var(--spring), opacity var(--t-ctl);
+}
+.fc-log .ic { width: 20px; height: 20px; stroke-width: 2.5; }
+.fc-log:active:not(:disabled) { transform: scale(0.97); transition: transform var(--t-press) var(--ease); }
+.fc-log:disabled { opacity: 0.45; cursor: default; }
+.fchat .fc-card.old { opacity: 0.55; }
+.fc-note { margin: 0; font-size: 0.8125rem; color: var(--text-3); }
+.fc-done { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.fc-done li { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 0.875rem; }
+.fc-done li span { min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
+.fc-done li small { margin-left: 6px; font-weight: 500; color: var(--text-3); }
+.fc-done li b { flex: none; font-weight: 700; color: var(--text-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Logged: a lime tick, what went where, and where the day now stands. */
+.fchat .fc-logged {
+  display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: start; gap: 12px; width: min(100%, 540px);
+  background: radial-gradient(120% 90% at 0% 0%, rgba(63, 207, 127, 0.16), transparent 60%), linear-gradient(180deg, #131a17 0%, #0d1110 100%);
+  box-shadow: inset 0 0 0 1px rgba(63, 207, 127, 0.32);
+}
+.fc-tick svg { display: block; width: 34px; height: 34px; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.fc-tick circle { fill: rgba(212, 247, 106, 0.12); stroke: rgba(212, 247, 106, 0.5); stroke-width: 1.4; }
+.fc-tick path { stroke: var(--fc-lime); stroke-width: 2.6; stroke-dasharray: 16; }
+.fc-logged-t { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; margin: 6px 0 0; }
+.fc-logged-t b { font-weight: 700; }
+.fc-logged-t span { font-weight: 740; color: var(--fc-lime); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fc-logged .fc-note { margin-top: 4px; }
+.fc-day { margin-top: 10px; }
+.fc-day-bar { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
+.fc-day-bar span { display: flex; gap: 1.5px; height: 100%; border-radius: inherit; overflow: hidden; }
+.fc-day-bar i { display: block; min-width: 2px; background: linear-gradient(90deg, var(--m), var(--mh)); }
+.fc-day-bar i.m-unknown { background: var(--hatch); }
+.fc-day p { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 10px; margin: 6px 0 0; font-size: 0.8125rem; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.fc-day b { font-weight: 700; color: var(--text); }
+.fc-day b.over { color: var(--honey); }
+
+/* Not found, a label, a question: choices and actions under the words. */
+.fc-picks { display: grid; gap: 6px; margin-top: 10px; }
+.fc-pick {
+  display: grid; grid-template-columns: 36px minmax(0, 1fr) 16px; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: 0; border-radius: 12px; cursor: pointer;
+  font: inherit; text-align: left; color: inherit; background: rgba(0, 0, 0, 0.38); box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+.fc-pick b { display: block; font-size: 0.9375rem; font-weight: 650; overflow-wrap: anywhere; }
+.fc-pick small { display: block; font-size: 0.75rem; color: var(--text-3); }
+.fc-pick .chev { width: 16px; height: 16px; color: var(--text-3); }
+.fc-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.fc-act {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 13px; border: 0; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 0.8125rem; font-weight: 650; color: var(--text); background: rgba(255, 255, 255, 0.06); box-shadow: inset 0 0 0 1px var(--line);
+}
+.fc-act .ic { width: 16px; height: 16px; }
+.fc-act.on { color: var(--fc-ink); background: var(--fc-lime); box-shadow: none; }
+
+/* An empty chat: the reader's face, what it does, and a few things to try. */
+.fc-hello { display: grid; justify-items: center; gap: 12px; max-width: 420px; margin: 34px auto 8px; text-align: center; }
+.fc-hello h2 { margin: 6px 0 0; font-size: 1.5rem; font-weight: 760; letter-spacing: -0.03em; }
+.fc-hello p { margin: 0; font-size: 0.9375rem; line-height: 1.5; color: var(--text-2); }
+.fc-examples { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 6px; }
+.fc-ex {
+  min-height: 38px; padding: 0 14px; border: 0; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 0.875rem; font-weight: 600; color: var(--text); background: rgba(212, 247, 106, 0.08); box-shadow: inset 0 0 0 1px rgba(212, 247, 106, 0.22);
+}
+
+/* The composer: the camera in lime, the words, and send. */
+.fc-dock .qchip { gap: 7px; }
+.fc-dock .qchip .ic { width: 16px; height: 16px; color: var(--fc-lime); }
+.fc-composer { box-shadow: inset 0 0 0 1px rgba(212, 247, 106, 0.3), 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
+.fc-composer:focus-within { box-shadow: inset 0 0 0 1.5px var(--fc-lime), 0 0 0 4px rgba(212, 247, 106, 0.12), 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
+.fc-cam {
+  display: grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: 50%; cursor: pointer; color: var(--fc-ink);
+  background: radial-gradient(120% 120% at 30% 18%, #f4ffc0 0%, var(--fc-lime) 38%, var(--fc-leaf) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: transform var(--spring-ms) var(--spring);
+}
+.fc-cam:active { transform: scale(0.92); transition: transform var(--t-press) var(--ease); }
+.fc-cam .ic { width: 22px; height: 22px; stroke-width: 2; }
+.fc-cam:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
+.composer .fc-send { color: var(--fc-ink); background: var(--fc-lime); box-shadow: 0 6px 16px -8px rgba(212, 247, 106, 0.8); }
+.composer .fc-send .ic { width: 20px; height: 20px; stroke-width: 2.3; }
+.composer .fc-send:disabled { opacity: 0.4; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .fc-av.big { animation: fc-bob 3.6s var(--ease-in-out) infinite; }
+  .fc-logged.fresh .fc-tick path { animation: fc-tick 520ms 120ms var(--ease) both; }
+  .fc-logged.fresh .fc-tick circle { transform-origin: center; animation: fc-pop 520ms var(--pop) both; }
+  .fc-card.fresh .fc-item { animation: f-card 380ms var(--ease) both; animation-delay: calc(120ms + var(--i, 0) * 70ms); }
+}
+@keyframes fc-bob { 50% { transform: translateY(-5px); } }
+@keyframes fc-tick { from { stroke-dashoffset: 16; } }
+@keyframes fc-pop { from { transform: scale(0.4); opacity: 0; } }
+
+@media (min-width: 900px) {
+  .page-food:has(.fchat-page) { max-width: 800px; }
+  .fc-head { margin: calc(-1 * (env(safe-area-inset-top) + 24px)) -32px 0; padding: 14px 32px 12px; }
+  .fchat-page { margin: 0 -32px; padding: 0 32px; }
 }

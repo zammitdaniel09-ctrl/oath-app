@@ -600,6 +600,7 @@ export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg
 export const TEXT_SCHEMA = obj({
   kind: { type: 'string', enum: ['meal', 'unclear'] },
   summary: STR,
+  reply: STR,
   items: { type: 'array', items: obj(MEAL_ITEM) },
   question: maybe(STR),
 });
@@ -612,21 +613,41 @@ kind:
 
 summary is one short line, such as "Large Burger King fries and a Coke". Never judge the food or call it good or bad.
 
+reply is one short, friendly line back to him in the food chat, under 15 words: what you took it to be and any size you assumed, such as "Went with a regular kebab and medium chips." No judging, no emoji. "" when kind is "unclear".
+
+When the text starts with "Earlier in this chat", he is answering your question or correcting what you listed before: return the whole list as it now stands (the items he did not change as they were, his changes applied, anything new added), never only the change.
+
 Item rules:
 ${ITEM_RULES}`;
 
-export async function readFoodText({ text } = {}) {
+// What the food chat said before this message: what he typed, the foods listed for it and any question
+// asked, so "make it three eggs" or an answer to "what kind of wrap?" is read against it.
+function earlier(before) {
+  if (!before || typeof before !== 'object') return '';
+  const clip = (v, n) => String(v ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
+  const said = clip(before.said, 600);
+  const items = (Array.isArray(before.items) ? before.items : []).slice(0, 12)
+    .map((x) => [clip(x?.name, 80), clip(x?.amount, 40)].filter(Boolean).join(', ')).filter(Boolean);
+  const asked = clip(before.question, 200);
+  if (!said && !items.length && !asked) return '';
+  return ['Earlier in this chat', said && `he said: "${said}"`, items.length && `you listed: ${items.join('; ')}`, asked && `you asked: "${asked}"`]
+    .filter(Boolean).join(', ');
+}
+
+export async function readFoodText({ text, before = null } = {}) {
   const words = String(text ?? '').replace(/\s+/g, ' ').trim();
   if (!words) throw new RuleError('Type what you ate first.');
   if (words.length > 600) throw new RuleError('That is a lot at once. Type one meal at a time.');
   if (!aiEnabled()) throw new RuleError('Working out a typed meal needs the AI key, which is not set on the server.', 503);
-  const read = await readStructured({ system: TEXT_SYSTEM, schema: TEXT_SCHEMA, content: [{ type: 'text', text: words }], maxTokens: 10000 });
+  const prior = earlier(before);
+  const ask = prior ? `${prior}.\nNow he says: "${words}"` : words;
+  const read = await readStructured({ system: TEXT_SYSTEM, schema: TEXT_SCHEMA, content: [{ type: 'text', text: ask }], maxTokens: 10000 });
   const unclear = (question) => ({ kind: 'unclear', source: 'text', summary: read.summary || '', question });
   if (read.refused) return unclear('I could not read that as food. What did you have?');
   await logEvent('food_text', { kind: read.kind, items: read.items?.length || 0 });
   if (read.kind !== 'meal' || !read.items?.length) {
     return unclear(read.question || 'That does not read like food or drink. Try something like "two eggs on toast and a flat white".');
   }
-  const items = await matchItems(read.items.slice(0, 12).map(understood), { context: words });
-  return { kind: 'meal', source: 'text', summary: read.summary, items };
+  const items = await matchItems(read.items.slice(0, 12).map(understood), { context: prior ? `${prior}. Now: ${words}` : words });
+  return { kind: 'meal', source: 'text', summary: read.summary, reply: read.reply || null, items };
 }

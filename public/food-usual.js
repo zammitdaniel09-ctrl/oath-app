@@ -1,7 +1,7 @@
 // Faster logging on the diary: "Usually now" chips under the capture bar (one tap logs what he
-// usually has at this time, at his usual amount), one-tap water, what is left of the day's needs at the
-// top of the day card, copy or add per meal, and swipe an entry to remove it. Every log goes through
-// the offline queue with an id made here, so a tap lands once, and each one can be undone.
+// usually has at this time, at his usual amount), one-tap water, copy or add per meal, and swipe an
+// entry to remove it. Every log goes through the offline queue with an id made here, so a tap lands
+// once, and each one can be undone.
 import { $app, state, esc, api, act, toast, icon, haptic, localToday, num, fmtDay } from './ui.js';
 import { norm, line, round } from './nutrition.js';
 import * as N from './nutrition.js';
@@ -216,49 +216,6 @@ export function waterHtml(d) {
   return `<div class="fwater"><p class="fwater-head"><span class="fday-k">Water from drinks</span>
       <span class="fwater-v"><b>${ml === null ? '—' : fmt(ml)}</b> of ${fmt(wref)} ml ref${wp === null ? '' : ` · ${fmt(wp)}%`}</span></p>
     <div class="fwater-row"><span class="fwater-bar" role="img" aria-label="${esc(`Water from drinks: ${ml === null ? 'none logged' : `${fmt(ml)} ml`}, reference ${fmt(wref)} ml`)}"><i style="width:${Math.min(100, wp || 0).toFixed(1)}%" data-grow="fwater:${d.date}"></i></span>${add}</div></div>`;
-}
-
-// ---------- What is left today ----------
-
-const LEFT = [['kcal', 'Energy', 'kcal'], ['protein', 'Protein', 'g'], ['carbs', 'Carbs', 'g'], ['fat', 'Fat', 'g']];
-
-// Energy, protein, carbs and fat against his needs (else the EU reference intakes, said as "RI"). Today
-// says what is left or over; a past day says how much of the need it was. A total missing some values
-// is a floor, so what is left is "at most" and what is over "at least"; unknown is never zero.
-export function leftHtml(d) {
-  if (!d.today && !d.entries.length) return '';
-  const own = Boolean(d.needs);
-  const ref = own ? 'your need' : 'the RI';
-  const t = d.total || {};
-  const rows = LEFT.map(([k, label, unit]) => {
-    const need = N.refOf(k, d.needs || null);
-    if (!need) return '';
-    const v = num(t[k]);
-    const part = Boolean(t.missing?.[k]);
-    if (v === null) {
-      return `<div class="fleft-row unk" role="img" aria-label="${esc(`${label}: not known, nothing logged has a value`)}"><span class="fleft-k">${label}</span>
-        <span class="fleft-bar none" aria-hidden="true"></span><span class="fleft-v">not known</span></div>`;
-    }
-    const p = (v / need) * 100;
-    const over = v > need;
-    let text;
-    let spoken;
-    if (d.today) {
-      const diff = Math.abs(need - v);
-      const word = over ? 'over' : 'left';
-      const hedge = part ? (over ? 'at least ' : 'at most ') : '';
-      text = `${hedge}<b>${fmt(diff)}</b> ${unit} ${word}`;
-      spoken = `${label}: ${hedge}${fmt(diff)} ${unit} ${word} of ${fmt(need)} ${unit}, ${ref}`;
-    } else {
-      text = `<b>${fmt(p)}%${part ? '+' : ''}</b> · ${fmt(v)}${part ? '+' : ''} ${unit}`;
-      spoken = `${label}: ${fmt(v)}${part ? ' or more' : ''} ${unit}, ${fmt(p)}% of ${ref}`;
-    }
-    return `<div class="fleft-row m-${k}${over ? ' over' : ''}${part ? ' part' : ''}" role="img" aria-label="${esc(spoken)}"><span class="fleft-k" aria-hidden="true">${label}</span>
-      <span class="fleft-bar" aria-hidden="true"><i style="width:${Math.min(100, p).toFixed(1)}%" data-grow="fleft:${d.date}:${k}"></i></span>
-      <span class="fleft-v" aria-hidden="true">${text}</span></div>`;
-  }).join('');
-  const head = d.today ? 'Left today' : `Of ${ref}`;
-  return `<div class="fleft"><p class="fday-k fleft-head"><span>${head}</span>${d.today ? `<span class="fleft-ref"${own ? '' : ' title="EU reference intake"'}>of ${own ? 'your need' : 'the RI'}</span>` : ''}</p>${rows}</div>`;
 }
 
 // ---------- Per meal: add on today, copy a past day's meal to today ----------

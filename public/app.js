@@ -942,7 +942,7 @@ function coachMessage(m) {
 const TYPING = '<div class="msg assistant typing" role="status"><span class="sr">The coach is writing</span><i></i><i></i><i></i></div>';
 
 // One tap for the things most often asked.
-const QUICK = ['What\'s next?', 'Plan my day', 'How am I doing?', 'Log food'];
+const QUICK = ['What\'s next?', 'Plan my day', 'How am I doing?'];
 
 // The briefs the coach writes on its own, on demand; they sit in a sheet behind one button.
 const BRIEFS = [['morning', 'sun', 'Morning brief'], ['midday', 'clock', 'Midday check'], ['evening', 'moon', 'Evening check']];
@@ -953,11 +953,17 @@ function viewCoach() {
   const msgs = c.messages.map(coachMessage).join('');
   const ask = state.query.get('ask') || '';
   const empty = emptyState({ icon: 'coach', title: 'Talk to your coach' });
-  const quick = QUICK.map((q) => `<button type="button" class="qchip" data-action="coach-quick" data-text="${esc(q)}"${state.sending ? ' disabled' : ''}>${esc(q)}</button>`).join('');
+  // Food has a chat of its own: the last chip opens it.
+  const quick = `${QUICK.map((q) => `<button type="button" class="qchip" data-action="coach-quick" data-text="${esc(q)}"${state.sending ? ' disabled' : ''}>${esc(q)}</button>`).join('')}
+    <a class="qchip qchip-food" href="#/food/chat">${icon('food')}Log food</a>`;
   const briefs = `<button class="btn tinted small briefs-btn" data-action="briefs-open"${state.sending ? ' disabled' : ''}>${icon('sun')}Briefs</button>`;
-  shell(`${pageHead('Coach', { over: c.aiEnabled ? '' : 'Offline', actions: `${briefs}${iconLink('#/settings', 'settings', 'Settings')}` })}
+  // The coach has a face of its own in Merlot, as the food chat has its lime, so the two never look alike.
+  const head = `<header class="chd-head"><span class="chd-av" aria-hidden="true">${icon('coach')}</span>
+    <div class="chd-head-text"><h1>Coach</h1><p>${c.aiEnabled ? (state.sending ? 'Writing…' : 'Your plans, nudges and honest takes') : 'Offline'}</p></div>
+    <div class="chd-actions">${briefs}${iconLink('#/settings', 'settings', 'Settings')}</div></header>`;
+  shell(`<div class="cchat-page">${head}
       ${c.aiEnabled ? '' : '<div class="banner warn">The coach is offline: no Anthropic API key in Railway.</div>'}
-      <div class="chat" id="chat">${msgs || empty}${state.sending ? TYPING : ''}</div>
+      <div class="chat cchat" id="chat" data-chat="coach">${msgs || empty}${state.sending ? TYPING : ''}</div>
       <div class="composer-dock">
         <div class="quick-replies" role="group" aria-label="Quick replies">${quick}</div>
         <form class="composer" data-form="coach">
@@ -965,7 +971,7 @@ function viewCoach() {
           <textarea id="coach-text" class="input" name="text" rows="1" maxlength="4000" placeholder="Message the coach" required>${esc(ask)}</textarea>
           <button class="btn primary send" type="submit" aria-label="Send"${state.sending ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
         </form>
-      </div>`);
+      </div></div>`);
   // The chat ends at the composer, so the newest message sits just above it.
   motion.chatToEnd();
 }

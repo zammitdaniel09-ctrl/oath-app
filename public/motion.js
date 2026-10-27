@@ -975,14 +975,14 @@ export function dock(el, show) {
   }, () => {});
 }
 
-// ---------- Coach: bubbles pop in from their side, the typing dots arrive the same way ----------
+// ---------- Coach and food chats: bubbles pop in from their side, the typing dots arrive the same way ----------
 
 function chatBox() { return $app.querySelector('#chat, .coach-sheet'); }
 function chatCount() {
   const box = chatBox();
   if (!box) return null;
   return {
-    key: box.id === 'chat' ? 'coach' : `sheet:${box.querySelector('.msg.user .msg-text')?.textContent || ''}`,
+    key: box.id === 'chat' ? box.dataset.chat || 'coach' : `sheet:${box.querySelector('.msg.user .msg-text')?.textContent || ''}`,
     n: box.querySelectorAll(':scope > .msg:not(.typing)').length,
     typing: Boolean(box.querySelector(':scope > .typing')),
   };

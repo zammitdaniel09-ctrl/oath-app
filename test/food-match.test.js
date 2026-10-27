@@ -356,3 +356,26 @@ test('reading schemas stay within the API limit of 16 nullable fields', () => {
   assert.equal(r.label.salt, null, 'a value not printed is unknown, not zero');
   assert.equal(photo.photoFromWire({ kind: 'meal', label: { basis: 'none', values: [] } }).label, null);
 });
+
+test('the food chat: a correction is read against what was listed before, and the reply line comes back', async () => {
+  const c = scripted([
+    said({ kind: 'meal', summary: 'Three eggs on toast', reply: 'Made it three eggs, still on one slice of toast.', question: null, items: [mediumGrapes] }),
+    refused,
+  ]);
+  coach.setCoachClient(c);
+  const r = await post('/api/food/describe', {
+    text: 'actually it was three eggs',
+    before: { said: 'two eggs on toast', items: [{ name: 'Egg, boiled', amount: '2 large' }, { name: 'Toast', amount: '1 slice' }] },
+  });
+  assert.equal(r.reply, 'Made it three eggs, still on one slice of toast.');
+  const asked = askedText(c, 0);
+  assert.match(asked, /^Earlier in this chat, he said: "two eggs on toast", you listed: Egg, boiled, 2 large; Toast, 1 slice\.\nNow he says: "actually it was three eggs"$/);
+  assert.match(c.requests[0].system[0]?.text || JSON.stringify(c.requests[0].system), /return the whole list as it now stands/);
+
+  // Without anything before, the words go as typed; an empty reply is no reply.
+  const d = scripted([typed('Medium grapes', [mediumGrapes]), refused]);
+  coach.setCoachClient(d);
+  const plain = await post('/api/food/describe', { text: 'medium grapes', before: { said: '', items: [] } });
+  assert.equal(askedText(d, 0), 'medium grapes');
+  assert.equal(plain.reply, null);
+});
