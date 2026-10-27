@@ -21,6 +21,7 @@ import { businessApi } from './business.js';
 import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleUpdate, webhookAllowed } from './telegram.js';
 import { setupStatus, noteIngestError } from './setup.js';
 import { foodApi, saveCustomFood } from './food.js';
+import { foodLinksApi } from './food-links.js';
 import { bodyApi } from './body.js';
 import { energyApi } from './food-energy.js';
 import { ensureFoodSeed } from './food-seed.js';
@@ -322,6 +323,8 @@ api.get('/food/take', async (c) => c.json(await foodTake({ view: c.req.query('vi
 api.route('/', foodApi);
 // Real burn: his energy use measured from his weight trend and logged food.
 api.route('/', energyApi);
+// Food and your body: honest links between the diary and Apple Health.
+api.route('/', foodLinksApi);
 api.route('/', bodyApi);
 
 app.route('/api', api);
