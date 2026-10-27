@@ -23,8 +23,10 @@ const pg = new EmbeddedPostgres({
 let app; let cookie = ''; let dbmod;
 const ORIGIN = 'http://localhost';
 
-async function call(method, url, json) {
+// `from` is the address the proxy reports in x-forwarded-for (the first value is the caller's).
+async function call(method, url, json, from) {
   const headers = { cookie };
+  if (from) headers['x-forwarded-for'] = `${from}, 10.0.0.1`;
   if (json !== undefined || method !== 'GET') headers['content-type'] = 'application/json';
   const res = await app.request(`${ORIGIN}${url}`, { method, headers, body: json === undefined ? undefined : JSON.stringify(json) });
   const set = res.headers.get('set-cookie');
@@ -152,9 +154,9 @@ test('logging in with Face ID opens a session; a replay and a missing Face ID ch
   assert.equal((await call('GET', '/api/today')).status, 401);
 });
 
-async function faceIdLogin(counter) {
-  const options = (await call('POST', '/api/passkey/login/options', {})).data;
-  return call('POST', '/api/passkey/login', { response: assertion(options, { counter }) });
+async function faceIdLogin(counter, from) {
+  const options = (await call('POST', '/api/passkey/login/options', {}, from)).data;
+  return call('POST', '/api/passkey/login', { response: assertion(options, { counter }) }, from);
 }
 
 test('Face ID only: the password alone is refused, and works with the recovery code', async () => {
@@ -181,15 +183,64 @@ test('Face ID only: opening the app locks the session, and Face ID unlocks it', 
   assert.equal((await call('GET', '/api/today')).status, 200);
 });
 
-test('Face ID only: a session stays open while used and locks after 5 idle minutes', async () => {
-  later(4);
-  assert.equal((await call('GET', '/api/today')).status, 200, 'used within 5 minutes');
-  later(4);
+test('Face ID only: a session stays open while used and locks after 15 idle minutes', async () => {
+  later(14);
+  assert.equal((await call('GET', '/api/today')).status, 200, 'used within 15 minutes');
+  later(14);
   assert.equal((await call('GET', '/api/today')).status, 200, 'each request keeps it open');
-  later(6);
-  assert.equal((await call('GET', '/api/today')).status, 401, 'idle for 6 minutes: locked');
+  for (let i = 0; i < 6; i += 1) {
+    later(10);
+    assert.equal((await call('GET', '/api/today')).status, 200, 'an hour of use never locks while it is used');
+  }
+  later(16);
+  assert.equal((await call('GET', '/api/today')).status, 401, 'idle for 16 minutes: locked');
   assert.equal((await faceIdLogin(11)).status, 200);
   assert.equal((await call('GET', '/api/today')).status, 200);
+});
+
+const owner = { password: 'long-enough-pass', get recovery() { return process.env.SETUP_CODE; } };
+const guess = (from) => call('POST', '/api/login', { password: 'wrong-password', recovery: process.env.SETUP_CODE }, from);
+
+test('failed Face ID attempts are not counted: they never lock the password or Face ID', async () => {
+  const from = '192.0.2.50';
+  for (let i = 0; i < 8; i += 1) {
+    const options = (await call('POST', '/api/passkey/login/options', {}, from)).data;
+    const bad = await call('POST', '/api/passkey/login', { response: assertion(options, { counter: 99, flags: UP }) }, from);
+    assert.equal(bad.status, 401, 'refused, not locked');
+  }
+  assert.equal((await call('POST', '/api/login', owner, from)).status, 200, 'the password still works from the same address');
+  assert.equal((await faceIdLogin(12, from)).status, 200, 'and so does Face ID');
+});
+
+test('five wrong passwords lock that address for 15 minutes, nobody else, and never Face ID', async () => {
+  const attacker = '203.0.113.7';
+  const daniel = '198.51.100.20';
+  for (let i = 0; i < 5; i += 1) assert.equal((await guess(attacker)).status, 401);
+  const locked = await call('POST', '/api/login', owner, attacker);
+  assert.equal(locked.status, 429, 'even the right password is refused while locked');
+  assert.match(locked.data.error, /15 minutes/);
+
+  assert.equal((await call('POST', '/api/login', owner, daniel)).status, 200, 'Daniel, on his own address, is not locked out');
+  assert.equal((await faceIdLogin(13, attacker)).status, 200, 'Face ID works from a locked address');
+
+  later(14);
+  assert.equal((await call('POST', '/api/login', owner, attacker)).status, 429, 'still locked after 14 minutes');
+  later(2);
+  assert.equal((await call('POST', '/api/login', owner, attacker)).status, 200, 'free again after 15');
+});
+
+test('fifty failures in an hour from anywhere stop password logins for everyone, but not Face ID', async () => {
+  later(61);
+  // Ten addresses with five bad tries each: every one locks itself, and together they hit the ceiling.
+  for (let n = 1; n <= 10; n += 1) {
+    for (let i = 0; i < 5; i += 1) assert.equal((await call('POST', '/api/login', { password: 'x', recovery: 'nope' }, `198.18.0.${n}`)).status, 403);
+  }
+  const blocked = await call('POST', '/api/login', owner, '198.51.100.20');
+  assert.equal(blocked.status, 429);
+  assert.match(blocked.data.error, /in an hour/);
+  assert.equal((await faceIdLogin(14, '198.51.100.20')).status, 200, 'Face ID is not affected');
+  later(61);
+  assert.equal((await call('POST', '/api/login', owner, '198.51.100.20')).status, 200, 'the hour has passed');
 });
 
 test('turning the lock off makes the password work alone and stops locking', async () => {
@@ -210,4 +261,29 @@ test('removing the last passkey ends Face ID only, so the password works alone a
   assert.equal(s.faceIdOnly, false);
   await call('POST', '/api/logout', {});
   assert.equal((await call('POST', '/api/login', { password: 'long-enough-pass' })).status, 200);
+});
+
+test('a session unused for 180 days expires, and the daily upkeep drops ones nobody presented again', async () => {
+  const sql = dbmod.db();
+  const { pruneSessions } = await import('../src/auth.js');
+  assert.equal((await call('GET', '/api/today')).status, 200);
+  later(60 * 24 * 179);
+  assert.equal((await call('GET', '/api/today')).status, 200, '179 days idle is still fine, and counts as use');
+
+  // Two more sessions that no browser comes back to: one stale, one recent.
+  const day = (n) => clock.minus({ days: n }).toJSDate();
+  await sql`insert into sessions (token_hash, last_seen) values ('stale', ${day(181)}), ('recent', ${day(179)})`;
+  assert.equal(await pruneSessions(), 1);
+  assert.deepEqual((await sql`select token_hash from sessions where token_hash in ('stale', 'recent')`).map((r) => r.token_hash), ['recent']);
+
+  const mine = crypto.createHash('sha256').update(cookie.split('=')[1]).digest('hex');
+  assert.equal((await sql`select 1 from sessions where token_hash = ${mine}`).length, 1);
+  later(60 * 24 * 181);
+  assert.equal((await call('GET', '/api/today')).status, 401, '181 days idle: the session is gone');
+  const s = (await call('GET', '/api/session')).data;
+  assert.equal(s.authed, false);
+  assert.equal(s.locked, false, 'not even a locked session to unlock');
+  assert.equal((await sql`select 1 from sessions where token_hash = ${mine}`).length, 0, 'and the row is deleted');
+  assert.equal((await call('POST', '/api/login', { password: 'long-enough-pass' })).status, 200, 'logging in again starts a new one');
+  assert.equal((await call('GET', '/api/today')).status, 200);
 });

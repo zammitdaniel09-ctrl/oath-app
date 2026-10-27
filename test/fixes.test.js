@@ -204,24 +204,44 @@ test('a Shortcuts key works with or without "Bearer ", and failures show up in t
   assert.equal((await bare('GET', '/api/shortcut/next', { authorization: `"${token}"` })).status, 200);
   assert.equal((await bare('GET', '/api/shortcut/next', { authorization: `${token.slice(0, -1)}X` })).status, 401, 'a different key is still refused');
 
+  // A key of the right shape that Oath did not make is a mistake worth showing.
   setLocal('2026-10-14T12:00');
-  assert.equal((await bare('POST', '/api/shortcut/health', { authorization: 'Bearer oath_wrong', json: { steps: 100 } })).status, 401);
+  assert.equal((await bare('POST', '/api/shortcut/health', { authorization: `oath_${'x'.repeat(32)}`, json: { steps: 100 } })).status, 401);
   let s = (await call('GET', '/api/setup-status')).data;
   assert.equal(s.ingestError.status, 401);
-  assert.match(s.ingestError.reason, /10 characters; Oath keys are 37/);
-  await bare('POST', '/api/shortcut/health', { authorization: `oath_${'x'.repeat(32)}`, json: { steps: 100 } });
-  assert.match((await call('GET', '/api/setup-status')).data.ingestError.reason, /right shape but is not one Oath made/);
-  await bare('POST', '/api/shortcut/health', { authorization: 'Token abc', json: { steps: 100 } });
-  assert.match((await call('GET', '/api/setup-status')).data.ingestError.reason, /did not hold an Oath key/);
+  assert.match(s.ingestError.reason, /right shape but is not one Oath made/);
+  const real = s.ingestError.at;
 
+  // Anything else is noise from the internet: still refused, but it must not overwrite the record.
   setLocal('2026-10-14T12:01');
+  for (const authorization of ['Bearer oath_wrong', 'Token abc', `oath_${'x'.repeat(40)}`, 'Bearer ', undefined]) {
+    assert.equal((await bare('POST', '/api/shortcut/health', { authorization, json: { steps: 100 } })).status, 401, String(authorization));
+  }
+  assert.equal((await bare('POST', '/api/shortcut/health', { body: 'x=1', type: 'text/plain' })).status, 415, 'a body that is not JSON, with no key');
+  s = (await call('GET', '/api/setup-status')).data;
+  assert.equal(s.ingestError.at, real, 'the real diagnostic is untouched');
+  assert.match(s.ingestError.reason, /right shape/);
+
+  // Even failures of the right shape are written at most once every few seconds.
+  setLocal('2026-10-14T12:02:00');
+  const guess = (n) => bare('GET', `/api/shortcut/next?try=${n}`, { authorization: `oath_${'y'.repeat(32)}` });
+  await guess(1);
+  const first = (await call('GET', '/api/setup-status')).data.ingestError;
+  assert.equal(first.path, '/api/shortcut/next');
+  await bare('POST', '/api/shortcut/health', { authorization: `oath_${'z'.repeat(32)}`, json: { steps: 1 } });
+  assert.equal((await call('GET', '/api/setup-status')).data.ingestError.path, '/api/shortcut/next', 'a second failure at once is not written');
+  setLocal('2026-10-14T12:02:30');
+  await bare('POST', '/api/shortcut/health', { authorization: `oath_${'z'.repeat(32)}`, json: { steps: 1 } });
+  assert.equal((await call('GET', '/api/setup-status')).data.ingestError.path, '/api/shortcut/health', 'written again once the gap has passed');
+
+  setLocal('2026-10-14T12:03');
   const notJson = await bare('POST', '/api/shortcut/health', { authorization: token, body: 'steps=100', type: 'text/plain' });
   assert.equal(notJson.status, 415);
   s = (await call('GET', '/api/setup-status')).data;
   assert.equal(s.ingestError.status, 415);
 
   // A sync that works clears the warning and turns Health green.
-  setLocal('2026-10-14T12:02');
+  setLocal('2026-10-14T12:04');
   assert.equal((await bare('POST', '/api/shortcut/health', { authorization: token, json: { steps: 4200 } })).status, 200);
   s = (await call('GET', '/api/setup-status')).data;
   assert.equal(s.ingestError, null);

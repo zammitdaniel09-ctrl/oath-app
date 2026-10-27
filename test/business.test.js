@@ -34,25 +34,25 @@ const TIMEOUT_MS = 400;
 const SLOW_MS = 3000;
 
 let goodBroken = false;
-let goodRevenue = 1797;
+let goodRevenue = 1250;
 const hits = new Map(); // pathname -> count
 const auths = new Map(); // pathname -> last Authorization header
 const arrivals = []; // [pathname, ms]
 
 const summary = () => ({
-  site: 'GoldenStraddler',
-  url: 'https://goldenstraddler.com',
+  site: 'Acme Store',
+  url: 'https://shop.example.com',
   generatedAt: nowIso(),
   metrics: [
     { key: 'revenue_30d', label: 'Revenue, 30 days', value: goodRevenue, unit: 'EUR', format: 'money', change: 19.9,
-      series: [{ date: '2026-10-11', value: 149 }, { date: '2026-10-12', value: goodRevenue - 149 }] },
+      series: [{ date: '2026-10-11', value: 90 }, { date: '2026-10-12', value: goodRevenue - 90 }] },
     { key: 'sales_30d', label: 'New sales, 30 days', value: 2, format: 'count', change: 100 },
-    { key: 'mrr', label: 'Monthly recurring revenue', value: 337, unit: 'EUR', format: 'money' },
-    { key: 'active_licences', label: 'Active EA licences', value: 3, format: 'count' },
-    { key: 'eas_online', label: 'Customer EAs online now', value: 1, format: 'count' },
+    { key: 'mrr', label: 'Monthly recurring revenue', value: 240, unit: 'EUR', format: 'money' },
+    { key: 'active_plans', label: 'Active plans', value: 3, format: 'count' },
+    { key: 'visitors_online', label: 'Visitors online now', value: 1, format: 'count' },
   ],
-  status: { ok: true, text: 'Live account EA online, +3,210 points over 142 trades; 1 customer EA online' },
-  events: [{ at: nowIso(), text: 'New sale: lifetime licence, €1,499 by card' }],
+  status: { ok: true, text: 'Shop open, 3 orders today; 1 visitor online' },
+  events: [{ at: nowIso(), text: 'New order: annual plan, €149 by card' }],
   alerts: ['1 refund request to answer', '1 demo trial ends in the next 24 hours'],
 });
 
@@ -79,7 +79,7 @@ const server = http.createServer((req, res) => {
     }
     case '/journal/api/oath/summary':
       if (!guard(JOURNAL_TOKEN)) return send(401, { ok: false, error: 'Unauthorized' });
-      return send(200, { ...summary(), site: 'Exposed FX Journal' });
+      return send(200, { ...summary(), site: 'Sample Journal' });
     case '/moved/api/oath/summary':
       res.writeHead(301, { location: `${base}/good/api/oath/summary` });
       return res.end();
@@ -117,10 +117,10 @@ let biz; let dbmod; let app;
 
 const setSources = (list) => { process.env.BUSINESS_SOURCES = typeof list === 'string' ? list : JSON.stringify(list); };
 const FOUR = () => [
-  { name: 'GoldenStraddler', url: `${base}/good/api/oath/summary`, token: GOOD_TOKEN },
+  { name: 'Acme Store', url: `${base}/good/api/oath/summary`, token: GOOD_TOKEN },
   { name: 'Broken site', url: `${base}/broken/api/oath/summary`, token: OTHER_TOKEN },
   { name: 'Slow site', url: `${base}/slow/api/oath/summary`, token: OTHER_TOKEN },
-  { name: 'Exposed FX Journal', url: `${base}/journal/api/oath/summary`, token: WRONG_TOKEN },
+  { name: 'Sample Journal', url: `${base}/journal/api/oath/summary`, token: WRONG_TOKEN },
 ];
 const byName = (r) => Object.fromEntries(r.sources.map((s) => [s.name, s]));
 const hitsOf = (name) => hits.get(`/${name}/api/oath/summary`) || 0;
@@ -169,7 +169,7 @@ after(async () => {
 async function reset(iso = '2026-10-12T08:00') {
   clock = DateTime.fromISO(iso, { zone: ZONE });
   goodBroken = false;
-  goodRevenue = 1797;
+  goodRevenue = 1250;
   hits.clear();
   auths.clear();
   arrivals.length = 0;
@@ -187,10 +187,10 @@ test('1. BUSINESS_SOURCES: well-formed entries are read in order, malformed ones
   setSources({ name: 'One', url: 'https://one.example/api/oath/summary', token: 't' });
   assert.deepEqual(biz.businessSources(), [], 'an object instead of an array');
   setSources([
-    { name: ' GoldenStraddler ', url: 'https://goldenstraddler.com/api/oath/summary', token: ` ${GOOD_TOKEN} ` },
+    { name: ' Acme Store ', url: 'https://shop.example.com/api/oath/summary', token: ` ${GOOD_TOKEN} ` },
     null,
     42,
-    'GoldenStraddler',
+    'Acme Store',
     { name: 'No token', url: 'https://a.example/api/oath/summary' },
     { name: 'Empty token', url: 'https://a.example/api/oath/summary', token: '   ' },
     { name: 'Spaced token', url: 'https://a.example/api/oath/summary', token: 'two words' },
@@ -198,13 +198,13 @@ test('1. BUSINESS_SOURCES: well-formed entries are read in order, malformed ones
     { name: 'Bad URL', url: 'not a url', token: 'x' },
     { name: 'FTP', url: 'ftp://a.example/summary', token: 'x' },
     { name: 'Plain http elsewhere', url: 'http://a.example/api/oath/summary', token: 'x' },
-    { name: 'goldenstraddler', url: 'https://other.example/api/oath/summary', token: 'x' },
-    { name: 'Exposed FX Journal', url: 'https://journal.exposedfx.com/api/oath/summary', token: JOURNAL_TOKEN },
+    { name: 'acme store', url: 'https://other.example/api/oath/summary', token: 'x' },
+    { name: 'Sample Journal', url: 'https://journal.example.com/api/oath/summary', token: JOURNAL_TOKEN },
     { name: 'Local', url: 'http://127.0.0.1:9/api/oath/summary', token: 'x' },
   ]);
   assert.deepEqual(biz.businessSources(), [
-    { name: 'GoldenStraddler', url: 'https://goldenstraddler.com/api/oath/summary', token: GOOD_TOKEN },
-    { name: 'Exposed FX Journal', url: 'https://journal.exposedfx.com/api/oath/summary', token: JOURNAL_TOKEN },
+    { name: 'Acme Store', url: 'https://shop.example.com/api/oath/summary', token: GOOD_TOKEN },
+    { name: 'Sample Journal', url: 'https://journal.example.com/api/oath/summary', token: JOURNAL_TOKEN },
     { name: 'Local', url: 'http://127.0.0.1:9/api/oath/summary', token: 'x' },
   ]);
 });
@@ -238,17 +238,17 @@ test('3. refresh asks every site at once with its own token; 500, timeout and a 
   assert.ok(Math.max(...times) - Math.min(...times) < TIMEOUT_MS, `requests were sent together (spread ${Math.max(...times) - Math.min(...times)} ms)`);
 
   assert.equal(r.fetchedAt, nowIso());
-  assert.deepEqual(r.sources.map((s) => s.name), ['GoldenStraddler', 'Broken site', 'Slow site', 'Exposed FX Journal']);
+  assert.deepEqual(r.sources.map((s) => s.name), ['Acme Store', 'Broken site', 'Slow site', 'Sample Journal']);
   const s = byName(r);
-  assert.equal(s.GoldenStraddler.ok, true);
-  assert.equal(s.GoldenStraddler.error, null);
-  assert.equal(s.GoldenStraddler.fetchedAt, nowIso());
-  assert.equal(s.GoldenStraddler.checkedAt, nowIso());
-  assert.equal(s.GoldenStraddler.data.site, 'GoldenStraddler');
-  assert.equal(s.GoldenStraddler.data.metrics.length, 5);
-  assert.deepEqual(s.GoldenStraddler.data.metrics[0], summary().metrics[0]);
-  assert.deepEqual(s.GoldenStraddler.data.status, { ok: true, text: summary().status.text });
-  assert.deepEqual(s.GoldenStraddler.data.alerts, summary().alerts);
+  assert.equal(s['Acme Store'].ok, true);
+  assert.equal(s['Acme Store'].error, null);
+  assert.equal(s['Acme Store'].fetchedAt, nowIso());
+  assert.equal(s['Acme Store'].checkedAt, nowIso());
+  assert.equal(s['Acme Store'].data.site, 'Acme Store');
+  assert.equal(s['Acme Store'].data.metrics.length, 5);
+  assert.deepEqual(s['Acme Store'].data.metrics[0], summary().metrics[0]);
+  assert.deepEqual(s['Acme Store'].data.status, { ok: true, text: summary().status.text });
+  assert.deepEqual(s['Acme Store'].data.alerts, summary().alerts);
   assert.equal(auths.get('/good/api/oath/summary'), `Bearer ${GOOD_TOKEN}`);
 
   assert.equal(s['Broken site'].ok, false);
@@ -261,8 +261,8 @@ test('3. refresh asks every site at once with its own token; 500, timeout and a 
   assert.match(s['Slow site'].error, /No answer within 0\.4 s/);
   assert.equal(s['Slow site'].data, null);
 
-  assert.equal(s['Exposed FX Journal'].ok, false);
-  assert.match(s['Exposed FX Journal'].error, /refused the token \(401\)/);
+  assert.equal(s['Sample Journal'].ok, false);
+  assert.match(s['Sample Journal'].error, /refused the token \(401\)/);
   assert.equal(auths.get('/journal/api/oath/summary'), `Bearer ${WRONG_TOKEN}`);
 
   // Stored as it was returned, without any token.
@@ -274,35 +274,35 @@ test('3. refresh asks every site at once with its own token; 500, timeout and a 
 test('4. a site that fails keeps its last good numbers, marked not ok with the error, until it answers again', async () => {
   await reset();
   setSources(FOUR());
-  const first = byName(await biz.refreshBusiness()).GoldenStraddler;
+  const first = byName(await biz.refreshBusiness())['Acme Store'];
   assert.equal(first.ok, true);
   const goodAt = nowIso();
 
   goodBroken = true;
   advance(15);
-  const down = byName(await biz.refreshBusiness()).GoldenStraddler;
+  const down = byName(await biz.refreshBusiness())['Acme Store'];
   assert.equal(down.ok, false);
   assert.match(down.error, /500/);
   assert.deepEqual(down.data, first.data, 'the last good numbers are kept');
   assert.equal(down.fetchedAt, goodAt, 'and say when they arrived');
   assert.equal(down.checkedAt, nowIso());
   const sum = await biz.businessSummary();
-  assert.equal(byName(sum).GoldenStraddler.data.metrics[0].value, 1797);
+  assert.equal(byName(sum)['Acme Store'].data.metrics[0].value, 1250);
 
   goodBroken = false;
   goodRevenue = 2100;
   advance(15);
-  const back = byName(await biz.refreshBusiness()).GoldenStraddler;
+  const back = byName(await biz.refreshBusiness())['Acme Store'];
   assert.equal(back.ok, true);
   assert.equal(back.error, null);
   assert.equal(back.data.metrics[0].value, 2100);
   assert.equal(back.fetchedAt, nowIso());
 
   // The journal starts answering once its token is put right; the broken site still has nothing.
-  setSources(FOUR().map((x) => (x.name === 'Exposed FX Journal' ? { ...x, token: JOURNAL_TOKEN } : x)));
+  setSources(FOUR().map((x) => (x.name === 'Sample Journal' ? { ...x, token: JOURNAL_TOKEN } : x)));
   const fixed = byName(await biz.refreshBusiness());
-  assert.equal(fixed['Exposed FX Journal'].ok, true);
-  assert.equal(fixed['Exposed FX Journal'].data.site, 'Exposed FX Journal');
+  assert.equal(fixed['Sample Journal'].ok, true);
+  assert.equal(fixed['Sample Journal'].data.site, 'Sample Journal');
   assert.equal(fixed['Broken site'].data, null);
 });
 
@@ -342,10 +342,10 @@ test('5. businessSummary uses the cache while it is fresh and refreshes when old
   noTokens(r.text);
 
   // A source added to BUSINESS_SOURCES shows up at once rather than after the cache runs out.
-  setSources([...FOUR().slice(0, 2), { name: 'Exposed FX Journal', url: `${base}/journal/api/oath/summary`, token: JOURNAL_TOKEN }]);
+  setSources([...FOUR().slice(0, 2), { name: 'Sample Journal', url: `${base}/journal/api/oath/summary`, token: JOURNAL_TOKEN }]);
   const d = await biz.businessSummary();
-  assert.deepEqual(d.sources.map((s) => s.name), ['GoldenStraddler', 'Broken site', 'Exposed FX Journal']);
-  assert.equal(byName(d)['Exposed FX Journal'].ok, true);
+  assert.deepEqual(d.sources.map((s) => s.name), ['Acme Store', 'Broken site', 'Sample Journal']);
+  assert.equal(byName(d)['Sample Journal'].ok, true);
 
   // Two callers at once share one refresh.
   const before = hitsOf('good');
@@ -362,13 +362,13 @@ test('6. the coach gets each site\'s headline numbers, status and alerts in a fe
   const lines = text.split('\n');
   assert.equal(lines[0], "Business (Daniel's own sites):");
   assert.ok(lines.length <= 1 + 2 * 4, `a few lines (${lines.length})`);
-  const gs = lines.find((l) => l.startsWith('  GoldenStraddler: '));
-  assert.ok(gs.includes('Revenue, 30 days: €1,797 (up 19.9% on the period before)'), gs);
+  const gs = lines.find((l) => l.startsWith('  Acme Store: '));
+  assert.ok(gs.includes('Revenue, 30 days: €1,250 (up 19.9% on the period before)'), gs);
   assert.ok(gs.includes('New sales, 30 days: 2 (up 100% on the period before)'), gs);
-  assert.ok(gs.includes('Monthly recurring revenue: €337'), gs);
-  assert.ok(gs.includes('Status: Live account EA online'), gs);
-  assert.ok(!gs.includes('Customer EAs online now'), 'only the first four numbers');
-  assert.ok(lines.includes('  GoldenStraddler needs: 1 refund request to answer; 1 demo trial ends in the next 24 hours.'), text);
+  assert.ok(gs.includes('Monthly recurring revenue: €240'), gs);
+  assert.ok(gs.includes('Status: Shop open'), gs);
+  assert.ok(!gs.includes('Visitors online now'), 'only the first four numbers');
+  assert.ok(lines.includes('  Acme Store needs: 1 refund request to answer; 1 demo trial ends in the next 24 hours.'), text);
   assert.ok(lines.includes('  Broken site: no numbers yet (The site answered 500).'), text);
   assert.ok(lines.some((l) => /^ {2}Slow site: no numbers yet \(No answer within 0\.4 s\)\.$/.test(l)), text);
   assert.ok(!text.includes('\u2014'), 'no em dashes');

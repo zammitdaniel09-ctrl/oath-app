@@ -11,7 +11,13 @@ const BASE = 'https://world.openfoodfacts.org';
 // Name and country searches go to Open Food Facts' search service; the main site now refuses
 // anonymous searches, while single-product reads by barcode still work there.
 const SEARCH = 'https://search.openfoodfacts.org/search';
-const UA = `Oath/1.0 (personal food diary; ${process.env.PUBLIC_URL || 'https://oath-app-production-41c7.up.railway.app'})`;
+// The contact Open Food Facts asks for is the app's own address, read from the environment (the same
+// variables the rest of the app uses) because this repository is public. Without one it is generic.
+export function userAgent() {
+  const domain = process.env.PUBLIC_HOST || process.env.RAILWAY_PUBLIC_DOMAIN;
+  const contact = process.env.PUBLIC_URL || process.env.APP_URL || (domain ? `https://${domain}` : '');
+  return `Oath/1.0 (personal food diary${contact ? `; ${contact}` : ''})`;
+}
 const FIELDS = [
   'code', 'product_name', 'product_name_en', 'product_name_mt', 'generic_name', 'brands', 'quantity', 'product_quantity', 'product_quantity_unit',
   'serving_size', 'serving_quantity', 'serving_quantity_unit', 'nutriments', 'nutrition_data_per', 'countries_tags', 'categories_tags',
@@ -43,7 +49,7 @@ function slot(kind) {
 
 async function getJson(kind, url) {
   await slot(kind);
-  const res = await fetcher(url, { headers: { 'User-Agent': UA, Accept: 'application/json' }, signal: AbortSignal.timeout(15000) });
+  const res = await fetcher(url, { headers: { 'User-Agent': userAgent(), Accept: 'application/json' }, signal: AbortSignal.timeout(15000) });
   if (res.status === 404) return null;
   if (res.status === 429) throw new Error('Open Food Facts asked us to slow down. Try again in a minute.');
   if (!res.ok) throw new Error(`Open Food Facts answered ${res.status}.`);

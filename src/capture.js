@@ -73,6 +73,11 @@ function keyFrom(header) {
   return m ? `oath_${m[1]}` : null;
 }
 
+// Whether a header holds something that looks like one of our keys: "oath_" and the right length.
+// Anyone on the internet can send a bad key, so only a key of the right shape counts as a mistake
+// worth telling Daniel about.
+export const keyShapeOk = (header) => keyFrom(header)?.length === KEY_LENGTH;
+
 export async function tokenValid(header) {
   const key = keyFrom(header);
   if (!key) return false;
