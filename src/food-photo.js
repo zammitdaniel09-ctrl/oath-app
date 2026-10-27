@@ -25,6 +25,7 @@ import { readStructured, aiEnabled } from './coach.js';
 import { searchFoods, FILL_KEYS, ESTIMATE_KEYS, MICRO_TEXT, cleanFill } from './food.js';
 import { productByBarcode } from './off.js';
 import { resolve, round, norm } from '../public/nutrition.js';
+import { lookupCode } from '../public/barcode.js';
 
 const STR = { type: 'string' };
 const NUM = { type: 'number' };
@@ -126,17 +127,10 @@ Anything you cannot read stays empty: "" for text, 0 for a size or count, label 
 Item rules:
 ${ITEM_RULES}`;
 
-const validEan = (code) => {
-  if (!/^\d{8}$|^\d{12,14}$/.test(code)) return false;
-  const digits = code.split('').map(Number);
-  const check = digits.pop();
-  const sum = digits.reverse().reduce((a, d, i) => a + d * (i % 2 === 0 ? 3 : 1), 0);
-  return (10 - (sum % 10)) % 10 === check;
-};
-
 // The label as a draft record per 100 g or ml. Values per serving are scaled by the printed serving size;
 // kcal comes from kJ ÷ 4.184 only when kcal was not printed. Warnings flag readings that don't add up.
-export function labelDraft(read) {
+// `scanned` is a barcode the live scanner already read for this product; it beats one read off the photo.
+export function labelDraft(read, scanned = null) {
   const l = read.label;
   if (!l) return null;
   const warnings = [];
@@ -169,7 +163,7 @@ export function labelDraft(read) {
   return {
     name: [p?.name, p?.variant].filter(Boolean).join(' ') || '',
     brand: p?.brand || '',
-    barcode: read.barcode && validEan(read.barcode.replace(/\D/g, '')) ? read.barcode.replace(/\D/g, '') : '',
+    barcode: scanned || lookupCode(read.barcode) || '',
     basis,
     nutrients,
     serving: l.serving_size > 0 ? { size: l.serving_size, unit: l.serving_unit === 'ml' ? 'ml' : 'g', label: l.serving_label || '' } : null,
@@ -543,11 +537,14 @@ export async function matchItems(items, { context = '' } = {}) {
 
 // ---------- Photos ----------
 
-export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg', note = '' } = {}) {
+// `barcode` is a hint from the live scanner: a code it read and no database knew. A label photographed
+// after it is saved under that code, so the next scan finds it.
+export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg', note = '', barcode = '' } = {}) {
   if (typeof image !== 'string' || !/^[A-Za-z0-9+/=]+$/.test(image.slice(0, 200))) throw new RuleError('Send the photo as base64.');
   if (!['image/jpeg', 'image/png', 'image/webp'].includes(mediaType)) throw new RuleError('Send a JPEG, PNG or WebP photo.');
   if (Buffer.byteLength(image, 'base64') > 4.5 * 1024 * 1024) throw new RuleError('That photo is too big. Try again; the app shrinks it first.');
   const said = note ? String(note).slice(0, 300) : '';
+  const scanned = barcode ? lookupCode(barcode) : null;
   const read = await readStructured({
     system: SYSTEM,
     schema: PHOTO_SCHEMA,
@@ -561,9 +558,9 @@ export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg
   Object.assign(read, photoFromWire(read));
   await logEvent('food_photo', { kind: read.kind });
   const code = read.barcode ? read.barcode.replace(/\D/g, '') : '';
-  const goodCode = code && validEan(code) ? code : null;
+  const goodCode = scanned || lookupCode(code);
 
-  if (read.kind === 'label') return { kind: 'label', summary: read.summary, draft: labelDraft(read) };
+  if (read.kind === 'label') return { kind: 'label', summary: read.summary, draft: labelDraft(read, scanned) };
 
   if (read.kind === 'barcode' || read.kind === 'packet') {
     let item = null;
@@ -586,7 +583,7 @@ export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg
       read: read.product,
       suggestions,
       offError,
-      draft: read.label ? labelDraft(read) : null,
+      draft: read.label ? labelDraft(read, scanned) : null,
     };
   }
 

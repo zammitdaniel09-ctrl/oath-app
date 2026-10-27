@@ -566,3 +566,101 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
   .ftake.fresh .ftake-text { animation: none; }
   .ftake-wait i { animation-name: typing-fade; }
 }
+
+/* ---------- Live barcode scanner (scan.js): the camera full screen, a frame to aim with, the torch, and a
+   typed number for when the camera cannot help. A layer of its own above the sheets, under the toast. ---------- */
+
+html.scan-open, html.scan-open body { overflow: hidden; }
+.scan {
+  position: fixed; inset: 0; z-index: 50; display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+  background: var(--bg); color: var(--text); overscroll-behavior: contain;
+}
+.scan-cam { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(120% 70% at 50% 45%, #15181f 0%, var(--bg) 70%); }
+.scan-video { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 260ms var(--ease); }
+.scan.is-live .scan-video { opacity: 1; }
+.scan-top {
+  position: relative; z-index: 2; display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: 8px;
+  padding: calc(env(safe-area-inset-top) + 10px) calc(env(safe-area-inset-right) + 14px) 14px calc(env(safe-area-inset-left) + 14px);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent);
+}
+.scan-title { margin: 0; text-align: center; font-size: 1.0625rem; font-weight: 680; letter-spacing: -0.01em; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6); }
+.scan-ic {
+  width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer; color: var(--text);
+  background: rgba(20, 23, 29, 0.66); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  transition: background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease), transform var(--spring-ms) var(--spring);
+}
+.scan-ic .ic { width: 20px; height: 20px; }
+.scan-ic:active { transform: scale(0.92); transition: transform var(--t-press) var(--ease); }
+/* The torch keeps its place when the camera has none, so the title stays centred. */
+.scan-ic[hidden] { visibility: hidden; }
+.scan-ic[aria-pressed="true"] { background: var(--silver); color: var(--on-silver); }
+.scan-mid {
+  position: relative; z-index: 1; display: grid; justify-items: center; align-content: center; gap: 18px; min-height: 0;
+  padding: 8px calc(env(safe-area-inset-right) + 20px) 8px calc(env(safe-area-inset-left) + 20px);
+}
+/* The frame: four corners and a line, with the rest of the picture dimmed around it. */
+.scan-frame { position: relative; width: min(84vw, 360px); aspect-ratio: 1.75; border-radius: 22px; box-shadow: 0 0 0 200vmax rgba(0, 0, 0, 0.5); }
+.scan-frame i { position: absolute; width: 34px; height: 34px; border: 0 solid var(--silver); transition: border-color 200ms var(--ease); }
+.scan-frame i:nth-child(1) { top: 0; left: 0; border-width: 3.5px 0 0 3.5px; border-top-left-radius: 22px; }
+.scan-frame i:nth-child(2) { top: 0; right: 0; border-width: 3.5px 3.5px 0 0; border-top-right-radius: 22px; }
+.scan-frame i:nth-child(3) { bottom: 0; left: 0; border-width: 0 0 3.5px 3.5px; border-bottom-left-radius: 22px; }
+.scan-frame i:nth-child(4) { bottom: 0; right: 0; border-width: 0 3.5px 3.5px 0; border-bottom-right-radius: 22px; }
+/* The line is drawn at the top of a box 68% of the frame tall, so moving the box by its own height sweeps it. */
+.scan-line {
+  position: absolute; left: 16px; right: 16px; top: 16%; height: 68%; opacity: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, var(--merlot-hi) 16%, var(--merlot-hi) 84%, transparent) top / 100% 2px no-repeat,
+    linear-gradient(180deg, rgba(255, 42, 23, 0.28), transparent) 0 2px / 100% 12px no-repeat;
+  transition: opacity 200ms var(--ease);
+}
+.scan.is-live .scan-line { opacity: 1; animation: scan-sweep 1.7s var(--ease-in-out) infinite alternate; }
+@keyframes scan-sweep { from { transform: translateY(0); } to { transform: translateY(100%); } }
+.scan.is-hit .scan-frame i { border-color: var(--menthol); }
+.scan.is-hit .scan-frame { animation: scan-got 320ms var(--ease); }
+@keyframes scan-got { 40% { transform: scale(1.035); } to { transform: none; } }
+.scan-status {
+  position: relative;
+  margin: 0; max-width: min(100%, 34ch); padding: 8px 14px; border-radius: 999px; text-align: center;
+  font-size: 0.9375rem; font-weight: 600; line-height: 1.35; color: var(--text);
+  background: rgba(12, 13, 17, 0.62); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.scan-status:empty { display: none; }
+.scan-status.is-bad { color: #ffd6d9; background: rgba(48, 12, 17, 0.86); box-shadow: inset 0 0 0 1px rgba(255, 45, 85, 0.5); }
+/* No camera, no permission or paused: why, and the other ways in. */
+.scan.is-off .scan-frame { display: none; }
+.scan-off {
+  position: relative;
+  width: min(100%, 380px); padding: 24px 20px 20px; border-radius: var(--r-card); text-align: center;
+  background: var(--sheet); box-shadow: var(--rim), var(--lift);
+}
+.scan-off[hidden] { display: none; }
+.scan-off-ic { width: 30px; height: 30px; color: var(--text-3); }
+.scan-off-h { margin: 8px 0 4px; font-size: 1.125rem; font-weight: 700; letter-spacing: -0.012em; }
+.scan-off-t { margin: 0 0 18px; font-size: 0.9375rem; color: var(--text-2); }
+.scan-off-acts { display: grid; gap: 10px; }
+.scan-off-acts .btn[hidden] { display: none; }
+/* The typed number: a bar like the diary's capture bar, above the home indicator. */
+.scan-type {
+  position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px;
+  width: min(calc(100% - 32px - env(safe-area-inset-left) - env(safe-area-inset-right)), 480px); justify-self: center;
+  margin: 10px 0 calc(env(safe-area-inset-bottom) + 16px); padding: 6px; border-radius: 26px;
+  background: rgba(20, 23, 29, 0.82); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), var(--lift);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  transition: box-shadow var(--t-ctl) var(--ease);
+}
+.scan-type:focus-within { box-shadow: inset 0 0 0 1.5px var(--focus), 0 0 0 4px rgba(244, 245, 248, 0.12); }
+.scan-type .input { min-height: 46px; padding: 10px 12px; background: transparent; box-shadow: none; font-family: var(--mono); font-size: 1rem; letter-spacing: 0.04em; }
+.scan-type .input:focus { background: transparent; box-shadow: none; }
+.scan-type .input::placeholder { font-family: var(--font); letter-spacing: 0; }
+.scan-type .btn { min-height: 46px; padding: 0 20px; border-radius: 20px; }
+@media (prefers-reduced-motion: reduce) {
+  .scan.is-live .scan-line { animation: none; transform: translateY(50%); }
+  .scan.is-hit .scan-frame { animation: none; }
+}
+/* The way in from Search, beside the box; and the code itself in the not-found sheet. */
+.food-search.has-scan { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+/* Seven ways in on the wide diary: four and three, rather than a lone button on a third row. */
+@media (min-width: 1240px) { .fdiary .fcap-tools { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.fscan-btn { width: 48px; height: 48px; border-radius: var(--r-ctl); }
+.scan-code { font-family: var(--mono); font-size: 0.9em; letter-spacing: 0.02em; color: var(--text); white-space: nowrap; }

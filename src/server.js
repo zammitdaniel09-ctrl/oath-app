@@ -38,7 +38,8 @@ app.use('*', async (c, next) => {
   c.header('X-Content-Type-Options', 'nosniff');
   c.header('Referrer-Policy', 'same-origin');
   c.header('X-Frame-Options', 'DENY');
-  c.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  // The camera is the app's own, for the live barcode scanner; no frame or other site gets it.
+  c.header('Permissions-Policy', 'camera=(self), microphone=(), geolocation=()');
 });
 
 // A failed Shortcuts or Health Auto Export request is noted on the setup list so Daniel can see what
