@@ -25,6 +25,7 @@ import { bodyApi } from './body.js';
 import { ensureFoodSeed } from './food-seed.js';
 import { readFoodPhoto, readFoodText } from './food-photo.js';
 import { foodTake } from './food-take.js';
+import { importApi } from './food-import.js';
 import { productByBarcode, searchOff } from './off.js';
 import * as passkeys from './passkeys.js';
 import { conditionalGet, publicFile } from './static.js';
@@ -318,6 +319,8 @@ api.get('/food/barcode/:code', async (c) => c.json({ item: await productByBarcod
 api.get('/food/off-search', async (c) => c.json({ items: await searchOff(c.req.query('q')) }));
 // The coach's take on the Food tab or Trends, kept until the numbers behind it change.
 api.get('/food/take', async (c) => c.json(await foodTake({ view: c.req.query('view'), date: c.req.query('date'), days: c.req.query('days') })));
+// A recipe from a link, as a draft for the editor; nothing is saved until Save.
+api.route('/', importApi);
 api.route('/', foodApi);
 api.route('/', bodyApi);
 

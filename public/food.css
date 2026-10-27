@@ -566,3 +566,44 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
   .ftake.fresh .ftake-text { animation: none; }
   .ftake-wait i { animation-name: typing-fade; }
 }
+
+/* ---------- Import a recipe from a link: the link sheet, the draft's notice and lines, the credit ---------- */
+
+.rimp-row { display: flex; gap: 8px; min-width: 0; }
+.rimp-row .input { flex: 1 1 auto; min-width: 0; }
+.rimp-row .btn { flex: none; }
+.rimp-form > .note:first-child { margin-top: 0; }
+/* Busy: the coach's typing bubble with what is happening under it, both from the left as in the chat. */
+.rimp-busy { justify-items: start; padding: 28px 0 36px; }
+.rimp-busy .note { max-width: 36ch; margin: 0; }
+
+.rimp-note {
+  margin-top: 2px; padding: var(--pad-sm); border-radius: var(--r-tile); background: var(--card);
+  box-shadow: inset 3px 0 0 var(--line-strong), inset 0 0 0 1px var(--line);
+}
+.rimp-note.todo { box-shadow: inset 3px 0 0 var(--amber), inset 0 0 0 1px var(--line); }
+.rimp-from { display: flex; align-items: flex-start; gap: 8px; margin: 0; font-size: 0.9375rem; line-height: 1.45; color: var(--text-2); }
+.rimp-from .ic { width: 18px; height: 18px; margin-top: 2px; color: var(--text-3); }
+.rimp-from a, .rsrc a { color: var(--text); font-weight: 620; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.rimp-k { margin: 14px 0 0; font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); }
+.rimp-list { display: grid; margin: 4px 0 0; padding: 0; list-style: none; }
+.rimp-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 12px; padding: 10px 0; border-top: 1px solid var(--line-soft); }
+.rimp-list li:first-child { border-top: 0; }
+.rimp-q { font-size: 0.9375rem; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+.rimp-why { grid-column: 1; font-size: 0.8125rem; line-height: 1.4; color: var(--text-2); overflow-wrap: anywhere; }
+.rimp-list .btn { grid-column: 2; grid-row: 1 / span 2; }
+.rimp-check { margin-top: 12px; }
+
+.rimp-line.needs { box-shadow: inset 3px 0 0 var(--amber); }
+.rimp-line .li-sub { font-size: 0.8125rem; }
+/* The small text buttons in a line get a full-size target without moving the words around them. */
+.rimp-line .linkish { display: inline-block; padding: 12px 6px; margin: -12px -6px; }
+
+.rsrc { display: flex; align-items: center; gap: 6px; margin: 10px 0 0; font-size: 0.875rem; color: var(--text-2); }
+.rsrc .ic { width: 16px; height: 16px; color: var(--text-3); }
+.rsrc a { display: inline-block; padding: 12px 0; margin: -12px 0; }
+
+@media (max-width: 400px) {
+  .rimp-list li { grid-template-columns: minmax(0, 1fr); }
+  .rimp-list .btn { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 6px; }
+}

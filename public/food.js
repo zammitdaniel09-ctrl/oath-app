@@ -10,6 +10,7 @@ import { NUTRIENT, NUTRIENTS, line, total, scale, show, unitsFor, round, amountT
 // Grades and tags come from the shared maths when it has them.
 import * as N from './nutrition.js';
 import { richHtml } from './rich.js';
+import { importBody, importNotice, importedRow, importFields, importSubmit, importClick, importTyped, needsFix, sourceCredit, fixExtras } from './food-import.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 
@@ -24,7 +25,7 @@ const FAMILIES = {
   vegetarian: 'Beans, lentils and tofu', soups: 'Soups and stews', 'pizza-pies': 'Pizza and pies', sweets: 'Sweet things',
   maltese: 'Maltese', shakes: 'Shakes and smoothies', components: 'Sauces and components', 'saved-meals': 'Simple combinations',
 };
-const STATUS = { 'ai-untested': 'Not kitchen-tested', 'user-reviewed': 'Reviewed by you', tested: 'Kitchen-tested' };
+const STATUS = { 'ai-untested': 'Not kitchen-tested', 'user-reviewed': 'Reviewed by you', tested: 'Kitchen-tested', imported: 'Imported from a link' };
 const BUILDERS = {
   shake: { title: 'Shake', icon: 'blend', groups: [['liquid', 'Liquid'], ['powder', 'Powder'], ['fruit', 'Fruit'], ['add', 'Additions']] },
   bowl: { title: 'Fruit bowl', icon: 'bowl', groups: [['fruit', 'Fruit'], ['add', 'Extras']] },
@@ -733,7 +734,7 @@ function searchBody(s) {
       <input class="input" type="search" name="q" value="${esc(s.q || '')}" placeholder="${s.drinks ? 'Search drinks' : 'Search foods and drinks'}" data-food-q autocomplete="off" enterkeyhint="search" aria-label="Search">
     </form>
     <div id="food-results">${resultsHtml(s)}</div>
-    ${s.pick ? '' : `<div class="food-none"><p class="eyebrow">Not here?</p>
+    ${s.pick ? fixExtras(s) : `<div class="food-none"><p class="eyebrow">Not here?</p>
       <div class="sheet-actions">
         ${s.q ? `<button class="btn tinted" data-action="food-off">${icon('search')}Search Open Food Facts for "${esc(s.q)}"</button>` : ''}
         <label class="btn tinted">${icon('camera')}Photo of the label or barcode<input class="vh" type="file" accept="image/*" capture="environment" data-food-photo></label>
@@ -996,14 +997,15 @@ function recipeLogBody(s) {
 function recipeEditBody(s) {
   const d = s.draft;
   return `<form data-form="food-recipe-save" class="sheet-form">
+    ${d.imported ? importNotice(d) : ''}
     <label class="field"><span>Name</span><input class="input" name="name" value="${esc(d.name || '')}" required maxlength="120"></label>
-    <div class="grid2"><label class="field"><span>Servings it makes</span><input class="input" name="servings" inputmode="decimal" value="${esc(d.servings || 1)}" required></label>
+    <div class="grid2"><label class="field"><span>Servings it makes</span><input class="input" name="servings" inputmode="decimal" value="${esc(d.servings ?? 1)}" required></label>
       <label class="field"><span>Finished weight (g)</span><input class="input" name="final_weight" inputmode="decimal" value="${esc(d.final_weight || '')}" placeholder="optional"></label></div>
     <div class="bgroup"><div class="bgroup-head"><h3>Ingredients</h3><button class="gh-link" type="button" data-action="food-re-add">${icon('plus')}Add</button></div>
-      ${d.lines.length ? `<div class="group">${d.lines.map((l, i) => `<div class="li li-plain bline"><span class="li-body"><span class="li-title">${esc(l.item?.name || l.name)}</span>
+      ${d.lines.length ? `<div class="group">${d.lines.map((l, i) => (d.imported ? importedRow(l, i, unitOptions) : `<div class="li li-plain bline"><span class="li-body"><span class="li-title">${esc(l.item?.name || l.name)}</span>
         ${l.item ? `<span class="amount-row small"><input class="input" inputmode="decimal" value="${esc(l.qty)}" data-re-index="${i}" data-re-field="qty" aria-label="Amount">
           <select class="input" data-re-index="${i}" data-re-field="unit" aria-label="Unit">${unitOptions(l.item, l.unit)}</select></span>` : `<span class="li-sub">${esc(amountText(l.qty, l.unit))}</span>`}</span>
-        <span class="li-side"><button class="icon-btn" type="button" data-action="food-re-drop" data-index="${i}" aria-label="Remove">${icon('close')}</button></span></div>`).join('')}</div>` : '<p class="note">No ingredients yet.</p>'}</div>
+        <span class="li-side"><button class="icon-btn" type="button" data-action="food-re-drop" data-index="${i}" aria-label="Remove">${icon('close')}</button></span></div>`)).join('')}</div>` : '<p class="note">No ingredients yet.</p>'}</div>
     <label class="field"><span>Method, one step per line</span><textarea class="input" name="method" rows="4" placeholder="optional">${esc((d.method || []).join('\n'))}</textarea></label>
     <label class="field"><span>Notes</span><textarea class="input" name="notes" rows="2" placeholder="optional">${esc(d.notes || '')}</textarea></label>
     <div class="form-actions"><button class="btn primary" type="submit"${d.lines.length ? '' : ' disabled'}>Save recipe</button></div></form>`;
@@ -1030,7 +1032,8 @@ function sheetHtml() {
     case 'batch-log': return sheetWrap(s.batch.name, batchLogBody(s));
     case 'cook': return sheetWrap('Cook a batch', cookBody(s));
     case 'recipe-log': return sheetWrap('Log it', recipeLogBody(s));
-    case 'recipe-edit': return sheetWrap(s.draft.key ? 'Edit recipe' : 'New recipe', recipeEditBody(s), 'tall');
+    case 'recipe-edit': return sheetWrap(s.draft.key ? 'Edit recipe' : s.draft.imported ? 'Imported recipe' : 'New recipe', recipeEditBody(s), 'tall');
+    case 'recipe-import': return sheetWrap('Import from a link', importBody(s));
     default: return '';
   }
 }
@@ -1047,7 +1050,7 @@ function recipeRow(r) {
 function viewRecipes() {
   const F = f();
   const all = F.recipes;
-  const head = pageHead('Recipes', { over: '<a class="back-inline" href="#/food">Food</a>', actions: `<button class="icon-btn accent" data-action="food-recipe-new" aria-label="New recipe">${icon('plus')}</button>` });
+  const head = pageHead('Recipes', { over: '<a class="back-inline" href="#/food">Food</a>', actions: `<button class="icon-btn" data-action="food-imp-open" aria-label="Import from a link" title="Import from a link">${icon('link')}</button><button class="icon-btn accent" data-action="food-recipe-new" aria-label="New recipe">${icon('plus')}</button>` });
   if (!all) return ctx.shell(`${head}<div class="skeleton"><i></i><i class="short"></i></div>${sheetHtml()}`);
   const fl = F.filter || (F.filter = { q: '', family: '', type: 'all', limit: 60 });
   const q = norm(fl.q);
@@ -1089,6 +1092,7 @@ function viewRecipe() {
     ${r.name_mt ? `<p class="serif mt-big">${esc(r.name_mt)}</p>` : ''}
     ${r.summary ? `<p class="rsum">${esc(r.summary)}</p>` : ''}
     <p class="rtags"><span class="tag">${r.type === 'template' ? 'Combination' : r.type === 'component' ? 'Component' : r.type === 'variant' ? 'Variant' : 'Recipe'}</span><span class="tag ${r.status === 'ai-untested' ? 'ftag-est' : ''}">${esc(status)}</span>${mine ? '<span class="tag">Yours</span>' : ''}${r.parent ? ` <a class="tag" href="#/food/recipe/${enc(r.parent.key)}">Based on ${esc(r.parent.name)}</a>` : ''}</p>
+    ${sourceCredit(r)}
     <div class="split"><div>
     <section class="card food-total"><div class="ft-main"><b class="ft-kcal">${show(per, 'kcal', { unit: false })}</b><span class="ft-unit">kcal a serving</span>${g ? nutriBadge(g) : ''}</div>${strip(per)}
       <p class="ft-extra"><span>Whole recipe ${kcal(r.totals)} · serves ${round(r.servings * o.factor, 2)}${r.per100 ? ` · ${kcal(r.per100)} per 100 g` : ''}${(r.prep_min || r.cook_min) ? ` · ${(r.prep_min || 0) + (r.cook_min || 0)} min` : ''}</span></p>
@@ -1567,7 +1571,9 @@ async function itemFor(key) {
 async function pickItem(key) {
   const s = state.foodSheet;
   const item = await itemFor(key);
-  const d = defaults(item);
+  // A pick that knows how much (an imported line's amount) starts there, when the food takes that unit.
+  const hint = s?.pick?.amount;
+  const d = hint && unitsFor(item).some((u) => u.unit === hint.unit) ? hint : defaults(item);
   openSheet({ kind: 'food', item, qty: d.qty, unit: d.unit, pick: s?.pick || null, back: s?.pick ? s.back : null });
 }
 
@@ -1668,6 +1674,7 @@ function settle(el) {
 
 export async function foodClick(a, el) {
   if (!a.startsWith('food-')) return false;
+  if (a.startsWith('food-imp-')) return importClick(a, el, { open: openSheet, save: saveRecipeDraft, defaults, search: runSearch });
   const s = state.foodSheet;
   const F = f();
   switch (a) {
@@ -1987,7 +1994,8 @@ export async function foodClick(a, el) {
       const r = F.recipe;
       const items = await Promise.all(r.lines.map((l) => (l.ref === 'item' ? itemFor(l.ref_key).catch(() => null) : null)));
       openSheet({ kind: 'recipe-edit', draft: { key: r.key, name: r.name, servings: r.servings, final_weight: r.final_weight, method: r.method, notes: r.notes,
-        lines: r.lines.map((l, i) => ({ ref: l.ref, ref_key: l.ref_key, name: l.name, item: items[i], qty: l.qty, unit: l.unit, label: l.label, optional: l.optional, grp: l.grp })) } });
+        family: r.family, summary: r.summary, tags: r.tags, prep_min: r.prep_min, cook_min: r.cook_min,
+        lines: r.lines.map((l, i) => ({ ref: l.ref, ref_key: l.ref_key, name: l.name, item: items[i], qty: l.qty, unit: l.unit, label: l.label, optional: l.optional, grp: l.grp, note: l.note })) } });
       return true;
     }
     case 'food-r-del':
@@ -2035,6 +2043,9 @@ async function finishPick(s, qty, unit) {
     });
   } else if (p.purpose === 'recipe-line') {
     backToBuilder(s, (b) => b.draft.lines.push({ ref: 'item', ref_key: s.item.key, item: s.item, name: s.item.name, qty: Number(qty), unit, label: s.item.name.split(',')[0].toLowerCase() }));
+  } else if (p.purpose === 'recipe-fix') {
+    // An imported line he sorted out: the food and amount he chose; the page's words stay with it.
+    backToBuilder(s, (b) => Object.assign(b.draft.lines[p.index], { ref: 'item', ref_key: s.item.key, item: s.item, name: s.item.name, qty: Number(qty), unit, flag: null, estimate: false }));
   } else if (p.purpose === 'photo') {
     // A food he picked himself: the estimate made for the old match no longer applies.
     backToBuilder(s, (b) => Object.assign(b.items[p.index], { match: s.item, qty: Number(qty), unit, edited: true, fill: null, why: null, brand: null, size: null }));
@@ -2182,11 +2193,20 @@ export async function foodSubmit(kind, form) {
       if (r) await afterLog(r, s.recipe.name);
       return true;
     }
+    case 'food-recipe-import':
+      await importSubmit(form, { open: openSheet, render: () => ctx.render() });
+      return true;
     case 'food-recipe-save': {
       saveRecipeDraft(s);
       const d = s.draft;
+      if (d.imported && d.lines.some(needsFix)) {
+        toast('Pick a food and an amount for the lines marked, or remove them.', true);
+        ctx.render();
+        return true;
+      }
       const body = { key: d.key, name: d.name, servings: Number(d.servings), final_weight: d.final_weight ? Number(d.final_weight) : null, method: d.method, notes: d.notes,
-        lines: d.lines.map((l) => ({ ref: l.ref || 'item', ref_key: l.ref_key || l.item?.key, qty: Number(l.qty), unit: l.unit, label: l.label || (l.item?.name || l.name || '').split(',')[0].toLowerCase(), optional: l.optional, grp: l.grp })) };
+        family: d.family, summary: d.summary, tags: d.tags, prep_min: d.prep_min, cook_min: d.cook_min, ...importFields(d),
+        lines: d.lines.map((l) => ({ ref: l.ref || 'item', ref_key: l.ref_key || l.item?.key, qty: Number(l.qty), unit: l.unit, label: l.label || (l.item?.name || l.name || '').split(',')[0].toLowerCase(), optional: l.optional, grp: l.grp, note: l.note })) };
       const r = await act(() => api('POST', '/api/food/recipes', body), 'Recipe saved.');
       if (r) {
         state.foodSheet = null;
@@ -2229,7 +2249,7 @@ async function runSearch(q, now = false) {
     const box = document.getElementById('food-results');
     if (box) box.innerHTML = resultsHtml(s);
     const off = document.querySelector('[data-action="food-off"]');
-    if (!off && q.trim() && !s.pick) {
+    if (!off && q.trim() && (!s.pick || s.pick.purpose === 'recipe-fix')) {
       const none = document.querySelector('.food-none .sheet-actions');
       none?.insertAdjacentHTML('afterbegin', `<button class="btn tinted" data-action="food-off">${icon('search')}Search Open Food Facts for "${esc(q)}"</button>`);
     } else if (off) off.innerHTML = `${icon('search')}Search Open Food Facts for "${esc(q)}"`;
@@ -2309,6 +2329,7 @@ function onInput(e) {
     if (out) out.innerHTML = reviewKcal(it);
   } else if (el.matches('[data-re-index]')) {
     s.draft.lines[Number(el.dataset.reIndex)][el.dataset.reField] = el.value;
+    if (s.draft.imported) importTyped(s.draft, Number(el.dataset.reIndex));
   }
   return null;
 }
