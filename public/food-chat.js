@@ -189,7 +189,7 @@ function answerPhoto(r) {
     const name = [r.draft?.brand, r.draft?.name].filter(Boolean).join(' ');
     push({ role: 'food', kind: 'say', text: `That is a nutrition label${name ? ` for ${name}` : ''}. Check the values, then save it as a food you can log.`, draft: r.draft, act: 'label' });
   } else if (r.kind === 'product') {
-    push({ role: 'food', kind: 'card', state: 'open', reply: `Found it from the barcode: ${r.item.name}${r.item.brand ? `, ${r.item.brand}` : ''}.`, title: r.item.name, items: [productItem(r.item)], said: r.item.name });
+    push({ role: 'food', kind: 'card', state: 'open', reply: `Found it from the barcode, Boss: ${r.item.name}${r.item.brand ? `, ${r.item.brand}` : ''}.`, title: r.item.name, items: [productItem(r.item)], said: r.item.name });
   } else if (r.kind === 'product-unknown') {
     const name = [r.read?.brand, r.read?.name, r.read?.variant].filter(Boolean).join(' ');
     const why = r.barcode ? `Barcode ${r.barcode} is not in Oath or Open Food Facts.` : r.unreadBarcode ? 'I could not read the barcode.' : 'I could not see a barcode.';
@@ -292,15 +292,15 @@ function headHtml() {
   const sub = t ? `${show(t, 'kcal', { unit: false })} of ${fmt(need)} kcal today` : 'Type it or snap it';
   return `<header class="fc-head">
     <a class="icon-btn fc-back" href="#/food" aria-label="Back to Food">${icon('back')}</a>
-    <span class="fc-av" aria-hidden="true">${icon('food')}</span>
+    <span class="fc-av" aria-hidden="true">F</span>
     <div class="fc-head-text"><h1>Food</h1><p>${sub}</p></div>
     ${t ? D.energyRing(t, need, { size: 42, sw: 5, glow: false }) : ''}
   </header>`;
 }
 
 function helloHtml() {
-  return `<div class="fc-hello"><span class="fc-av big" aria-hidden="true">${icon('food')}</span>
-    <h2>What did you eat?</h2>
+  return `<div class="fc-hello"><span class="fc-av big" aria-hidden="true">F</span>
+    <h2>What did you eat, Boss?</h2>
     <p>Say it the way you would tell a friend, or snap your plate, a label or a barcode. I find each food and its amount, and nothing is logged until you tap Log.</p>
     <div class="fc-examples" role="group" aria-label="Try">${EXAMPLES.map((x) => `<button type="button" class="fc-ex" data-action="food-chat-example" data-text="${esc(x)}">${esc(x)}</button>`).join('')}</div></div>`;
 }
@@ -320,13 +320,13 @@ function sayHtml(m) {
       ${D.foodRing(it.nutrients, D.itemGrade(it))}<span><b>${esc(it.name)}</b>${it.brand ? `<small>${esc(it.brand)}</small>` : ''}</span>${icon('chevron', 'chev')}</button>`).join('')}</div>`;
   }
   const acts = [];
-  if (m.retry) acts.push(`<button type="button" class="fc-act" data-action="food-chat-retry" data-cid="${m.id}">${icon('sync')}Try again</button>`);
-  if (m.retry && !m.retry.photo) acts.push(`<button type="button" class="fc-act" data-action="food-quick">${icon('bolt')}Quick add</button>`);
-  if (m.act === 'label' && m.draft) acts.push(`<button type="button" class="fc-act on" data-action="food-chat-label" data-cid="${m.id}">${icon('check')}Check the label</button>`);
+  if (m.retry) acts.push(`<button type="button" class="fc-act" data-action="food-chat-retry" data-cid="${m.id}">Try again</button>`);
+  if (m.retry && !m.retry.photo) acts.push(`<button type="button" class="fc-act" data-action="food-quick">Quick add</button>`);
+  if (m.act === 'label' && m.draft) acts.push(`<button type="button" class="fc-act on" data-action="food-chat-label" data-cid="${m.id}">Check the label</button>`);
   if (m.act === 'label-photo') {
-    acts.push(`<label class="fc-act">${icon('camera')}Photo of the label<input class="vh" type="file" accept="image/*" capture="environment" data-food-photo${m.barcode ? ` data-barcode="${esc(m.barcode)}"` : ''}></label>`);
+    acts.push(`<label class="fc-act">Photo of the label<input class="vh" type="file" accept="image/*" capture="environment" data-food-photo${m.barcode ? ` data-barcode="${esc(m.barcode)}"` : ''}></label>`);
   }
-  if (m.ask && !m.retry) acts.push(`<button type="button" class="fc-act" data-action="food-search">${icon('search')}Search instead</button>`);
+  if (m.ask && !m.retry) acts.push(`<button type="button" class="fc-act" data-action="food-search">Search instead</button>`);
   return `<div class="msg assistant fc-say${m.tone === 'bad' ? ' bad' : ''}"><span class="msg-text">${esc(m.text)}</span>${extra}${acts.length ? `<div class="fc-acts">${acts.join('')}</div>` : ''}</div>`;
 }
 
@@ -374,7 +374,7 @@ function cardHtml(m) {
     <ul class="fc-items">${m.items.map((it, i) => itemHtml(m, it, i)).join('') || '<li class="fc-empty">Nothing left on this card.</li>'}</ul>
     ${totalHtml(m)}
     <div class="fc-slots" role="radiogroup" aria-label="Log to">${D.SLOTS.map(([v, l]) => `<button type="button" role="radio" aria-checked="${v === slot}" class="fc-slot${v === slot ? ' on' : ''}" data-action="food-chat-slot" data-cid="${m.id}" data-slot="${v}">${l}</button>`).join('')}</div>
-    <button type="button" class="fc-log" data-action="food-chat-log" data-cid="${m.id}"${n && !busy ? '' : ' disabled'}>${icon('check')}<span>${label}</span></button>
+    <button type="button" class="fc-log" data-action="food-chat-log" data-cid="${m.id}"${n && !busy ? '' : ' disabled'}><span>${label}</span></button>
   </div>`;
 }
 
@@ -430,10 +430,10 @@ function composerHtml() {
   return `<div class="composer-dock fc-dock${c.staged ? ' staging' : ''}">
     ${staged}
     <div class="quick-replies fc-tools" role="group" aria-label="More ways to log">
-      <button type="button" class="qchip" data-action="food-scan">${icon('barcode')}Scan</button>
-      <label class="qchip">${icon('image')}From photos<input class="vh" type="file" accept="image/*" data-chat-photo></label>
-      <button type="button" class="qchip" data-action="food-search">${icon('search')}Search</button>
-      <button type="button" class="qchip" data-action="food-quick">${icon('bolt')}Quick add</button>
+      <button type="button" class="qchip" data-action="food-scan">Scan</button>
+      <label class="qchip">From photos<input class="vh" type="file" accept="image/*" data-chat-photo></label>
+      <button type="button" class="qchip" data-action="food-search">Search</button>
+      <button type="button" class="qchip" data-action="food-quick">Quick add</button>
     </div>
     <form class="composer fc-composer" data-form="food-chat-send">
       <label class="fc-cam" title="Snap your food">${icon('camera')}<span class="sr">Snap your food</span><input class="vh" type="file" accept="image/*" capture="environment" data-chat-photo></label>

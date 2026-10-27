@@ -230,7 +230,7 @@ test('the coach take: written from the numbers, kept until they change, quiet wh
     assert.match(sys, /This past week, today left out \(2 logged days\)/);
     assert.match(sys, /Not pushy/, 'the coach voice comes with it');
     assert.ok(!requests[0].tools, 'a take has no tools');
-    assert.match(requests[0].messages[0].content, /No greeting, no sign-off, no question/);
+    assert.match(requests[0].messages[0].content, /25 words at most in all.*no greeting, no sign-off, no question/, 'short, and no greeting');
 
     assert.equal((await get('/api/food/take')).text, t1.text, 'same numbers, same take');
     assert.equal(requests.length, 1, 'and no new call');

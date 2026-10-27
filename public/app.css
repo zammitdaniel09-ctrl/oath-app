@@ -97,7 +97,7 @@
   --pad: 18px;
   --pad-sm: 14px;
   --side: 232px;
-  --tabbar: 62px;
+  --tabbar: 78px;
 
   --rim: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   --lift: 0 18px 48px -24px rgba(0, 0, 0, 0.9);
@@ -387,13 +387,16 @@ a.card:active { transform: scale(0.985); transition: background-color var(--t-ct
 /* The key action of a screen (Done, Take the oath, Open with Face ID) is Merlot. Routine primaries are Chrome. */
 .btn.chrome {
   background: linear-gradient(180deg, var(--merlot-hi) 0%, var(--merlot) 55%, #c00500 100%); color: #ffffff;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.25), 0 12px 30px -12px rgba(225, 6, 0, 0.75);
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+  text-shadow: none;
 }
 .btn.plain { background: transparent; color: var(--text-2); box-shadow: none; }
 .btn.danger { background: var(--cherry); color: #22020a; box-shadow: none; }
 .btn.small { min-height: 40px; padding: 0 14px; font-size: 0.9375rem; border-radius: 11px; gap: 6px; }
 .btn.small .ic { width: 16px; height: 16px; }
+/* Words, not stock icons: a button, chip or eyebrow says what it does in words. Icons stay where they
+   stand alone (icon buttons, the tab bar, Send) or point somewhere (the chevron at a row's end). */
+.btn:not(.send):not(.ask-send) > .ic, .qchip > .ic, .eyebrow > .ic, .gh-count > .ic, .scard-h > .sic, .tchip > .ic:not(.chev), .banner > .ic:first-child { display: none; }
 .btn.big { min-height: 54px; font-size: 1.0625rem; border-radius: 15px; padding: 0 20px; }
 .btn.wide { width: 100%; white-space: normal; padding-top: 10px; padding-bottom: 10px; }
 .btn.tinted.danger-text { box-shadow: inset 0 0 0 1px rgba(255, 45, 85, 0.3); }
@@ -747,17 +750,14 @@ button.li:active .chk { transform: scale(0.86); transition: background-color var
 .rc-fuel { grid-template-columns: auto minmax(0, 1fr) auto; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); border-radius: 0; }
 .rc-fuel .rings { transition: transform var(--spring-ms) var(--spring); }
 .rc-fuel:active .rings { transform: scale(0.97); transition-duration: var(--t-press); }
-.rings { --size: 168px; --sw: 15px; --rgap: 3px; --amb: rgba(225, 6, 0, 0.2); position: relative; width: var(--size); height: var(--size); flex: none; }
-/* Each set sits in a soft light of its own colour. */
-.rings::before { content: ''; position: absolute; inset: -16%; border-radius: 50%; background: radial-gradient(closest-side, var(--amb), transparent); pointer-events: none; }
-.rc-fuel .rings { --amb: rgba(255, 140, 26, 0.13); }
+.rings { --size: 168px; --sw: 15px; --rgap: 3px; position: relative; width: var(--size); height: var(--size); flex: none; }
 .ring {
   position: absolute; inset: calc(var(--i) * (var(--sw) + var(--rgap))); border-radius: 50%;
   --band: radial-gradient(farthest-side, transparent calc(100% - var(--sw) - 0.5px), #000 calc(100% - var(--sw) + 0.5px));
 }
 .ring > i, .ring-ink > i { position: absolute; inset: 0; border-radius: 50%; }
 .ring-track { background: var(--rt); -webkit-mask: var(--band); mask: var(--band); }
-.ring-ink { filter: drop-shadow(0 0 calc(var(--sw) * 0.42) var(--rg)); }
+.ring-ink { filter: none; }
 .ring-arc { background: conic-gradient(var(--r0), var(--r1) calc(min(var(--ring-p), 1) * 1turn), transparent 0); -webkit-mask: var(--band); mask: var(--band); }
 .ring-lap { display: none; background: conic-gradient(var(--r1) calc(max(var(--ring-p) - 1, 0) * 1turn), transparent 0); -webkit-mask: var(--band); mask: var(--band); }
 .ring.over .ring-lap { display: block; }
@@ -790,8 +790,8 @@ button.li:active .chk { transform: scale(0.86); transition: background-color var
 .rc-fuel .legend { gap: 8px; }
 .rings-card.low .r-hp .ring-ink { animation: hp-pulse 1.8s ease-in-out infinite; }
 .rings-card.ticked .r-day .ring-ink { animation: day-pulse 0.9s var(--ease) 1; }
-@keyframes hp-pulse { 50% { filter: drop-shadow(0 0 calc(var(--sw) * 0.95) rgba(255, 30, 10, 0.95)); } }
-@keyframes day-pulse { 40% { filter: drop-shadow(0 0 var(--sw) var(--rg)) brightness(1.25); } }
+@keyframes hp-pulse { 50% { filter: brightness(1.3); } }
+@keyframes day-pulse { 40% { filter: brightness(1.25); } }
 .rings-center { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; line-height: 1; pointer-events: none; }
 .rings-center b { font-size: calc(var(--size) * 0.2); font-weight: 780; letter-spacing: -0.045em; color: var(--text); }
 .rings-center b.wide { font-size: calc(var(--size) * 0.155); }
@@ -1336,9 +1336,9 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .chd-av {
   display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--on-burgundy);
   background: radial-gradient(110% 110% at 32% 18%, #d9475f 0%, var(--burgundy-hi) 30%, var(--burgundy) 64%, var(--burgundy-lo) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 0 24px -4px rgba(196, 40, 63, 0.7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
-.chd-av .ic { width: 22px; height: 22px; stroke-width: 2; }
+.chd-av { font: italic 400 1.4375rem/1 var(--serif); }
 .chd-head-text { min-width: 0; }
 .chd-head-text h1 { margin: 0; font-size: 1.25rem; font-weight: 760; letter-spacing: -0.02em; line-height: 1.2; color: var(--text); }
 .chd-head-text p { margin: 1px 0 0; overflow: hidden; font-size: 0.8125rem; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
@@ -1348,7 +1348,7 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .cchat .msg.user {
   color: var(--on-burgundy);
   background: linear-gradient(180deg, #b0223b 0%, var(--burgundy) 55%, #84162a 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 10px 24px -18px rgba(196, 40, 63, 0.75);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 .cchat .msg.user time { color: rgba(251, 239, 241, 0.72); }
 .cchat .msg.assistant {
@@ -1361,7 +1361,7 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .cchat .confirm-row { background: rgba(158, 27, 50, 0.1); box-shadow: inset 0 0 0 1px rgba(196, 40, 63, 0.5); }
 .cchat-page .btn.chrome, .cchat-page .composer .send {
   background: linear-gradient(180deg, var(--burgundy-hi) 0%, var(--burgundy) 55%, #84162a 100%); color: var(--on-burgundy);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 10px 26px -12px rgba(196, 40, 63, 0.7); text-shadow: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22); text-shadow: none;
 }
 .cchat-page .composer { background: rgba(21, 19, 19, 0.9); box-shadow: inset 0 0 0 1px rgba(229, 221, 204, 0.18), 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
 .cchat-page .composer:focus-within { box-shadow: inset 0 0 0 1.5px var(--burgundy-hi), 0 0 0 4px rgba(196, 40, 63, 0.14), 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
@@ -1798,62 +1798,49 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 /* ---------- Navigation ---------- */
 
 .tabbar {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
-  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
-  height: calc(var(--tabbar) + env(safe-area-inset-bottom));
-  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  background: rgba(6, 7, 10, 0.96); box-shadow: 0 -1px 0 var(--line);
+  position: fixed; z-index: 20;
+  left: calc(env(safe-area-inset-left) + 12px); right: calc(env(safe-area-inset-right) + 12px); bottom: calc(env(safe-area-inset-bottom) + 10px);
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); height: 64px; padding: 5px;
+  border-radius: 32px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03) 45%, rgba(255, 255, 255, 0.06)), rgba(28, 28, 32, 0.9);
+  box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.4), inset 0 0 0 0.5px rgba(255, 255, 255, 0.14), 0 10px 34px -8px rgba(0, 0, 0, 0.6);
 }
 @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  .tabbar { background: rgba(6, 7, 10, 0.8); -webkit-backdrop-filter: blur(22px) saturate(1.1); backdrop-filter: blur(22px) saturate(1.1); }
+  .tabbar {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 45%, rgba(255, 255, 255, 0.06)), rgba(30, 30, 34, 0.58);
+    -webkit-backdrop-filter: blur(26px) saturate(1.8); backdrop-filter: blur(26px) saturate(1.8);
+  }
 }
 .tab {
-  display: grid; justify-items: center; align-content: center; gap: 3px; min-width: 0; padding: 6px 2px 4px;
-  color: var(--text-3); text-decoration: none; -webkit-user-select: none; user-select: none;
+  position: relative; display: grid; justify-items: center; align-content: center; gap: 2px; min-width: 0; padding: 4px 2px 3px;
+  color: rgba(255, 255, 255, 0.62); text-decoration: none; -webkit-user-select: none; user-select: none;
 }
-.tab .ic { width: 24px; height: 24px; stroke-width: 1.7; padding: 0; transition: color var(--t-ctl); }
+.tab .ic { width: 23px; height: 23px; stroke-width: 1.6; padding: 0; transition: color var(--t-ctl); }
 .tab-ic { position: relative; display: grid; place-items: center; isolation: isolate; transition: transform var(--spring-ms) var(--spring); }
 .tab:active .tab-ic { transform: scale(0.86); transition: transform var(--t-press) var(--ease); }
-/* Five tabs on a 320 px phone are 64 px each: the capsule stays inside its own tab. */
-@media (max-width: 340px) { .tabbar .tab-pill { inset: -4px -14px; } }
+/* On a narrow phone each slot is under 60 px: the lens stays inside its own. */
+@media (max-width: 360px) { .tabbar .tab-pill { inset: -6px -16px -23px; } }
 
-/* Food, raised in the middle: a lit Merlot disc that sits a little above the bar, ringed in the bar's
-   own black so it reads as cut out of it. It is always lit; selected, its glow opens up. */
-.tab-centre { position: relative; z-index: 1; }
-.tab-centre .tab-ic {
-  width: 54px; height: 54px; margin-top: -24px; border-radius: 50%; color: #fff;
-  background: radial-gradient(110% 110% at 32% 18%, #ff5a40 0%, var(--merlot-hi) 30%, var(--merlot) 62%, #a10400 100%);
-  box-shadow: 0 0 0 3.5px #050608, 0 12px 26px -10px rgba(225, 6, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 8px rgba(80, 0, 0, 0.35);
-  transition: transform var(--spring-ms) var(--spring), box-shadow 260ms var(--ease);
-}
-.tab-centre .tab-ic .ic { width: 26px; height: 26px; stroke-width: 2.1; color: #fff; }
-.tab-centre:active .tab-ic { transform: scale(0.9); }
-.tab-centre .tab-pill { display: none; }
-.tab-centre > span:last-child { margin-top: 1px; }
-.tab-centre[aria-current="page"] { color: var(--text); }
-.tab-centre[aria-current="page"] .tab-ic .ic { color: #fff; }
-.tab-centre[aria-current="page"] .tab-ic {
-  box-shadow: 0 0 0 3.5px #050608, 0 0 0 5px rgba(255, 42, 23, 0.32), 0 14px 30px -8px rgba(255, 42, 23, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -3px 8px rgba(80, 0, 0, 0.3);
-}
-.tab-centre:focus-visible { outline: none; }
-.tab-centre:focus-visible .tab-ic { outline: 2px solid var(--focus); outline-offset: 5px; }
-/* The label sits above the capsule, which in the sidebar runs under it. */
+/* Food sits in the middle like any other tab: the bar is one quiet piece of glass. */
+.tab-centre .tab-pill { display: block; }
+/* The label sits above the lens. */
 .tab { isolation: isolate; }
 .tab > span:last-child { position: relative; z-index: 1; }
-/* The selected tab sits in a lit Merlot capsule, which slides over from the last tab (motion.js). */
+/* The chosen tab sits in a clear glass lens filling its slot, which slides over from the last tab
+   (motion.js). */
 .tab-pill {
-  position: absolute; inset: -4px -17px; z-index: -1; border-radius: 999px; pointer-events: none;
-  background: radial-gradient(120% 150% at 50% 0%, rgba(255, 42, 23, 0.34), rgba(225, 6, 0, 0.12) 72%);
-  box-shadow: inset 0 0 0 1px rgba(255, 42, 23, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 18px -6px rgba(225, 6, 0, 0.7);
+  position: absolute; inset: -6px -21px -23px; z-index: -1; border-radius: 26px; pointer-events: none;
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.38), inset 0 0 0 0.5px rgba(255, 255, 255, 0.1);
 }
 .tab-badge {
-  position: absolute; top: -5px; left: 15px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
-  display: grid; place-items: center; font-size: 0.6875rem; font-weight: 760; line-height: 1; color: #fff;
-  background: var(--merlot); box-shadow: 0 0 0 2px #06070a, 0 0 10px rgba(225, 6, 0, 0.7);
+  position: absolute; top: -4px; left: 14px; min-width: 17px; height: 17px; padding: 0 5px; border-radius: 9px;
+  display: grid; place-items: center; font-size: 0.6875rem; font-weight: 700; line-height: 1; color: #fff;
+  background: #ff453a; box-shadow: 0 0 0 1.5px rgba(28, 28, 32, 0.9);
 }
-.tab > span:last-child { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.01em; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tab[aria-current="page"] { color: var(--text); }
-.tab[aria-current="page"] .ic { stroke-width: 2; color: var(--silver); }
+.tab > span:last-child { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.01em; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tab[aria-current="page"] { color: #fff; }
+.tab[aria-current="page"] .ic { stroke-width: 1.9; color: #fff; }
 .tab:focus-visible { outline-offset: -4px; border-radius: var(--r-ctl); }
 .tabbar-brand { display: none; }
 .wide-only { display: none !important; }
@@ -2002,8 +1989,8 @@ body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(s
   .lt-title { font-size: 2.5rem; }
   .gh h2 { font-size: 1.3125rem; }
   .tabbar {
-    top: 0; right: auto; width: var(--side); height: 100dvh; padding: calc(env(safe-area-inset-top) + 24px) 14px 24px calc(env(safe-area-inset-left) + 14px);
-    display: flex; flex-direction: column; gap: 2px; background: var(--card); box-shadow: 1px 0 0 var(--line);
+    top: 0; left: 0; right: auto; bottom: 0; width: var(--side); height: 100dvh; padding: calc(env(safe-area-inset-top) + 24px) 14px 24px calc(env(safe-area-inset-left) + 14px);
+    display: flex; flex-direction: column; gap: 2px; border-radius: 0; background: var(--card); box-shadow: 1px 0 0 var(--line);
     -webkit-backdrop-filter: none; backdrop-filter: none;
   }
   .tabbar-brand.wide-only { display: flex !important; align-items: center; gap: 10px; padding: 4px 10px 22px; font-size: 1.875rem; font-weight: 780; letter-spacing: -0.035em; }
@@ -2014,6 +2001,7 @@ body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(s
     transition: background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease);
   }
   .tab .ic { width: 21px; height: 21px; color: var(--text-3); }
+  .tab { position: static; }
   .tab > span:last-child { font-size: 0.9375rem; font-weight: 580; letter-spacing: -0.005em; }
   .tab[aria-current="page"] { color: var(--text); }
   .tab[aria-current="page"] .ic { color: var(--silver); }
@@ -2022,14 +2010,14 @@ body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(s
   .tab-ic { width: 24px; height: 24px; }
   .tab-pill {
     inset: -11px auto -11px -12px; width: calc(var(--side) - 28px); border-radius: var(--r-ctl);
-    background: linear-gradient(90deg, rgba(225, 6, 0, 0.16), rgba(225, 6, 0, 0) 62%), var(--raised);
-    box-shadow: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    position: absolute; background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.22), inset 0 0 0 0.5px rgba(255, 255, 255, 0.08);
   }
   .tab:active .tab-ic { transform: none; }
   .tab:active { transform: scale(0.98); }
   /* In the sidebar Food is a row like the others, its icon lit in Merlot. */
   .tab-centre .tab-ic, .tab-centre[aria-current="page"] .tab-ic { width: 24px; height: 24px; margin-top: 0; border-radius: 0; background: none; box-shadow: none; }
-  .tab-centre .tab-ic .ic, .tab-centre[aria-current="page"] .tab-ic .ic { width: 21px; height: 21px; stroke-width: 1.9; color: var(--merlot-hi); }
+  .tab-centre .tab-ic .ic, .tab-centre[aria-current="page"] .tab-ic .ic { width: 21px; height: 21px; stroke-width: 1.9; }
   .tab-centre .tab-pill { display: block; }
   .tab-centre > span:last-child { margin-top: 0; }
   .tab-centre:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; }
@@ -2287,8 +2275,6 @@ a.tag { text-decoration: none; }
 @media (max-width: 380px) {
   .tab > span:last-child { font-size: 0.625rem; letter-spacing: 0; }
   .tab .ic { width: 22px; height: 22px; }
-  .tab-centre .tab-ic { width: 50px; height: 50px; margin-top: -22px; }
-  .tab-centre .tab-ic .ic { width: 24px; height: 24px; }
   .recipe-filters { grid-template-columns: 1fr; }
 }
 

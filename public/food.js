@@ -29,7 +29,6 @@ let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 
 const SLOTS = [['breakfast', 'Breakfast'], ['lunch', 'Lunch'], ['dinner', 'Dinner'], ['snacks', 'Snacks'], ['drinks', 'Drinks']];
 const SLOT = Object.fromEntries(SLOTS);
-const SLOT_ICON = { breakfast: 'sun', lunch: 'food', dinner: 'moon', snacks: 'bowl', drinks: 'drink' };
 const KIND = { generic: 'Generic', product: 'Product', custom: 'Yours', label: 'From your label', estimate: 'Estimate' };
 const STRIP = ['protein', 'carbs', 'fat', 'sugars', 'fibre', 'salt'];
 const FAMILIES = {
@@ -185,7 +184,7 @@ function takeHtml(view) {
     ? `<div class="ftake-text rich">${richHtml(t.text)}</div>`
     : '<div class="ftake-wait" role="status"><span class="sr">The coach is looking at your food</span><i></i><i></i><i></i></div>';
   return `<section class="ftake${t.fresh ? ' fresh' : ''}" id="ftake-${view}" aria-label="The coach's take">
-    <div class="ftake-head"><span class="ftake-k">${icon('coach')}Coach</span>${t.text ? `<a class="ftake-reply" href="#/coach?ask=${enc(ask)}">Reply${icon('chevron')}</a>` : ''}</div>${body}</section>`;
+    <div class="ftake-head"><span class="ftake-k">Coach</span>${t.text ? `<a class="ftake-reply" href="#/coach?ask=${enc(ask)}">Reply${icon('chevron')}</a>` : ''}</div>${body}</section>`;
 }
 
 async function loadMeals() {
@@ -737,12 +736,12 @@ function viewDiary() {
   const slots = SLOTS.map(([s, label]) => {
     const sl = d.slots.find((x) => x.slot === s);
     if (!sl?.entries.length) return '';
-    return `<section class="section fslot fslot-${s}"><div class="gh"><h2><span class="fslot-ic" aria-hidden="true">${icon(SLOT_ICON[s])}</span>${label}</h2><span class="gh-side"><span class="gh-count">${kcal(sl.total)}</span>${slotAction(d, s)}</span></div>${mealBar(sl.total, num(t.kcal))}<div class="group">${sl.entries.map(entryRow).join('')}</div></section>`;
+    return `<section class="section fslot fslot-${s}"><div class="gh"><h2>${label}</h2><span class="gh-side"><span class="gh-count">${kcal(sl.total)}</span>${slotAction(d, s)}</span></div>${mealBar(sl.total, num(t.kcal))}<div class="group">${sl.entries.map(entryRow).join('')}</div></section>`;
   }).join('');
   const undo = F.undo ? `<div class="banner food-undo"><span>${F.undo.verb || 'Removed'} ${esc(F.undo.name)}.</span><button class="btn tinted small" data-action="food-undo">Undo</button></div>` : '';
   const empty = !d.entries.length ? `<div class="card fempty"><p>Nothing logged${d.today ? ' yet' : ''}</p></div>` : '';
   const offline = F.offline ? `<div class="banner offline">${icon('clock')}<span><b>Offline.</b> New entries sync later.</span></div>` : '';
-  const repeat = d.today ? `<div class="form-actions food-repeat"><button class="btn tinted small" data-action="food-repeat">${icon('review')}Repeat yesterday</button></div>` : '';
+  const repeat = d.today ? `<div class="form-actions food-repeat"><button class="btn tinted small" data-action="food-repeat">Repeat yesterday</button></div>` : '';
   ctx.shell(`${head}${offline}${undo}<div class="split fdiary${anim}">
     <div class="fcol fcol-a"><div class="fd-cap">${captureHtml()}${takeHtml('day')}</div><div class="fd-meals">${pendingRows(d.date)}${slots}${empty}${emptySlotsHtml(d)}${repeat}</div></div>
     <div class="fcol fcol-b"><div class="fd-sum">${daySummary(d)}</div><div class="fd-side">${nextCardHtml(d)}${burnTile(F.energy)}${trendPreview(F.week)}${plansHtml(d.plans)}${batchesHtml(F.batches)}</div></div>
@@ -767,7 +766,7 @@ function captureHtml() {
       <button type="button" class="fcap-send" data-action="food-chat-open" aria-label="Open the food chat">${icon('chat')}</button>
     </div>
     ${usualHtml()}
-    <div class="fcap-tools" role="group" aria-label="More ways to log">${tools.map(([a, ic, l, extra]) => `<button type="button" class="fcap-tool" data-action="${a}"${extra}>${icon(ic)}<span>${l}</span></button>`).join('')}</div>
+    <div class="fcap-tools" role="group" aria-label="More ways to log">${tools.map(([a, ic, l, extra]) => `<button type="button" class="fcap-tool" data-action="${a}"${extra}><span>${l}</span></button>`).join('')}</div>
     ${trayHtml(f().recent, usualItemKeys())}
   </section>`;
 }
@@ -1264,7 +1263,7 @@ function viewMeals() {
   const head = pageHead('Saved meals', { over: '<a class="back-inline" href="#/food">Food</a>' });
   if (!meals) return ctx.shell(`${head}<div class="skeleton"><i class="short"></i><i class="short"></i></div>${sheetHtml()}`);
   ctx.shell(`${head}
-    <div class="fcap-tools meal-tools" role="group" aria-label="New">${['shake', 'bowl', 'plate', 'meal'].map((m) => `<button type="button" class="fcap-tool" data-action="food-builder" data-mode="${m}">${icon(BUILDERS[m].icon)}<span>${BUILDERS[m].title}</span></button>`).join('')}</div>
+    <div class="fcap-tools meal-tools" role="group" aria-label="New">${['shake', 'bowl', 'plate', 'meal'].map((m) => `<button type="button" class="fcap-tool" data-action="food-builder" data-mode="${m}"><span>${BUILDERS[m].title}</span></button>`).join('')}</div>
     ${meals.length ? `<div class="group">${meals.map((m) => `<div class="li li-plain">
       <span class="li-ic">${icon((BUILDERS[m.kind] || BUILDERS.meal).icon)}</span>
       <button class="li-body linkish-block" data-action="food-meal-open" data-id="${m.id}"><span class="li-title">${esc(m.name)}</span><span class="li-sub">${m.lines.length} items · ${kcal(m.nutrients)}</span></button>

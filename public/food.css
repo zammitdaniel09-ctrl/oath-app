@@ -101,13 +101,13 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 }
 .fcap-q { font-size: 1.0625rem; color: var(--text-2); line-height: 1.3; }
 .fcap-hint { display: inline-flex; align-items: center; gap: 6px; overflow: hidden; font-size: 0.75rem; color: var(--text-3); white-space: nowrap; text-overflow: ellipsis; }
-.fcap-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--fc-lime); box-shadow: 0 0 8px var(--fc-lime); }
+.fcap-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--fc-lime); }
 .fcap-open:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 12px; }
 .fcap-cam {
   position: relative; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
   color: var(--fc-ink);
   background: radial-gradient(110% 110% at 32% 18%, var(--fc-hi) 0%, var(--fc-lime) 40%, var(--fc-leaf) 100%);
-  box-shadow: 0 8px 20px -10px rgba(var(--fc-rgb), 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
   transition: transform var(--spring-ms) var(--spring);
 }
 .fcap-cam .ic { width: 23px; height: 23px; stroke-width: 2; }
@@ -163,15 +163,14 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .fday-nav .icon-btn { width: 38px; height: 38px; }
 .fday-nav .icon-btn .ic { width: 18px; height: 18px; }
 .fday-nav .icon-btn:disabled { opacity: 0.3; cursor: default; }
-/* Rings: rounded arcs with a gradient along each, a soft glow of their own colour under them, on a
-   dark track. The day's ring draws itself in the first time it is seen. */
+/* Rings: rounded arcs with a gradient along each, crisp on a dark track, no glow. The day's ring draws itself in the first time it is seen. */
 .fring { position: relative; flex: none; }
 .fring svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .fr-track { stroke: rgba(255, 255, 255, 0.06); }
 .fr-seg { stroke: var(--m, var(--f-unknown)); }
 stop.g0 { stop-color: var(--m); }
 stop.g1 { stop-color: var(--mh); }
-.fr-glow { opacity: 0.6; }
+.fr-glow { display: none; }
 .fr-draw { stroke-dasharray: 1 1; }
 .fh-bg { fill: rgba(255, 255, 255, 0.025); }
 .fh-line { fill: #7d8390; }
@@ -209,7 +208,7 @@ stop.g1 { stop-color: var(--mh); }
 .fmc-bar { position: relative; display: block; height: 6px; margin-top: 2px; border-radius: 3px; background: rgba(255, 255, 255, 0.07); }
 .fmc-bar i {
   position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--m), var(--mh));
-  box-shadow: 0 0 10px -1px color-mix(in srgb, var(--mh) 55%, transparent); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100));
+  transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100));
 }
 .fmc-of { font-size: 0.75rem; color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .fmc.full .fmc-of { color: var(--f-protein-hi); }
@@ -248,7 +247,7 @@ stop.g1 { stop-color: var(--mh); }
 .fwater-bar { position: relative; display: block; height: 10px; border-radius: 5px; background: var(--ring-water-t); box-shadow: inset 0 0 0 1px rgba(var(--f-water-rgb), 0.12); overflow: hidden; }
 .fwater-bar i {
   position: absolute; inset: 0; overflow: hidden; border-radius: inherit; background: linear-gradient(90deg, var(--f-water), var(--f-water-hi));
-  box-shadow: 0 0 12px rgba(var(--f-water-rgb), 0.45); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100));
+  transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100));
 }
 .fwater-bar i::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%); transform: translateX(-100%); }
 @media (prefers-reduced-motion: no-preference) { .fwater-bar i::after { animation: f-sheen 3.2s 1s var(--ease-in-out) infinite; } }
@@ -259,7 +258,7 @@ stop.g1 { stop-color: var(--mh); }
 .fday-strip dd { margin: 2px 0 0; font-size: 0.9375rem; font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .fst .ri-bar { margin-top: 6px; height: 4px; }
 .fst .ri-bar i { background: linear-gradient(90deg, #5f6572, var(--chrome-c)); box-shadow: none; }
-.fst.over .ri-bar i { background: linear-gradient(90deg, var(--honey), var(--ember)); box-shadow: 0 0 8px rgba(255, 140, 26, 0.45); }
+.fst.over .ri-bar i { background: linear-gradient(90deg, var(--honey), var(--ember)); }
 .fst.over dd { color: var(--honey); }
 .fday-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
 .fday-foot .gh-link { margin: -10px -8px -10px 0; font-size: 0.875rem; }
@@ -277,15 +276,7 @@ stop.g1 { stop-color: var(--mh); }
 .finfo { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 10px 0 0; font-size: 0.8125rem; color: var(--text-2); }
 .finfo b, .finfo i.est { color: var(--text); font-weight: 700; margin-right: 4px; }
 
-/* A meal: its own small icon tile, then its share of the day split by macro. */
-.fslot .gh h2 { display: flex; align-items: center; gap: 10px; }
-.fslot-ic {
-  display: grid; place-items: center; width: 30px; height: 30px; flex: none; border-radius: 10px; color: var(--si);
-  background: color-mix(in srgb, var(--si) 15%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--si) 26%, transparent);
-}
-.fslot-ic .ic { width: 17px; height: 17px; stroke-width: 2; }
-.fslot-breakfast, .fslot-lunch, .fslot-dinner, .fslot-snacks { --si: var(--f-protein); }
-.fslot-drinks { --si: var(--f-water-hi); }
+/* A meal: its share of the day, split by macro. */
 .fmeal { height: 6px; margin: -4px 2px 0; border-radius: 3px; background: rgba(255, 255, 255, 0.05); overflow: hidden; }
 .fmeal-bar { display: flex; gap: 2px; height: 100%; }
 .fmeal-bar i { display: block; min-width: 2px; background: linear-gradient(90deg, var(--m), var(--mh)); }
@@ -435,8 +426,8 @@ stop.g1 { stop-color: var(--mh); }
 .ri-bar { position: relative; display: block; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, 0.07); }
 .ri-bar i { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi)); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100)); }
 .ri-bar .ri-mark { position: absolute; top: -3px; bottom: -3px; left: var(--at, 62%); width: 2px; margin-left: -1px; border-radius: 1px; background: rgba(244, 245, 248, 0.6); }
-.ri-bar.full i { background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi) 70%, #fff); box-shadow: 0 0 10px rgba(var(--f-micro-rgb), 0.5); }
-.ri-bar.over i { background: linear-gradient(90deg, var(--honey), var(--ember)); box-shadow: 0 0 8px rgba(255, 140, 26, 0.4); }
+.ri-bar.full i { background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi) 70%, #fff); }
+.ri-bar.over i { background: linear-gradient(90deg, var(--honey), var(--ember)); }
 .ri-bar.none { background: repeating-linear-gradient(90deg, var(--fill-2) 0 4px, transparent 4px 7px); }
 
 /* ---------- Review of a photographed or typed meal ---------- */
@@ -457,7 +448,7 @@ stop.g1 { stop-color: var(--mh); }
 /* ---------- Charts ---------- */
 
 /* Split columns (energy by day and by weekday, the small one on the diary): each column a stack of
-   rounded parts with a hairline of card between them, the chosen day lit and glowing, the rest a step
+   rounded parts with a hairline of card between them, the chosen day lit, the rest a step
    back. A faint grid sits behind them; the average is a dashed line across. */
 .fxb {
   position: relative; padding-top: 22px;
@@ -472,7 +463,7 @@ stop.g1 { stop-color: var(--mh); }
 }
 .fxb-bar i { display: block; flex: 1 1 0; min-height: 1.5px; background: linear-gradient(180deg, var(--mh), var(--m)); }
 .fxb-bar i.m-unknown { background: var(--hatch); box-shadow: inset 0 0 0 1px rgba(138, 144, 156, 0.4); }
-.fxb-c.sel .fxb-bar { opacity: 1; filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.16)); }
+.fxb-c.sel .fxb-bar { opacity: 1; }
 .fxb:not(:has(.sel)) .fxb-bar { opacity: 0.88; }
 .fxb-c.inc .fxb-bar { outline: 1px dashed rgba(201, 206, 214, 0.5); outline-offset: 1px; }
 .fxb-c.gap::after { content: ''; width: 50%; height: 2px; background: repeating-linear-gradient(90deg, var(--text-3) 0 2px, transparent 2px 4px); }
@@ -568,7 +559,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 .rirow-100 em { position: absolute; bottom: 2px; left: 4px; font-style: normal; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.04em; color: var(--text-3); }
 .rirow-legend { min-height: 16px; margin-bottom: 2px; }
 .rirow-v { font-size: 0.8125rem; font-weight: 700; text-align: right; white-space: nowrap; }
-.rirow.full .rirow-bar i { opacity: 1; background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi) 70%, #fff); box-shadow: 0 0 10px rgba(var(--f-micro-rgb), 0.4); }
+.rirow.full .rirow-bar i { opacity: 1; background: linear-gradient(90deg, var(--f-micro), var(--f-micro-hi) 70%, #fff); }
 .rirow.over .rirow-bar i { opacity: 1; background: linear-gradient(90deg, var(--honey), var(--ember)); }
 .rirow.best .rirow-v { color: var(--f-micro-hi); }
 .rirow.low .rirow-v { color: var(--honey); }
@@ -626,7 +617,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 .fcmp-bars { display: grid; gap: 4px; min-width: 0; }
 .fcmp-bar { display: flex; align-items: center; gap: 6px; height: 14px; min-width: 0; }
 .fcmp-bar i { display: block; flex: none; width: calc((100% - 54px) * var(--f)); min-width: 2px; height: 8px; border-radius: 4px; }
-.fcmp-bar.cur i { background: linear-gradient(90deg, var(--chrome-c), #fff); box-shadow: 0 0 10px rgba(255, 255, 255, 0.18); }
+.fcmp-bar.cur i { background: linear-gradient(90deg, var(--chrome-c), #fff); }
 .fcmp-bar.prev i { background: var(--f-bar-prev); }
 .fcmp-bar b { font-size: 0.75rem; font-weight: 650; color: var(--text-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .fcmp-bar.cur b { color: var(--text); }
@@ -1318,11 +1309,10 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
 .fc-av {
   position: relative; display: grid; place-items: center; width: 40px; height: 40px; flex: none; border-radius: 50%; color: var(--fc-ink);
   background: radial-gradient(120% 120% at 30% 18%, var(--fc-hi) 0%, var(--fc-lime) 36%, var(--fc-leaf) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 0 22px -4px rgba(var(--fc-rgb), 0.6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
-.fc-av .ic { width: 21px; height: 21px; stroke-width: 2.1; }
-.fc-av.big { width: 76px; height: 76px; }
-.fc-av.big .ic { width: 38px; height: 38px; stroke-width: 1.9; }
+.fc-av { font: italic 400 1.375rem/1 var(--serif); }
+.fc-av.big { width: 76px; height: 76px; font-size: 2.5rem; }
 .fc-head-text { min-width: 0; }
 .fc-head-text h1 { margin: 0; font-size: 1.125rem; font-weight: 740; letter-spacing: -0.02em; line-height: 1.2; }
 .fc-head-text p { margin: 1px 0 0; overflow: hidden; font-size: 0.8125rem; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
@@ -1343,7 +1333,7 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
 .fchat .msg.user {
   color: var(--fc-ink); font-weight: 560;
   background: linear-gradient(160deg, var(--fc-hi) 0%, var(--fc-lime) 40%, var(--fc-leaf) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 12px 26px -18px rgba(var(--fc-rgb), 0.85);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 .fchat .msg.user time { color: rgba(10, 26, 12, 0.62); }
 .fchat .msg.assistant {
@@ -1420,12 +1410,12 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
   transition: background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease), transform var(--spring-ms) var(--spring);
 }
 .fc-slot:active { transform: scale(0.94); transition: transform var(--t-press) var(--ease); }
-.fc-slot.on { color: var(--fc-ink); background: var(--fc-lime); box-shadow: 0 0 16px -4px rgba(var(--fc-rgb), 0.7); }
+.fc-slot.on { color: var(--fc-ink); background: var(--fc-lime); box-shadow: none; }
 .fc-log {
   display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 50px; margin-top: 12px; border: 0; border-radius: 16px; cursor: pointer;
   font: inherit; font-size: 1rem; font-weight: 760; letter-spacing: -0.01em; color: var(--fc-ink);
   background: linear-gradient(150deg, var(--fc-hi) 0%, var(--fc-lime) 42%, var(--fc-leaf) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 28px -16px rgba(var(--fc-rgb), 0.95);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
   transition: transform var(--spring-ms) var(--spring), opacity var(--t-ctl);
 }
 .fc-log .ic { width: 20px; height: 20px; stroke-width: 2.5; }
@@ -1502,7 +1492,7 @@ button.nf-row:focus-visible, button.rirow:focus-visible { outline-offset: -2px; 
 .fc-cam:active { transform: scale(0.92); transition: transform var(--t-press) var(--ease); }
 .fc-cam .ic { width: 22px; height: 22px; stroke-width: 2; }
 .fc-cam:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
-.composer .fc-send { color: var(--fc-ink); background: var(--fc-lime); box-shadow: 0 6px 16px -8px rgba(var(--fc-rgb), 0.8); }
+.composer .fc-send { color: var(--fc-ink); background: var(--fc-lime); box-shadow: none; }
 .composer .fc-send .ic { width: 20px; height: 20px; stroke-width: 2.3; }
 .composer .fc-send:disabled { opacity: 0.4; }
 

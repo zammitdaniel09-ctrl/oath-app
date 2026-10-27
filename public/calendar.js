@@ -5,7 +5,7 @@
 // after), so a swipe is a spring on the compositor and the redraw after it is invisible.
 import {
   $app, state, esc, api, act, toast, icon, pageHead, safeColor, localToday, localNowHM, haptic, form2obj, fmtDay,
-  reduced, shortDay, addDays, confirmSheet,
+  reduced, shortDay, addDays, confirmSheet, ago,
 } from './ui.js';
 import { spring } from './motion.js';
 
@@ -349,17 +349,81 @@ function labelOf(c) {
     : `${fmtDay(s, { day: 'numeric', month: 'short' })} to ${fmtDay(e, { day: 'numeric', month: 'short', year: 'numeric' })}`;
 }
 
+// "October 2026": the month bold, the year quiet. A week range stays as it is.
+function labelHtml(text) {
+  const m = /^(\S+) (\d{4})$/.exec(text);
+  return m ? `${esc(m[1])} <span class="cal-year">${m[2]}</span>` : esc(text);
+}
+
+// ---------- Sync status ----------
+
+// When the feeds last came in, and whether any failed: one quiet line under the bar, a sheet with each.
+const STALE_MS = 45 * 60000;
+function syncState(c) {
+  const feeds = c.feeds || [];
+  if (!feeds.length) return null;
+  const failed = feeds.filter((f) => f.lastError);
+  const times = feeds.map((f) => (f.lastSync ? Date.parse(f.lastSync) : 0));
+  const oldest = Math.min(...times);
+  const newest = Math.max(...times);
+  const tone = c.syncing ? 'busy' : failed.length ? 'bad' : !oldest || Date.now() - oldest > STALE_MS ? 'stale' : 'ok';
+  return { feeds, failed, newest, tone };
+}
+
+function syncHtml(c) {
+  const s = syncState(c);
+  if (!s) return '';
+  const when = c.syncing ? 'Syncing…' : s.newest ? `Synced ${ago(new Date(s.newest).toISOString())}` : 'Not synced yet';
+  const extra = s.failed.length ? ` · ${s.failed.length} ${s.failed.length === 1 ? 'calendar' : 'calendars'} failed` : ` · ${s.feeds.length} ${s.feeds.length === 1 ? 'calendar' : 'calendars'}`;
+  return `<button type="button" class="cal-sync ${s.tone}" data-action="cal-sync-open" aria-label="${esc(`${when}${extra}. Details`)}"><i aria-hidden="true"></i><span>${esc(when)}${esc(extra)}</span></button>`;
+}
+
+function syncSheet(c) {
+  const s = syncState(c);
+  const rows = (s?.feeds || []).map((f) => `<div class="cal-feed${f.lastError ? ' bad' : ''}"><i style="--c:${safeColor(f.color) || '#8a909c'}"></i>
+    <span class="cal-feed-body"><b>${esc(f.name)}</b><small>${f.lastError ? esc(f.lastError) : f.lastSync ? `Synced ${esc(ago(f.lastSync))} · ${f.eventCount} ${f.eventCount === 1 ? 'event' : 'events'}` : 'Not synced yet'}</small></span></div>`).join('');
+  return sheetWrap('Calendars', `<div class="cal-feeds">${rows || '<p class="note">No calendars connected.</p>'}</div>
+    <p class="note">Oath checks every calendar every 15 minutes.</p>
+    <div class="sheet-actions"><button type="button" class="btn primary" data-action="cal-sync-now"${c.syncing ? ' disabled' : ''}>${c.syncing ? 'Syncing…' : 'Sync now'}</button>
+      <a class="btn tinted" href="#/health?section=calendars">Manage calendars</a></div>`);
+}
+
+async function loadFeeds() {
+  const c = cal();
+  try {
+    c.feeds = (await api('GET', '/api/calendar/feeds')).feeds;
+  } catch { /* the status line waits for the next visit */ }
+}
+
+async function syncNow() {
+  const c = cal();
+  if (c.syncing) return;
+  c.syncing = true;
+  ctx.render();
+  const r = await act(() => api('POST', '/api/calendar/sync', {}));
+  c.syncing = false;
+  if (r) {
+    c.feeds = r.feeds;
+    const bad = r.feeds.filter((f) => f.lastError).length;
+    toast(bad ? `${bad} ${bad === 1 ? 'calendar' : 'calendars'} could not be synced.` : 'Calendars synced.', Boolean(bad));
+    await refetch();
+  } else {
+    ctx.render();
+  }
+}
+
 function topHtml(c) {
   const today = localToday();
   const names = [['day', 'Day'], ['span', cols() === 7 ? 'Week' : '3 days'], ['month', 'Month']];
   const seg = `<div class="seg mini cal-seg" role="tablist" aria-label="View">${names.map(([v, name]) => `<button type="button" role="tab" data-action="cal-view" data-view="${v}"${c.view === v ? ' aria-selected="true"' : ''}>${name}</button>`).join('')}</div>`;
   return `<div class="cal-top"><div class="cal-bar">
-      <h2 class="cal-label" aria-live="polite">${labelOf(c)}</h2>
+      <h2 class="cal-label" aria-live="polite">${labelHtml(labelOf(c))}</h2>
       <div class="cal-nav">
         ${c.date === today ? '' : '<button type="button" class="btn tinted small cal-today" data-action="cal-today">Today</button>'}
         <button type="button" class="icon-btn cal-step" data-action="cal-prev" aria-label="Previous">${icon('back')}</button>
         <button type="button" class="icon-btn cal-step" data-action="cal-next" aria-label="Next">${icon('chevron')}</button>
       </div>${seg}</div>
+    ${syncHtml(c)}
     ${c.view === 'month' || (c.view === 'span' && cols() === 7) ? '' : stripHtml(c)}</div>`;
 }
 
@@ -510,6 +574,7 @@ function sheetHtml(c) {
   if (s.kind === 'mark') return markSheet(s);
   if (s.kind === 'form') return formSheet(s);
   if (s.kind === 'sub') return subSheet(s);
+  if (s.kind === 'sync') return syncSheet(c);
   return '';
 }
 
@@ -762,6 +827,13 @@ export async function calendarClick(a, el) {
     case 'cal-sub':
       await openSub();
       return true;
+    case 'cal-sync-open':
+      state.calSheet = { kind: 'sync' };
+      ctx.render();
+      return true;
+    case 'cal-sync-now':
+      await syncNow();
+      return true;
     case 'cal-sub-make':
       await makeSub(false);
       return true;
@@ -807,7 +879,7 @@ export async function loadCalendar() {
     if (VIEWS.includes(v)) c.view = v;
   }
   if (!c.date) c.date = localToday();
-  await ensure(...windowOf(c, 0), { fresh: true });
+  await Promise.all([ensure(...windowOf(c, 0), { fresh: true }), loadFeeds()]);
   c.ready = true;
   prefetch();
 }

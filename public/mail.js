@@ -50,7 +50,7 @@ const when = (iso) => {
 
 function dueChip(due) {
   if (!due) return '';
-  return `<span class="ml-due">${icon('calendar')}${esc(fmtDay(due, { weekday: 'short', day: 'numeric', month: 'short' }))}</span>`;
+  return `<span class="ml-due">${esc(fmtDay(due, { weekday: 'short', day: 'numeric', month: 'short' }))}</span>`;
 }
 
 function importantCard(x) {
@@ -58,10 +58,10 @@ function importantCard(x) {
     <header class="ml-top"><span class="ml-from">${esc(x.from)}</span><time>${esc(when(x.receivedAt))}</time></header>
     <p class="ml-subject">${esc(x.subject || '(no subject)')}</p>
     ${x.summary ? `<p class="ml-summary">${esc(x.summary)}</p>` : ''}
-    ${x.action || x.due || x.reason ? `<div class="ml-meta">${x.action ? `<span class="ml-action">${icon('check')}${esc(x.action)}</span>` : ''}${dueChip(x.due)}${x.reason && !x.action ? `<span class="ml-reason">${esc(x.reason)}</span>` : ''}</div>` : ''}
+    ${x.action || x.due || x.reason ? `<div class="ml-meta">${x.action ? `<span class="ml-action">${esc(x.action)}</span>` : ''}${dueChip(x.due)}${x.reason && !x.action ? `<span class="ml-reason">${esc(x.reason)}</span>` : ''}</div>` : ''}
     <div class="ml-btns">
       ${x.done ? `<button type="button" class="btn tinted small" data-action="mail-undone" data-id="${x.id}">Not done</button>`
-        : `<button type="button" class="btn primary small" data-action="mail-done" data-id="${x.id}">${icon('check')}Done</button>
+        : `<button type="button" class="btn primary small" data-action="mail-done" data-id="${x.id}">Done</button>
       <button type="button" class="btn tinted small" data-action="mail-unimportant" data-id="${x.id}">Not important</button>`}
       ${x.link ? `<a class="btn plain small ml-open" href="${esc(x.link)}" target="_blank" rel="noopener">Open in Gmail${icon('chevron')}</a>` : ''}
     </div>
@@ -125,7 +125,7 @@ export function viewMail() {
   if (!a.connected) return ctx.shell(`${head}${setupHtml()}`);
   const reading = state.mailReading && !a.lastSync;
   const status = a.error
-    ? `<div class="banner warn">${icon('close')}<span>${esc(a.error)}</span><button class="btn tinted small" data-action="mail-reconnect">Reconnect</button></div>`
+    ? `<div class="banner warn"><span>${esc(a.error)}</span><button class="btn tinted small" data-action="mail-reconnect">Reconnect</button></div>`
     : `<p class="ml-status">${reading ? 'Reading your inbox for the first time…' : `Checked ${esc(ago(a.lastSync))} · every 5 minutes`}</p>`;
   const imp = data.important;
   const important = `<section class="section"><div class="gh"><h2>Important</h2><span class="gh-count">${imp.length}</span></div>
@@ -215,7 +215,7 @@ export async function mailChange(el) {
 export function mailChip(t) {
   const x = t?.mail;
   if (!x) return '';
-  if (x.error) return `<a class="tchip warn" href="#/mail">${icon('close')}Gmail needs reconnecting${icon('chevron', 'chev')}</a>`;
+  if (x.error) return `<a class="tchip warn" href="#/mail">Gmail needs reconnecting${icon('chevron', 'chev')}</a>`;
   if (!x.important) return '';
-  return `<a class="tchip act" href="#/mail">${icon('mail')}${x.important} important ${x.important === 1 ? 'email' : 'emails'}${icon('chevron', 'chev')}</a>`;
+  return `<a class="tchip act" href="#/mail">${x.important} important ${x.important === 1 ? 'email' : 'emails'}${icon('chevron', 'chev')}</a>`;
 }

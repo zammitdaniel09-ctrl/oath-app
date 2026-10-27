@@ -431,19 +431,19 @@ function nextOnCalendar(t) {
 // Reminders only reach the phone from the Home Screen app with notifications allowed, so Today says so.
 function remindersChip() {
   if (isIOS() && !isStandalone()) {
-    return `<span class="tchip" title="Share, then Add to Home Screen">${icon('bell')}Add to Home Screen for reminders</span>`;
+    return `<span class="tchip" title="Share, then Add to Home Screen">Add to Home Screen for reminders</span>`;
   }
   const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
   if (!supported || Notification.permission !== 'default') return '';
-  return `<button class="tchip act" data-action="push-on">${icon('bell')}Turn on reminders</button>`;
+  return `<button class="tchip act" data-action="push-on">Turn on reminders</button>`;
 }
 
 // Offline, reminders, a rest day, a waiting review and important email: one row of small chips under the rings.
 function statusChips(t) {
   const chips = [
-    state.offline ? `<button class="tchip warn" data-action="retry">${icon('clock')}Offline, ${t.today === realToday(t) ? 'today' : fmtDay(t.today)} as of ${fmtClock(state.offline)}<b>Retry</b></button>` : '',
-    t.rest ? `<span class="tchip calm">${icon('moon')}Rest day</span>` : '',
-    t.reviewDue ? `<a class="tchip act" href="#/review">${icon('review')}Review ready${icon('chevron', 'chev')}</a>` : '',
+    state.offline ? `<button class="tchip warn" data-action="retry">Offline, ${t.today === realToday(t) ? 'today' : fmtDay(t.today)} as of ${fmtClock(state.offline)}<b>Retry</b></button>` : '',
+    t.rest ? `<span class="tchip calm">Rest day</span>` : '',
+    t.reviewDue ? `<a class="tchip act" href="#/review">Review ready${icon('chevron', 'chev')}</a>` : '',
     mailChip(t),
     remindersChip(),
   ].filter(Boolean);
@@ -508,7 +508,7 @@ function goalsStrip(goals) {
 function closeDayCard(t) {
   if (t.reflection) {
     return `<section class="section"><div class="gh"><h2>Day closed</h2><span class="gh-count">${t.reflection.rating} out of 5</span></div>
-      <div class="card brief"><p class="eyebrow">${icon('coach')}Coach</p><div class="brief-text rich">${richHtml(t.reflection.coachReply || 'The coach is writing back.')}</div>${t.reflection.tomorrow ? `<p class="brief-who">Tomorrow's one thing: ${esc(t.reflection.tomorrow)}</p>` : ''}</div></section>`;
+      <div class="card brief"><p class="eyebrow">Coach</p><div class="brief-text rich">${richHtml(t.reflection.coachReply || 'The coach is writing back.')}</div>${t.reflection.tomorrow ? `<p class="brief-who">Tomorrow's one thing: ${esc(t.reflection.tomorrow)}</p>` : ''}</div></section>`;
   }
   if (t.localHour < 18 && t.progress.open) return '';
   const stars = [1, 2, 3, 4, 5].map((n) => `<label class="rate"><input type="radio" name="rating" value="${n}" required><span>${n}</span></label>`).join('');
@@ -582,14 +582,14 @@ function briefCard(t) {
   const brief = t.briefs.find((x) => Date.now() - new Date(x.at).getTime() < 4 * 3600 * 1000);
   if (!brief) return '';
   const titles = { morning: 'Morning brief', midday: 'Midday check', evening: 'Evening check' };
-  return `<section class="card brief"><p class="eyebrow">${icon('coach')}${titles[brief.kind] || 'Coach'}, ${fmtClock(brief.at)}</p><div class="brief-text rich">${richHtml(brief.text)}</div></section>`;
+  return `<section class="card brief"><p class="eyebrow">${titles[brief.kind] || 'Coach'}, ${fmtClock(brief.at)}</p><div class="brief-text rich">${richHtml(brief.text)}</div></section>`;
 }
 
 function viewToday() {
   const t = state.today;
   if (!t) return shell(skeleton('Today'));
   const part = t.localHour < 12 ? 'Morning' : t.localHour < 18 ? 'Afternoon' : 'Evening';
-  const head = pageHead(`${part}, <em>${esc(t.settings.ownerName || 'Daniel')}</em>`, {
+  const head = pageHead(`${part}, <em>Boss</em>`, {
     over: fmtDay(t.today, { weekday: 'long', day: 'numeric', month: 'long' }),
     actions: `<span class="only-narrow-flex">${iconLink('#/health', 'heart', 'Health')}</span>${iconLink('#/settings', 'settings', 'Settings')}`,
   });
@@ -958,10 +958,10 @@ function viewCoach() {
   const empty = emptyState({ icon: 'coach', title: 'Talk to your coach' });
   // Food has a chat of its own: the last chip opens it.
   const quick = `${QUICK.map((q) => `<button type="button" class="qchip" data-action="coach-quick" data-text="${esc(q)}"${state.sending ? ' disabled' : ''}>${esc(q)}</button>`).join('')}
-    <a class="qchip qchip-food" href="#/food/chat">${icon('food')}Log food</a>`;
-  const briefs = `<button class="btn tinted small briefs-btn" data-action="briefs-open"${state.sending ? ' disabled' : ''}>${icon('sun')}Briefs</button>`;
+    <a class="qchip qchip-food" href="#/food/chat">Log food</a>`;
+  const briefs = `<button class="btn tinted small briefs-btn" data-action="briefs-open"${state.sending ? ' disabled' : ''}>Briefs</button>`;
   // The coach has a face of its own in Merlot, as the food chat has its lime, so the two never look alike.
-  const head = `<header class="chd-head"><span class="chd-av" aria-hidden="true">${icon('coach')}</span>
+  const head = `<header class="chd-head"><span class="chd-av" aria-hidden="true">C</span>
     <div class="chd-head-text"><h1>Coach</h1><p>${c.aiEnabled ? (state.sending ? 'Writing…' : 'Your plans, nudges and honest takes') : 'Offline'}</p></div>
     <div class="chd-actions">${briefs}${iconLink('#/settings', 'settings', 'Settings')}</div></header>`;
   shell(`<div class="cchat-page">${head}
@@ -1305,10 +1305,10 @@ function viewSettings() {
   const connections = settingsCard('link', 'Your data', `
     <div class="group flush">
       ${state.setup ? setupRows(state.setup) : `
-      <a class="li li-plain li-nav" href="#/health?section=health"><span class="li-ic">${icon('heart')}</span><span class="li-body"><span class="li-title">Apple Health</span><span class="li-sub">Steps, workouts, sleep, heart</span></span>${icon('chevron', 'chev')}</a>
-      <a class="li li-plain li-nav" href="#/health?section=calendars"><span class="li-ic">${icon('calendar')}</span><span class="li-body"><span class="li-title">Calendars and VLE deadlines</span><span class="li-sub">Google, iCloud, Outlook, UM VLE</span></span>${icon('chevron', 'chev')}</a>`}
-      <a class="li li-plain li-nav" href="#/health?section=business"><span class="li-ic">${icon('business')}</span><span class="li-body"><span class="li-title">Business sites</span><span class="li-sub">GoldenStraddler, Exposed FX Journal</span></span>${icon('chevron', 'chev')}</a>
-      <a class="li li-plain li-nav" href="#/mail"><span class="li-ic">${icon('mail')}</span><span class="li-body"><span class="li-title">Gmail</span><span class="li-sub">Important email, sorted by the AI</span></span>${icon('chevron', 'chev')}</a>
+      <a class="li li-plain li-nav" href="#/health?section=health"><span class="li-body"><span class="li-title">Apple Health</span><span class="li-sub">Steps, workouts, sleep, heart</span></span>${icon('chevron', 'chev')}</a>
+      <a class="li li-plain li-nav" href="#/health?section=calendars"><span class="li-body"><span class="li-title">Calendars and VLE deadlines</span><span class="li-sub">Google, iCloud, Outlook, UM VLE</span></span>${icon('chevron', 'chev')}</a>`}
+      <a class="li li-plain li-nav" href="#/health?section=business"><span class="li-body"><span class="li-title">Business sites</span><span class="li-sub">GoldenStraddler, Exposed FX Journal</span></span>${icon('chevron', 'chev')}</a>
+      <a class="li li-plain li-nav" href="#/mail"><span class="li-body"><span class="li-title">Gmail</span><span class="li-sub">Important email, sorted by the AI</span></span>${icon('chevron', 'chev')}</a>
     </div>
     <div class="form-actions"><a class="btn tinted" href="/api/export" download>${icon('download')}Download all my data</a></div>`);
   // Where the food numbers come from: credits and licences live here, not on the screens.

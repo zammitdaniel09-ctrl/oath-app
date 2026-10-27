@@ -82,8 +82,8 @@ async function dayFacts(date) {
   if (week.loggedDays) lines.push(`This past week, today left out (${week.loggedDays} logged days): average ${averagesLine(week.avg)}.`);
   lines.push(REF_LINE());
   const ask = isToday
-    ? 'Give your take on his food so far today, as if glancing at his diary with him: two to four short sentences. Say what stands out, good or not, and if it helps, one easy idea for the rest of the day. If it is early and little is logged, keep it brief and look ahead. Do not list every food or number. No greeting, no sign-off, no question.'
-    : 'Give your take on what he ate that day, as if looking back at his diary with him: two to four short sentences. What stood out, good or not, and one easy idea for next time if there is one. No greeting, no sign-off, no question.';
+    ? 'Give your take on his food so far today in one or two short sentences, 25 words at most in all: the one thing that stands out, and an easy idea for the rest of the day only if it helps. No lists, no numbers unless one makes the point, no greeting, no sign-off, no question.'
+    : 'Give your take on what he ate that day in one or two short sentences, 25 words at most in all: what stood out, and one easy idea for next time only if there is one. No lists, no greeting, no sign-off, no question.';
   return { facts: lines.join('\n'), ask, date: d.date };
 }
 
@@ -113,7 +113,7 @@ async function trendFacts(days, { report = false } = {}) {
   lines.push(REF_LINE());
   const ask = report
     ? 'It is Sunday evening. Write his weekly food report: a look back at what he ate over these 7 days against his needs, as a friend would sum up the week. Three to five short sentences: what went well first, then one or two concrete ideas for the week ahead, built on foods he already eats. A number or two, not all of them. No greeting, no sign-off, no question, no headings.'
-    : `Give your take on how he has been eating over these ${h.days} days, as a friend looking at the charts with him: three to five short sentences. The pattern, what is going well, and one or two concrete ideas built on foods he already eats. A number or two, not all of them. No greeting, no sign-off, no question.`;
+    : `Give your take on how he has been eating over these ${h.days} days in two short sentences, 35 words at most in all: the pattern that matters most, and one concrete idea built on foods he already eats. A number at most. No lists, no greeting, no sign-off, no question.`;
   return { facts: lines.join('\n'), ask, date: h.today };
 }
 
