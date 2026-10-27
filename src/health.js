@@ -1261,6 +1261,16 @@ export async function todayHealth() {
   };
 }
 
+// Day values of a few metrics from one date to another, combined as everywhere else (largest feed for
+// totals, newest for weight): [{ date, metric: value }] for the days that have any of them.
+export async function metricDays(metrics, from, to) {
+  const map = computeDays(await aggRows(from, to, metrics));
+  return [...map.keys()].sort().map((date) => {
+    const v = map.get(date);
+    return { date, ...Object.fromEntries(metrics.map((k) => [k, v[k] === undefined || v[k] === null ? null : roundKey(k, v[k])])) };
+  });
+}
+
 // A few plain lines for the coach's context, or '' when no data has ever arrived.
 export async function healthForCoach() {
   const sum = await healthSummary({ days: 7 });

@@ -184,9 +184,10 @@ async function write(system, prompt) {
   return r.text;
 }
 
-// The coach's take on a screen (the Food tab, Trends): its own voice, the screen's numbers only.
-export async function writeTake(facts, prompt) {
-  return write(`${PERSONA}\n\nWhat is on his screen:\n${facts}`, prompt);
+// The coach's take on a screen (the Food tab, Trends) or on his food week: its own voice, those
+// numbers only. heading names what the numbers are.
+export async function writeTake(facts, prompt, heading = 'What is on his screen') {
+  return write(`${PERSONA}\n\n${heading}:\n${facts}`, prompt);
 }
 
 export async function coachHistory(limit = 60) {

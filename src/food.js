@@ -240,6 +240,9 @@ export async function migrateFood() {
   if (old.length) {
     await sql`update food_items f set brand_norm = t.b from unnest(${old.map((r) => r.id)}::int[], ${old.map((r) => norm(r.brand))}::text[]) as t(id, b) where f.id = t.id`;
   }
+  // Drinks logged in grams before their ml was worked out from the record's sourced density.
+  await sql`update food_log l set ml = l.grams / i.density from food_items i
+            where l.ref_id = i.id and l.kind = 'item' and l.liquid and l.ml is null and l.grams > 0 and i.density > 0`;
 }
 
 // ---------- Records ----------
@@ -1249,7 +1252,9 @@ function periodInsights(entries, { series, today, tz, refs = null }) {
   const byDate = new Map();
   for (const e of entries) byDate.set(e.date, [...(byDate.get(e.date) || []), e]);
   const totals = [...completeDates].map((d) => total((byDate.get(d) || []).map((e) => e.nutrients)));
-  const coverage = coverageOf(totals, filledShare([...completeDates].flatMap((d) => byDate.get(d) || [])), refs);
+  const est = filledShare([...completeDates].flatMap((d) => byDate.get(d) || []));
+  const coverage = coverageOf(totals, est, refs);
+  const label = labelOf(totals, est);
 
   const grades = { total: gradeMix(entries), days: series.map((d) => ({ date: d.date, ...gradeMix(byDate.get(d.date) || []) })) };
 
@@ -1294,7 +1299,22 @@ function periodInsights(entries, { series, today, tz, refs = null }) {
     return { day: w, n: list.length, kcal: avg('kcal'), protein: avg('protein'), carbs: avg('carbs'), fat: avg('fat'), sugars: avg('sugars') };
   });
 
-  return { coverage, grades, rank, sources, advice: adviceFrom(foods, coverage, sources), timing, weekdays };
+  return { coverage, label, grades, rank, sources, advice: adviceFrom(foods, coverage, sources), timing, weekdays };
+}
+
+// The average day as a nutrition label: every nutrient averaged over the complete days with a value
+// for it. `missing` counts the days it was unknown or a floor (so the average is at least that), and
+// `filled` names the nutrients partly filled by estimate. Null when no day is complete.
+function labelOf(totals, est) {
+  if (!totals.length) return null;
+  const out = { days: totals.length, missing: {}, filled: Object.keys(est) };
+  for (const k of KEYS) {
+    const vals = totals.map((t) => n(t[k])).filter((v) => v !== null);
+    out[k] = vals.length ? round(vals.reduce((a, v) => a + v, 0) / vals.length, 3) : null;
+    const m = totals.filter((t) => n(t[k]) === null || t.missing?.[k]).length;
+    if (m) out.missing[k] = m;
+  }
+  return out;
 }
 
 // ---------- Saved meals: shakes, fruit bowls, plates and anything else logged together ----------

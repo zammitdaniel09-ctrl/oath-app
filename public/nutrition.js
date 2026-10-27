@@ -172,6 +172,10 @@ export function resolve(item, qty, unit) {
     if (!density) return { error: 'This drink is measured by volume and has no sourced density, so give ml.' };
     ml = g / density;
   }
+  // With a sourced density both are known, so a drink logged in grams or by a portion in grams still
+  // counts towards the day's drinks.
+  if (density && ml === null) ml = g / density;
+  if (density && g === null) g = ml * density;
   const amount = basis === 'g' ? g : ml;
   return { amount: r6(amount), basis, g: g === null ? null : r6(g), ml: ml === null ? null : r6(ml), text: amountText(q, u, item), note };
 }
@@ -575,12 +579,18 @@ export function foodTags(item) {
 // With a body profile every percentage is against what his body needs, not the EU reference intakes
 // (set for an average adult on 2,000 kcal). Each value names its source:
 // - energy: resting energy by Katch-McArdle from lean mass when body fat is known, else Mifflin-St Jeor,
-//   times an activity factor, then the goal (keep, or about 300 kcal more to gain, 400 less to lose);
+//   times an activity factor, then the goal (keep, or about 300 kcal more to gain, 400 less to lose).
+//   Once Apple Health has his active energy for at least 4 of the last 7 days, his real activity
+//   replaces the factor: resting (Apple Health's own when it has it) plus his average active energy,
+//   over 0.9, as digesting food (the thermic effect of food) takes about a tenth of what is eaten;
 // - protein: 1.6 g per kg to keep, 1.8 to gain, 2.0 to lose (ISSN position stand: 1.4 to 2.0 g/kg for
 //   people who train); carbohydrate 55% and fat 30% of energy (inside EFSA's 45 to 60% and 20 to 35%);
 // - sugars and saturates: the EU RIs scaled to his energy; salt 6 g (EU RI); fibre 14 g per 1,000 kcal (US IOM);
 // - vitamins and minerals: EFSA dietary reference values for adults, the PRI where there is one, else the
-//   AI; thiamin and niacin scale with energy as EFSA sets them. Under 18 the EU RIs stay.
+//   AI; thiamin and niacin scale with energy as EFSA sets them. Under 18 the EU RIs stay;
+// - water from drinks: 35 ml per kg, a reference rather than an RI. EFSA's adequate intake of total water
+//   is 2.5 L a day for men and 2.0 L for women, about 80% of it from drinks; 35 ml per kg sits a little
+//   above that for someone who trains. Without a body, 2,000 ml (DRINKS_REF).
 export const ACTIVITY = {
   sedentary: { factor: 1.2, label: 'Mostly sitting' },
   light: { factor: 1.375, label: 'Light: 1 to 3 sessions a week' },
@@ -603,9 +613,17 @@ const EFSA = {
   both: { potassium: 3500, phosphorus: 550, selenium: 70, vitd: 15, vitk: 70, b2: 1.6, folate: 330, b12: 4 },
 };
 
-// body: { sex, birthDate, heightCm, weightKg, bodyFat, activity, goal }. Returns null when something
-// needed is missing, or { refs: { key: amount a day }, about: { ... how energy was worked out } }.
-export function personalNeeds(body, today) {
+// Water from drinks a day, in ml, when there is no body to work it out from.
+export const DRINKS_REF = 2000;
+const DRINKS_ML_PER_KG = 35;
+// Digesting food takes about 10% of what is eaten, so resting plus active energy is 90% of the need.
+const TEF_SHARE = 0.9;
+
+// body: { sex, birthDate, heightCm, weightKg, bodyFat, activity, goal }. health, optional: Apple
+// Health's daily averages over the last 7 days, { activeAvg, restingAvg }, each null when it has fewer
+// than 4 days of it (src/body.js). Returns null when something needed is missing, or
+// { refs: { key: amount a day }, about: { ... how energy was worked out } }.
+export function personalNeeds(body, today, health = null) {
   const b = body || {};
   const w = Number(b.weightKg);
   const h = Number(b.heightCm);
@@ -616,8 +634,13 @@ export function personalNeeds(body, today) {
   if (!sex || !(w > 0) || !(h > 0) || age === null || age < 18 || !act) return null;
   const fat = Number(b.bodyFat);
   const lean = fat > 0 && fat < 70 ? w * (1 - fat / 100) : null;
-  const rest = lean ? 370 + 21.6 * lean : 10 * w + 6.25 * h - 5 * age + (sex === 'male' ? 5 : -161);
-  const kcal = round((rest * act.factor + goal.kcal) / 10) * 10;
+  const formula = lean ? 370 + 21.6 * lean : 10 * w + 6.25 * h - 5 * age + (sex === 'male' ? 5 : -161);
+  // Only believable daily figures count: a partial export can leave a day's total far too low.
+  const active = num(health?.activeAvg) !== null && health.activeAvg >= 0 && health.activeAvg <= 6000 ? health.activeAvg : null;
+  const healthRest = active !== null && num(health?.restingAvg) !== null && health.restingAvg >= 600 && health.restingAvg <= 5000 ? health.restingAvg : null;
+  const rest = healthRest ?? formula;
+  const burn = active !== null ? (rest + active) / TEF_SHARE : rest * act.factor;
+  const kcal = round((burn + goal.kcal) / 10) * 10;
   const mj = (kcal * KJ_PER_KCAL) / 1000;
   const refs = {
     kcal,
@@ -633,12 +656,41 @@ export function personalNeeds(body, today) {
     ...EFSA[sex],
     b1: round(0.1 * mj, 2),
     b3: round(1.6 * mj, 1),
+    water: round((DRINKS_ML_PER_KG * w) / 10) * 10,
   };
+  const method = lean ? 'Katch-McArdle' : 'Mifflin-St Jeor';
   return {
     refs,
-    about: { age, sex, lean: lean === null ? null : round(lean, 1), rest: round(rest), factor: act.factor, method: lean ? 'Katch-McArdle' : 'Mifflin-St Jeor', goal: b.goal in GOALS ? b.goal : 'keep', proteinPerKg: goal.protein },
+    about: {
+      age, sex, lean: lean === null ? null : round(lean, 1), rest: round(rest), factor: act.factor, method,
+      goal: b.goal in GOALS ? b.goal : 'keep', proteinPerKg: goal.protein,
+      // Where the energy came from: Apple Health's activity, or the activity factor.
+      energy: active !== null
+        ? { from: 'health', rest: round(rest), restFrom: healthRest !== null ? 'health' : method, active: round(active), goalKcal: goal.kcal }
+        : { from: 'factor', rest: round(rest), restFrom: method, factor: act.factor, goalKcal: goal.kcal },
+    },
   };
+}
+
+const kcalText = (v) => Math.round(v).toLocaleString('en-GB');
+const GOAL_WORDS = { gain: 'gain muscle', lose: 'lose fat' };
+
+// One line on how the energy need was worked out, for the Body card and the coach:
+// "2,690 kcal: resting 1,602 + 819 active on average (Apple Health, last 7 days); digesting food is the other 10%."
+export function energyText(needs) {
+  const e = needs?.about?.energy;
+  if (!e) return '';
+  const a = needs.about;
+  const goal = e.goalKcal ? ` Then ${kcalText(Math.abs(e.goalKcal))} kcal ${e.goalKcal > 0 ? 'more' : 'less'} to ${GOAL_WORDS[a.goal] || 'meet the goal'}.` : '';
+  const from = e.restFrom === 'health' ? '' : e.restFrom === 'Katch-McArdle' ? ` from ${a.lean} kg lean mass` : ' from height, weight and age';
+  if (e.from === 'health') {
+    return `${kcalText(needs.refs.kcal)} kcal: resting ${kcalText(e.rest)}${from} + ${kcalText(e.active)} active on average (Apple Health, last 7 days); digesting food is the other 10%.${goal}`;
+  }
+  return `${kcalText(needs.refs.kcal)} kcal: resting ${kcalText(e.rest)}${from}, × ${e.factor} for activity.${goal}`;
 }
 
 // The amount 100% stands for: his own need when there is one, else the EU reference intake.
 export const refOf = (k, refs = null) => refs?.[k] ?? NUTRIENT[k]?.ri ?? null;
+
+// Water from drinks a day, in ml: his own reference when his body is set, else 2,000 ml.
+export const drinksRef = (refs = null) => refs?.water ?? DRINKS_REF;

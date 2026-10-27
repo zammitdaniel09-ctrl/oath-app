@@ -7,7 +7,7 @@ import os from 'node:os';
 import path from 'node:path';
 import EmbeddedPostgres from 'embedded-postgres';
 import { DateTime } from 'luxon';
-import { personalNeeds, ageOn, refOf } from '../public/nutrition.js';
+import { personalNeeds, ageOn, refOf, energyText, drinksRef, resolve } from '../public/nutrition.js';
 
 const ZONE = 'Europe/Malta';
 const clock = DateTime.fromISO('2026-10-27T20:00', { zone: ZONE });
@@ -93,6 +93,50 @@ test('needs from a body: lean mass, activity, ISSN protein and EFSA adult values
   assert.equal(personalNeeds({ ...PERSON, weightKg: null }, TODAY), null);
   const her = personalNeeds({ ...PERSON, sex: 'female' }, TODAY);
   assert.deepEqual([her.refs.iron, her.refs.vitc, her.refs.magnesium], [16, 95, 300]);
+  assert.equal(energyText(n), '2,920 kcal: resting 1,692 from 61.2 kg lean mass, × 1.725 for activity.');
+});
+
+test('energy follows Apple Health activity once it has enough days; water is 35 ml per kg', () => {
+  // Resting by Katch-McArdle (1,692) plus 700 active a day, over 0.9 for digesting food: 2,657.8.
+  const own = personalNeeds(PERSON, TODAY, { activeAvg: 700, restingAvg: null });
+  assert.equal(own.refs.kcal, 2660);
+  assert.equal(own.about.energy.from, 'health');
+  assert.equal(own.about.energy.restFrom, 'Katch-McArdle');
+  assert.equal(energyText(own), '2,660 kcal: resting 1,692 from 61.2 kg lean mass + 700 active on average (Apple Health, last 7 days); digesting food is the other 10%.');
+  // Apple Health's own resting energy wins over the formula: (1,750 + 700) / 0.9 = 2,722.2.
+  const health = personalNeeds(PERSON, TODAY, { activeAvg: 700, restingAvg: 1750 });
+  assert.equal(health.refs.kcal, 2720);
+  assert.equal(health.about.rest, 1750);
+  assert.equal(energyText(health), '2,720 kcal: resting 1,750 + 700 active on average (Apple Health, last 7 days); digesting food is the other 10%.');
+  assert.equal(health.refs.protein, 115, 'protein stays per kg');
+  assert.equal(health.refs.carbs, 374, 'carbs scale with energy');
+  assert.equal(health.refs.fat, 91, 'fat scales with energy');
+  // The goal still applies, and is said.
+  const lose = personalNeeds({ ...PERSON, goal: 'lose' }, TODAY, { activeAvg: 700, restingAvg: 1750 });
+  assert.equal(lose.refs.kcal, 2320);
+  assert.match(energyText(lose), /Then 400 kcal less to lose fat\.$/);
+  // Too few days (null) or a figure nobody could burn keeps the activity factor; resting alone does nothing.
+  assert.equal(personalNeeds(PERSON, TODAY, { activeAvg: null, restingAvg: 1750 }).refs.kcal, 2920);
+  assert.equal(personalNeeds(PERSON, TODAY, { activeAvg: 9000, restingAvg: null }).about.energy.from, 'factor');
+  assert.equal(personalNeeds(PERSON, TODAY, { activeAvg: 700, restingAvg: 90 }).about.energy.restFrom, 'Katch-McArdle', 'a partial day of resting energy is ignored');
+
+  assert.equal(own.refs.water, 2520, '35 ml per kg at 72 kg');
+  assert.equal(drinksRef(own.refs), 2520);
+  assert.equal(drinksRef(null), 2000, 'no body: 2,000 ml');
+});
+
+test('Apple Health averages need 4 of the 7 days; a day with no reading is left out, not zero', async () => {
+  const { energyAverages } = await import('../src/body.js');
+  const day = (active_kcal, basal_kcal = null) => ({ active_kcal, basal_kcal });
+  assert.deepEqual(energyAverages([day(500), day(600), day(700), day(null), day(null)]), { activeAvg: null, restingAvg: null });
+  assert.deepEqual(energyAverages([day(500, 1700), day(600, 1720), day(700, 1740), day(800, 1760), day(0)]), { activeAvg: 650, restingAvg: 1730 });
+});
+
+test('a drink with a sourced density has its ml however it was logged', () => {
+  const water = { basis: 'g', density: 1, liquid: true, portions: [{ label: '1 glass', g: 250 }], nutrients: {} };
+  assert.equal(resolve(water, 1, 'p:1 glass').ml, 250);
+  assert.equal(resolve(water, 330, 'g').ml, 330);
+  assert.equal(resolve({ basis: 'g', nutrients: {} }, 100, 'g').ml, null, 'no density: no ml');
 });
 
 test('the Body API saves, checks and works out the needs; food percentages then use them', async () => {
