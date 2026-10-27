@@ -1,8 +1,8 @@
 // Oath web app. Plain modules, no build step.
 import {
-  $app, state, hooks, esc, ApiError, api, toast, react, act, form2obj, fmtClock, fmtDay, left, daysBetween, fmtMin,
+  $app, state, hooks, esc, ApiError, api, toast, react, act, form2obj, fmtClock, fmtDay, left, fmtMin,
   DAY_NAMES, scheduleText, CHECK, isStandalone, isIOS, haptic, bar, strengthChip, localToday, localNowHM,
-  icon, rings, drawRings, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago, miniRing, keyBlock, rememberKey, safeColor,
+  icon, drawRings, pageHead, iconLink, fmtInt, fmtDec, ago, miniRing, keyBlock, rememberKey, safeColor,
   urgency, URGENCY, brandMark, emptyState,
 } from './ui.js';
 import * as motion from './motion.js';
@@ -10,7 +10,8 @@ import { richHtml } from './rich.js';
 import { parseCapture } from './parse.js';
 import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
 import { initData, loadDashboard, viewDashboard, dataClick, dataSubmit, AUTO_LABELS, autoValue } from './data.js';
-import { initFood, loadFood, viewFood, foodClick, foodSubmit, loadFoodToday, foodTodayCard } from './food.js';
+import { initFood, loadFood, viewFood, foodClick, foodSubmit, loadFoodToday } from './food.js';
+import { initToday, ringHero, overview, nextTile, afterToday } from './today.js';
 
 // ---------- Shell ----------
 
@@ -62,6 +63,7 @@ function skeleton(title) {
 initGoals({ shell, render: () => render(), go: () => go() });
 initData({ shell, render: () => render(), go: () => go() });
 initFood({ shell, render: () => render(), go: () => go() });
+initToday({ render: () => render() });
 
 // ---------- Today ----------
 
@@ -227,38 +229,12 @@ function stakesLine(t) {
   return '';
 }
 
-// The three rings: HP, today's progress, and movement (or habit strength before Health is linked).
+// The ring hero (today.js): HP, the day and movement on one set, energy, protein and fibre on the
+// other, with the stakes, pardons and deaths under both.
 function ringsCard(t) {
   const g = t.game;
-  const hpPct = (g.hp / g.maxHp) * 100;
-  const total = t.progress.total;
-  const dayPct = total ? (t.progress.done / total) * 100 : 0;
-  const h = t.health;
-  let third;
-  if (h?.connected && h.steps !== null && h.steps !== undefined) {
-    third = { pct: (h.steps / (h.goals?.steps || 10000)) * 100, label: 'Steps', val: fmtInt(h.steps), of: `/${fmtInt(h.goals?.steps || 10000)}`, sub: h.exercise_min ? `${Math.round(h.exercise_min)} min exercise` : `Synced ${ago(h.lastSync)}` };
-  } else {
-    const list = t.items.filter((i) => i.strength !== undefined);
-    const avg = list.length ? Math.round(list.reduce((n, i) => n + i.strength, 0) / list.length) : 0;
-    third = { pct: avg, label: 'Strength', val: String(avg), of: '%', sub: list.length ? `Average of ${list.length} ${list.length === 1 ? 'habit' : 'habits'}` : 'No habits yet' };
-  }
-  const seasonDay = daysBetween(g.seasonStart, t.today) + 1;
-  const lowHp = g.hp <= 30;
-  // The Today ring pulses once after a tick lands.
-  const ticked = state.justTicked;
-  state.justTicked = false;
-  return `<section class="card rings-card${lowHp ? ' low' : ''}${ticked ? ' ticked' : ''}">
-    <div class="rings-hero">
-      ${rings([{ pct: hpPct, cls: 'r-hp' }, { pct: dayPct, cls: 'r-day' }, { pct: third.pct, cls: 'r-move' }], 200)}
-      <div class="rings-center" aria-hidden="true"><b data-count="hp">${g.hp}</b><span>HP</span></div>
-    </div>
-    <div class="legend">
-      <div class="lg r-hp${lowHp ? ' low' : ''}"><span class="lg-label">HP</span><span class="lg-val" data-count="hp-legend">${g.hp}<small>/${g.maxHp}</small></span><span class="lg-sub">Season ${g.season}, day ${seasonDay}</span></div>
-      <div class="lg r-day"><span class="lg-label">Today</span><span class="lg-val">${t.progress.done}<small>/${total}</small></span><span class="lg-sub">${total ? (t.progress.atStake ? `${t.progress.atStake} HP still at stake` : 'Nothing left at stake') : 'Nothing due today'}</span></div>
-      <div class="lg r-move"><span class="lg-label">${third.label}</span><span class="lg-val">${third.val}<small>${third.of}</small></span><span class="lg-sub">${third.sub}</span></div>
-    </div>
-    <p class="rings-foot">${stakesLine(t)}${g.pardonsLeft} ${g.pardonsLeft === 1 ? 'pardon' : 'pardons'} left this month, ${g.deaths} ${g.deaths === 1 ? 'death' : 'deaths'}${t.dodgesToday ? `, ${t.dodgesToday} ${t.dodgesToday === 1 ? 'dodge' : 'dodges'} today` : ''}${t.weekFocus ? `<br>This week: <b>${esc(t.weekFocus)}</b>` : ''}</p>
-  </section>`;
+  const foot = `${stakesLine(t)}${g.pardonsLeft} ${g.pardonsLeft === 1 ? 'pardon' : 'pardons'} left this month, ${g.deaths} ${g.deaths === 1 ? 'death' : 'deaths'}${t.dodgesToday ? `, ${t.dodgesToday} ${t.dodgesToday === 1 ? 'dodge' : 'dodges'} today` : ''}${t.weekFocus ? `<br>This week: <b>${esc(t.weekFocus)}</b>` : ''}`;
+  return ringHero(t, state.foodToday, foot);
 }
 
 // The morning oath, compact: one choice from a list, when and where, and a tap. The habit list
@@ -391,12 +367,12 @@ function midnightRow(list) {
   }];
 }
 
-// Today in time order: calendar events with the deadlines that fall between them.
-function timeline(t) {
+// Deadlines at 00:00 fall at the end of the day, after everything else.
+const schedAt = (r) => (r.kind !== 'event' && r.kind !== 'deadline' && r.time === '00:00' ? '24:00' : r.time);
+
+// Today in time order: calendar events with the habit and task deadlines that fall between them.
+function scheduleRows(t, now) {
   const events = t.calendar || [];
-  if (!events.length) return '';
-  const now = localNowHM();
-  const allDay = events.filter((e) => e.allDay);
   const rows = [
     ...events.filter((e) => !e.allDay).map((e) => ({
       time: e.time, title: e.title, kind: e.deadline ? 'deadline' : 'event', color: e.color,
@@ -413,13 +389,20 @@ function timeline(t) {
       past: k.status !== 'open',
     })),
   ];
-  // Deadlines at 00:00 fall at the end of the day, after everything else.
-  const at = (r) => (r.kind !== 'event' && r.kind !== 'deadline' && r.time === '00:00' ? '24:00' : r.time);
-  rows.sort((a, b) => at(a).localeCompare(at(b)));
+  return rows.sort((a, b) => schedAt(a).localeCompare(schedAt(b)));
+}
+
+// The day's full schedule, with a line at the time now. On wide screens it sits beside the day.
+function timeline(t) {
+  const events = t.calendar || [];
+  if (!events.length) return '';
+  const now = localNowHM();
+  const allDay = events.filter((e) => e.allDay);
+  const rows = scheduleRows(t, now);
   let nowPlaced = false;
   const html = rows.map((r) => {
     let marker = '';
-    if (!nowPlaced && at(r) >= now) {
+    if (!nowPlaced && schedAt(r) >= now) {
       nowPlaced = true;
       marker = `<div class="tl-now"><span>${now}</span></div>`;
     }
@@ -429,40 +412,18 @@ function timeline(t) {
       <span class="tl-body"><span class="tl-title">${esc(r.title)}</span>${r.sub ? `<span class="tl-sub">${esc(r.sub)}</span>` : ''}</span>
     </div>`;
   }).join('') + (nowPlaced ? '' : `<div class="tl-now"><span>${now}</span></div>`);
-  return `<section class="section"><div class="gh"><h2>Schedule</h2><a href="#/dashboard" class="gh-link">Calendars</a></div>
+  return `<section class="section"><div class="gh"><h2>Schedule</h2><a href="#/calendar" class="gh-link">Calendar</a></div>
     <div class="card timeline">
       ${allDay.length ? `<div class="tl-allday">${allDay.map((e) => `<span class="tl-chip"${safeColor(e.color) ? ` style="--c:${safeColor(e.color)}"` : ''}>${esc(e.title)}</span>`).join('')}</div>` : ''}
       ${html}
     </div></section>`;
 }
 
-function healthMini(t) {
-  const h = t.health;
-  if (!h) return '';
-  if (!h.connected) {
-    return `<a class="card connect-card" href="#/dashboard?section=health">
-      <span class="connect-ic">${icon('heart')}</span>
-      <span><b>Connect Apple Health</b><span class="li-sub">Steps, workouts and sleep</span></span>
-      ${icon('chevron', 'chev')}</a>`;
-  }
-  const g = h.goals || {};
-  const tile = (ic, label, v, goal, fmt, unit) => {
-    const pct = v === null || v === undefined || !goal ? 0 : Math.min(100, Math.round((v / goal) * 100));
-    if (v === null || v === undefined) {
-      return `<div class="hm-tile"><span class="hm-label">${icon(ic)}${label}</span><span class="hm-val na">–<small> no reading</small></span>${bar(null, 'thin')}</div>`;
-    }
-    return `<div class="hm-tile"><span class="hm-label">${icon(ic)}${label}</span><span class="hm-val">${fmt(v)}<small>${unit}</small></span>${bar(pct, 'thin')}</div>`;
-  };
-  return `<a class="card health-mini" href="#/dashboard">
-    <div class="hm-head"><span>${icon('heart')}Health</span><span class="faint small">Synced ${ago(h.lastSync)}${icon('chevron', 'chev')}</span></div>
-    <div class="hm-grid">
-      ${tile('steps', 'Steps', h.steps, g.steps, fmtInt, '')}
-      ${tile('timer', 'Exercise', h.exercise_min, g.exercise_min, (v) => Math.round(v), ' min')}
-      ${tile('flame', 'Active', h.active_kcal, g.active_kcal, fmtInt, ' kcal')}
-      ${tile('moon', 'Sleep', h.sleep_hours, g.sleep_hours, fmtHours, '')}
-    </div>
-    ${h.workouts?.length ? `<p class="hm-work">${icon('dumbbell')}${h.workouts.map((w) => `${esc(w.type)}, ${Math.round(w.duration_min)} min`).join('; ')}</p>` : ''}
-  </a>`;
+// On the phone the schedule shrinks to what is next, a tap away from the calendar.
+function nextOnCalendar(t) {
+  const now = localNowHM();
+  const rows = scheduleRows(t, now).map((r) => ({ ...r, sub: r.kind === 'event' ? r.sub.split(', ').slice(0, 2).join(', ') : r.sub }));
+  return nextTile(rows, (t.calendar || []).filter((e) => e.allDay), now);
 }
 
 // Reminders only reach the phone from the Home Screen app with notifications allowed, so Today says so.
@@ -485,18 +446,6 @@ function setupRows(s) {
     ? `<p class="note bad setup-err">The last request from Shortcuts or Health Auto Export failed ${ago(s.ingestError.at)}: ${esc(s.ingestError.reason)}</p>`
     : '';
   return rows + err;
-}
-
-// Until every connection works, Today carries the list. Hidden by hand, it only comes back when
-// something that worked stops working.
-function setupCard(s) {
-  if (!s || s.done === s.total) return '';
-  let hiddenAt = null;
-  try { hiddenAt = localStorage.getItem('oath.setupHidden'); } catch { /* storage unavailable */ }
-  if (hiddenAt !== null && s.done >= Number(hiddenAt)) return '';
-  return `<section class="section"><div class="gh"><h2>Set up <em>Oath</em></h2><span class="gh-count">${s.done} of ${s.total} connected</span></div>
-    <div class="group">${setupRows(s)}</div>
-    <div class="form-actions"><button class="btn plain small" data-action="setup-hide" data-done="${s.done}">Hide for now</button></div></section>`;
 }
 
 // The battle plan opens by itself before noon, until you close it; then it stays closed for the day.
@@ -639,11 +588,15 @@ function viewToday() {
   // No oath yet and something is due: the oath card sits under Up next, and the lists stay tickable.
   const needsOath = !t.plan && t.progress.open > 0;
 
+  // The overview leads: the rings, then what is next, then the small charts. The lists follow.
+  const ov = overview(t, state.foodToday, nextOnCalendar(t));
+
   if (!t.items.length && !t.tasks.length && !t.anytime.length && !t.triage.length) {
     shell(`${head}${ringsCard(t)}${banners}
       <section class="card now empty-now"><p class="eyebrow">${icon('plan')}Start here</p><h2 class="now-title">Add the habits you swear to.</h2>
       <div class="now-actions"><a class="btn primary big" href="#/plan">Add habits</a><a class="btn tinted big" href="#/goals/new">Set a goal</a></div></section>
-      ${healthMini(t)}${timeline(t)}`);
+      ${ov}`);
+    afterToday();
     return;
   }
 
@@ -679,8 +632,9 @@ function viewToday() {
       ${ringsCard(t)}
       ${banners}
       ${nowPanel(t)}
-      ${askCoach('today')}
       ${needsOath ? oathView(t) : ''}
+      ${ov}
+      ${askCoach('today')}
       ${t.plan ? capacityLine(t.capacity, t.settings) : ''}
       <div class="only-narrow">${planCard(t)}${briefCard(t)}</div>
       ${triageCard(t)}
@@ -688,20 +642,16 @@ function viewToday() {
       ${section('Habits', normal, normal.map((i) => habitRow(i, t)).join(''))}
       ${section('This week', flex, flex.map((i) => habitRow(i, t)).join(''), `${flex.filter((i) => i.status === 'met').length} of ${flex.length} met`)}
       ${tasksHtml}
-      ${setupCard(state.setup)}
-      ${foodTodayCard()}
-      <div class="only-narrow">${timeline(t)}${healthMini(t)}</div>
       ${closeDayCard(t)}
     </div>
     <aside>
-      <div class="only-wide">${timeline(t)}${healthMini(t)}${planCard(t)}${briefCard(t)}</div>
+      <div class="only-wide">${timeline(t)}${planCard(t)}${briefCard(t)}</div>
       ${goalsStrip(t.goals)}
-      <section class="section"><div class="gh"><h2>Last 14 days</h2><span class="gh-count">HP at day end</span></div>
-        <div class="card">${hpBars(t.recentDays)}</div></section>
       ${upcoming}
     </aside>
   </div>${nextDock(t)}`);
   watchNow();
+  afterToday();
 }
 
 function clockText(endsAt) {
@@ -1553,24 +1503,10 @@ async function fetchToday() {
   setBadge();
 }
 
-// The setup list is fetched in the background for Today, at most every few minutes; Telegram's
-// status comes from Telegram itself, so it should not hold up the day.
-function loadSetup() {
-  if (state.setupAt && Date.now() - state.setupAt < 5 * 60000) return;
-  state.setupAt = Date.now();
-  api('GET', '/api/setup-status').then((s) => {
-    state.setup = s;
-    if (state.route === 'today' && !state.dirty && !state.sheet) render();
-  }).catch(() => { state.setupAt = 0; });
-}
-
 async function load(route) {
   if (route === 'today') {
     await fetchToday();
-    if (!state.offline) {
-      loadSetup();
-      loadFoodToday();
-    }
+    if (!state.offline) loadFoodToday();
   }
   if (route === 'food') await loadFood();
   if (route === 'plan') state.plan = await api('GET', '/api/plan');
@@ -2082,9 +2018,6 @@ $app.addEventListener('click', async (e) => {
       await load('settings');
       render();
     }
-  } else if (a === 'setup-hide') {
-    try { localStorage.setItem('oath.setupHidden', el.dataset.done); } catch { /* storage unavailable */ }
-    render();
   } else if (a === 'push-on') {
     if (await act(pushOn, 'Reminders are on for this device.')) { await refreshPushState(); render(); }
   } else if (a === 'push-off') {
