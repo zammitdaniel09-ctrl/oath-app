@@ -8,9 +8,10 @@ import { TOOL_DEFS, runTool, resolvePendingAction } from './coach-tools.js';
 
 const MODEL = () => process.env.COACH_MODEL || 'claude-sonnet-5-5';
 
-// The SDK waits ten minutes and retries twice by default. A minute and one retry is plenty for a
-// reply, and a call that hangs must not hold up whatever is waiting on it.
-export const CLIENT_LIMITS = { timeout: 60_000, maxRetries: 1 };
+// The SDK waits ten minutes and retries twice by default. Two minutes and one retry covers a reply
+// that thinks hard or calls tools, and a call that hangs must not hold up whatever is waiting on it.
+// A slower kind of call (a web search) asks for more with its own timeout.
+export const CLIENT_LIMITS = { timeout: 120_000, maxRetries: 1 };
 
 let client = null;
 function anthropic() {
@@ -106,14 +107,14 @@ const CHAT_TOKENS = 16000;
 const WRITING_TOKENS = 4000;
 
 // Server-side fallback reruns a request the model declines on another model, inside the same call.
-const ask = (c, params) => c.beta.messages.create({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' });
+const ask = (c, params, opts) => c.beta.messages.create({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' }, opts);
 
 // One request on the coach's client, model and refusal fallback, for server code that needs its own
 // request shape (the food filler's web search).
-export function claudeCall(params) {
+export function claudeCall(params, { timeout } = {}) {
   const c = anthropic();
   if (!c) throw new RuleError('This needs the AI key, which is not set on the server.', 503);
-  return ask(c, { model: MODEL(), ...params });
+  return ask(c, { model: MODEL(), ...params }, timeout ? { timeout } : undefined);
 }
 
 // Runs the tool loop and returns { text, refused }. Text is gathered from every round, because the

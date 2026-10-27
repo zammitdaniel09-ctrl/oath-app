@@ -77,10 +77,10 @@ const until = async (check) => {
 };
 
 test('the coach client gives up after a minute and retries once, not ten minutes and twice', () => {
-  assert.deepEqual(coach.CLIENT_LIMITS, { timeout: 60000, maxRetries: 1 });
+  assert.deepEqual(coach.CLIENT_LIMITS, { timeout: 120000, maxRetries: 1 });
   process.env.ANTHROPIC_API_KEY = 'test';
   coach.setCoachClient(null);
-  assert.deepEqual(coach.clientLimits(), { timeout: 60000, maxRetries: 1 });
+  assert.deepEqual(coach.clientLimits(), { timeout: 120000, maxRetries: 1 });
   delete process.env.ANTHROPIC_API_KEY;
   assert.equal(coach.clientLimits(), null);
 });

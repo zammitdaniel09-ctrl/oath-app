@@ -372,7 +372,8 @@ export async function lookUpOnWeb({ name, brand = null, generic = '', liquid = f
   let res = null;
   // A long search can pause; sending the turn back as it is lets it carry on, twice at most.
   for (let i = 0; i < 3; i += 1) {
-    res = await claudeCall({ max_tokens: 8000, system: WEB_SYSTEM, messages, tools: [WEB_TOOL], output_config: { effort: 'low' } });
+    // Searching and reading pages takes longer than a reply, so this call gets three minutes.
+    res = await claudeCall({ max_tokens: 8000, system: WEB_SYSTEM, messages, tools: [WEB_TOOL], output_config: { effort: 'low' } }, { timeout: 180_000 });
     blocks.push(...(res.content || []));
     if (res.stop_reason !== 'pause_turn') break;
     messages.splice(1, messages.length - 1, { role: 'assistant', content: [...blocks] });
