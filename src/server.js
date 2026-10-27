@@ -207,6 +207,7 @@ api.get('/export', async (c) => {
 api.post('/habits', async (c) => c.json(await engine.createHabit(await body(c), v)));
 api.patch('/habits/:id', async (c) => c.json(await engine.updateHabit(idParam(c), await body(c), v)));
 api.delete('/habits/:id', async (c) => c.json(await engine.archiveHabit(idParam(c))));
+api.post('/habits/:id/restore', async (c) => c.json(await engine.restoreHabit(idParam(c))));
 api.post('/habits/:id/keep', async (c) => {
   const id = idParam(c);
   const b = await body(c);

@@ -1,7 +1,7 @@
 // Read models for the UI and the coach.
 import { db } from './db.js';
 import { nowUTC, addDays, deadlineAt, dueOn, weekday } from './time.js';
-import { localNow, getGame, rulesOn } from './engine.js';
+import { localNow, getGame, rulesOn, removalDate } from './engine.js';
 import { isActive, isScheduled, isFlexible, weekStartOf, weekDates, weekTargetFor, weekStakes } from './rules.js';
 import { habitStats, restSet } from './strength.js';
 import { listGoals } from './goals.js';
@@ -304,6 +304,8 @@ export async function buildPlan() {
   const restDays = await db()`select date, reason from rest_days where date >= ${today} order by date`;
   const s = (await localNow()).s;
   const worstDay = Math.max(0, ...weekStakes(habits, weekStartOf(today, tz), tz).map((d) => d.stake));
+  // When a habit removed now would leave the list: tomorrow if it is due today.
+  const leaves = new Map(await Promise.all(habits.map(async (h) => [h.id, await removalDate(h, today, tz)])));
   return {
     today,
     settings: {
@@ -333,6 +335,7 @@ export async function buildPlan() {
         auto: h.auto_metric ? { metric: h.auto_metric, target: h.auto_target, filter: h.auto_filter || '' } : null,
         startDate: h.start_date,
         archivedFrom: h.archived_from,
+        leavesFrom: h.archived_from ? null : leaves.get(h.id),
         nextRules: h.next_rules,
         nextRulesFrom: h.next_rules_from,
         streak: streaks.get(h.id) || 0,

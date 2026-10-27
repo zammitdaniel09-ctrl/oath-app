@@ -633,15 +633,33 @@ export async function updateHabit(id, input, { validTime }) {
   return { ok: true, effective };
 }
 
+// A habit due today leaves the list tomorrow, so removing it can never dodge today's HP.
+export async function removalDate(h, today, tz) {
+  return (await habitOpenToday(h, today, tz)) || isScheduled(h, today, tz) ? addDays(today, 1, tz) : today;
+}
+
 export async function archiveHabit(id) {
   const { today, tz } = await localNow();
   const [h] = await db()`select * from habits where id = ${id}`;
   if (!h) throw new RuleError('That habit does not exist.', 404);
-  const from = (await habitOpenToday(h, today, tz)) || isScheduled(h, today, tz) ? addDays(today, 1, tz) : today;
+  const from = await removalDate(h, today, tz);
   await db()`update habits set archived_from = ${from} where id = ${id}`;
   await db()`update nodes set kind = 'idea', ref_id = null where kind = 'habit' and ref_id = ${id}`;
   await logEvent('habit_archived', { id, name: h.name, from });
-  return { ok: true, from };
+  return { ok: true, from, name: h.name };
+}
+
+// Changing his mind the same day: the habit stays as if it was never removed. Once it has left the
+// list on an earlier day it has to be added again, so no gap is ever judged.
+export async function restoreHabit(id) {
+  const { today } = await localNow();
+  const [h] = await db()`select * from habits where id = ${id}`;
+  if (!h) throw new RuleError('That habit does not exist.', 404);
+  if (!h.archived_from) return { ok: true };
+  if (String(h.archived_from) < today) throw new RuleError('That habit has already left your list. Add it again in Plan.');
+  await db()`update habits set archived_from = null where id = ${id}`;
+  await logEvent('habit_restored', { id, name: h.name });
+  return { ok: true, name: h.name };
 }
 
 // ---------- Tasks ----------

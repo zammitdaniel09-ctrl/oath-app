@@ -784,7 +784,7 @@ function habitForm(h) {
     ${h && h.nextRulesFrom ? `<p class="note">New rules from ${fmtDay(h.nextRulesFrom)}.</p>` : ''}
     <div class="form-actions">
       <button class="btn primary" type="submit">${h ? 'Save habit' : 'Add habit'}</button>
-      ${h ? `<button class="btn tinted danger-text" type="button" data-action="archive-habit" data-id="${h.id}">Archive</button>` : ''}
+      ${h && !h.archivedFrom ? `<button class="btn tinted danger-text" type="button" data-action="remove-habit" data-id="${h.id}">Remove habit</button>` : ''}
     </div>
   </form>`;
 }
@@ -822,7 +822,7 @@ function habitCard(h, p) {
     h.auto ? ['Health', `${fmtInt(h.auto.target)} ${(AUTO_LABELS[h.auto.metric] || {}).unit || ''}${h.auto.filter ? `, ${esc(h.auto.filter)}` : ''}`] : null,
     h.goalTitle ? ['Goal', `<a href="#/goals/${h.goalId}">${esc(h.goalTitle)}</a>`] : null,
   ].filter(Boolean);
-  return `<div class="card hcard${h.non_negotiable ? ' heavy' : ''}">
+  return `<div class="card hcard${h.non_negotiable ? ' heavy' : ''}${h.archivedFrom ? ' leaving' : ''}">
     <div class="hcard-top">
       <div class="hcard-text"><h3>${esc(h.name)}</h3>
         <p class="li-sub">${sched}${h.non_negotiable ? ', <span class="bad">non-negotiable</span>' : ''}, minus ${h.penalty} HP</p></div>
@@ -830,9 +830,13 @@ function habitCard(h, p) {
     </div>
     ${facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}
     ${heatmap(h.heat, p.today)}
-    ${pending}${h.archivedFrom ? `<p class="note">Archived from ${fmtDay(h.archivedFrom)}.</p>` : ''}
-    <div class="hcard-foot"><span class="faint small">${building}${h.streak ? ` ${h.streak} ${weekly ? 'week' : 'day'} streak.` : ''}</span>
-      <button class="btn tinted small" data-action="sheet" data-kind="habit" data-id="${h.id}">Edit</button></div>
+    ${pending}
+    <div class="hcard-foot">${h.archivedFrom
+      ? `<span class="small leaving">Leaves your list tomorrow. Today still counts.</span>
+        <button class="btn tinted small" data-action="restore-habit" data-id="${h.id}">Keep it</button>`
+      : `<span class="faint small">${building}${h.streak ? ` ${h.streak} ${weekly ? 'week' : 'day'} streak.` : ''}</span>
+        <span class="hcard-btns"><button class="btn plain small danger-text" data-action="remove-habit" data-id="${h.id}">Remove</button>
+        <button class="btn tinted small" data-action="sheet" data-kind="habit" data-id="${h.id}">Edit</button></span>`}</div>
   </div>`;
 }
 
@@ -859,6 +863,10 @@ function budgetNote(s) {
   return `<div class="capacity${capped ? ' over' : ''}">${icon('shield')}<p>Worst day <b>${s.worstDay} HP</b> · day cap <b>${s.dailyLossCap} HP</b></p></div>`;
 }
 
+// A habit that left the list at once can come back for a couple of minutes; one leaving tomorrow
+// shows Keep it on its own card instead.
+const undoable = (p) => state.removed && Date.now() - state.removed.at < 120000 && !p.habits.some((h) => h.id === state.removed.id);
+
 function viewPlan() {
   const p = state.plan;
   if (!p) return shell(skeleton('Plan'));
@@ -883,6 +891,7 @@ function viewPlan() {
     <div class="split plan-split tab-${tab}">
     <div class="pane-habits">
       <section class="section"><div class="gh"><h2>Habits</h2><button class="gh-link" data-action="sheet" data-kind="habit">New habit</button></div>
+        ${undoable(p) ? `<div class="banner food-undo"><span>Removed ${esc(state.removed.name)}.</span><button class="btn tinted small" data-action="restore-habit" data-id="${state.removed.id}">Undo</button></div>` : ''}
         ${budgetNote(p.settings)}
         ${habits || emptyState({ icon: 'plan', title: 'No habits yet', actions: '<button class="btn primary" data-action="sheet" data-kind="habit">Add the first habit</button>' })}
       </section>
@@ -2014,10 +2023,17 @@ $app.addEventListener('click', async (e) => {
   } else if (a === 'pardon-cancel') {
     state.pardoning = null;
     render();
-  } else if (a === 'archive-habit') {
-    if (!confirm('Archive this habit? If it is due today, today still counts.')) return;
-    const r = await act(() => api('DELETE', `/api/habits/${id}`), (x) => (x.from > state.plan.today ? `Archived from ${fmtDay(x.from)}. Today still counts.` : 'Archived.'));
-    if (r) { state.sheet = null; await go(); }
+  } else if (a === 'remove-habit') {
+    // One tap, no dialog: Undo sits on the Plan screen until the next change.
+    const r = await act(() => api('DELETE', `/api/habits/${id}`));
+    if (r) {
+      state.sheet = null;
+      state.removed = { id, name: r.name, at: Date.now() };
+      await go();
+    }
+  } else if (a === 'restore-habit') {
+    const r = await act(() => api('POST', `/api/habits/${id}/restore`, {}));
+    if (r) { state.removed = null; toast(`Kept ${r.name}.`); await go(); }
   } else if (a === 'delete-task') {
     if (!confirm('Delete this task?')) return;
     if (await act(() => api('DELETE', `/api/tasks/${id}`), 'Deleted.')) { state.sheet = null; await go(); }

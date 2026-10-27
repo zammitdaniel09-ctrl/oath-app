@@ -1014,6 +1014,10 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 .facts dd { margin: 0; overflow-wrap: anywhere; color: var(--text); }
 .hcard-foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line-soft); }
 .hcard-foot .faint { flex: 1 1 200px; color: var(--text-2); }
+.hcard-btns { display: flex; gap: 6px; margin-left: auto; }
+/* Removed but due today: it stays until tomorrow, quieter, with Keep it. */
+.hcard.leaving { opacity: 0.62; }
+.hcard-foot .leaving { flex: 1 1 200px; color: var(--text-2); }
 
 .heat { display: grid; grid-template-rows: repeat(7, 11px); grid-auto-flow: column; grid-auto-columns: 11px; gap: 3px; margin-top: 16px; overflow-x: auto; padding-bottom: 2px; }
 .heat i, .heat-key i { border-radius: 3px; background: var(--fill-2); }
