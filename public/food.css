@@ -215,8 +215,6 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 /* Equal columns, so all six usually sit in one row; only the row items flex, never the letter badges inside them. */
 .gmix-key { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 8px 6px; font-size: 0.8125rem; font-weight: 650; color: var(--text-2); font-variant-numeric: tabular-nums; }
 .gmix-key > span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
-.gmix.bare { margin-top: 8px; }
-.gmix.bare .gmix-bar { height: 5px; border-radius: 3px; }
 
 /* ---------- Tags ---------- */
 

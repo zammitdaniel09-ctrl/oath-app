@@ -1,7 +1,7 @@
 // Today's overview: the ring hero and the small charts under it. Each tile opens the page with the
 // detail; the day's own lists follow below them (app.js). Plain strings, drawn on every redraw, so
 // anything that moves remembers where it was and never replays on a redraw.
-import { state, esc, api, icon, rings, RING_MS, ringEase, ringFx, fmtInt, fmtDay, fmtHours, daysBetween, miniRing, safeColor } from './ui.js';
+import { state, esc, api, icon, rings, RING_MS, ringEase, ringFx, fmtInt, fmtDay, fmtHours, daysBetween, miniRing, safeColor, redrawIfIdle } from './ui.js';
 import { NUTRIENT, refOf } from './nutrition.js';
 
 let ctx = { render: () => {} };
@@ -44,7 +44,7 @@ export function loadOverview(t) {
       health: h.status === 'fulfilled' ? h.value : o?.health || null,
       food: f.status === 'fulfilled' ? f.value : o?.food || null,
     };
-    if (state.route === 'today' && !state.dirty && !state.sheet) ctx.render();
+    redrawIfIdle('today', ctx.render);
   }).finally(() => { loading = false; });
 }
 

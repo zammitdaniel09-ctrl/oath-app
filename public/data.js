@@ -1,7 +1,7 @@
 // The Dashboard: Apple Health, business sites, calendars and the way into the weekly review.
 import {
-  state, esc, api, act, toast, fmtDay, bar, icon, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago,
-  miniRing, barChart, sparkline, localToday, keyBlock, form2obj, haptic, safeColor, emptyState,
+  state, esc, api, act, toast, fmtDay, icon, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago,
+  miniRing, barChart, sparkline, localToday, keyBlock, form2obj, haptic, safeColor, emptyState, addDays, confirmSheet,
 } from './ui.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
@@ -30,12 +30,6 @@ export function autoValue(auto, h) {
   }
   if (!(auto.metric in h)) return null;
   return h[auto.metric] ?? 0;
-}
-
-function addDays(date, n) {
-  const d = new Date(`${date}T12:00:00Z`);
-  d.setUTCDate(d.getUTCDate() + n);
-  return d.toISOString().slice(0, 10);
 }
 
 const val = (r) => (r.status === 'fulfilled' ? r.value : null);
@@ -93,34 +87,36 @@ function healthSetup(connected) {
       ${keyBlock()}${state.newToken ? '' : `<div class="form-actions"><button class="btn ${count ? 'tinted' : 'primary'} small" data-action="token-new">${icon('key')}${count ? 'Make a new key' : 'Make a key'}</button></div>`}</li>`;
   const hae = `<ol class="steps">
       ${keyStep}
-      <li>Install <b>Health Auto Export - JSON+CSV</b> from the App Store and get Premium (one-time lifetime, about €30, or €1.99 a month). The Basic tier has no automations.</li>
-      <li>In the app open <b>Automations</b>, tap <b>New Automation</b>, choose <b>REST API</b> and name it Oath.</li>
+      <li>Install <b>Health Auto Export - JSON+CSV</b> and get Premium, which automations need.</li>
+      <li>Open <b>Automations</b>, <b>New Automation</b>, <b>REST API</b>, and name it Oath.</li>
       <li>URL: ${urlField}</li>
-      <li>Under <b>HTTP Headers</b>, add one: key <b>Authorization</b>, value your key.</li>
-      <li>Data Type <b>Health Metrics</b>. Select Step Count, Active Energy, Apple Exercise Time, Apple Stand Hour, Sleep Analysis, Walking + Running Distance, Resting Heart Rate, Heart Rate Variability, Body Mass and Mindful Minutes.</li>
-      <li>Export Format <b>JSON</b>, Version <b>2</b>, Date Range <b>Default</b>, Summarize Data <b>on</b>, Time Grouping <b>Hours</b>. Sync every hour. Save and switch it on.</li>
-      <li>Make a second automation exactly the same, with Data Type <b>Workouts</b> (route data off).</li>
+      <li>Under <b>HTTP Headers</b>, add <b>Authorization</b> with your key as the value.</li>
+      <li>Data Type <b>Health Metrics</b>: Step Count, Active Energy, Apple Exercise Time, Apple Stand Hour, Sleep Analysis, Walking + Running Distance, Resting Heart Rate, Heart Rate Variability, Body Mass, Mindful Minutes.</li>
+      <li>Export Format <b>JSON</b>, Version <b>2</b>, Date Range <b>Default</b>, Summarize Data <b>on</b>, Time Grouping <b>Hours</b>. Sync every hour, save and switch it on.</li>
+      <li>Make a second one the same, with Data Type <b>Workouts</b> (route data off).</li>
       <li>Tap <b>Manual Export</b> once. This page then says "Synced just now".</li>
     </ol>`;
   const shortcut = `<ol class="steps">
       ${keyStep}
-      <li>Open <b>Shortcuts</b>, tap +, name it <b>Send Health to Oath</b>.</li>
+      <li>In Shortcuts, tap +, name it <b>Send Health to Oath</b>.</li>
       <li>Add <b>Find Health Samples</b>: Type Steps, Start Date is Today. Then <b>Calculate Statistics</b>: Sum.</li>
       <li>Do the same for <b>Exercise Minutes</b> and <b>Active Energy</b>.</li>
-      <li>Add <b>Find Health Samples</b>: Type Sleep Analysis, Start Date is in the last 1 day, Value is not In Bed, Value is not Awake. Then <b>Get Details of Health Samples</b>: Duration, then <b>Calculate Statistics</b>: Sum.</li>
-      <li>Add <b>Get Contents of URL</b> with this URL: ${urlField}
-        Tap Show More: Method <b>POST</b>, add a Header <b>Authorization</b> with your key as the value, Request Body <b>JSON</b> with fields <b>steps</b>, <b>exercise_min</b>, <b>active_kcal</b> (numbers) and <b>sleep_hours</b> (text), each set to the matching result.</li>
-      <li>Run it once with the play button. Oath's setup list on Today turns Apple Health green when it lands.</li>
-      <li>In the <b>Automation</b> tab, tap +, <b>Time of Day</b>, <b>Run Immediately</b>, pick this shortcut. Make four: <b>08:00</b> (last night's sleep), <b>12:00</b>, <b>17:00</b> and <b>20:30</b>.</li>
+      <li>Add <b>Find Health Samples</b>: Type Sleep Analysis, Start Date is in the last 1 day, Value is not In Bed, Value is not Awake. Then <b>Get Details of Health Samples</b>: Duration, and <b>Calculate Statistics</b>: Sum.</li>
+      <li>Add <b>Get Contents of URL</b>: ${urlField}
+        Under Show More, Method <b>POST</b>, header <b>Authorization</b> with your key as the value, JSON body with <b>steps</b>, <b>exercise_min</b>, <b>active_kcal</b> (numbers) and <b>sleep_hours</b> (text), each set to its result.</li>
+      <li>Run it once. Apple Health turns green in Today's setup list when it lands.</li>
+      <li>In <b>Automation</b>, tap +, <b>Time of Day</b>, <b>Run Immediately</b>, pick this shortcut. Make four: <b>08:00</b> (last night's sleep), <b>12:00</b>, <b>17:00</b>, <b>20:30</b>.</li>
     </ol>`;
+  // One disclosure holds the steps; the hero above it is only a title and a label.
   return `<div class="card setup${connected ? ' quiet' : ''}">
-    ${connected ? '' : `<div class="setup-hero"><span class="setup-ic">${icon('heart')}</span><div><h3>Connect Apple Health</h3>
-      <p class="muted">Steps, workouts and sleep, sent from your iPhone.</p></div></div>`}
-    <div class="seg wide-seg" role="tablist" aria-label="How to connect">
-      <button role="tab" aria-selected="${tab === 'shortcut'}" data-action="health-setup" data-tab="shortcut">Free shortcut</button>
-      <button role="tab" aria-selected="${tab === 'hae'}" data-action="health-setup" data-tab="hae">Paid app, everything</button>
-    </div>
-    ${tab === 'hae' ? hae : shortcut}
+    ${connected ? '' : `<div class="setup-hero"><span class="setup-ic">${icon('heart')}</span><div><h3>Connect Apple Health</h3></div></div>`}
+    <details class="howto"${state.healthSetupOpen ? ' open' : ''}><summary>How to connect</summary>
+      <div class="seg wide-seg" role="tablist" aria-label="How to connect">
+        <button role="tab" aria-selected="${tab === 'shortcut'}" data-action="health-setup" data-tab="shortcut">Free shortcut</button>
+        <button role="tab" aria-selected="${tab === 'hae'}" data-action="health-setup" data-tab="hae">Paid app, everything</button>
+      </div>
+      ${tab === 'hae' ? hae : shortcut}
+    </details>
   </div>`;
 }
 
@@ -191,7 +187,7 @@ function healthSection(h) {
         <div class="form-actions" style="align-self:end"><button class="btn primary" type="submit">Save targets</button></div>
       </form>
     </details>
-    <details class="card disclosure"${state.healthSetupOpen ? ' open' : ''}><summary>${icon('phone')}How your iPhone sends Health data</summary>${healthSetup(true)}</details>
+    ${healthSetup(true)}
   </section>`;
 }
 
@@ -277,8 +273,7 @@ function calendarSection(d) {
     <summary>${icon('calendar')}Manage calendars<span class="summary-count">${d.feeds.length} connected</span></summary>
     ${feeds ? `<div class="group flush">${feeds}</div>` : ''}
     <form class="cal-add" data-form="cal-add">
-      ${d.feeds.length ? '' : `<div class="setup-hero"><span class="setup-ic cal-ic">${icon('calendar')}</span><div><h3>Add your calendars</h3>
-        <p class="muted">Events on Today; VLE deadlines become tasks.</p></div></div>`}
+      ${d.feeds.length ? '' : `<div class="setup-hero"><span class="setup-ic cal-ic">${icon('calendar')}</span><div><h3>Add your calendars</h3></div></div>`}
       <label class="field"><span>Calendar link (iCal or webcal)</span><input class="input" name="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://calendar.google.com/calendar/ical/..." required></label>
       <div class="seg" role="radiogroup" aria-label="What it is">
         <label><input type="radio" name="kind" value="" checked><span>Work it out</span></label>
@@ -286,20 +281,20 @@ function calendarSection(d) {
         <label><input type="radio" name="kind" value="deadlines"><span>Deadlines</span></label>
       </div>
       <div class="form-actions"><button class="btn primary" type="submit">${icon('plus')}Add calendar</button></div>
-      <details class="howto"><summary>Where to find the link</summary>
+      <details class="howto"><summary>How to connect</summary>
         <p class="howto-h">UM VLE deadlines</p>
-        <ol><li>Log in at www.um.edu.mt/vle/my and open <b>Calendar</b> from the user menu.</li>
+        <ol><li>On www.um.edu.mt/vle/my, open <b>Calendar</b> from the user menu.</li>
           <li>At the bottom, <b>Import or export calendars</b>, then <b>Export calendar</b>.</li>
           <li>Events: <b>Events related to courses</b>. Period: <b>Recent and next 60 days</b>.</li>
-          <li><b>Get calendar URL</b>, copy it and paste it here.</li></ol>
+          <li><b>Get calendar URL</b>, copy it and paste it above.</li></ol>
         <p class="howto-h">Google Calendar</p>
-        <ol><li>In Safari open calendar.google.com, tap <b>aA</b> and <b>Request Desktop Website</b>.</li>
+        <ol><li>In Safari on calendar.google.com, tap <b>aA</b>, <b>Request Desktop Website</b>.</li>
           <li>Settings, pick the calendar, <b>Integrate calendar</b>, copy <b>Secret address in iCal format</b>.</li></ol>
-        <p class="howto-h">iPhone (iCloud) calendar</p>
-        <ol><li>Calendar app, <b>Calendars</b>, tap (i) next to the calendar, turn on <b>Public Calendar</b>, <b>Share Link</b>, <b>Copy</b>.</li></ol>
-        <p class="howto-h">Outlook, your UM email</p>
-        <ol><li>On a computer, outlook.office.com, Settings, <b>Calendar</b>, <b>Shared calendars</b>.</li>
-          <li>Under Publish a calendar choose <b>Can view titles and locations</b>, Publish, copy the <b>ICS</b> link.</li></ol>
+        <p class="howto-h">iCloud</p>
+        <ol><li>In Calendar, tap (i) by the calendar, turn on <b>Public Calendar</b>, then <b>Share Link</b>, <b>Copy</b>.</li></ol>
+        <p class="howto-h">Outlook</p>
+        <ol><li>On a computer: outlook.office.com, Settings, <b>Calendar</b>, <b>Shared calendars</b>.</li>
+          <li>Publish a calendar: <b>Can view titles and locations</b>, Publish, copy the <b>ICS</b> link.</li></ol>
       </details>
     </form>
     </details>
@@ -395,7 +390,7 @@ export async function dataClick(a, el) {
       ctx.render();
       return true;
     case 'cal-remove':
-      if (!confirm('Remove this calendar? Tasks it already made stay.')) return true;
+      if (!await confirmSheet('Remove this calendar?', 'Tasks it made stay.', 'Remove')) return true;
       if (await act(() => api('DELETE', `/api/calendar/feeds/${el.dataset.id}`), 'Calendar removed.')) { await loadDashboard(); ctx.render(); }
       return true;
     case 'cal-sync': {

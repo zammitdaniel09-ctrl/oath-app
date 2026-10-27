@@ -3,7 +3,7 @@ import {
   $app, state, hooks, esc, ApiError, api, toast, react, act, form2obj, fmtClock, fmtDay, left, fmtMin,
   DAY_NAMES, scheduleText, CHECK, isStandalone, isIOS, haptic, fx, RING_MS, bar, strengthChip, localToday, localNowHM,
   icon, drawRings, pageHead, iconLink, fmtInt, fmtDec, ago, miniRing, keyBlock, rememberKey, safeColor,
-  urgency, URGENCY, brandMark, emptyState,
+  urgency, URGENCY, brandMark, emptyState, reduced, canRedraw, redrawIfIdle, confirmSheet,
 } from './ui.js';
 import { soundsOn, setSounds } from './sound.js';
 import * as motion from './motion.js';
@@ -12,7 +12,7 @@ import { ACTIVITY, GOALS, NUTRIENT } from './nutrition.js';
 import { parseCapture } from './parse.js';
 import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
 import { initData, loadDashboard, viewDashboard, dataClick, dataSubmit, AUTO_LABELS, autoValue } from './data.js';
-import { initFood, loadFood, viewFood, foodClick, foodSubmit, loadFoodToday } from './food.js';
+import { initFood, loadFood, viewFood, foodClick, foodSubmit, loadFoodToday, flushFood } from './food.js';
 import { initToday, ringHero, overview, nextTile, afterToday } from './today.js';
 import { initCalendar, loadCalendar, viewCalendar, calendarClick, calendarSubmit } from './calendar.js';
 
@@ -434,7 +434,7 @@ function nextOnCalendar(t) {
 // Reminders only reach the phone from the Home Screen app with notifications allowed, so Today says so.
 function remindersPrompt() {
   if (isIOS() && !isStandalone()) {
-    return `<div class="banner">${icon('bell')}<span><b>Add Oath to your Home Screen</b> for reminders: Share, then Add to Home Screen.</span></div>`;
+    return `<div class="banner">${icon('bell')}<span><b>Add Oath to your Home Screen</b> for reminders</span></div>`;
   }
   const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
   if (!supported || Notification.permission !== 'default') return '';
@@ -950,7 +950,7 @@ function viewCoach() {
 const signed = (n) => (n > 0 ? `+${n}` : String(n));
 
 function weekStats(w) {
-  const hp = w.hpStart !== null && w.hpEnd !== null ? `${w.hpStart} to ${w.hpEnd}` : '-';
+  const hp = w.hpStart !== null && w.hpEnd !== null ? `${w.hpStart} to ${w.hpEnd}` : '–';
   return `<div class="stats four">
     <div class="stat"><b>${w.cleanDays}</b><span>Clean ${w.cleanDays === 1 ? 'day' : 'days'} of ${w.judgedDays}</span></div>
     <div class="stat"><b>${hp}</b><span>HP</span></div>
@@ -1074,10 +1074,8 @@ function bodyCard() {
   const opt = (list, cur) => Object.entries(list).map(([k, x]) => `<option value="${k}"${cur === k ? ' selected' : ''}>${esc(x.label)}</option>`).join('');
   const amount = (k) => `${fmtInt(n.refs[k])}${NUTRIENT[k].unit === 'kcal' ? ' kcal' : ` ${NUTRIENT[k].unit}`}`;
   const needs = n ? `<div class="need-grid">${NEED_ROWS.map(([k, label]) => `<div class="need"><span>${label}</span><b>${amount(k)}</b></div>`).join('')}</div>
-      <p class="need-how small">${n.about.method === 'Katch-McArdle' ? `Resting ${fmtInt(n.about.rest)} kcal from ${fmtDec(n.about.lean)} kg lean mass` : `Resting ${fmtInt(n.about.rest)} kcal from height, weight and age`}, × ${n.about.factor} for activity. Protein ${n.about.proteinPerKg} g per kg.</p>
-      <details class="need-more"><summary>Vitamins and minerals</summary><div class="need-grid">${MICRO_NEEDS.map((k) => `<div class="need"><span>${esc(NUTRIENT[k].label)}</span><b>${fmtDec(n.refs[k])} ${NUTRIENT[k].unit}</b></div>`).join('')}</div>
-        <p class="need-how small">EFSA values for a ${n.about.age}-year-old ${n.about.sex === 'female' ? 'woman' : 'man'}.</p></details>`
-    : '<p class="muted small">Fill these in and every food percentage becomes a share of what your body needs.</p>';
+      <details class="need-more"><summary>Vitamins and minerals</summary><div class="need-grid">${MICRO_NEEDS.map((k) => `<div class="need"><span>${esc(NUTRIENT[k].label)}</span><b>${fmtDec(n.refs[k])} ${NUTRIENT[k].unit}</b></div>`).join('')}</div></details>`
+    : '';
   return settingsCard('scale', 'Body', `<form data-form="body">
       <div class="grid2">
         <label class="field"><span>Sex</span><select class="input" name="sex" required><option value="">Choose</option><option value="male"${b.sex === 'male' ? ' selected' : ''}>Male</option><option value="female"${b.sex === 'female' ? ' selected' : ''}>Female</option></select></label>
@@ -1092,22 +1090,21 @@ function bodyCard() {
       <label class="field"><span>Goal</span><select class="input" name="goal">${opt(GOALS, b.goal || 'keep')}</select></label>
       <div class="form-actions"><button class="btn primary" type="submit">Save</button></div>
     </form>
-    <div class="body-needs"><h4 class="need-h">Your daily needs</h4>${needs}</div>`, 'body');
+    ${needs ? `<div class="body-needs"><h4 class="need-h">Your daily needs</h4>${needs}</div>` : ''}`, 'body');
 }
 
 // Sounds belong to the device, not the account: the choice is kept in this browser's storage (sound.js).
 function soundsCard() {
-  return settingsCard('sound', 'Sounds', `<label class="switch-row"><span class="switch-text"><b>Play sounds on this device</b>
-      <span class="muted small">Soft sounds for ticks, meals, messages and errors. On iPhone the silent switch mutes them.</span></span>
+  return settingsCard('sound', 'Sounds', `<label class="switch-row"><span class="switch-text"><b>Play sounds on this device</b></span>
       <input class="switch" type="checkbox" role="switch" data-action="sounds"${soundsOn() ? ' checked' : ''}></label>`);
 }
 
 function alertsCard(s) {
-  const opt = (v, label, hint) => `<label class="radio-row"><input type="radio" name="alerts" value="${v}"${(s.alerts || 'both') === v ? ' checked' : ''}><span><b>${label}</b><br><span class="muted small">${hint}</span></span></label>`;
+  const opt = (v, label) => `<label class="radio-row"><input type="radio" name="alerts" value="${v}"${(s.alerts || 'both') === v ? ' checked' : ''}><span><b>${label}</b></span></label>`;
   return settingsCard('phone', 'Where alerts go', `<form data-form="alerts">
-      ${opt('smart', 'One channel per alert', 'Telegram for reminders and briefs, the lock screen for last calls')}
-      ${opt('both', 'Everything, everywhere', 'Lock screen and Telegram')}
-      ${opt('push', 'App only', 'Telegram stays quiet')}
+      ${opt('smart', 'One channel per alert')}
+      ${opt('both', 'Everything, everywhere')}
+      ${opt('push', 'App only')}
       <div class="form-actions"><button class="btn primary" type="submit">Save</button></div>
     </form>`);
 }
@@ -1116,7 +1113,9 @@ function telegramCard() {
   const tg = state.telegram || {};
   let body;
   let actions = '';
-  if (!tg.enabled) {
+  if (!state.telegram) {
+    body = 'Could not load.';
+  } else if (!tg.enabled) {
     body = 'Off: add TELEGRAM_BOT_TOKEN in Railway.';
   } else if (tg.linked) {
     body = `Connected${tg.botUsername ? ` to @${esc(tg.botUsername)}` : ''}. /today, /next, /hp, /add, /done.`;
@@ -1133,21 +1132,20 @@ function siriCard() {
   const host = location.origin;
   const count = state.tokens?.count || 0;
   return settingsCard('mic', 'Siri and Shortcuts', `
-    <p class="muted">"Add to Oath", "Oath done", "What's next in Oath". The key also lets Apple Health send data.</p>
     ${keyBlock()}
     <div class="form-actions">
       <button class="btn ${count ? 'tinted' : 'primary'}" data-action="token-new">${count ? 'Make a new key' : 'Make a key'}</button>
       ${count ? '<button class="btn tinted" data-action="token-revoke">Turn off all keys</button>' : ''}
     </div>
-    <details class="howto"><summary>Build the "Add to Oath" shortcut</summary>
+    <details class="howto"><summary>How to connect</summary>
       <ol>
-        <li>Open the Shortcuts app, tap +, and name it <b>Add to Oath</b>.</li>
-        <li>Add <b>Ask for Input</b>, type Text, prompt "What should I add?".</li>
-        <li>Add <b>Get Contents of URL</b> with URL <code>${esc(host)}/api/shortcut/add</code>. Tap Show More: Method <b>POST</b>; Headers: <b>Authorization</b> = <code>Bearer</code> followed by a space and your key; Request Body <b>JSON</b> with key <b>text</b> set to Provided Input.</li>
-        <li>Add <b>Get Dictionary Value</b> for key <b>say</b>, then <b>Show Result</b>.</li>
-        <li>Say "Hey Siri, Add to Oath", or put it on the Action button or a Home Screen widget.</li>
+        <li>In Shortcuts, tap +, name it <b>Add to Oath</b>.</li>
+        <li>Add <b>Ask for Input</b>, type Text.</li>
+        <li>Add <b>Get Contents of URL</b>: <code>${esc(host)}/api/shortcut/add</code>. Under Show More, Method <b>POST</b>, header <b>Authorization</b> = <code>Bearer</code> then a space and your key, JSON body <b>text</b> = Provided Input.</li>
+        <li>Add <b>Get Dictionary Value</b> for <b>say</b>, then <b>Show Result</b>.</li>
+        <li>For <b>Oath done</b>, repeat with <code>${esc(host)}/api/shortcut/done</code>.</li>
+        <li>For <b>What's next in Oath</b>, use <code>${esc(host)}/api/shortcut/next</code>, Method GET, the same header, then <b>Speak Text</b>.</li>
       </ol>
-      <p class="small">"Oath done": the same, with URL <code>${esc(host)}/api/shortcut/done</code> and prompt "What did you do?". "What's next in Oath": Get Contents of URL with <code>${esc(host)}/api/shortcut/next</code>, Method GET, the same header, then Get Dictionary Value <b>say</b> and Speak Text.</p>
     </details>`);
 }
 
@@ -1237,7 +1235,6 @@ function brandLockup(size = 76) {
 }
 
 const pause = (ms) => new Promise((r) => setTimeout(r, ms));
-const calmMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ---------- The lock screen ----------
 //
@@ -1281,14 +1278,19 @@ function setLock(phase, text) {
   if (label) label.textContent = phase === 'offline' ? 'Try again' : 'Unlock with Face ID';
 }
 
+// What the app holds in memory about Daniel: gone behind the lock screen and after a log out.
+function forgetMemory() {
+  Object.assign(state, {
+    today: null, plan: null, review: null, coach: null, goals: null, goal: null, settings: null,
+    food: null, foodToday: null, overview: null, dash: null, body: null, offline: null, stale: null,
+    sheet: null, sheetNode: null, sheetMode: null, foodSheet: null, calSheet: null, cal: null, dodging: null, pardoning: null, editingGoal: false,
+  });
+}
+
 function showLock({ auto = true, offline = false } = {}) {
   if (lockEl()) return;
   abortFaceId();
-  // Nothing of the day stays in memory behind the lock.
-  Object.assign(state, {
-    today: null, plan: null, review: null, coach: null, goals: null, goal: null, settings: null,
-    sheet: null, sheetNode: null, sheetMode: null, foodSheet: null, calSheet: null, cal: null, dodging: null, pardoning: null, editingGoal: false,
-  });
+  forgetMemory();
   document.body.classList.remove('sheet-open');
   window.scrollTo(0, 0);
   const phase = offline ? 'offline' : auto ? 'scanning' : 'idle';
@@ -1407,6 +1409,8 @@ async function faceIdLogin({ auto = false } = {}) {
     door.busy = false;
     door.ctl = null;
     if (slotBtn) slotBtn.disabled = false;
+    // Offline behind the lock screen: the cached day, read only, as at a cold start.
+    if (err.status === 0 && lockEl() && showCachedDay()) return;
     prepareFaceIdLogin({ force: true }).catch(() => {});
     const quick = Date.now() - door.started < 700;
     let phase = 'idle';
@@ -1426,7 +1430,7 @@ async function faceIdLogin({ auto = false } = {}) {
 
 // Verified. The day loads behind the lock, the lock dissolves, and the app fades in.
 async function enterApp(hash) {
-  const calm = calmMotion();
+  const calm = reduced();
   const gate = document.querySelector('.gate');
   if (hash && location.hash !== hash) history.replaceState(null, '', hash);
   else if (!location.hash) history.replaceState(null, '', '#/today');
@@ -1444,6 +1448,7 @@ async function enterApp(hash) {
     setTimeout(() => $app.classList.remove('enter'), 500);
   }
   resyncPush();
+  flushFood();
 }
 
 // The way in. With Face ID only, it is the lock screen. Otherwise it is the password, with Face ID
@@ -1534,6 +1539,28 @@ function cachedToday() {
     return null;
   }
 }
+// Logging out takes everything personal off the phone: the cached day, the food caches and the queue of
+// entries waiting to sync. (Locking only clears memory, so the cached day can still show offline.)
+function wipePhone() {
+  try {
+    Object.keys(localStorage).filter((k) => k === TODAY_CACHE || k.startsWith('oath.food')).forEach((k) => localStorage.removeItem(k));
+  } catch { /* storage unavailable */ }
+  rememberKey(null);
+}
+
+// No connection: the cached Today, read only, with the Offline banner. False when there is no cache.
+function showCachedDay() {
+  const c = cachedToday();
+  if (!c) return false;
+  abortFaceId();
+  parseHash();
+  state.route = 'today';
+  state.today = c.t;
+  state.offline = c.at;
+  render();
+  return true;
+}
+
 async function fetchToday() {
   try {
     state.today = await api('GET', '/api/today');
@@ -1564,22 +1591,34 @@ async function load(route) {
     if (state.param) await loadGoal(state.param);
     else await loadGoals();
   }
-  if (route === 'settings') {
-    state.setup = await api('GET', '/api/setup-status').catch(() => state.setup);
-    state.passkeys = (await api('GET', '/api/passkeys')).passkeys;
-    if (window.PublicKeyCredential) {
-      state.faceIdRegister = await api('POST', '/api/passkey/register/options', {}).then((options) => ({ options, at: Date.now() })).catch(() => null);
-    }
-    state.settings = await api('GET', '/api/settings');
-    state.body = await api('GET', '/api/body').catch(() => state.body);
-    state.telegram = { ...(state.telegram || {}), ...(await api('GET', '/api/telegram')) };
-    state.tokens = await api('GET', '/api/tokens');
-    await refreshPushState();
+  if (route === 'settings') await loadSettings();
+}
+
+// Everything at once, and the page draws with whatever arrived: only the settings themselves are essential.
+// The Face ID challenge is fetched alongside, but nothing waits for it.
+async function loadSettings() {
+  if (window.PublicKeyCredential) {
+    api('POST', '/api/passkey/register/options', {}).then((options) => { state.faceIdRegister = { options, at: Date.now() }; }).catch(() => {});
   }
+  const got = await Promise.allSettled([
+    api('GET', '/api/settings'), api('GET', '/api/setup-status'), api('GET', '/api/passkeys'),
+    api('GET', '/api/body'), api('GET', '/api/telegram'), api('GET', '/api/tokens'), refreshPushState(),
+  ]);
+  const [settings, setup, passkeys, body, telegram, tokens] = got;
+  const lost = got.find((r) => r.status === 'rejected' && r.reason?.status === 401);
+  if (lost) throw lost.reason;
+  if (settings.status === 'rejected') throw settings.reason;
+  state.settings = settings.value;
+  if (setup.status === 'fulfilled') state.setup = setup.value;
+  if (passkeys.status === 'fulfilled') state.passkeys = passkeys.value.passkeys;
+  if (body.status === 'fulfilled') state.body = body.value;
+  if (telegram.status === 'fulfilled') state.telegram = { ...(state.telegram || {}), ...telegram.value };
+  if (tokens.status === 'fulfilled') state.tokens = tokens.value;
 }
 
 function render() {
   state.dirty = false;
+  state.stale = null;
   if (state.route === 'goals') {
     if (state.param === 'new') return viewGoalNew();
     if (state.param) return viewGoal();
@@ -1875,7 +1914,7 @@ async function afterTick(reaction, current = false) {
   // The last thing due today: a chord and a burst, once. On Today the chord comes from the ring as it
   // closes (today.js), so the burst waits for the same moment; elsewhere both come at once.
   if (wasOpen > 0 && open === 0) {
-    if (state.route === 'today') setTimeout(() => motion.celebrate(), window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : RING_MS);
+    if (state.route === 'today') setTimeout(() => motion.celebrate(), reduced() ? 0 : RING_MS);
     else {
       fx('all-done');
       motion.celebrate();
@@ -1886,6 +1925,9 @@ async function afterTick(reaction, current = false) {
   if (reaction?.text) react({ ...reaction, text: reaction.text.includes(tail.trim()) ? reaction.text : `${reaction.text}${tail}` });
   else if (tail) toast(tail.trim());
 }
+
+// Each line sent to the coach from a sheet gets a number, so its late reply can tell if its sheet is still up.
+let askSeq = 0;
 
 async function openSheet(kind, id) {
   if (!state.plan) state.plan = await api('GET', '/api/plan');
@@ -1994,7 +2036,7 @@ $app.addEventListener('click', async (e) => {
   } else if (a === 'tg-test') {
     await act(() => api('POST', '/api/telegram/test', {}), (r) => (r.sent ? 'Sent. Check Telegram.' : 'Not linked yet.'));
   } else if (a === 'tg-unlink') {
-    if (!confirm('Disconnect Telegram?')) return;
+    if (!await confirmSheet('Disconnect Telegram?', 'You can connect it again any time.', 'Disconnect')) return;
     if (await act(() => api('POST', '/api/telegram/unlink', {}), 'Telegram disconnected.')) { await load('settings'); render(); }
   } else if (a === 'token-new') {
     const r = await act(() => api('POST', '/api/tokens', { label: 'Shortcuts' }));
@@ -2003,7 +2045,7 @@ $app.addEventListener('click', async (e) => {
     rememberKey(null);
     render();
   } else if (a === 'token-revoke') {
-    if (!confirm('Turn off every key? Your shortcuts and Apple Health sync stop until you make a new key.')) return;
+    if (!await confirmSheet('Turn off every key?', 'Shortcuts and Health sync stop until you make a new one.', 'Turn off')) return;
     if (await act(() => api('DELETE', '/api/tokens'), 'All keys turned off.')) { rememberKey(null); await load(state.route); render(); }
   } else if (a === 'copy') {
     const input = document.getElementById(el.dataset.target);
@@ -2033,7 +2075,7 @@ $app.addEventListener('click', async (e) => {
     const r = await act(() => api('POST', `/api/habits/${id}/restore`, {}));
     if (r) { state.removed = null; toast(`Kept ${r.name}.`); await go(); }
   } else if (a === 'delete-task') {
-    if (!confirm('Delete this task?')) return;
+    if (!await confirmSheet('Delete this task?')) return;
     if (await act(() => api('DELETE', `/api/tasks/${id}`), 'Deleted.')) { state.sheet = null; await go(); }
   } else if (a === 'brief') {
     el.disabled = true;
@@ -2080,7 +2122,7 @@ $app.addEventListener('click', async (e) => {
     setSounds(el.checked);
     if (el.checked) fx('toggle');
   } else if (a === 'faceid-remove') {
-    if (!confirm('Remove Face ID login for this device? The password keeps working.')) return;
+    if (!await confirmSheet('Remove Face ID here?', 'The password keeps working.', 'Remove')) return;
     if (await act(() => api('DELETE', `/api/passkeys/${encodeURIComponent(el.dataset.id)}`), 'Face ID removed for that device.')) {
       await load('settings');
       render();
@@ -2093,7 +2135,8 @@ $app.addEventListener('click', async (e) => {
     await act(() => api('POST', '/api/push/test', {}), (r) => (r.sent ? 'Test sent. It should arrive in a few seconds.' : 'No device is registered. Turn reminders on again.'));
   } else if (a === 'logout') {
     await act(() => api('POST', '/api/logout', {}));
-    try { localStorage.removeItem(TODAY_CACHE); } catch { /* storage unavailable */ }
+    forgetMemory();
+    wipePhone();
     renderLogin(null, { auto: false });
   }
 });
@@ -2218,26 +2261,41 @@ $app.addEventListener('submit', async (e) => {
       if (r) fx('receive');
       await coachChangedThings(r?.reply);
     } else if (kind === 'ask-coach') {
-      // The quick line on Today and Plan: the answer, and what the coach did, open in a sheet.
+      // The quick line on Today and Plan: the answer, and what the coach did, open in a sheet. A reply
+      // lands there only if that same sheet is still up on the same screen; a late one waits in the chat.
       const text = form2obj(form).text.trim();
       if (!text) return;
       form.reset();
-      state.sheet = { kind: 'coach', text };
+      askSeq += 1;
+      const req = askSeq;
+      const route = state.route;
+      const here = () => state.sheet?.kind === 'coach' && state.sheet.req === req && state.route === route;
+      state.sheet = { kind: 'coach', text, req };
       render();
       haptic('send');
       const r = await act(() => api('POST', '/api/coach', { text }));
-      if (!r) { state.sheet = null; render(); return; }
-      state.sheet = { kind: 'coach', text, reply: r.reply };
-      state.coach = null;
+      if (!r) {
+        if (here()) { state.sheet = null; render(); }
+        return;
+      }
       await coachChangedThings(r.reply);
-      render();
-      fx('receive');
+      if (here()) {
+        state.coach = null;
+        state.sheet = { kind: 'coach', text, req, reply: r.reply };
+        render();
+        fx('receive');
+      } else if (state.route === 'coach') {
+        load('coach').then(() => redrawIfIdle('coach', render)).catch(() => {});
+      } else {
+        state.coach = null;
+        toast('The coach replied', false, 7000, false, '#/coach');
+      }
     } else if (kind === 'rules') {
       const f = form2obj(form);
       const patch = Object.fromEntries(Object.entries(f).filter(([k, x]) => x !== '' && Number(x) !== Number(state.settings?.[k])).map(([k, x]) => [k, Number(x)]));
       if (!Object.keys(patch).length) { toast('Nothing changed.'); return; }
       if (patch.maxHp !== undefined && patch.maxHp < (state.settings?.maxHp ?? 0)
-        && !confirm(`Lower max HP to ${patch.maxHp}? If you have more HP than that now, it comes down with it.`)) return;
+        && !await confirmSheet(`Lower max HP to ${patch.maxHp}?`, 'HP above that comes down with it.', 'Lower it')) return;
       if (await act(() => api('PATCH', '/api/settings', patch), 'Rules saved. They apply from now on.')) await go();
     } else if (kind === 'body') {
       const r = await act(() => api('PUT', '/api/body', form2obj(form)));
@@ -2336,8 +2394,13 @@ setInterval(() => {
 }, 15000);
 
 setInterval(() => {
-  if (document.visibilityState === 'visible' && state.route === 'today' && state.today && !state.sheet && !state.dirty && !motion.busy() && !document.activeElement?.matches('input, textarea, select')) refreshToday().catch(() => {});
+  if (document.visibilityState === 'visible' && state.route === 'today' && state.today) fetchToday().then(() => redrawIfIdle('today', render)).catch(() => {});
 }, 60000);
+
+// A screen a background refresh could not redraw (a field in use, a finger down) is drawn once that passes.
+hooks.idle = () => {
+  if (state.stale && state.stale === state.route && canRedraw()) render();
+};
 
 // Back from the background. With the lock screen up, ask for Face ID again. With Face ID only and
 // more than a minute away, lock the open app in place (no reload, no flash of the day) and ask.
@@ -2358,7 +2421,7 @@ document.addEventListener('visibilitychange', () => {
     return;
   }
   navigator.serviceWorker?.getRegistration().then((reg) => reg?.update()).catch(() => {});
-  if (document.querySelector('.tabbar') && !state.sheet && !state.dirty && !document.activeElement?.matches('input, textarea, select')) go();
+  if (document.querySelector('.tabbar') && canRedraw()) go();
 });
 
 // A page restored from the back-forward cache comes back without a visibility change.
@@ -2442,19 +2505,13 @@ async function boot() {
     abortFaceId();
     await go();
     resyncPush();
+    flushFood();
   } catch (err) {
+    // No connection: the cached day shows even behind Face ID, read only. Without one, the lock waits.
+    if (err.status === 0 && showCachedDay()) return;
     if (err.status === 0 && lockModeRemembered()) {
       abortFaceId();
       if (lockEl()) setLock('offline'); else showLock({ offline: true });
-      return;
-    }
-    const c = err.status === 0 ? cachedToday() : null;
-    if (c) {
-      parseHash();
-      state.route = 'today';
-      state.today = c.t;
-      state.offline = c.at;
-      render();
       return;
     }
     $app.innerHTML = `<div class="gate">${brandLockup()}<p>${esc(err.message)}</p>

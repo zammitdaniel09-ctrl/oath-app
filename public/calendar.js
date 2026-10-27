@@ -5,6 +5,7 @@
 // after), so a swipe is a spring on the compositor and the redraw after it is invisible.
 import {
   $app, state, esc, api, act, toast, icon, pageHead, safeColor, localToday, localNowHM, haptic, form2obj, fmtDay,
+  reduced, shortDay, addDays, confirmSheet,
 } from './ui.js';
 import { spring } from './motion.js';
 
@@ -17,16 +18,14 @@ const FRESH_MS = 2 * 60000;
 const HEAD_H = 56; // px, the day headings of the 3 day and week grids
 const MQ_WIDE = window.matchMedia('(min-width: 900px)');
 const MQ_WEEK = window.matchMedia('(min-width: 720px)');
-const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 // ---------- Dates, as 'YYYY-MM-DD' strings and day numbers, so no time zone or DST can bend them ----------
 
 const dn = (d) => Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10)) / 86400000;
 const iso = (n) => new Date(n * 86400000).toISOString().slice(0, 10);
-const add = (d, n) => iso(dn(d) + n);
 const weekdayOf = (d) => (new Date(dn(d) * 86400000).getUTCDay() + 6) % 7; // 0 = Monday
-const monday = (d) => add(d, -weekdayOf(d));
+const monday = (d) => addDays(d, -weekdayOf(d));
 const firstOf = (d) => `${d.slice(0, 8)}01`;
 const daysIn = (y, m) => new Date(Date.UTC(y, m, 0)).getUTCDate();
 function addMonths(d, n) {
@@ -39,7 +38,6 @@ const minutesOf = (hm) => +hm.slice(0, 2) * 60 + +hm.slice(3);
 const hm = (min) => `${String(Math.floor(min / 60) % 24).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
 const validDate = (d) => /^\d{4}-\d{2}-\d{2}$/.test(d || '') && !Number.isNaN(Date.parse(`${d}T12:00:00Z`));
 const longDay = (d) => fmtDay(d, { weekday: 'long', day: 'numeric', month: 'long' });
-const shortDay = (d) => fmtDay(d, { weekday: 'short', day: 'numeric', month: 'short' });
 const monthYear = (d) => fmtDay(d, { month: 'long', year: 'numeric' });
 
 // ---------- State ----------
@@ -103,15 +101,15 @@ function windowOf(c, pages) {
   let b;
   if (c.view === 'month') {
     a = monday(addMonths(firstOf(day), -pages));
-    b = add(monday(addMonths(firstOf(day), pages)), 41);
+    b = addDays(monday(addMonths(firstOf(day), pages)), 41);
   } else {
     const n = gridDays(c);
     const s = gridStart(c, day);
-    a = add(s, -n * pages);
-    b = add(s, n * (pages + 1) - 1);
+    a = addDays(s, -n * pages);
+    b = addDays(s, n * (pages + 1) - 1);
     if (c.view === 'day' || n === 3) {
-      a = a < add(monday(day), -7 * pages) ? a : add(monday(day), -7 * pages);
-      b = b > add(monday(day), 7 * (pages + 1) - 1) ? b : add(monday(day), 7 * (pages + 1) - 1);
+      a = a < addDays(monday(day), -7 * pages) ? a : addDays(monday(day), -7 * pages);
+      b = b > addDays(monday(day), 7 * (pages + 1) - 1) ? b : addDays(monday(day), 7 * (pages + 1) - 1);
     }
   }
   return [a, b];
@@ -129,7 +127,7 @@ function evSpan(e) {
   if (e.allDay) return [e.start, e.end];
   const a = e.start.slice(0, 10);
   let b = e.end.slice(0, 10);
-  if (b > a && e.end.slice(11, 16) === '00:00') b = add(b, -1); // ending at midnight does not spill into the next day
+  if (b > a && e.end.slice(11, 16) === '00:00') b = addDays(b, -1); // ending at midnight does not spill into the next day
   return [a, b];
 }
 
@@ -273,7 +271,7 @@ function hourLabels() {
 // One pane of the grid: n days starting at `start`. rows is the number of all-day rows every pane
 // shares, so the three panes of the track are always the same height.
 function gridPane(start, n, rows, today, nowMin) {
-  const days = Array.from({ length: n }, (_, i) => add(start, i));
+  const days = Array.from({ length: n }, (_, i) => addDays(start, i));
   const infos = days.map(dayInfo);
   const heads = n > 1 ? `<div class="cal-heads" style="--n:${n}"><span></span>${days.map((d) => {
     const cls = `cal-head${d === today ? ' today' : ''}`;
@@ -297,8 +295,8 @@ function gridHtml(c) {
   const nowMin = minutesOf(localNowHM());
   const n = gridDays(c);
   const s = gridStart(c, c.date);
-  const starts = [-1, 0, 1].map((k) => add(s, k * n));
-  const rows = Math.min(3, Math.max(0, ...starts.flatMap((st) => Array.from({ length: n }, (_, i) => dayInfo(add(st, i)).allDay.length))));
+  const starts = [-1, 0, 1].map((k) => addDays(s, k * n));
+  const rows = Math.min(3, Math.max(0, ...starts.flatMap((st) => Array.from({ length: n }, (_, i) => dayInfo(addDays(st, i)).allDay.length))));
   return track('main', starts.map((st) => gridPane(st, n, rows, today, nowMin)));
 }
 
@@ -312,20 +310,20 @@ function stripHtml(c) {
   const today = localToday();
   const n = gridDays(c);
   const s = gridStart(c, c.date);
-  const inGrid = (d) => c.view === 'span' && d >= s && d < add(s, n);
+  const inGrid = (d) => c.view === 'span' && d >= s && d < addDays(s, n);
   const pane = (start) => `<div class="cal-week">${Array.from({ length: 7 }, (_, i) => {
-    const d = add(start, i);
+    const d = addDays(start, i);
     const cls = ['cal-wd', d === today ? 'today' : '', d === c.date ? 'sel' : '', inGrid(d) ? 'in' : ''].filter(Boolean).join(' ');
     return `<button type="button" class="${cls}" data-action="cal-pick" data-date="${d}" aria-label="${longDay(d)}"${d === c.date ? ' aria-current="date"' : ''}><span class="cal-wd-n">${DOW[i][0]}</span><b>${+d.slice(8)}</b><span class="cal-dots">${dots(d)}</span></button>`;
   }).join('')}</div>`;
   const m = monday(c.date);
-  return track('strip', [add(m, -7), m, add(m, 7)].map(pane));
+  return track('strip', [addDays(m, -7), m, addDays(m, 7)].map(pane));
 }
 
 function monthPane(first, today, sel) {
   const start = monday(first);
   const cells = Array.from({ length: 42 }, (_, i) => {
-    const d = add(start, i);
+    const d = addDays(start, i);
     const info = dayInfo(d);
     const out = d.slice(0, 7) !== first.slice(0, 7);
     const list = [...info.allDay.filter((x) => x.ev).map((x) => x.ev), ...info.timed];
@@ -345,7 +343,7 @@ function monthHtml(c) {
 function labelOf(c) {
   if (c.view === 'month' || c.view === 'day' || cols() === 3) return monthYear(c.date);
   const s = monday(c.date);
-  const e = add(s, 6);
+  const e = addDays(s, 6);
   return s.slice(0, 7) === e.slice(0, 7)
     ? `${+s.slice(8)} to ${fmtDay(e, { day: 'numeric', month: 'short', year: 'numeric' })}`
     : `${fmtDay(s, { day: 'numeric', month: 'short' })} to ${fmtDay(e, { day: 'numeric', month: 'short', year: 'numeric' })}`;
@@ -398,7 +396,7 @@ function scrollToNow(c) {
   const n = gridDays(c);
   const s = gridStart(c, c.date);
   const today = localToday();
-  const showsToday = today >= s && today < add(s, n);
+  const showsToday = today >= s && today < addDays(s, n);
   const min = showsToday ? Math.max(0, minutesOf(localNowHM()) - 90) : 7 * 60 + 30;
   // Under the bar, and under the day headings of the multi-day grids.
   const stick = (parseFloat(getComputedStyle($app.querySelector('.page')).getPropertyValue('--cal-stick')) || 0) + (n > 1 ? HEAD_H : 0);
@@ -440,7 +438,7 @@ function eventSheet(s) {
     e.location ? `<p class="cal-d-row"><span>Where</span>${esc(e.location)}</p>` : '',
     e.notes ? `<p class="cal-d-row"><span>Notes</span><span class="cal-d-notes">${esc(e.notes)}</span></p>` : '',
     e.own && e.by === 'coach' ? '<p class="cal-d-row"><span>Added by</span>The coach</p>' : '',
-    !e.own ? '<p class="note">From a subscribed calendar, so it can only be changed there.</p>' : '',
+    !e.own ? '<p class="note">From a subscribed calendar</p>' : '',
   ].join('');
   let actions = '';
   if (e.own && s.confirmDelete) {
@@ -502,7 +500,7 @@ function subSheet(s) {
       <label class="field"><span>Link</span><span class="copy-row"><input class="input mono" id="cal-sub-url" readonly value="${esc(info.url)}"><button type="button" class="btn tinted small" data-action="copy" data-target="cal-sub-url">Copy</button></span></label>
       <div class="sheet-actions"><button class="btn tinted danger-text" data-action="cal-sub-new"${s.busy ? ' disabled' : ''}>Make a new link</button></div>`;
   }
-  return sheetWrap('Apple Calendar', `<div class="cal-sub"><p class="note">Events made here and by the coach, on your iPhone.</p>${body}</div>`);
+  return sheetWrap('Apple Calendar', `<div class="cal-sub">${body}</div>`);
 }
 
 function sheetHtml(c) {
@@ -523,13 +521,13 @@ function settle() {
 }
 
 function stepDate(c, which, dir) {
-  if (which === 'strip') return add(c.date, 7 * dir);
+  if (which === 'strip') return addDays(c.date, 7 * dir);
   if (c.view === 'month') {
     const next = addMonths(c.date, dir);
     const today = localToday();
     return next.slice(0, 7) === today.slice(0, 7) ? today : next;
   }
-  return add(c.date, (c.view === 'span' ? cols() : 1) * dir);
+  return addDays(c.date, (c.view === 'span' ? cols() : 1) * dir);
 }
 
 const xOf = (el) => {
@@ -659,7 +657,7 @@ async function openSub() {
 
 async function makeSub(rotate) {
   const s = state.calSheet;
-  if (rotate && !confirm('Make a new link? The old one stops working, and Apple Calendar needs the new one.')) return;
+  if (rotate && !await confirmSheet('Make a new link?', 'The old one stops working.', 'Make new link')) return;
   s.busy = true;
   ctx.render();
   const info = await act(() => api('POST', '/api/calendar/subscription', { rotate }), rotate ? 'New link made.' : null);

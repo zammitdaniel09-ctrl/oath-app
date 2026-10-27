@@ -1,8 +1,11 @@
 // Food: the day's diary, "snap your food" and "what did you eat?", search, quick add, the builders,
 // recipes, cooked batches, plans, the nutrition facts sheets and the Trends charts.
 // Every number comes from nutrition.js, the same maths the server uses. Unknown stays unknown:
-// "—" is a value nobody has sourced, "+" a total missing some lines, "~" a value filled by estimate.
-import { $app, state, esc, api, act, toast, fmtDay, icon, pageHead, haptic, localToday, localNowHM, form2obj } from './ui.js';
+// "–" is a value nobody has sourced, "+" a total missing some lines, "~" a value filled by estimate.
+import {
+  $app, state, esc, api, act, toast, fmtDay, icon, pageHead, haptic, localToday, localNowHM, form2obj,
+  reduced, num, shortDay, confirmSheet, redrawIfIdle,
+} from './ui.js';
 import { NUTRIENT, NUTRIENTS, line, total, scale, show, unitsFor, round, amountText, norm } from './nutrition.js';
 // Grades and tags come from the shared maths when it has them.
 import * as N from './nutrition.js';
@@ -34,7 +37,6 @@ const enc = encodeURIComponent;
 const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`);
 const kcal = (n) => show(n, 'kcal');
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
-const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ---------- Phone storage: the offline queue and the last copies of what the tray needs ----------
 
@@ -59,7 +61,7 @@ async function foodPost(op, data, preview = {}) {
     return await api('POST', PATHS[op], body);
   } catch (err) {
     if (err.status !== 0) throw err;
-    store.set(QUEUE, [...queue(), { id: body.id, op, data: body, preview: { date: f().day?.date || localToday(), ...preview }, at: Date.now() }]);
+    store.set(QUEUE, [...queue().filter((x) => x.id !== body.id), { id: body.id, op, data: body, preview: { date: f().day?.date || localToday(), ...preview }, at: Date.now() }]);
     return { queued: true };
   }
 }
@@ -198,31 +200,19 @@ async function refresh() {
   ctx.render();
 }
 
-// The Today screen's small food card is filled in the background.
+// The Today screen's food numbers are filled in the background; the screen redraws when it is quiet.
 export function loadFoodToday() {
   api('GET', '/api/food/day').then((d) => {
     state.foodToday = d;
-    if (state.route === 'today' && !state.dirty && !state.sheet) ctx.render();
+    redrawIfIdle('today', ctx.render);
   }).catch(() => {});
-}
-
-export function foodTodayCard() {
-  const d = state.foodToday;
-  if (!d) return '';
-  const t = d.total;
-  const body = d.entries.length
-    ? `<b class="ftc-kcal">${kcal(t)}</b><span class="ftc-sub">Protein ${show(t, 'protein')} · Carbs ${show(t, 'carbs')} · Fat ${show(t, 'fat')}</span>${gradeMix(d.grades, { labels: false })}`
-    : '<span class="ftc-sub">Nothing logged yet</span>';
-  return `<a class="card food-today-card" href="#/food"><span class="li-ic">${icon('food')}</span><span class="ftc-text"><span class="eyebrow">Food</span>${body}</span>${icon('chevron', 'chev')}</a>`;
 }
 
 // ---------- Small pieces ----------
 
 let uid = 0;
 const nextId = (p) => `${p}${(uid += 1)}`;
-const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
-const fmtN = (v, dec = 0) => (num(v) === null ? '—' : new Intl.NumberFormat('en-GB', { maximumFractionDigits: dec }).format(round(v, dec)));
-const shortDay = (d) => fmtDay(d, { weekday: 'short', day: 'numeric', month: 'short' });
+const fmtN = (v, dec = 0) => (num(v) === null ? '–' : new Intl.NumberFormat('en-GB', { maximumFractionDigits: dec }).format(round(v, dec)));
 const share = (v, sum) => (sum > 0 ? Math.round((v / sum) * 100) : 0);
 
 function strip(n, keys = STRIP, filled = null) {
@@ -308,7 +298,7 @@ const riPct = (n, k) => {
   const v = num(n?.[k]);
   return ri && v !== null ? (v / ri) * 100 : null;
 };
-const pctText = (p, floor) => (p === null ? '—' : `${fmtN(p, p > 0 && p < 10 ? 1 : 0)}%${floor ? '+' : ''}`);
+const pctText = (p, floor) => (p === null ? '–' : `${fmtN(p, p > 0 && p < 10 ? 1 : 0)}%${floor ? '+' : ''}`);
 // Sugars, saturates and salt are amounts to stay under; vitamins, minerals and protein to reach.
 const LIMITS = new Set(['satfat', 'sugars', 'salt']);
 const REACH = (k) => k === 'protein' || ['mineral', 'vitamin'].includes(NUTRIENT[k]?.group);
@@ -344,7 +334,7 @@ function factRow(n, k, sub, filled) {
 
 function factsHtml(n, filled = null) {
   const fl = filledSet(filled);
-  // Sub-rows nobody has a value for are left out; the main rows always show, "—" when unknown.
+  // Sub-rows nobody has a value for are left out; the main rows always show, "–" when unknown.
   const label = LABEL_ROWS.filter(([k, sub]) => !sub || ['satfat', 'sugars'].includes(k) || num(n?.[k]) !== null);
   const group = (g, title) => {
     const all = NUTRIENTS.filter((x) => x.group === g);
@@ -411,16 +401,16 @@ function donut(n, { size = 112, sw = 12, center = '', label = 'Energy split' } =
 }
 
 // Energy by Nutri-Score grade as one stacked bar, with each grade's share under it.
-function gradeMix(mix, { labels = true } = {}) {
+function gradeMix(mix) {
   const parts = [...GRADES, 'none'].map((g) => ({ g, v: num(mix?.[g]) || 0 }));
   const sum = parts.reduce((a, p) => a + p.v, 0);
   if (!(sum > 0)) return '';
   const live = parts.filter((p) => p.v > 0);
   const name = (g) => (g === 'none' ? 'ungraded' : g.toUpperCase());
   const spoken = live.map((p) => `${name(p.g)} ${share(p.v, sum)}%`).join(', ');
-  return `<div class="gmix${labels ? '' : ' bare'}" role="img" aria-label="${esc(`Energy by Nutri-Score: ${spoken}`)}">
+  return `<div class="gmix" role="img" aria-label="${esc(`Energy by Nutri-Score: ${spoken}`)}">
     <div class="gmix-bar">${live.map((p) => `<i class="gx-${p.g}" style="flex-grow:${p.v.toFixed(1)}"></i>`).join('')}</div>
-    ${labels ? `<div class="gmix-key" aria-hidden="true">${live.map((p) => `<span>${gradeDot(p.g === 'none' ? null : p.g, ' sm')}${share(p.v, sum)}%</span>`).join('')}</div>` : ''}</div>`;
+    <div class="gmix-key" aria-hidden="true">${live.map((p) => `<span>${gradeDot(p.g === 'none' ? null : p.g, ' sm')}${share(p.v, sum)}%</span>`).join('')}</div></div>`;
 }
 
 // One meal's share of the day's energy as a short bar, split by macro.
@@ -612,7 +602,7 @@ function infoBtn(key) {
 }
 function infoLine(key, extra = '') {
   if (!f().info?.[key]) return '';
-  return `<p class="finfo"><span><i class="est">~</i> estimate</span><span><b>+</b> at least</span><span><b>—</b> unknown</span>${extra}</p>`;
+  return `<p class="finfo"><span><i class="est">~</i> estimate</span><span><b>+</b> at least</span><span><b>–</b> unknown</span>${extra}</p>`;
 }
 
 function viewDiary() {
@@ -704,7 +694,7 @@ function trendPreview(w) {
   const avg = num(w.avg?.kcal);
   return `<a class="card ftrend" href="#/food/trends">
     <svg class="ftrend-bars" width="104" height="40" aria-hidden="true"><defs>${hatchDef(hatch)}</defs>${svg}</svg>
-    <span class="ftrend-words"><span class="eyebrow">Trends</span><b>${avg === null ? '—' : `${fmtN(avg)}${w.avg.missing?.kcal ? '+' : ''}`}<small> kcal a day</small></b></span>
+    <span class="ftrend-words"><span class="eyebrow">Trends</span><b>${avg === null ? '–' : `${fmtN(avg)}${w.avg.missing?.kcal ? '+' : ''}`}<small> kcal a day</small></b></span>
     ${icon('chevron', 'chev')}</a>`;
 }
 
@@ -957,7 +947,7 @@ function builderBody(s) {
     ${slotSelect(s.slot || slotNow(s.mode === 'shake'))}
     <div class="form-actions"><button class="btn primary" type="submit"${s.lines.length ? '' : ' disabled'}>Log it</button>
       <button class="btn tinted" type="button" data-action="food-bl-save"${s.lines.length ? '' : ' disabled'}>${s.mealId ? 'Save changes' : 'Save as a meal'}</button>
-      ${s.mealId ? '<button class="btn plain" type="button" data-action="food-bl-copy">Save a copy</button>' : ''}</div>
+      ${s.mealId ? `<button class="btn plain" type="button" data-action="food-bl-copy">Save a copy</button><button class="btn plain danger-text" type="button" data-action="food-meal-del" data-id="${s.mealId}">Delete</button>` : ''}</div>
   </form>`;
 }
 
@@ -1123,7 +1113,7 @@ function viewMeals() {
     ${meals.length ? `<div class="group">${meals.map((m) => `<div class="li li-plain">
       <span class="li-ic">${icon((BUILDERS[m.kind] || BUILDERS.meal).icon)}</span>
       <button class="li-body linkish-block" data-action="food-meal-open" data-id="${m.id}"><span class="li-title">${esc(m.name)}</span><span class="li-sub">${m.lines.length} items · ${kcal(m.nutrients)}</span></button>
-      <span class="li-side"><button class="btn tinted small" data-action="food-meal-log" data-id="${m.id}">Log</button></span></div>`).join('')}</div>`
+      <span class="li-side meal-actions"><button class="btn tinted small" data-action="food-meal-log" data-id="${m.id}">Log</button><button class="icon-btn" data-action="food-meal-del" data-id="${m.id}" aria-label="Delete ${esc(m.name)}">${icon('trash')}</button></span></div>`).join('')}</div>`
       : '<div class="card fempty"><p>No saved meals yet</p></div>'}
     ${sheetHtml()}`);
 }
@@ -1175,8 +1165,8 @@ function kpiRow(h) {
   const tile = (v, l) => `<div class="fkpi"><b>${v}</b><span>${l}</span></div>`;
   return `<div class="fkpis">
     ${tile(`${fmtN(h.avg.kcal)}${h.avg.missing?.kcal ? '+' : ''}`, 'kcal a day')}
-    ${tile(num(h.avg.protein) === null ? '—' : `${fmtN(h.avg.protein)}<small> g</small>`, 'protein a day')}
-    ${tile(ab === null ? '—' : `${ab}<small>%</small>`, 'from A and B')}
+    ${tile(num(h.avg.protein) === null ? '–' : `${fmtN(h.avg.protein)}<small> g</small>`, 'protein a day')}
+    ${tile(ab === null ? '–' : `${ab}<small>%</small>`, 'from A and B')}
     ${tile(`${logged}<small>/${h.days}</small>`, 'days logged')}</div>`;
 }
 
@@ -1189,7 +1179,7 @@ function energyCard(h, sel) {
   const hits = h.series.map((d) => `<button type="button" data-action="food-trend-day" data-date="${d.date}" aria-pressed="${d.date === sel}"
     aria-label="${esc(`${d.date === h.today ? 'Today' : shortDay(d.date)}: ${d.logged ? `${fmtN(d.kcal)} kcal${d.incomplete ? ', incomplete' : ''}` : 'nothing logged'}`)}"></button>`).join('');
   const keys = [h.series.some((d) => d.incomplete) ? '<span><i class="fk fk-inc"></i>Incomplete</span>' : '', h.series.some((d) => !d.logged) ? '<span><i class="fk fk-gap"></i>No log</span>' : ''].join('');
-  const side = `<span><i class="fk fk-avg"></i>${avg === null ? '—' : `<b>${fmtN(avg)}${h.avg.missing?.kcal ? '+' : ''}</b> avg`}</span>`;
+  const side = `<span><i class="fk fk-avg"></i>${avg === null ? '–' : `<b>${fmtN(avg)}${h.avg.missing?.kcal ? '+' : ''}</b> avg`}</span>`;
   return `<section class="card fcard ftr-energy f-wide">${cardHead('Energy', side)}
     <div class="fx-plot"><svg class="fx-svg" width="100%" height="${height}" aria-hidden="true"><defs>${hatchDef(hatch)}</defs><line x1="0" x2="100%" y1="${height - 0.5}" y2="${height - 0.5}" class="fx-base"/>${svg}</svg>
       <div class="fx-hits" style="grid-template-columns:repeat(${h.series.length},minmax(0,1fr))">${hits}</div></div>
@@ -1239,7 +1229,7 @@ function riRows(list, { max = 150, best = new Set(), low = new Set() } = {}) {
     const est = p !== null && c.est > 0 ? `<i class="est" title="${c.est >= 100 ? 'Estimated' : `About ${fmtN(c.est)}% estimated`}">~</i>` : '';
     return `<div class="rirow${tone}${p === null ? ' unk' : ''}" style="--i:${i}"><span class="rirow-k">${esc(shortLabel(c.key))}</span>
       <span class="rirow-bar"><i style="--f:${w.toFixed(3)}"></i><b class="rirow-100" style="left:${at}%"></b></span>
-      <span class="rirow-v">${p === null ? '—' : `${est}${fmtN(p)}%${c.partial ? '+' : ''}`}</span></div>`;
+      <span class="rirow-v">${p === null ? '–' : `${est}${fmtN(p)}%${c.partial ? '+' : ''}`}</span></div>`;
   }).join('');
 }
 
@@ -1357,7 +1347,7 @@ function splitCard(h) {
   const keys = ['protein', 'carbs', 'fat', ...([d, a].some((m) => m.parts.some((p) => p.key === 'unknown')) ? ['unknown'] : [])];
   const pc = (m, k) => {
     const p = m.parts.find((x) => x.key === k);
-    return m.sum > 0 && p ? `${share(p.kcal, m.sum)}%` : '—';
+    return m.sum > 0 && p ? `${share(p.kcal, m.sum)}%` : '–';
   };
   const ring = (n, title, tot, plus) => `<figure class="fsplit-ring">${donut(n, { size: 104, sw: 12, label: `${title}, energy from`,
     center: `<b>${fmtN(tot)}${plus ? '+' : ''}</b><small>kcal</small>` })}<figcaption>${title}</figcaption></figure>`;
@@ -1378,7 +1368,7 @@ function compareCard(h) {
     const b = num(before[k]);
     const top = Math.max(a || 0, b || 0) || 1;
     const bar = (v, cls, plus) => `<span class="fcmp-bar ${cls}">${v === null ? '' : `<i style="--f:${(v / top).toFixed(3)}"></i>`}<b>${fmtN(v, k === 'kcal' || k === 'caffeine' ? 0 : 1)}${v !== null && plus ? '+' : ''}</b></span>`;
-    let delta = '<span class="fcmp-delta none" aria-hidden="true">—</span>';
+    let delta = '<span class="fcmp-delta none" aria-hidden="true">–</span>';
     if (a !== null && b !== null && b > 0) {
       const c = Math.round(((a - b) / b) * 100);
       delta = `<span class="fcmp-delta${c > 0 ? ' up' : c < 0 ? ' down' : ''}"><i aria-hidden="true"></i>${c > 0 ? '+' : c < 0 ? '−' : ''}${Math.abs(c)}%</span>`;
@@ -1557,7 +1547,9 @@ async function afterLog(r, name) {
   else ctx.render();
 }
 
-const photoItemsFrom = (r) => (r.items || []).map((x) => ({ ...x, edited: false }));
+// Each reviewed item carries the id its entry will be logged under, so Log all sent again (a failed try,
+// a double tap) lands each entry once: the server keeps the first of an id.
+const photoItemsFrom = (r) => (r.items || []).map((x) => ({ ...x, edited: false, logId: uuid() }));
 
 async function readPhoto(input) {
   const file = input.files?.[0];
@@ -1805,6 +1797,18 @@ export async function foodClick(a, el) {
       if (m) await act(() => openBuilderFromLines({ mode: m.kind, mealId: m.id, name: m.name }, m.lines));
       return true;
     }
+    case 'food-meal-del': {
+      const id = Number(el.dataset.id);
+      const name = (F.meals || []).find((x) => x.id === id)?.name || s?.name || 'this meal';
+      if (!await confirmSheet(`Delete ${name}?`, 'Entries already logged keep their numbers.')) return true;
+      if (await act(() => api('DELETE', `/api/food/meals/${id}`), 'Meal deleted.')) {
+        if (F.meals) F.meals = F.meals.filter((x) => x.id !== id);
+        store.set('oath.foodMeals', store.get('oath.foodMeals', []).filter((x) => x.id !== id));
+        state.foodSheet = null;
+        ctx.render();
+      }
+      return true;
+    }
     case 'food-meal-log': {
       const m = (F.meals || []).find((x) => x.id === Number(el.dataset.id));
       const r = await act(() => foodPost('meal', { meal_id: m.id, slot: slotNow(m.kind === 'shake') }, { name: m.name, amount: `${m.lines.length} items`, kcal: m.nutrients?.kcal }));
@@ -1936,7 +1940,7 @@ export async function foodClick(a, el) {
       return true;
     }
     case 'food-r-del':
-      if (!window.confirm(`Delete "${F.recipe.name}"? Entries already logged keep their numbers.`)) return true;
+      if (!await confirmSheet(`Delete ${F.recipe.name}?`, 'Logged entries keep their numbers.')) return true;
       if (await act(() => api('DELETE', `/api/food/recipes/${enc(F.recipe.key)}`), 'Recipe deleted.')) {
         F.recipes = null;
         location.hash = '#/food/recipes';
@@ -2058,7 +2062,7 @@ export async function foodSubmit(kind, form) {
         let r = null;
         if (m.mode === 'match') {
           // The matched record's gaps, estimated per 100, go back with the line so the server keeps them.
-          const body = { key: it.match.key, qty: Number(it.qty), unit: it.unit, slot: o.slot, estimate: !it.edited, ...(it.fill ? { fill: it.fill } : {}) };
+          const body = { key: it.match.key, qty: Number(it.qty), unit: it.unit, slot: o.slot, estimate: !it.edited, id: it.logId, ...(it.fill ? { fill: it.fill } : {}) };
           r = await act(() => foodPost('log', body, { name: it.match.name, amount: amountText(it.qty, it.unit, it.match), kcal: m.line.nutrients.kcal }));
         } else if (m.mode === 'rough') {
           // Not in the catalogue: the estimate per 100 and its weight go in the diary as a quick add
@@ -2068,7 +2072,7 @@ export async function foodSubmit(kind, form) {
           const amount = roughAmount(g);
           const drink = it.fill?.basis === 'ml' || g.unit === 'ml';
           const weight = num(g.weight) ?? (['g', 'ml'].includes(g.unit) ? num(g.amount) : null);
-          const body = { name, amount, slot: o.slot, estimate: true, ...(drink ? { ml: weight } : { grams: weight }) };
+          const body = { name, amount, slot: o.slot, estimate: true, id: it.logId, ...(drink ? { ml: weight } : { grams: weight }) };
           if (it.fill && weight) body.fill = it.fill;
           else Object.assign(body, { kcal: round(g.kcal, 0), protein: g.protein, carbs: g.carbs, sugars: g.sugars, fat: g.fat, fibre: g.fibre, salt: g.salt });
           r = await act(() => foodPost('quick', body, { name, amount, kcal: g.kcal }));

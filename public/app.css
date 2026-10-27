@@ -11,7 +11,6 @@
 :root {
   color-scheme: dark;
   --font: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --round: var(--font);
   --serif: 'Gambetta', 'Iowan Old Style', Georgia, serif;
   --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
@@ -22,27 +21,23 @@
   --raised: #191c24;
   --raised-hover: #20242e;
   --sheet: #14171d;
-  --card-2: var(--inset);
 
   /* Text */
   --text: #f4f5f8;
   --text-2: #b6bac4;
   --text-3: #8a909c;
-  --gray: var(--text-3);
 
   /* Lines: decorative rims, and boundaries a control needs to be seen (3:1 or better) */
   --line: #262a33;
   --line-soft: #1c1f27;
   --line-ctl: #5f6572;
   --line-strong: #686e7b;
-  --sep: var(--line);
 
   /* The palette. Merlot is the brand and HP; Chrome the neutral metal. Menthol means done. Honey,
      Blaze and Ember build urgency as a deadline nears; Cherry marks a miss and small red text
      (Merlot is too dark for small text on black). */
   --merlot: #e10600;
   --merlot-hi: #ff2a17;
-  --merlot-deep: #8f0400;
   --chrome-c: #c9ced6;
   --menthol: #3ff0b9;
   --cherry: #ff2d55;
@@ -51,22 +46,14 @@
   --ember: #ff5a1f;
 
   --silver: #edf1f7;
-  --silver-2: var(--chrome-c);
   --on-silver: #090b10;
-  --accent: var(--merlot);
-  --accent-text: var(--silver);
-  --on-accent: #ffffff;
   --focus: #f4f5f8;
 
   /* Status, mapped onto the palette */
   --green: var(--menthol);
   --red: var(--cherry);
   --amber: var(--honey);
-  --orange: var(--blaze);
   --blue: var(--chrome-c);
-  --sky: var(--chrome-c);
-  --purple: var(--cherry);
-  --gold: linear-gradient(135deg, #b8860b, #daa520 22%, #ffd700 50%, #daa520 78%, #b8860b);
   --c-hp: var(--merlot);
   --c-day: var(--menthol);
   --c-move: var(--blaze);
@@ -110,13 +97,11 @@
   --tabbar: 62px;
 
   --rim: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  --shadow: var(--rim);
   --lift: 0 18px 48px -24px rgba(0, 0, 0, 0.9);
   /* Motion. Strong ease-out for anything arriving or answering a touch, the iOS drawer curve for
      screens. --spring settles with a hair of overshoot (damping 0.82, response 0.35); --pop is the
      livelier one for small rewards (damping 0.6). Both fall back to the ease-out curve. */
   --ease: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-out: var(--ease);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   --spring: var(--ease);
@@ -160,7 +145,7 @@ body::before {
     radial-gradient(70vmax 46vmax at 12% -14%, rgba(225, 6, 0, 0.13), transparent 62%),
     radial-gradient(54vmax 40vmax at 110% 8%, rgba(255, 90, 31, 0.05), transparent 60%);
 }
-body.sheet-open { overflow: hidden; }
+body.sheet-open, body.confirm-open { overflow: hidden; }
 button, input, textarea, select { font: inherit; color: inherit; letter-spacing: inherit; }
 a { color: var(--silver); text-underline-offset: 3px; text-decoration-thickness: 1px; }
 h1, h2, h3 { margin: 0; line-height: 1.2; text-wrap: balance; }
@@ -184,8 +169,6 @@ p { margin: 0; }
   background: none; border: 0; padding: 4px 0; margin: -4px 0; color: var(--silver); cursor: pointer; font: inherit;
   text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px;
 }
-.prose { font-size: 0.97rem; line-height: 1.62; color: var(--text-2); }
-.prose p + p { margin-top: 12px; }
 .narrow { max-width: 620px; }
 .serif, .lt-title em, .gh h2 em, .oath-title em {
   font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.005em;
@@ -701,7 +684,6 @@ button.li:active .chk { transform: scale(0.86); transition: background-color var
 }
 .tag.bad { background: rgba(255, 45, 85, 0.14); color: var(--red); }
 .tag.uni { background: rgba(201, 206, 214, 0.14); color: var(--blue); }
-.tag.gold { background: var(--gold); color: #1a1000; }
 
 .li-auto { display: flex; align-items: center; gap: 6px; font-size: 0.8125rem; color: var(--text-2); margin-top: 2px; }
 .li-auto .ic { width: 14px; height: 14px; color: var(--red); }
@@ -1210,12 +1192,19 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 .sheet-move .btn { flex: 1 1 auto; }
 .sheet-form { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 18px; }
 
+/* The confirm sheet (ui.js confirmSheet) has a layer of its own above the app and under the toast, so a redraw
+   underneath never takes it away. */
+.confirm-layer { position: fixed; inset: 0; z-index: 55; }
+.confirm-sheet { display: grid; gap: 6px; }
+.confirm-title { font-size: 1.25rem; font-weight: 720; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.confirm-text { overflow-wrap: anywhere; }
+.confirm-actions { display: grid; gap: 10px; margin-top: 14px; }
+
 /* ---------- Coach ---------- */
 
 .brief-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .brief-buttons .btn { flex: 1 1 auto; }
 .chat { display: grid; gap: 10px; margin-top: 20px; }
-.chat-empty { padding: 18px 4px; max-width: 56ch; line-height: 1.55; }
 .chat > .empty-state { margin-top: 0; }
 .msg { max-width: min(88%, 620px); padding: 12px 16px; border-radius: 22px; line-height: 1.55; font-size: 1rem; overflow-wrap: anywhere; }
 .msg-text { white-space: pre-wrap; }
@@ -1340,7 +1329,6 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 .need { display: grid; gap: 2px; padding: 10px 12px; border-radius: 12px; background: var(--inset); box-shadow: inset 0 0 0 1px var(--line-soft); }
 .need span { font-size: 0.75rem; color: var(--text-2); }
 .need b { font-size: 1.0625rem; font-weight: 720; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
-.need-how { margin-top: 10px; color: var(--text-3); line-height: 1.5; }
 .need-more { margin-top: 12px; }
 .need-more summary { cursor: pointer; font-weight: 620; color: var(--text-2); margin-bottom: 10px; }
 .sic {
@@ -1352,9 +1340,10 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 .howto { margin-top: 14px; }
 .howto summary { color: var(--silver); padding: 0 2px; border-radius: 10px; }
 .howto ol { padding-left: 22px; margin: 8px 0 12px; display: grid; gap: 10px; font-size: 0.9375rem; line-height: 1.55; color: var(--text-2); }
-.howto li, .steps > li, .prose { overflow-wrap: anywhere; }
+.howto li, .steps > li { overflow-wrap: anywhere; }
 .howto ol b { color: var(--text); }
-.howto p.small { margin-top: 10px; color: var(--text-2); line-height: 1.55; }
+.howto ol.steps { padding-left: 0; margin: 14px 0 0; gap: 14px; }
+.howto > .seg { margin-top: 10px; }
 .howto-h { margin-top: 16px; font-weight: 650; font-size: 0.9375rem; }
 
 /* ---------- Dashboard ---------- */
@@ -1398,7 +1387,6 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 .bc-axis { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.6875rem; color: var(--text-3); }
 .bc-axis span { flex: 1; text-align: center; min-width: 0; }
 .bc-axis span.last { color: var(--text); font-weight: 750; text-decoration: underline; text-underline-offset: 3px; }
-.bc-key { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; font-size: 0.75rem; color: var(--text-3); }
 .stages { display: flex; gap: 2px; height: 12px; margin-top: 8px; border-radius: 6px; overflow: hidden; }
 .stages i { display: block; min-width: 2px; }
 .st-deep { background: #b3123b; color: #ff7d97; }
@@ -1573,7 +1561,6 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 .woop-card dt { font-size: 0.8125rem; color: var(--text-3); font-weight: 600; margin-top: 10px; }
 .woop-card dt:first-child { margin-top: 0; }
 .woop-card dd { margin: 0; font-size: 0.9375rem; line-height: 1.55; overflow-wrap: anywhere; }
-.empty-goal h3 { font-size: 1.25rem; }
 
 /* Outline: a strong root, bounded indentation, quiet guides. */
 .outline { border-radius: var(--r-group); padding: 4px 0 16px; background: var(--card); box-shadow: var(--rim); }
@@ -1623,8 +1610,6 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 .map-node.task.done rect { fill: #0a2a20; stroke: var(--green); }
 .map-node.habit rect { stroke: var(--blue); }
 .map-node rect.map-strength { fill: var(--blaze); stroke: none; }
-.map-node .map-kind { fill: var(--text-3); font-size: 10px; font-family: var(--mono); letter-spacing: 0.06em; }
-.map-node.task.done .map-kind { fill: var(--green); }
 .map-node[data-action] { cursor: pointer; }
 .map-node[data-action]:focus { outline: none; }
 .map-node[data-action]:focus-visible rect:first-child { stroke: var(--silver); stroke-width: 3; }
@@ -1718,7 +1703,8 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 .toast.bad { background: rgba(48, 12, 17, 0.97); color: #ffd6d9; box-shadow: inset 0 0 0 1px rgba(255, 45, 85, 0.6), 0 20px 50px rgba(0, 0, 0, 0.7); }
 .toast.big { font-size: 1.0625rem; font-weight: 650; padding: 15px 20px; }
-body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px); }
+.toast.link { pointer-events: auto; cursor: pointer; text-decoration: underline; text-decoration-color: var(--line-ctl); text-underline-offset: 3px; }
+body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px); }
 
 .gate {
   min-height: 100dvh; display: grid; align-content: center; max-width: 400px; margin: 0 auto;
@@ -1892,6 +1878,7 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
   }
   .sheet-head { top: -18px; margin: -18px -26px 0; padding: 18px 26px 12px; }
   .sheet-grab { display: none; }
+  .confirm-sheet { top: 24dvh; }
   .page-coach { max-width: 800px; }
   .li-side { max-width: 260px; }
   .node-meta { max-width: 240px; }
@@ -1908,7 +1895,7 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
   .page { max-width: 1264px; }
   .page-coach { max-width: 800px; }
   .only-wide { display: block; }
-  .only-narrow, .narrow-only, .only-narrow-flex { display: none !important; }
+  .only-narrow, .only-narrow-flex { display: none !important; }
   .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 380px); gap: 36px; align-items: start; }
   .split > aside > .section:first-child > .gh:first-child,
   .split > aside > .only-wide:first-child > .section:first-child > .gh:first-child { margin-top: 12px; }
@@ -2023,8 +2010,6 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
 /* ---------- Food ---------- */
 
 .vh { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; opacity: 0; }
-.food-date { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 4px 0 2px; font-weight: 650; }
-.food-date .icon-btn:disabled { opacity: 0.3; }
 .food-total { margin-top: 12px; }
 .ft-main { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
 .ft-kcal { font-size: 2.75rem; font-weight: 780; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
@@ -2034,7 +2019,7 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
 .nstrip > div { min-width: 0; padding-top: 8px; box-shadow: 0 -1px 0 var(--line); }
 .nstrip dt { font-size: 0.75rem; color: var(--text-3); font-weight: 600; letter-spacing: 0.01em; }
 .nstrip dd { margin: 2px 0 0; font-size: 1.0625rem; font-weight: 680; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.ft-extra, .fprev-extra { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; font-size: 0.875rem; color: var(--text-2); }
+.ft-extra { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; font-size: 0.875rem; color: var(--text-2); }
 .ft-extra .ic { width: 16px; height: 16px; color: var(--chrome-c); }
 .note.incomplete { display: flex; gap: 8px; align-items: flex-start; color: var(--honey); }
 .note.incomplete .ic { width: 16px; height: 16px; flex: none; margin-top: 2px; }
@@ -2057,8 +2042,7 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
 .tray-chip small { font-size: 0.75rem; color: var(--text-2); font-weight: 520; }
 .tray-chip .star-on { position: absolute; top: 11px; left: 10px; width: 13px; height: 13px; color: var(--honey); fill: var(--honey); }
 .tray-chip:has(.star-on) span { padding-left: 16px; }
-.food-row .li-side b { font-variant-numeric: tabular-nums; }
-.batch-actions { display: flex; align-items: center; gap: 6px; max-width: none; }
+.batch-actions, .meal-actions { display: flex; align-items: center; gap: 6px; max-width: none; }
 .food-repeat { justify-content: flex-start; }
 .credits { margin-top: 28px; font-size: 0.8125rem; color: var(--text-3); }
 .food-undo { margin-top: 12px; }
@@ -2069,7 +2053,6 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
 #food-results .eyebrow, .food-none .eyebrow { margin-top: 14px; }
 .fr .li-sub { display: block; }
 .food-none { margin-top: 18px; }
-.food-head { margin-top: -6px; }
 .amount-row { display: grid; grid-template-columns: minmax(80px, 0.7fr) minmax(0, 1.3fr); gap: 8px; margin-top: 12px; }
 .amount-row .input { min-width: 0; }
 .amount-row.small { margin-top: 6px; }
@@ -2084,13 +2067,9 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
 .fprev-main b { font-size: 1.75rem; font-weight: 760; letter-spacing: -0.03em; }
 .fprev-main span { color: var(--text-2); font-size: 0.875rem; }
 .fprev .nstrip { margin-top: 10px; }
-.food-src { margin-top: 16px; padding: 4px 0; }
-.food-src summary { cursor: pointer; font-weight: 600; color: var(--text-2); min-height: 44px; display: flex; align-items: center; }
 .icon-btn.on { color: var(--honey); }
 .icon-btn.on .ic { fill: var(--honey); }
 .photo-busy { display: grid; justify-items: center; gap: 10px; padding: 40px 0; }
-.photo-item { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
-.photo-item .li-side { display: grid; justify-items: end; gap: 6px; }
 .bgroup { margin-top: 20px; }
 .bgroup > h3, .bgroup-head h3 { font-size: 1rem; font-weight: 680; }
 .bgroup-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; }
@@ -2132,22 +2111,12 @@ a.tag { text-decoration: none; }
 .cov-n { font-variant-numeric: tabular-nums; color: var(--text-2); font-size: 0.875rem; }
 .cov-open { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 6px; font-size: 0.875rem; color: var(--text-2); }
 
-.food-today-card { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 12px; }
-.ftc-text { display: grid; gap: 3px; min-width: 0; }
-.ftc-kcal { font-size: 1.375rem; font-weight: 740; letter-spacing: -0.02em; }
-.ftc-sub { font-size: 0.875rem; color: var(--text-2); overflow-wrap: anywhere; }
-
 @media (max-width: 380px) {
   .tab > span:last-child { font-size: 0.625rem; letter-spacing: 0; }
   .tab .ic { width: 22px; height: 22px; }
   .tab-centre .tab-ic { width: 50px; height: 50px; margin-top: -22px; }
   .tab-centre .tab-ic .ic { width: 24px; height: 24px; }
   .recipe-filters { grid-template-columns: 1fr; }
-}
-
-@media (min-width: 1240px) {
-  .food-split { grid-template-columns: minmax(360px, 0.95fr) minmax(0, 1.05fr); }
-  .food-split > div:last-child > .section:first-child .gh { margin-top: 12px; }
 }
 
 /* ---------- Life: livelier presses, switches, sparks, rolling numbers, shimmer, scroll ---------- */
@@ -2193,8 +2162,8 @@ button.li:active .chev, a.li:active .chev { transform: translateX(3px); transiti
 .switch:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 /* Sparks leave a tick (motion.js): a layer of its own, above everything, that takes no touches. */
-.spark-layer { position: fixed; inset: 0; z-index: 70; overflow: hidden; pointer-events: none; contain: layout paint; }
-.spark { position: absolute; left: 0; top: 0; border-radius: 40%; will-change: transform, opacity; }
+.fx-spark-layer { position: fixed; inset: 0; z-index: 70; overflow: hidden; pointer-events: none; contain: layout paint; }
+.fx-spark { position: absolute; left: 0; top: 0; border-radius: 40%; will-change: transform, opacity; }
 
 /* A row that has gone from the list slips away from where it was. */
 .row-ghost { position: absolute; left: 0; right: 0; z-index: 0; pointer-events: none; }
@@ -2240,5 +2209,5 @@ button.li:active .chev, a.li:active .chev { transform: translateX(3px); transiti
 @media (forced-colors: active) {
   .switch { border: 1px solid CanvasText; }
   .switch:checked { background: Highlight; }
-  .spark-layer { display: none; }
+  .fx-spark-layer { display: none; }
 }

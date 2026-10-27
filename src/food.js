@@ -1829,7 +1829,7 @@ export const totalsText = (t) => DAY_KEYS.map((k) => `${NUTRIENT[k].label.toLowe
 export async function foodForCoach(date) {
   const d = await foodDay(date);
   if (!d.entries.length) return `Food ${d.today ? 'today' : d.date}: nothing logged.`;
-  const lines = [`Food ${d.today ? 'today' : d.date}, as he logged it (a "+" means some items have no value for that nutrient, so it is a floor; "—" means unknown). Food never affects HP, and you never set or invent targets for it: ${totalsText(d.total)}; drinks ${d.drinksMl} ml.`];
+  const lines = [`Food ${d.today ? 'today' : d.date}, as he logged it (a "+" means some items have no value for that nutrient, so it is a floor; "–" means unknown). Food never affects HP, and you never set or invent targets for it: ${totalsText(d.total)}; drinks ${d.drinksMl} ml.`];
   for (const e of d.entries) {
     lines.push(`  entry ${e.id} | ${e.slot} | ${e.name}${e.brand ? ` (${e.brand})` : ''}${e.amountText ? `, ${e.amountText}` : ''} | ${show(e.nutrients, 'kcal')}${e.estimate ? ' | estimated from a photo or a typed description' : ''}`);
   }
