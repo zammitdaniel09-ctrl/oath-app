@@ -300,11 +300,11 @@ export function round(v, dec = 0) {
   return Math.round(Number(v) * p) / p;
 }
 
-// "12.4 g", "—" when unknown, and a trailing "+" when the total is missing some lines.
+// "12.4 g", "–" when unknown, and a trailing "+" when the total is missing some lines.
 export function show(n, key, { unit = true } = {}) {
   const d = NUTRIENT[key];
   const v = num(n?.[key]);
-  if (v === null) return '—';
+  if (v === null) return '–';
   const s = new Intl.NumberFormat('en-GB', { maximumFractionDigits: d.dec }).format(round(v, d.dec));
   return `${s}${n?.missing?.[key] ? '+' : ''}${unit ? (d.unit === 'kcal' ? ' kcal' : ` ${d.unit}`) : ''}`;
 }

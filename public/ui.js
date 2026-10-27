@@ -15,8 +15,6 @@ export const state = {
   goals: null,
   goal: null,
   pardoning: null,
-  editingHabit: null,
-  editingTask: null,
   editingGoal: false,
   sending: false,
   focusMinutes: 25,
@@ -34,9 +32,14 @@ export const state = {
   push: { supported: false, permission: 'default', subscribed: false },
 };
 
-export const hooks = { onUnauthed: () => {} };
+// Set by the modules that own them: onUnauthed (app.js) shows the way in, busy (motion.js) says a drag
+// or swipe is under way, idle (app.js) draws a screen that was left stale.
+export const hooks = { onUnauthed: () => {}, busy: () => false, idle: () => {} };
 
-export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+export const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+export const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
+
+export const esc =(s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 export class ApiError extends Error {
   constructor(message, status) { super(message); this.status = status; }
@@ -73,7 +76,8 @@ const toastQueue = [];
 function showToast(t) {
   toastShowing = t;
   $toast.textContent = t.msg;
-  $toast.className = `toast show${t.bad ? ' bad' : ''}${t.big ? ' big' : ''}`;
+  $toast.dataset.href = t.href || '';
+  $toast.className = `toast show${t.bad ? ' bad' : ''}${t.big ? ' big' : ''}${t.href ? ' link' : ''}`;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     $toast.className = 'toast';
@@ -87,10 +91,20 @@ function showToast(t) {
 // log-food, send, receive, sheet-open, sheet-close, success, error, nav, toggle.
 export const fx = (kind) => document.dispatchEvent(new CustomEvent('oath:fx', { detail: kind }));
 
+// A toast with an href opens it when tapped; every other toast stays out of the way of touches.
+$toast.addEventListener('click', () => {
+  const href = $toast.dataset.href;
+  if (!href) return;
+  clearTimeout(toastTimer);
+  $toast.className = 'toast';
+  toastShowing = null;
+  location.hash = href;
+});
+
 // Only a failure is heard from here. A plain toast is information, and an action that worked (act with a
 // message, a tick, a logged meal) has its own sound.
-export function toast(msg, bad = false, ms = null, big = false) {
-  const t = { msg, bad, big, ms: ms || (bad ? 4200 : 2600) };
+export function toast(msg, bad = false, ms = null, big = false, href = '') {
+  const t = { msg, bad, big, href, ms: ms || (bad ? 4200 : 2600) };
   if (toastShowing?.msg === msg || toastQueue.some((q) => q.msg === msg)) return;
   if (bad) fx('error');
   if (!toastShowing || bad) return showToast(t);
@@ -116,6 +130,115 @@ export async function act(fn, okMsg) {
   }
 }
 
+// ---------- Redraws: a background refresh waits for a quiet moment ----------
+
+// A finger down, or only just lifted: a redraw now would take the target out from under the tap.
+let pressUntil = 0;
+const lifted = () => {
+  pressUntil = performance.now() + 350;
+  setTimeout(() => hooks.idle(), 400);
+};
+document.addEventListener('pointerdown', () => { pressUntil = performance.now() + 5000; }, true);
+document.addEventListener('pointerup', lifted, true);
+document.addEventListener('pointercancel', lifted, true);
+document.addEventListener('focusout', () => setTimeout(() => hooks.idle(), 120));
+
+// Whether a refresh that finished in the background may redraw the screen: not while a field has focus
+// (the keyboard would close), a sheet is open, a form is half filled, a finger is down or a drag is under way.
+export function canRedraw() {
+  if (state.dirty || state.sheet || state.sheetNode || state.foodSheet || state.calSheet) return false;
+  if (hooks.busy() || performance.now() < pressUntil) return false;
+  return !document.activeElement?.matches?.('input, textarea, select');
+}
+
+// Draws the screen a background refresh changed, once the answers that arrive together have arrived. If it
+// cannot be drawn then, the screen is marked stale and hooks.idle draws it at the next safe moment; a draw
+// of any kind clears the mark (app.js render).
+let redrawTimer = null;
+export function redrawIfIdle(route, draw) {
+  clearTimeout(redrawTimer);
+  redrawTimer = setTimeout(() => {
+    if (state.route !== route) return;
+    if (canRedraw()) draw();
+    else state.stale = route;
+  }, 60);
+}
+
+// ---------- Confirm: a sheet that asks before something is lost ----------
+
+// A title, one line and a destructive button, with Cancel. Resolves true for the button, false for Cancel,
+// the backdrop or Escape. It sits in a layer of its own outside #app, so a redraw underneath leaves it be.
+const DRAWER = 'cubic-bezier(0.32, 0.72, 0, 1)';
+let askClose = null;
+export function confirmSheet(title, text = '', yes = 'Delete') {
+  askClose?.(false);
+  return new Promise((resolve) => {
+    const before = document.activeElement;
+    const layer = document.createElement('div');
+    layer.className = 'confirm-layer';
+    layer.innerHTML = `<div class="sheet-backdrop"></div>
+      <div class="sheet confirm-sheet" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title"${text ? ' aria-describedby="confirm-text"' : ''}>
+        <div class="sheet-grab" aria-hidden="true"></div>
+        <h2 class="confirm-title" id="confirm-title">${esc(title)}</h2>${text ? `<p class="confirm-text muted" id="confirm-text">${esc(text)}</p>` : ''}
+        <div class="confirm-actions"><button type="button" class="btn danger big wide" data-yes>${esc(yes)}</button><button type="button" class="btn tinted big wide" data-no>Cancel</button></div>
+      </div>`;
+    const sheet = layer.querySelector('.sheet');
+    const backdrop = layer.querySelector('.sheet-backdrop');
+    const wide = window.matchMedia('(min-width: 900px)').matches;
+    const play = (el, frames, opts) => {
+      try { return el.animate(frames, opts); } catch { return null; }
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        close(false);
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        const buttons = [...layer.querySelectorAll('button')];
+        const at = buttons.indexOf(document.activeElement);
+        buttons[(at + (e.shiftKey ? -1 : 1) + buttons.length) % buttons.length].focus();
+      }
+    };
+    let closed = false;
+    function close(ok) {
+      if (closed) return;
+      closed = true;
+      askClose = null;
+      document.removeEventListener('keydown', onKey, true);
+      $app.inert = false;
+      document.body.classList.remove('confirm-open');
+      fx('sheet-close');
+      const out = reduced() ? [{ opacity: 1 }, { opacity: 0 }]
+        : wide ? [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(10px) scale(0.97)' }]
+          : [{ transform: 'none' }, { transform: 'translateY(100%)' }];
+      const a = play(sheet, out, { duration: 200, easing: DRAWER, fill: 'forwards' });
+      play(backdrop, [{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: 'forwards' });
+      const end = () => layer.remove();
+      if (a) a.finished.then(end, end); else end();
+      setTimeout(end, 400);
+      if (before?.isConnected) before.focus?.({ preventScroll: true });
+      resolve(ok);
+    }
+    layer.addEventListener('click', (e) => {
+      if (e.target.closest('[data-yes]')) close(true);
+      else if (e.target.closest('[data-no]') || e.target === backdrop) close(false);
+    });
+    document.body.append(layer);
+    document.body.classList.add('confirm-open');
+    $app.inert = true;
+    document.addEventListener('keydown', onKey, true);
+    askClose = close;
+    fx('sheet-open');
+    const into = reduced() ? [{ opacity: 0 }, { opacity: 1 }]
+      : wide ? [{ opacity: 0, transform: 'translateY(14px) scale(0.97)' }, { opacity: 1, transform: 'none' }]
+        : [{ transform: 'translateY(100%)' }, { transform: 'none' }];
+    play(sheet, into, { duration: 320, easing: DRAWER });
+    play(backdrop, [{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: 'ease-out' });
+    layer.querySelector('[data-no]').focus({ preventScroll: true });
+  });
+}
+
 export const form2obj = (form) => Object.fromEntries(new FormData(form).entries());
 
 export const tz = () => state.today?.timezone || 'Europe/Malta';
@@ -128,6 +251,14 @@ export function fmtClock(iso) {
 export function fmtDay(dateStr, opts = { weekday: 'short', day: 'numeric', month: 'short' }) {
   if (!dateStr) return '';
   return new Intl.DateTimeFormat('en-GB', { ...opts, timeZone: 'UTC' }).format(new Date(`${dateStr}T12:00:00Z`));
+}
+
+export const shortDay = (dateStr) => fmtDay(dateStr, { weekday: 'short', day: 'numeric', month: 'short' });
+
+export function addDays(date, n) {
+  const d = new Date(`${date}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
 }
 
 export function localToday() {
@@ -258,7 +389,6 @@ const ICONS = {
   heart: '<path d="M12 19.6s-7.3-4.4-7.3-9.9A4 4 0 0 1 12 7.3a4 4 0 0 1 7.3 2.4c0 5.5-7.3 9.9-7.3 9.9z"/>',
   scale: '<rect x="4" y="4" width="16" height="16" rx="4.5"/><path d="M8.8 10.2a3.2 3.2 0 0 1 6.4 0M12 10.2l1.4-1.6"/>',
   dumbbell: '<path d="M3.5 10v4M6.5 7.5v9M17.5 7.5v9M20.5 10v4M6.5 12h11"/>',
-  stand: '<circle cx="12" cy="5" r="1.8"/><path d="M12 8v6.5M12 14.5l-3 5.5M12 14.5l3 5.5M7.5 10.5h9"/>',
   calendar: '<rect x="3.8" y="5" width="16.4" height="15" rx="3"/><path d="M3.8 9.8h16.4M8.3 3v4M15.7 3v4"/>',
   business: '<rect x="3.5" y="7.5" width="17" height="12.5" rx="2.8"/><path d="M9 7.5V5.8c0-.7.6-1.3 1.3-1.3h3.4c.7 0 1.3.6 1.3 1.3v1.7M3.5 12.8h17"/>',
   bolt: '<path d="M13.2 3L5.5 13.3h5.8L10.6 21l7.9-10.4h-5.9z"/>',
@@ -279,8 +409,6 @@ const ICONS = {
   map: '<path d="M4 6.5l5-2 6 2 5-2v13l-5 2-6-2-5 2z"/><path d="M9 4.5v13M15 6.5v13"/>',
   trend: '<path d="M4 16.5l5-5 3.5 3.5L20 7.5M15 7.5h5v5"/>',
   send: '<path d="M12 19V5M6 11l6-6 6 6"/>',
-  spark: '<path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z"/>',
-  season: '<path d="M12 3.5c4.7 0 8.5 3.8 8.5 8.5s-3.8 8.5-8.5 8.5"/><path d="M12 20.5c-4.7 0-8.5-3.8-8.5-8.5" stroke-dasharray="2 3"/><path d="M12 8v4l2.5 1.5"/>',
   uni: '<path d="M3 9.5L12 5l9 4.5-9 4.5z"/><path d="M7 11.5v4c1.4 1.3 3 2 5 2s3.6-.7 5-2v-4M21 9.5v5"/>',
   food: '<path d="M7 3.5v6.2a2.3 2.3 0 0 0 4.6 0V3.5M9.3 3.5v17M16.5 20.5V3.5c-2 .8-3 3.3-3 6.3 0 2.3 1 3.4 3 3.7"/>',
   camera: '<path d="M4.5 8.2c0-1 .8-1.7 1.7-1.7h2.2l1.4-2h4.4l1.4 2h2.2c.9 0 1.7.8 1.7 1.7v9.6c0 .9-.8 1.7-1.7 1.7H6.2c-.9 0-1.7-.8-1.7-1.7z"/><circle cx="12" cy="12.8" r="3.4"/>',
@@ -289,7 +417,6 @@ const ICONS = {
   recipe: '<path d="M5.5 4.5h10.2a2.8 2.8 0 0 1 2.8 2.8v12.2H8.3a2.8 2.8 0 0 1-2.8-2.8zM5.5 16.7a2.8 2.8 0 0 1 2.8-2.8h10.2M9.5 8.5h5"/>',
   blend: '<path d="M7.5 3.5h9l-1.2 9.5H8.7zM8.7 13h6.6l1.2 7.5h-9z"/><path d="M12 16.5v.5"/>',
   bowl: '<path d="M3.8 11.5h16.4a8.2 8.2 0 0 1-16.4 0zM9 20h6M14.5 4.5c-1 1.2-1 2.6 0 3.8M11 5c-.8 1-.8 2.2 0 3.2"/>',
-  pot: '<path d="M4.5 9.5h15v7.2a3.3 3.3 0 0 1-3.3 3.3H7.8a3.3 3.3 0 0 1-3.3-3.3zM2.5 11.5h2M19.5 11.5h2M9 9.5V7.8a3 3 0 0 1 6 0v1.7"/>',
   copy: '<rect x="8.5" y="8.5" width="11" height="11" rx="2.4"/><path d="M15.5 8.5V6.2c0-.9-.8-1.7-1.7-1.7H6.2c-.9 0-1.7.8-1.7 1.7v7.6c0 .9.8 1.7 1.7 1.7h2.3"/>',
   trash: '<path d="M5 7h14M10 4.5h4M7 7l.9 12c.1.9.8 1.5 1.7 1.5h4.8c.9 0 1.6-.6 1.7-1.5L17 7"/>',
   star: '<path d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/>',
@@ -297,8 +424,7 @@ const ICONS = {
 };
 
 // The Oath mark: a ring cut down the middle and slid apart. Chrome is the word, Merlot is the deed,
-// and the step between them is the gap each day closes. Same geometry as HALVES in tools/icons.mjs,
-// which draws the Home Screen icon; change them together.
+// and the step between them is the gap each day closes.
 let markCount = 0;
 export function brandMark(size = 32, cls = '') {
   markCount += 1;
@@ -424,7 +550,7 @@ function closeMoment(el, t, reduce) {
 // redraw can pick the sweep up where it was), and play any closing moment that is due. Reduced
 // motion shows values at once; the closing flare and its sound still happen.
 export function drawRings() {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce = reduced();
   const now = performance.now();
   document.querySelectorAll('[data-rings]').forEach((box) => {
     const s = sweeps.get(box.dataset.rings);
@@ -516,10 +642,10 @@ export function sparkline(values, { cls = '', height = 44 } = {}) {
   return `<svg class="spark ${cls}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">${paths}</svg>`;
 }
 
-export const fmtInt = (n) => (n === null || n === undefined ? '-' : Math.round(n).toLocaleString('en-GB'));
-export const fmtDec = (n, d = 1) => (n === null || n === undefined ? '-' : Number(n).toFixed(d).replace(/\.0+$/, ''));
+export const fmtInt = (n) => (n === null || n === undefined ? '–' : Math.round(n).toLocaleString('en-GB'));
+export const fmtDec = (n, d = 1) => (n === null || n === undefined ? '–' : Number(n).toFixed(d).replace(/\.0+$/, ''));
 export function fmtHours(h) {
-  if (h === null || h === undefined) return '-';
+  if (h === null || h === undefined) return '–';
   const m = Math.round(h * 60);
   return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
 }

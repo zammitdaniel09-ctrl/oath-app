@@ -8,12 +8,10 @@
 // the spring so there is no seam. Reduced motion keeps the meaning (fades) and drops the travel.
 // The same moments are heard: sheets and taps ask sound.js for their sounds through fx().
 
-import { state, haptic, icon, fx } from './ui.js';
+import { state, hooks, haptic, icon, fx, reduced } from './ui.js';
 
 const $app = document.getElementById('app');
-const RM = window.matchMedia('(prefers-reduced-motion: reduce)');
 const WIDE = window.matchMedia('(min-width: 900px)');
-const reduced = () => RM.matches;
 
 const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
 const EASE_DRAWER = 'cubic-bezier(0.32, 0.72, 0, 1)';
@@ -188,7 +186,7 @@ export function afterShell(snap) {
 // ---------- Navigation ----------
 
 // Settings, Review and Dashboard sit one level under the tabs on the phone; a parameter is one level deeper.
-const UNDER = ['review', 'settings', 'dashboard'];
+const UNDER = ['review', 'settings', 'health'];
 function depth(v) {
   const parts = v.split('/');
   return parts.length - 1 + (!WIDE.matches && UNDER.includes(parts[0]) ? 1 : 0);
@@ -344,7 +342,7 @@ function count(key, node, from, to, ms) {
 
 // For small counts that tick up and down (the open count on the tab, a day's calories, done of total).
 // Mark any other with data-roll. The ones that count up from zero (data-count) have their own motion.
-const ROLL = '[data-roll], .tab-badge, .ft-kcal, .ftc-kcal, .fring-c > b, .lg-val:not([data-count])';
+const ROLL = '[data-roll], .tab-badge, .ft-kcal, .fring-c > b, .lg-val:not([data-count])';
 const rolled = new Map();
 
 function rollAfter(snap, jobs) {
@@ -794,14 +792,14 @@ function spark(x, y, n, reach, size, fall = 0) {
   if (reduced() || document.visibilityState !== 'visible') return;
   if (!sparkLayer) {
     sparkLayer = document.createElement('div');
-    sparkLayer.className = 'spark-layer';
+    sparkLayer.className = 'fx-spark-layer';
     sparkLayer.setAttribute('aria-hidden', 'true');
     document.body.append(sparkLayer);
   }
   const specks = [];
   for (let i = 0; i < n; i += 1) {
     const dot = document.createElement('i');
-    dot.className = 'spark';
+    dot.className = 'fx-spark';
     const s = size * (0.7 + Math.random() * 0.6);
     dot.style.cssText = `width:${s}px;height:${fall ? s * (i % 3 ? 1 : 1.8) : s}px;margin:${-s / 2}px 0 0 ${-s / 2}px;background:${SPARK[i % SPARK.length]}`;
     const ang = (i / n) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
@@ -1230,6 +1228,7 @@ function onChange(e) {
 
 // Someone is mid-gesture: background refreshes wait, so the thing under the finger stays put.
 export const busy = () => Boolean(drag || swipe?.on || pull);
+hooks.busy = busy;
 
 export function initMotion(callbacks = {}) {
   cb = callbacks;

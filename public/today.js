@@ -1,7 +1,7 @@
 // Today's overview: the ring hero and the small charts under it. Each tile opens the page with the
 // detail; the day's own lists follow below them (app.js). Plain strings, drawn on every redraw, so
 // anything that moves remembers where it was and never replays on a redraw.
-import { state, esc, api, icon, rings, RING_MS, ringEase, ringFx, fmtInt, fmtDay, fmtHours, daysBetween, miniRing, safeColor } from './ui.js';
+import { state, esc, api, icon, rings, RING_MS, ringEase, ringFx, fmtInt, fmtDay, fmtHours, daysBetween, miniRing, safeColor, redrawIfIdle } from './ui.js';
 import { NUTRIENT, refOf, drinksRef } from './nutrition.js';
 
 let ctx = { render: () => {} };
@@ -44,7 +44,7 @@ export function loadOverview(t) {
       health: h.status === 'fulfilled' ? h.value : o?.health || null,
       food: f.status === 'fulfilled' ? f.value : o?.food || null,
     };
-    if (state.route === 'today' && !state.dirty && !state.sheet) ctx.render();
+    redrawIfIdle('today', ctx.render);
   }).finally(() => { loading = false; });
 }
 
@@ -396,7 +396,7 @@ function healthTiles(t, hist) {
   const h = t.health;
   if (!h) return '';
   if (!h.connected) {
-    return `<a class="card ov-tile ov-connect" href="#/dashboard?section=health">
+    return `<a class="card ov-tile ov-connect" href="#/health?section=health">
       <span class="connect-ic">${icon('heart')}</span>
       <span><b>Connect Apple Health</b><span class="li-sub">Steps, sleep and workouts</span></span>${icon('chevron', 'chev')}</a>`;
   }
@@ -413,11 +413,11 @@ function healthTiles(t, hist) {
   const stepsAvg = avgOf(steps);
   const sleep = series('sleep_hours');
   const sleepAvg = avgOf(sleep);
-  const stepsTile = tile('#/dashboard', 'ov-steps', 'steps', 'Steps',
+  const stepsTile = tile('#/health', 'ov-steps', 'steps', 'Steps',
     `${num(h.steps) !== null ? big(tn('steps-t', h.steps)) : big('<span class="na">–</span>')}
     ${columns(steps, { key: 'steps', label: 'Steps, last 7 days', titles, labels, fmt: fmtInt, ref: goals.steps || null, refLabel: 'goal', cls: 'c-move' })}
     ${sub(stepsAvg === null ? 'No days before today' : `Average ${fmtInt(stepsAvg)}`)}`);
-  const sleepTile = tile('#/dashboard', 'ov-sleep', 'moon', 'Sleep',
+  const sleepTile = tile('#/health', 'ov-sleep', 'moon', 'Sleep',
     `${num(h.sleep_hours) !== null ? big(esc(fmtHours(h.sleep_hours))) : big('<span class="na">–</span>', 'no reading')}
     ${columns(sleep, { key: 'sleep', label: 'Sleep, last 7 nights', titles, labels, fmt: (v) => fmtHours(v), ref: goals.sleep_hours || null, refLabel: 'goal', refText: `${fmtN(goals.sleep_hours, goals.sleep_hours % 1 ? 1 : 0)}h`, cls: 'c-sleep' })}
     ${sub(sleepAvg === null ? 'No nights before this one' : `Average ${fmtHours(sleepAvg)}`)}`);

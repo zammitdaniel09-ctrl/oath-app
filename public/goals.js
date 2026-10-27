@@ -1,6 +1,6 @@
 // Goals and their mind maps. Outline first on iPhone (the research is clear that canvases are the
 // weakest way to edit maps on a phone); the map view gives the overview and works best on iPad.
-import { state, esc, api, act, toast, fmtDay, bar, strengthChip, haptic, DAY_NAMES, form2obj, localToday, icon, pageHead, miniRing, emptyState } from './ui.js';
+import { state, esc, api, act, toast, fmtDay, bar, strengthChip, haptic, DAY_NAMES, form2obj, localToday, icon, pageHead, miniRing, emptyState, confirmSheet } from './ui.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 export function initGoals(c) { ctx = c; }
@@ -460,7 +460,7 @@ export async function goalsClick(a, el) {
       if (await act(() => api('POST', `/api/nodes/${id}/move`, { op: el.dataset.op }))) await reloadGoal();
       return true;
     case 'node-delete':
-      if (!confirm('Delete this branch? Branches under it move up a level. A task or habit made from it stays.')) return true;
+      if (!await confirmSheet('Delete this branch?', 'Branches under it move up. Tasks and habits stay.')) return true;
       if (await act(() => api('DELETE', `/api/nodes/${id}`), 'Branch deleted.')) {
         state.sheetNode = null;
         if (state.mapParent === id) state.mapParent = null;
@@ -477,7 +477,7 @@ export async function goalsClick(a, el) {
       return true;
     case 'goal-status': {
       const s = el.dataset.status;
-      if (s === 'dropped' && !confirm('Drop this goal? Its tasks and habits stay.')) return true;
+      if (s === 'dropped' && !await confirmSheet('Drop this goal?', 'Its tasks and habits stay.', 'Drop')) return true;
       if (await act(() => api('POST', `/api/goals/${state.param}/status`, { status: s }), s === 'done' ? 'Achieved. Set the next one.' : s === 'dropped' ? 'Dropped.' : 'Reopened.')) await reloadGoal();
       return true;
     }

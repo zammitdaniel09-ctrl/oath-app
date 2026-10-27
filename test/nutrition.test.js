@@ -119,7 +119,7 @@ test('unknowns stay unknown through scaling and totals; an empty day is a known 
   assert.equal(t.missing.sugars, 2);
   assert.equal(complete(t), false);
   assert.equal(total([]).kcal, 0);
-  assert.equal(show({ protein: null }, 'protein'), '—');
+  assert.equal(show({ protein: null }, 'protein'), '–');
 });
 
 test('sub-recipes count once at the share used, and loops are refused', () => {
