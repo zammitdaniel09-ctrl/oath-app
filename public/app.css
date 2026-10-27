@@ -1870,8 +1870,8 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
   .tab.wide-only:first-of-type { margin-top: 0; }
   .wide-only { display: grid !important; }
   .tabbar > .tab.wide-only { margin-top: 0; }
-  .tabbar > a.tab:nth-of-type(7) { margin-top: 18px; position: relative; }
-  .tabbar > a.tab:nth-of-type(7)::before { content: ''; position: absolute; top: -10px; left: 12px; right: 12px; height: 1px; background: var(--line); }
+  .tabbar > a.tab:nth-of-type(8) { margin-top: 18px; position: relative; }
+  .tabbar > a.tab:nth-of-type(8)::before { content: ''; position: absolute; top: -10px; left: 12px; right: 12px; height: 1px; background: var(--line); }
   .toast { bottom: 28px; margin-left: calc(var(--side) / 2); }
   .composer-dock { bottom: 16px; }
   /* Centred by margins, not a transform, so the transform is free for its entrance. */

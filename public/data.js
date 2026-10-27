@@ -270,7 +270,7 @@ function calendarSection(d) {
   const upcoming = d.events.length ? eventsByDay(d.events) : '';
   // Feeds and the add form fold away once something is connected; the week itself comes first.
   const manageOpen = !d.feeds.length || state.query?.get('section') === 'calendars';
-  return `<section class="section" id="calendars"><div class="gh"><h2>Uni and calendar</h2>${d.feeds.length ? `<button class="gh-link" data-action="cal-sync">${icon('sync')}Sync now</button>` : ''}</div>
+  return `<section class="section" id="calendars"><div class="gh"><h2>Uni and calendar</h2><span class="gh-links"><a class="gh-link" href="#/calendar">${icon('calendar')}Open calendar</a>${d.feeds.length ? `<button class="gh-link" data-action="cal-sync">${icon('sync')}Sync now</button>` : ''}</span></div>
     ${nextEvent(d.events)}
     ${upcoming ? `<div class="card agenda">${upcoming}</div>` : d.feeds.length ? emptyState({ icon: 'calendar', title: 'A clear week', text: 'Nothing on your calendars in the next 7 days.', small: true }) : ''}
     <details class="card disclosure manage-cal"${manageOpen ? ' open' : ''}>
