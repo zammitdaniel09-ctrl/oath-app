@@ -16,12 +16,13 @@
 //    honestly the same food (brand or restaurant first, then variety, then state), the portion that
 //    matches the size word, and says why. When nothing fits there is no record, and the estimate is
 //    logged instead. Without the AI, or when that call fails, a local score makes the same kind of choice.
-// The record's own numbers are always used. The estimate only fills what the record does not say
-// (logFood's `fill`), and those values stay marked as estimated.
+// The record's own numbers are always used. The estimate only fills what the record does not say: the
+// core values as it is logged (logFood's `fill`), the vitamins, minerals and the rest once the filler
+// has tried a USDA reference and the web (food-enrich.js). Filled values stay marked as estimated.
 import { logEvent } from './db.js';
 import { RuleError } from './engine.js';
 import { readStructured, aiEnabled } from './coach.js';
-import { searchFoods, FILL_KEYS, cleanFill } from './food.js';
+import { searchFoods, FILL_KEYS, ESTIMATE_KEYS, MICRO_TEXT, cleanFill } from './food.js';
 import { productByBarcode } from './off.js';
 import { resolve, round, norm } from '../public/nutrition.js';
 
@@ -34,8 +35,8 @@ const LABEL_KEYS = ['kcal', 'kj', 'protein', 'carbs', 'sugars', 'fat', 'satfat',
 const UNITS = ['g', 'ml', 'piece'];
 
 // One food as the reading understood it. Text fields are empty strings when there is nothing to say
-// (no extra null unions in the schema). per100 covers every value a record might lack, so the diary
-// never shows a missing sugar, fibre or salt that the food really has.
+// (no extra null unions in the schema). per100 covers every value a record might lack, vitamins and
+// minerals included, so the diary never shows a missing sugar, fibre or iron that the food really has.
 const MEAL_ITEM = {
   name: STR,
   brand: STR,
@@ -47,7 +48,7 @@ const MEAL_ITEM = {
   weight: NUM,
   confidence: { type: 'string', enum: ['low', 'medium', 'high'] },
   searches: { type: 'array', items: STR },
-  per100: obj(Object.fromEntries(FILL_KEYS.map((k) => [k, NUM]))),
+  per100: obj(Object.fromEntries(ESTIMATE_KEYS.map((k) => [k, NUM]))),
 };
 
 // How to describe each food, shared by the photo and the typed reading.
@@ -60,7 +61,7 @@ const ITEM_RULES = `For each food or drink, be exactly as specific as what was s
 - amount and unit: the amount eaten: grams for food, ml for drinks, or "piece" with a count for whole countable things (an egg, a banana, a slice of bread). Use any amount given. Otherwise fit it to the size and, for a brand or restaurant, to that place's real portion (a Burger King large fries is about 150 to 175 g); with no size, one typical portion in Malta.
 - weight: that same amount in grams (ml for drinks), so a count of pieces is weighed too.
 - searches: 2 or 3 short phrases that would find it in a food database that is mostly American (USDA), most specific first, never with size words: the brand or restaurant with the name when there is one ("burger king french fries"), then the name with its variety or preparation ("red grapes", "potato french fries"), then a plain generic phrase ("grapes", "french fries"). Use the American word where it differs: chips are "french fries", crisps are "potato chips", courgette is "zucchini", aubergine is "eggplant", prawns are "shrimp", mince is "ground beef".
-- per100: your estimate for this exact food per 100 g (per 100 ml for drinks), for a brand or restaurant its published values if you know them: kcal; protein, carbs, sugars, fat, satfat, fibre and salt in grams; caffeine in mg; alcohol in grams. Give 0 only when the food really has none (no sugars in plain meat, no alcohol in juice): most foods have some sugars, fibre and salt.
+- per100: your estimate for this exact food per 100 g (per 100 ml for drinks), for a brand or restaurant its published values if you know them: kcal; protein, carbs, sugars, fat, satfat, fibre and salt in grams; caffeine in mg; alcohol in grams; and, from typical composition data for this food, ${MICRO_TEXT}. Give 0 only when the food really has none (no sugars in plain meat, no alcohol in juice, no vitamin B12 in plants): most foods have some sugars, fibre, salt, potassium and magnesium.
 A dish is one item unless its parts are listed or clearly separate (a kebab and chips are two items; a ham sandwich is one). Butter, oil, sauces, dressings and sugar are their own items.`;
 
 export const PHOTO_SCHEMA = obj({
@@ -231,7 +232,8 @@ function scoreFor(rec, u) {
   else if (rec.brand || rec.kind === 'product') score -= u.brand && !brandMatch ? 30 : 5;
   if (u.variety) score += 20 * share(u.variety);
   if (u.preparation) score += 10 * share(u.preparation);
-  if ((u.unit === 'ml') !== Boolean(rec.liquid)) score -= 15;
+  // `anyForm`: nothing says whether it was eaten or drunk (the filler's quick adds with no amount).
+  if (!u.anyForm && (u.unit === 'ml') !== Boolean(rec.liquid)) score -= 15;
   const said = new Set(words([u.name, u.brand, u.variety, u.preparation, ...u.searches].filter(Boolean).join(' ')));
   score -= Math.min(10, [...tokens].filter((t) => t && !said.has(t) && !said.has(`${t}s`) && !said.has(t.replace(/s$/, ''))).length);
   // Hand-picked records (clean names, checked portions) win a tie with the bulk USDA rows.
@@ -250,22 +252,26 @@ const SHORTLIST = 12;
 
 // Several searches for one food, deduplicated into a ranked shortlist of about 12 records. Records
 // with no energy value of their own (placeholders waiting for a label) are left out: logging one
-// would be the estimate under a record's name.
-export async function shortlistFor(u) {
+// would be the estimate under a record's name. `keep` narrows the pool further (the filler takes
+// USDA records only, as references).
+export async function shortlistFor(u, { keep = null } = {}) {
   const pool = new Map();
   const take = (rows) => {
     for (const r of rows) {
       if (pool.has(r.key) || num(r.nutrients?.kcal) === null || r.status === 'needs-label') continue;
+      if (keep && !keep(r)) continue;
       pool.set(r.key, r);
     }
   };
   const { queries, head } = queriesFor(u);
   for (const q of queries) {
-    let rows = await searchFoods(q, { limit: 10 });
-    if (!rows.length && looser(q) !== q) rows = await searchFoods(looser(q), { limit: 10 });
+    // A narrowed pool looks further down each search, past the records it leaves out.
+    const limit = keep ? 30 : 10;
+    let rows = await searchFoods(q, { limit });
+    if (!rows.length && looser(q) !== q) rows = await searchFoods(looser(q), { limit });
     take(rows);
   }
-  if (pool.size < 4 && head) take(await searchFoods(head, { limit: 10 }));
+  if (pool.size < 4 && head) take(await searchFoods(head, { limit: keep ? 30 : 10 }));
   const ranked = [...pool.values()].map((r, order) => ({ r, ...scoreFor(r, u), order }))
     .sort((a, b) => b.score - a.score || a.order - b.order)
     .slice(0, SHORTLIST);
@@ -398,12 +404,14 @@ function applyChoice(u, short, c) {
 }
 
 // One structured call for every item that has a shortlist. Returns one pick per item:
-// { match, qty, unit, why }, with match null when nothing fits.
-export async function chooseRecords(items, shortlists, { context = '' } = {}) {
+// { match, qty, unit, why }, with match null when nothing fits. `note` tells the model what the
+// choice is for when it is not a meal being logged (the filler's references).
+export async function chooseRecords(items, shortlists, { context = '', note = '' } = {}) {
   const local = items.map((u, i) => localPick(u, shortlists[i]));
   const asked = items.map((_, i) => i).filter((i) => shortlists[i].list.length);
   if (!asked.length || !aiEnabled()) return local;
   const prompt = [
+    note || null,
     context ? `What he said, or what the photo showed: ${clip(context, 600)}` : null,
     ...asked.map((i) => itemBlock(items[i], i, shortlists[i].list)),
   ].filter(Boolean).join('\n\n');

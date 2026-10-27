@@ -305,6 +305,34 @@ export function show(n, key, { unit = true } = {}) {
   return `${s}${n?.missing?.[key] ? '+' : ''}${unit ? (d.unit === 'kcal' ? ' kcal' : ` ${d.unit}`) : ''}`;
 }
 
+// Where a diary entry's filled values came from (its `fillSource`), as the short phrases of the line
+// under its facts: "Vitamins and minerals filled from USDA: Cola", "Values from twistees.com.mt", "The
+// rest marked ~ are estimates", "Worked out for about 28 g, from its energy". A phrase with `link`
+// ends in a link to the page. Empty when nothing was filled.
+export function fillSourceParts(src) {
+  if (!src || typeof src !== 'object') return [];
+  const parts = [];
+  const what = (keys) => {
+    const micro = keys.filter((k) => ['mineral', 'vitamin'].includes(NUTRIENT[k]?.group)).length;
+    if (micro && micro === keys.length) return 'Vitamins and minerals';
+    return micro ? 'Vitamins, minerals and other values' : 'Missing values';
+  };
+  if (src.usda?.keys?.length) parts.push({ text: `${what(src.usda.keys)} filled from USDA: ${src.usda.name || 'a similar food'}` });
+  if (src.web?.keys?.length) {
+    let host = '';
+    try {
+      const u = new URL(src.web.url);
+      if (['http:', 'https:'].includes(u.protocol)) host = u.hostname.replace(/^www\./, '');
+    } catch { /* no link */ }
+    parts.push(host ? { text: 'Values from ', link: { url: src.web.url, text: host } } : { text: `Values from ${src.web.name || 'the web'}` });
+  }
+  if (src.estimate?.keys?.length) parts.push({ text: parts.length ? 'The rest marked ~ are estimates' : 'Values marked ~ are estimates' });
+  if (src.weight && num(src.weight.amount) && parts.length) {
+    parts.push({ text: `Worked out for about ${round(src.weight.amount, 0)} ${src.weight.unit === 'ml' ? 'ml' : 'g'}, ${src.weight.from === 'energy' ? 'from its energy' : 'a typical portion'}` });
+  }
+  return parts;
+}
+
 // ---------- Grades and tags ----------
 //
 // Everything here reads a record's nutrients per 100 g (or per 100 ml for a drink), exactly as the

@@ -542,6 +542,15 @@ function itemFacts(s) {
 
 const sourceLine = (it) => `${esc(it.sourceText || it.source || '')}${it.source_date ? `, ${esc(it.source_date)}` : ''}`;
 
+// Where a diary entry's filled values ("~") came from, one short line under its facts: "Vitamins and
+// minerals filled from USDA: Cola. Values from mcdonalds.com." The wording is the shared maths'.
+function fillSourceHtml(src) {
+  const parts = N.fillSourceParts?.(src) || [];
+  if (!parts.length) return '';
+  const html = parts.map((p) => `${esc(p.text)}${p.link ? `<a href="${esc(p.link.url)}" target="_blank" rel="noopener">${esc(p.link.text)}</a>` : ''}`);
+  return `<p class="nf-none nf-from">${html.join('. ')}.</p>`;
+}
+
 // ---------- The diary ----------
 
 function dateLabel(d) {
@@ -887,7 +896,7 @@ function entryBody(s) {
       <form data-form="food-entry-edit">${slotSelect(e.slot)}<div class="form-actions"><button class="btn tinted" type="submit">Move</button></div></form>`;
   return `<div class="fd-head">${e.grade || nova ? `<div class="fd-badges">${nutriBadge(e.grade)}${nova}</div>` : ''}${tagChips(e.tags || [])}</div>
     ${amount}
-    <section class="nf" aria-label="Nutrition facts"><div class="nf-top"><h3>Nutrition</h3><span class="nf-per">${esc(e.amountText || 'as logged')}</span></div>${factsHtml(e.nutrients, fl)}</section>
+    <section class="nf" aria-label="Nutrition facts"><div class="nf-top"><h3>Nutrition</h3><span class="nf-per">${esc(e.amountText || 'as logged')}</span></div>${factsHtml(e.nutrients, fl)}${fillSourceHtml(e.fillSource)}</section>
     ${lines}
     <div class="sheet-actions"><button class="btn tinted danger-text" data-action="food-entry-del" data-eid="${esc(e.id)}">${icon('trash')}Remove from the diary</button></div>`;
 }
@@ -1222,9 +1231,11 @@ function riRows(list, { max = 150, best = new Set(), low = new Set() } = {}) {
     const p = num(c.pct);
     const w = p === null ? 0 : Math.min(p, max) / max;
     const tone = `${riTone(p, c.key)}${best.has(c.key) ? ' best' : ''}${low.has(c.key) ? ' low' : ''}`;
+    // "~" when some of it was filled from a similar food, the web or an estimate rather than on record.
+    const est = p !== null && c.est > 0 ? `<i class="est" title="${c.est >= 100 ? 'Estimated' : `About ${fmtN(c.est)}% estimated`}">~</i>` : '';
     return `<div class="rirow${tone}${p === null ? ' unk' : ''}" style="--i:${i}"><span class="rirow-k">${esc(shortLabel(c.key))}</span>
       <span class="rirow-bar"><i style="--f:${w.toFixed(3)}"></i><b class="rirow-100" style="left:${at}%"></b></span>
-      <span class="rirow-v">${p === null ? '—' : `${fmtN(p)}%${c.partial ? '+' : ''}`}</span></div>`;
+      <span class="rirow-v">${p === null ? '—' : `${est}${fmtN(p)}%${c.partial ? '+' : ''}`}</span></div>`;
   }).join('');
 }
 
@@ -1251,6 +1262,7 @@ function microCard(h) {
   const low = new Set(known.length > 3 ? known.slice(Math.max(3, known.length - 3)).map((c) => c.key) : []);
   return `<section class="card fcard f-wide fmicro-card">${cardHead('Vitamins and minerals', known.length ? '<span><i class="fk fk-best"></i>Top</span><span><i class="fk fk-low"></i>Lowest</span>' : '')}
     ${known.length ? `${riLegend()}<div class="rirows" style="--rows:${Math.ceil(known.length / 2)}">${riRows(known, { best, low })}</div>` : '<p class="fempty-line">No values on record yet</p>'}
+    ${known.some((c) => c.est > 0) ? '<p class="rirow-none"><i class="est">~</i> Partly filled from similar foods, published values or estimates</p>' : ''}
     ${unknown.length ? `<p class="rirow-none">No data: ${unknown.map((c) => esc(shortLabel(c.key))).join(', ')}</p>` : ''}</section>`;
 }
 

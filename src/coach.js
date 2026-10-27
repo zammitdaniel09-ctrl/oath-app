@@ -97,6 +97,14 @@ const WRITING_TOKENS = 4000;
 // Server-side fallback reruns a request the model declines on another model, inside the same call.
 const ask = (c, params) => c.beta.messages.create({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' });
 
+// One request on the coach's client, model and refusal fallback, for server code that needs its own
+// request shape (the food filler's web search).
+export function claudeCall(params) {
+  const c = anthropic();
+  if (!c) throw new RuleError('This needs the AI key, which is not set on the server.', 503);
+  return ask(c, { model: MODEL(), ...params });
+}
+
 // Runs the tool loop and returns { text, refused }. Text is gathered from every round, because the
 // model may speak before a tool call. A reply cut off by the token limit is never returned: briefs
 // fall back to plain numbers instead of sending half a sentence.
