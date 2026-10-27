@@ -207,6 +207,22 @@ create table if not exists food_takes (
   at timestamptz not null default now(),
   primary key (view, date)
 );
+-- v7: filling in what an entry's record or estimate left unknown (food-enrich.js). fill_source says where
+-- filled values came from, fill_profile keeps the reading's or the coach's estimate per 100 for later,
+-- and enriched_at with enrich_tries keep the background queue idempotent and let it give up on failures.
+alter table food_log add column if not exists fill_source jsonb;
+alter table food_log add column if not exists fill_profile jsonb;
+alter table food_log add column if not exists enriched_at timestamptz;
+alter table food_log add column if not exists enrich_tries int not null default 0;
+alter table food_log add column if not exists enrich_error text;
+create index if not exists food_log_enrich_idx on food_log (date) where enriched_at is null and deleted_at is null;
+-- v7: what the filler already worked out for a name (a reference record, a description, a web result),
+-- so the same food logged again costs nothing.
+create table if not exists food_lookups (
+  key text primary key,
+  value jsonb not null,
+  at timestamptz not null default now()
+);
 `;
 
 export async function migrateFood() {
@@ -228,18 +244,26 @@ export async function migrateFood() {
 // ---------- Records ----------
 
 export const SLOTS = ['breakfast', 'lunch', 'dinner', 'snacks', 'drinks'];
-const KINDS = ['generic', 'product', 'custom', 'label', 'estimate'];
+const KINDS = ['generic', 'product', 'custom', 'label', 'estimate', 'web'];
 const SOURCE_TEXT = {
   usda: 'USDA FoodData Central',
   off: 'Open Food Facts',
   label: 'Read from a label photo',
   you: 'Entered by you',
   estimate: 'Generic estimate',
+  web: 'Published values found on the web',
 };
 
 const n = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
 const clean = (s, max = 200) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
 const ts = () => nowUTC().toJSDate();
+
+// The most a value can believably be per 100 g or ml: energy tops out near pure fat, grams at the basis,
+// mg and µg far higher.
+export function perHundredCap(k, basisMax = 100) {
+  const unit = NUTRIENT[k]?.unit;
+  return k === 'kcal' ? 950 : k === 'caffeine' ? 6000 : unit === 'g' ? basisMax : unit === 'mg' ? 100000 : 1000000;
+}
 
 // Only the nutrient keys we know, as numbers or null. Negative or absurd values are refused.
 export function cleanNutrients(input = {}, { basisMax = 100 } = {}) {
@@ -249,10 +273,7 @@ export function cleanNutrients(input = {}, { basisMax = 100 } = {}) {
     if (raw === null || raw === undefined || raw === '') { out[k] = null; continue; }
     const v = Number(raw);
     if (!Number.isFinite(v) || v < 0) throw new RuleError(`${k} must be a number of zero or more, or left blank.`);
-    // Per 100 g or ml: energy tops out near pure fat, grams at the basis, mg and µg far higher.
-    const unit = NUTRIENT[k].unit;
-    const cap = k === 'kcal' ? 950 : k === 'caffeine' ? 6000 : unit === 'g' ? basisMax : unit === 'mg' ? 100000 : 1000000;
-    if (v > cap) throw new RuleError(`${k} of ${v} per 100 is not believable.`);
+    if (v > perHundredCap(k, basisMax)) throw new RuleError(`${k} of ${v} per 100 is not believable.`);
     out[k] = v;
   }
   return out;
@@ -349,8 +370,8 @@ export function shapeItem(r) {
     uses: r.uses,
     last: r.last_unit ? { qty: r.last_qty, unit: r.last_unit } : null,
     units: unitsFor(r),
-    // Only crowd-sourced and typed-in values are checked; USDA uses food-specific energy factors.
-    check: ['off', 'label', 'you'].includes(r.source) ? energyCheck(r.nutrients) : null,
+    // Only crowd-sourced, web and typed-in values are checked; USDA uses food-specific energy factors.
+    check: ['off', 'label', 'you', 'web'].includes(r.source) ? energyCheck(r.nutrients) : null,
   };
 }
 
@@ -636,6 +657,9 @@ const shapeEntry = (r) => ({
   estimate: r.estimate,
   // Nutrients the record had no value for, filled from an estimate: the screen marks them as estimated.
   filled: r.filled || [],
+  // Where the filled values came from: { usda: { key, name, keys }, web: { key, name, url, keys },
+  // estimate: { keys }, weight: { amount, unit, from } }, or null when nothing was filled.
+  fillSource: r.fill_source || null,
   source: r.source,
   note: r.note,
   planId: r.plan_id,
@@ -644,13 +668,15 @@ const shapeEntry = (r) => ({
 // Writes one entry once. The id comes from the phone, so an offline entry replayed later lands once.
 async function insertEntry(e, tx = db()) {
   const filled = (Array.isArray(e.filled) ? e.filled : []).filter((k) => KEYS.includes(k));
+  // A repeated day copies its entries' fills and provenance with them.
   const rows = await tx`
     insert into food_log (id, date, at, slot, kind, ref_id, ref_key, name, brand, qty, unit, amount_text, grams, ml, share, liquid,
-      nutrients, lines, estimate, source, note, plan_id, filled)
+      nutrients, lines, estimate, source, note, plan_id, filled, fill_source, fill_profile, enriched_at)
     values (${e.id}, ${e.date}, ${e.at}, ${e.slot}, ${e.kind}, ${e.ref_id ?? null}, ${e.ref_key ?? null}, ${e.name}, ${e.brand ?? null},
       ${e.qty ?? null}, ${e.unit ?? null}, ${e.amount_text || ''}, ${e.grams ?? null}, ${e.ml ?? null}, ${e.share ?? null}, ${Boolean(e.liquid)},
       ${tx.json(e.nutrients)}, ${e.lines ? tx.json(e.lines) : null}, ${Boolean(e.estimate)}, ${e.source || 'you'}, ${clean(e.note, 300)},
-      ${e.plan_id ?? null}, ${filled}::text[])
+      ${e.plan_id ?? null}, ${filled}::text[], ${e.fill_source ? tx.json(e.fill_source) : null}, ${e.fill_profile ? tx.json(e.fill_profile) : null},
+      ${e.enriched_at ?? null})
     on conflict (id) do nothing returning *`;
   if (rows.length) return { entry: shapeEntry(rows[0]), duplicate: false };
   const [existing] = await tx`select * from food_log where id = ${e.id}`;
@@ -666,41 +692,58 @@ async function existingEntry(id) {
 
 // ---------- Fills: an estimate for what a record does not say ----------
 
-// The nutrients an estimate covers: the label's core values plus saturates, caffeine and alcohol.
+// The nutrients an estimate fills when the entry is logged: the label's core values plus saturates,
+// caffeine and alcohol. The rest wait for the filler (food-enrich.js), which tries a USDA reference and
+// the web before an estimate.
 export const FILL_KEYS = [...KEYS.filter((k) => NUTRIENT[k].core), 'satfat', 'caffeine', 'alcohol'];
+// Every value an estimate can carry: the core ones first (the order `filled` lists them in), then the
+// fats, minerals and vitamins.
+export const ESTIMATE_KEYS = [...FILL_KEYS, ...KEYS.filter((k) => !FILL_KEYS.includes(k))];
+// The units of the values past the core ones, for prompts that ask for an estimate of all of them.
+export const MICRO_TEXT = 'addsugars, mufa (monounsaturated), pufa (polyunsaturated) and transfat in g; chol (cholesterol) in mg; '
+  + 'potassium, calcium, iron, magnesium, zinc and phosphorus in mg; selenium in µg; vita (vitamin A as retinol activity equivalents), '
+  + 'vitd and vitk in µg; vitc, vite, b1 (thiamin), b2 (riboflavin), b3 (niacin) and b6 in mg; folate and b12 in µg';
 
-// An estimated profile per 100 g or ml: { basis, kcal, protein, ... }. Values that are missing,
-// negative or not believable are dropped (they stay unknown), never guessed further.
+// An estimated profile per 100 g or ml: { basis, kcal, protein, ... }. The core values are always
+// there (null when unknown); the others only when given. Values that are missing, negative or not
+// believable are dropped (they stay unknown), never guessed further.
 export function cleanFill(input, basis = 'g') {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return null;
   const out = { basis: ['g', 'ml'].includes(input.basis) ? input.basis : basis === 'ml' ? 'ml' : 'g' };
   let any = false;
-  for (const k of FILL_KEYS) {
+  for (const k of ESTIMATE_KEYS) {
     const raw = input[k];
     const v = Number(raw);
-    const cap = k === 'kcal' ? 950 : k === 'caffeine' ? 6000 : NUTRIENT[k].unit === 'g' ? 100 : 100000;
-    const ok = raw !== null && raw !== undefined && raw !== '' && Number.isFinite(v) && v >= 0 && v <= cap;
-    out[k] = ok ? v : null;
+    const ok = raw !== null && raw !== undefined && raw !== '' && typeof raw !== 'boolean' && Number.isFinite(v) && v >= 0 && v <= perHundredCap(k);
+    if (ok) out[k] = v;
+    else if (FILL_KEYS.includes(k)) out[k] = null;
     any = any || ok;
   }
   // Part of a value is never more than the whole.
-  if (out.sugars !== null && out.carbs !== null) out.sugars = Math.min(out.sugars, out.carbs);
-  if (out.satfat !== null && out.fat !== null) out.satfat = Math.min(out.satfat, out.fat);
+  const part = (k, whole) => {
+    if (n(out[k]) !== null && n(out[whole]) !== null) out[k] = Math.min(out[k], out[whole]);
+  };
+  part('sugars', 'carbs');
+  for (const k of ['satfat', 'mufa', 'pufa', 'transfat']) part(k, 'fat');
+  part('addsugars', 'sugars');
   return any ? out : null;
 }
 
+// A value that is part of another: filled in proportion to the entry's own whole where it has one.
+const PART_OF = { sugars: 'carbs', satfat: 'fat', mufa: 'fat', pufa: 'fat', transfat: 'fat', addsugars: 'sugars' };
+
 // Fills each nutrient that is unknown (null) from the estimate, scaled to `amount` g or ml of the
-// fill's basis. Sugars and saturates follow the record's own carbs and fat where it has them, so an
-// estimate never claims more sugar than the record's carbs. Returns { nutrients, filled: [keys] }.
-export function fillGaps(nutrients, amount, fill) {
+// fill's basis. Parts follow the entry's own wholes where it has them (sugars its carbs, saturates its
+// fat), so a fill never claims more sugar than the record's carbs. `keys` limits which values may be
+// filled. Returns { nutrients, filled: [keys] }.
+export function fillGaps(nutrients, amount, fill, keys = ESTIMATE_KEYS) {
   const out = { ...nutrients };
   const filled = [];
   if (!fill || !(Number(amount) > 0)) return { nutrients: out, filled };
-  const parentOf = { sugars: 'carbs', satfat: 'fat' };
-  for (const k of FILL_KEYS) {
+  for (const k of keys) {
     if (n(out[k]) !== null || n(fill[k]) === null) continue;
     let v = (fill[k] * amount) / 100;
-    const parent = parentOf[k];
+    const parent = PART_OF[k];
     if (parent && n(out[parent]) !== null) {
       if (n(fill[parent]) > 0) v = (out[parent] * fill[k]) / fill[parent];
       v = Math.min(v, out[parent]);
@@ -711,9 +754,36 @@ export function fillGaps(nutrients, amount, fill) {
   return { nutrients: out, filled };
 }
 
-// Logs an amount of one catalogue record: { id, key, qty, unit, date, time, slot, estimate, note, fill }.
-// `fill` is an estimated profile per 100 (from the photo or text reading): every nutrient the record
-// has no value for is taken from it, scaled to the amount, and listed in `filled`.
+// The estimate kept with an entry for the filler: the cleaned profile per 100 and the search words the
+// reading or the coach gave, so a reference can be found without asking again.
+function keptProfile(fill, input) {
+  if (!fill) return null;
+  const searches = (Array.isArray(input.searches) ? input.searches : []).map((s) => clean(s, 80)).filter(Boolean).slice(0, 4);
+  return { ...fill, ...(searches.length ? { searches } : {}) };
+}
+
+// Called with every new item or quick-add entry, so the filler can fill its gaps in the background.
+// Set by food-enrich.js when the loop starts; nothing happens before that (tests, scripts).
+let afterLog = null;
+export function setAfterLog(fn) {
+  afterLog = typeof fn === 'function' ? fn : null;
+}
+function logged(out) {
+  if (!out.duplicate && afterLog) {
+    try {
+      afterLog(out.entry);
+    } catch (err) {
+      console.error('food fill could not start', err.message);
+    }
+  }
+  return out;
+}
+
+// Logs an amount of one catalogue record: { id, key, qty, unit, date, time, slot, estimate, note, fill,
+// searches }. `fill` is an estimated profile per 100 (from the photo or text reading, or the coach):
+// every core nutrient the record has no value for is taken from it, scaled to the amount, and listed in
+// `filled`. The whole profile is kept with the entry for the filler, which tries a USDA reference and
+// the web for the rest before falling back to it.
 export async function logFood(input, source = 'you') {
   const again = await existingEntry(input.id);
   if (again) return again;
@@ -724,7 +794,7 @@ export async function logFood(input, source = 'you') {
   const l = line(item, input.qty, unit);
   if (l.error) throw new RuleError(l.error);
   const fill = cleanFill(input.fill, item.basis);
-  const { nutrients, filled } = fillGaps(l.nutrients, fill?.basis === 'ml' ? (l.ml ?? l.g) : (l.g ?? l.ml), fill);
+  const { nutrients, filled } = fillGaps(l.nutrients, fill?.basis === 'ml' ? (l.ml ?? l.g) : (l.g ?? l.ml), fill, FILL_KEYS);
   const place = await placeEntry(input, item.liquid);
   const out = await insertEntry({
     id: input.id || newId(),
@@ -742,6 +812,8 @@ export async function logFood(input, source = 'you') {
     liquid: item.liquid,
     nutrients,
     filled,
+    fill_source: filled.length ? { estimate: { keys: filled } } : null,
+    fill_profile: keptProfile(fill, input),
     estimate: Boolean(input.estimate),
     source,
     note: input.note,
@@ -750,14 +822,15 @@ export async function logFood(input, source = 'you') {
   if (!out.duplicate) {
     await db()`update food_items set uses = uses + 1, last_used = now(), last_qty = ${Number(input.qty)}, last_unit = ${unit} where id = ${item.id}`;
   }
-  return out;
+  return logged(out);
 }
 
 // Calories and whatever macros are known, kept in the diary only and never added to the catalogue.
 // `estimate` marks numbers that are a rough guess (a typed meal with no catalogue match); `amount`
 // is a short note of how much, such as "about 300 g". With `fill` (an estimated profile per 100) and
-// `grams` or `ml` (how much was eaten), every value not given is worked out from the estimate and
-// listed in `filled`; the calories can come from it too.
+// `grams` or `ml` (how much was eaten), every core value not given is worked out from the estimate and
+// listed in `filled`; the calories can come from it too. The rest is left to the filler, as in logFood.
+// `brand` names the brand or restaurant, when there is one.
 export async function quickAdd(input, source = 'you') {
   const again = await existingEntry(input.id);
   if (again) return again;
@@ -777,24 +850,27 @@ export async function quickAdd(input, source = 'you') {
     if (!(v >= 0) || v > 2000) throw new RuleError(`${k} must be zero or more.`);
     nutrients[k] = v;
   }
-  const { nutrients: full, filled } = fillGaps(nutrients, fill?.basis === 'ml' ? (ml ?? grams) : (grams ?? ml), fill);
+  const { nutrients: full, filled } = fillGaps(nutrients, fill?.basis === 'ml' ? (ml ?? grams) : (grams ?? ml), fill, FILL_KEYS);
   if (full.kcal === null || !(full.kcal <= 10000)) throw new RuleError('Give the calories.');
   const place = await placeEntry(input, Boolean(ml));
-  return insertEntry({
+  return logged(await insertEntry({
     id: input.id || newId(),
     ...place,
     kind: 'quick',
     name: clean(input.name, 120) || 'Quick add',
+    brand: clean(input.brand, 80) || null,
     amount_text: clean(input.amount, 60) || (ml ? `${ml} ml` : grams ? `${grams} g` : ''),
     grams,
     ml,
     liquid: Boolean(ml),
     nutrients: full,
     filled,
+    fill_source: filled.length ? { estimate: { keys: filled } } : null,
+    fill_profile: keptProfile(fill, input),
     estimate: Boolean(input.estimate),
     source,
     note: input.note,
-  });
+  }));
 }
 
 export async function deleteEntry(id) {
@@ -1085,8 +1161,9 @@ function foodsEaten(entries) {
 
 // Average % of the EU reference intake per nutrient over complete logged days. A day with no value
 // for a nutrient is left out of its average, and `partial` counts the days that were unknown or a
-// floor, so the screen can say the average is at least that.
-function coverageOf(totals) {
+// floor, so the screen can say the average is at least that. `est` is the share of it, in %, that was
+// filled (from a similar USDA food, the web or an estimate) rather than on the records themselves.
+function coverageOf(totals, est = {}) {
   return RI_LIST.map((x) => {
     const vals = totals.map((t) => n(t[x.key])).filter((v) => v !== null);
     const avg = vals.length ? vals.reduce((a, v) => a + v, 0) / vals.length : null;
@@ -1096,8 +1173,30 @@ function coverageOf(totals) {
       pct: avg === null ? null : round((avg / x.ri) * 100, 1),
       days: vals.length,
       partial: totals.filter((t) => n(t[x.key]) === null || t.missing?.[x.key]).length,
+      est: avg === null ? 0 : est[x.key] || 0,
     };
   });
+}
+
+// Per nutrient, the % of what the entries brought that was filled rather than on record. A nutrient
+// whose filled values add up to nothing (zeros) still counts as estimated when any were filled.
+function filledShare(entries) {
+  const all = {};
+  const est = {};
+  const count = {};
+  for (const e of entries) {
+    const fl = new Set(e.filled || []);
+    for (const k of KEYS) {
+      const v = n(e.nutrients?.[k]);
+      if (v === null) continue;
+      all[k] = (all[k] || 0) + v;
+      if (fl.has(k)) {
+        est[k] = (est[k] || 0) + v;
+        count[k] = (count[k] || 0) + 1;
+      }
+    }
+  }
+  return Object.fromEntries(KEYS.filter((k) => count[k]).map((k) => [k, all[k] > 0 ? Math.max(1, round(((est[k] || 0) / all[k]) * 100, 0)) : 100]));
 }
 
 // "Eat more of": for his least-covered vitamins and minerals, the food he already eats that brings
@@ -1143,7 +1242,7 @@ function periodInsights(entries, { series, today, tz }) {
   const byDate = new Map();
   for (const e of entries) byDate.set(e.date, [...(byDate.get(e.date) || []), e]);
   const totals = [...completeDates].map((d) => total((byDate.get(d) || []).map((e) => e.nutrients)));
-  const coverage = coverageOf(totals);
+  const coverage = coverageOf(totals, filledShare([...completeDates].flatMap((d) => byDate.get(d) || [])));
 
   const grades = { total: gradeMix(entries), days: series.map((d) => ({ date: d.date, ...gradeMix(byDate.get(d.date) || []) })) };
 
@@ -1707,6 +1806,7 @@ export async function coverageReport() {
       needsLabel: items.filter((i) => i.status === 'needs-label').length,
       yours: items.filter((i) => ['custom', 'label'].includes(i.kind)).length,
       estimates: items.filter((i) => i.kind === 'estimate').length,
+      web: items.filter((i) => i.kind === 'web').length,
       recipes: recipes.length,
     },
   };

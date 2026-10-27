@@ -550,7 +550,11 @@ test('describe: typed words become catalogue matches with estimated amounts; a f
   assert.equal(req.output_config.format.type, 'json_schema');
   const props = req.output_config.format.schema.properties.items.items.properties;
   for (const k of ['brand', 'variety', 'preparation', 'size', 'amount', 'unit', 'weight', 'searches', 'per100']) assert.ok(props[k], `every item carries ${k}`);
-  assert.deepEqual(Object.keys(props.per100.properties), ['kcal', 'protein', 'carbs', 'sugars', 'fat', 'fibre', 'salt', 'satfat', 'caffeine', 'alcohol']);
+  // Every value per 100, the core ones first, then the fats, minerals and vitamins: all 33.
+  const per100Keys = Object.keys(props.per100.properties);
+  assert.deepEqual(per100Keys.slice(0, 10), ['kcal', 'protein', 'carbs', 'sugars', 'fat', 'fibre', 'salt', 'satfat', 'caffeine', 'alcohol']);
+  assert.deepEqual([...per100Keys].sort(), (await import('../public/nutrition.js')).KEYS.slice().sort());
+  assert.deepEqual(props.per100.required, per100Keys);
   assert.equal(req.messages[0].content.length, 1);
   assert.equal(req.messages[0].content[0].type, 'text');
   assert.equal(req.messages[0].content[0].text, 'a banana and a zzqx mystery wrap');

@@ -5,7 +5,7 @@ import { db, logEvent } from './db.js';
 import { validTime, validDate, deadlineText } from './time.js';
 import * as engine from './engine.js';
 import * as goals from './goals.js';
-import { FILL_KEYS } from './food.js';
+import { ESTIMATE_KEYS, MICRO_TEXT } from './food.js';
 
 const v = { validTime, validDate };
 const { RuleError } = engine;
@@ -116,10 +116,12 @@ function coachItem(it, understood) {
 
 // "Large fries from Burger King and a coke": the coach's items go through the same search and choice
 // as a photo or a typed meal, so each is logged against the most specific record (the restaurant's own
-// item and the portion his size word names) with its amount flagged as an estimate, and every value
-// the record lacks filled from the coach's profile. An item with no record or no usable amount becomes
-// a quick add of the coach's estimate instead. One receipt per item; the detail (entry ids, slot, the
-// record, why it was chosen, what was filled) goes to the model only, so it can say what it assumed.
+// item and the portion his size word names) with its amount flagged as an estimate, and every core
+// value the record lacks filled from the coach's profile. The profile, vitamins and minerals included,
+// stays with the entry: the filler (food-enrich.js) uses it for whatever a USDA reference or the web
+// cannot give. An item with no record or no usable amount becomes a quick add of the coach's estimate
+// instead. One receipt per item; the detail (entry ids, slot, the record, why it was chosen, what was
+// filled) goes to the model only, so it can say what it assumed.
 async function logFoodEstimate({ items, slot, date, time }) {
   const list = Array.isArray(items) ? items.filter((x) => x && (x.name || x.search)).slice(0, 12) : [];
   if (!list.length) throw new RuleError('Give at least one item he ate or drank.');
@@ -151,7 +153,7 @@ async function logFoodEstimate({ items, slot, date, time }) {
       let entry = null;
       if (record && Number(m.qty) > 0) {
         try {
-          ({ entry } = await f.logFood({ key: record.key, qty: m.qty, unit: m.unit, ...when, estimate: true, fill: u.fill }, 'coach'));
+          ({ entry } = await f.logFood({ key: record.key, qty: m.qty, unit: m.unit, ...when, estimate: true, fill: u.fill, searches: u.searches }, 'coach'));
         } catch (err) {
           // An amount the record cannot take falls back to the calorie estimate, when there is one.
           if (!(err instanceof RuleError) || guess === null) throw err;
@@ -171,7 +173,7 @@ async function logFoodEstimate({ items, slot, date, time }) {
       // The assumed size stays on the diary entry, so he can see what the calories stand for.
       const howMuch = !amount ? '' : unit === 'piece' ? `${Number(amount.toFixed(2))} ${amount === 1 ? 'piece' : 'pieces'}` : `about ${Math.round(amount)} ${unit}`;
       const { entry: q } = await f.quickAdd({
-        name, kcal: guess, estimate: true, ...when, fill: u.fill,
+        name, kcal: guess, estimate: true, ...when, fill: u.fill, searches: u.searches, ...(u.brand ? { brand: u.brand } : {}),
         ...(howMuch ? { amount: howMuch } : {}),
         ...(unit === 'ml' && amount ? { ml: amount } : u.weight ? { grams: u.weight } : {}),
       }, 'coach');
@@ -592,7 +594,7 @@ const TOOLS = {
     },
   },
   log_food_estimate: {
-    description: 'Log food and drink he describes loosely ("large fries from Burger King", "a medium bunch of grapes", "had a kebab and chips", "a big bowl of pasta"). Prefer this over search_food + log_food whenever he does not give an exact product and amount; keep log_food for exact items he names with amounts. Never ask him for grams: use the real portion for what he said (that restaurant\'s large, a typical medium) and say what you assumed in a few words. One item per food or drink; list sides, sauces and drinks separately. Be as specific as he was: put the brand or restaurant, the variety, how it was cooked and his size words in their own fields, because each item is matched to the most specific catalogue record (the restaurant\'s own item and the portion his size word names, before anything generic) and logged as an estimate he can edit in the Food tab. Give kcal_estimate and per100 on every item: per100 fills the values a record lacks (sugars, fibre, salt), and anything the catalogue lacks is logged as a quick add of your estimate instead of being dropped. Leave slot, date and time out to use now, or set them from what he said.',
+    description: 'Log food and drink he describes loosely ("large fries from Burger King", "a medium bunch of grapes", "had a kebab and chips", "a big bowl of pasta"). Prefer this over search_food + log_food whenever he does not give an exact product and amount; keep log_food for exact items he names with amounts. Never ask him for grams: use the real portion for what he said (that restaurant\'s large, a typical medium) and say what you assumed in a few words. One item per food or drink; list sides, sauces and drinks separately. Be as specific as he was: put the brand or restaurant, the variety, how it was cooked and his size words in their own fields, because each item is matched to the most specific catalogue record (the restaurant\'s own item and the portion his size word names, before anything generic) and logged as an estimate he can edit in the Food tab. Give kcal_estimate and per100 on every item, with every value in per100 including the vitamins and minerals: per100 fills the values a record lacks (sugars, fibre, salt, and the vitamins and minerals when no similar USDA food or published values have them), and anything the catalogue lacks is logged as a quick add of your estimate instead of being dropped. Leave slot, date and time out to use now, or set them from what he said.',
     properties: {
       items: {
         type: 'array',
@@ -613,8 +615,8 @@ const TOOLS = {
             kcal_estimate: N('Your best calorie estimate for the whole amount'),
             per100: {
               type: 'object',
-              description: 'Your estimate per 100 g (per 100 ml for drinks) of this exact food: kcal; protein, carbs, sugars, fat, satfat, fibre and salt in g; caffeine in mg; alcohol in g. 0 only when it truly has none.',
-              properties: Object.fromEntries(FILL_KEYS.map((k) => [k, N()])),
+              description: `Your estimate per 100 g (per 100 ml for drinks) of this exact food, every value: kcal; protein, carbs, sugars, fat, satfat, fibre and salt in g; caffeine in mg; alcohol in g; and from typical composition data ${MICRO_TEXT}. 0 only when it truly has none.`,
+              properties: Object.fromEntries(ESTIMATE_KEYS.map((k) => [k, N()])),
             },
           },
           required: ['name', 'search', 'amount', 'unit'],

@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  resolve, line, total, scale, unitsFor, recipeTotals, batchPortion, batchLeft, norm, show, complete,
+  resolve, line, total, scale, unitsFor, recipeTotals, batchPortion, batchLeft, norm, show, complete, fillSourceParts,
 } from '../public/nutrition.js';
 
 const close = (a, b, eps = 1e-6) => assert.ok(Math.abs(a - b) < eps, `${a} is not ${b}`);
@@ -148,4 +148,20 @@ test('search text folds accents and Maltese letters', () => {
   assert.equal(norm('Ħobż biż-żejt'), 'hobz biz zejt');
   assert.equal(norm('Qagħaq tal-għasel'), 'qaghaq tal ghasel');
   assert.equal(norm('Crème fraîche'), 'creme fraiche');
+});
+
+test('where filled values came from reads as one short line, linking only to a real web page', () => {
+  assert.deepEqual(fillSourceParts(null), []);
+  assert.deepEqual(fillSourceParts({}), []);
+  assert.deepEqual(fillSourceParts({ usda: { name: 'Cola', keys: ['potassium', 'vitc'] } }), [{ text: 'Vitamins and minerals filled from USDA: Cola' }]);
+  assert.deepEqual(fillSourceParts({ usda: { name: 'Cola', keys: ['fibre'] } }), [{ text: 'Missing values filled from USDA: Cola' }]);
+  assert.deepEqual(fillSourceParts({ estimate: { keys: ['sugars'] } }), [{ text: 'Values marked ~ are estimates' }]);
+  assert.deepEqual(fillSourceParts({ web: { url: 'https://www.mcdonalds.com/mt/en/nutrition.html', name: 'McFlurry', keys: ['kcal'] } }), [
+    { text: 'Values from ', link: { url: 'https://www.mcdonalds.com/mt/en/nutrition.html', text: 'mcdonalds.com' } },
+  ]);
+  assert.deepEqual(fillSourceParts({ web: { url: 'javascript:alert(1)', name: 'McFlurry', keys: ['kcal'] } }), [{ text: 'Values from McFlurry' }]);
+  // A worked-out amount is said only alongside what it was used for.
+  assert.deepEqual(fillSourceParts({ weight: { amount: 330, unit: 'g', from: 'energy' } }), []);
+  assert.ok(!fillSourceParts({ usda: { name: 'Gyro sandwich', keys: ['iron'] }, weight: { amount: 249.6, unit: 'g', from: 'portion' } }).some((p) => p.text.includes('—')));
+  assert.equal(fillSourceParts({ usda: { name: 'Gyro sandwich', keys: ['iron'] }, weight: { amount: 249.6, unit: 'g', from: 'portion' } })[1].text, 'Worked out for about 250 g, a typical portion');
 });

@@ -1,4 +1,5 @@
-// Runs the engine every 30 seconds and fires the scheduled briefs.
+// Runs the engine every 30 seconds and fires the scheduled briefs. Beside it, the food filler fills
+// in what diary entries do not say (food-enrich.js).
 import { db, migrate } from './db.js';
 import { deadlineAt, nowUTC, addDays, weekday } from './time.js';
 import { tick, localNow, ensureGame } from './engine.js';
@@ -9,6 +10,7 @@ import { buildToday } from './state.js';
 import { prepareReview } from './review.js';
 import { syncAllFeeds } from './calendar.js';
 import { refreshBusiness, businessSources } from './business.js';
+import { setAutoEnrich, drainEnrichment } from './food-enrich.js';
 
 const BRIEF_TITLES = { morning: 'Morning brief', midday: 'Midday check', evening: 'Evening check' };
 
@@ -143,5 +145,11 @@ export function startLoop(intervalMs = 30000) {
   syncBusiness();
   setInterval(syncCalendars, 15 * 60000).unref();
   setInterval(syncBusiness, 10 * 60000).unref();
+  // Food: new diary entries get their missing nutrients filled a moment after they are logged, and
+  // older ones a few at a time on their own timer, so a slow lookup never delays judging. The first
+  // pass waits one interval, giving the food seed time to load at boot.
+  setAutoEnrich(true);
+  const fillFood = () => drainEnrichment().catch((err) => console.error('food fill failed', err));
+  setInterval(fillFood, intervalMs).unref();
   return setInterval(run, intervalMs);
 }
