@@ -10,6 +10,7 @@ import { NUTRIENT, NUTRIENTS, line, total, scale, show, unitsFor, round, amountT
 // Grades and tags come from the shared maths when it has them.
 import * as N from './nutrition.js';
 import { richHtml } from './rich.js';
+import { wantLinks, linksSleepCard, linksTrainingCard, linksAlcoholCard, linksWindowCard } from './food-links.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 
@@ -1455,16 +1456,19 @@ function caffeineCard(h) {
 const LAZY = {
   label: [labelCard, 300], micro: [microCard, 520, true], nlabel: [nutritionLabelCard, 420], rank: [rankCard, 260, true], sources: [sourcesCard, 300], timing: [timingCard, 250],
   advice: [adviceCard, 240, true], weekdays: [weekdayCard, 220], caffeine: [caffeineCard, 220], split: [splitCard, 300], compare: [compareCard, 330],
+  // Food and your body (food-links.js): drawn from the links, not the period.
+  lfuel: [() => linksTrainingCard(f().links), 330], lalcohol: [() => linksAlcoholCard(f().links), 300], lwindow: [() => linksWindowCard(f().links), 280],
 };
 
 // Trends in four tabs. Each tab's first card is drawn at once and the rest as they come near the
 // screen. The tab is in the address (#/food/trends?tab=nutrients) and kept for the session.
-const TABS = [['overview', 'Overview'], ['nutrients', 'Nutrients'], ['foods', 'Foods'], ['timing', 'Timing']];
+const TABS = [['overview', 'Overview'], ['nutrients', 'Nutrients'], ['foods', 'Foods'], ['timing', 'Timing'], ['body', 'Body']];
 const TAB_CARDS = {
   overview: [(h, sel) => energyCard(h, sel), 'label'],
   nutrients: [(h) => microCard(h), 'nlabel', 'sources'],
   foods: [(h) => gradeCard(h), 'rank', 'advice'],
   timing: [(h) => timingCard(h), 'weekdays', 'caffeine', 'split', 'compare'],
+  body: [() => linksSleepCard(f().links), 'lfuel', 'lalcohol', 'lwindow'],
 };
 const TAB_KEY = 'oath.trendsTab';
 function trendTab() {
@@ -1524,6 +1528,8 @@ function viewTrends() {
   if (!h) return ctx.shell(`${head}${seg}<div class="skeleton"><i></i><i></i><i class="short"></i></div>`);
   const sel = h.chosen.date;
   const tab = trendTab();
+  // The Body tab's links load on first view and land in place (food-links.js).
+  if (tab === 'body') wantLinks(F, () => redrawIfIdle('food', ctx.render));
   const legend = infoLine('trends', h.needs ? '<span><b>100%</b> your daily need, from your body</span>' : '<span><b>RI</b> EU reference intake</span>');
   const tabs = `<div class="seg ftr-tabs" role="tablist" aria-label="Trends">${TABS.map(([k, label]) => `<button type="button" role="tab" id="ftab-${k}" aria-controls="ftr-panel" aria-selected="${k === tab}" tabindex="${k === tab ? 0 : -1}" data-action="food-tab" data-tab="${k}">${label}</button>`).join('')}</div>`;
   const [first, ...rest] = TAB_CARDS[tab];
@@ -1880,6 +1886,10 @@ export async function foodClick(a, el) {
       ctx.render();
       return true;
     }
+    case 'food-links-retry':
+      F.links = null;
+      ctx.render();
+      return true;
     case 'food-tab': {
       const tab = el.dataset.tab;
       if (!TAB_CARDS[tab]) return true;
