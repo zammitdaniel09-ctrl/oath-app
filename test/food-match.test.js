@@ -295,3 +295,62 @@ test('searches leave out size words, placeholders are never a match, and fills n
   assert.equal(g.nutrients.fat, 5);
   assert.equal(g.nutrients.satfat, 2);
 });
+
+test('a zero, diet or decaf version is a different food: Capri Sun Zero never lands on the regular Capri Sun', async () => {
+  const DRINK = { kcal: 40, protein: 0, carbs: 9, sugars: 8.5, fat: 0, satfat: 0, fibre: 0, salt: 0.01, caffeine: 0, alcohol: 0 };
+  await food.upsertItem({ key: 'test-capri-orange', kind: 'product', name: 'Orange', brand: 'Capri-Sun', basis: 'ml', liquid: true, source: 'off', nutrients: DRINK });
+  const zero = (over = {}) => eaten({
+    name: 'Capri Sun Zero', brand: 'Capri-Sun', variety: 'zero sugar', amount: 200, unit: 'ml', weight: 200,
+    searches: ['capri sun zero', 'capri sun', 'fruit drink'], per100: { ...DRINK, kcal: 4, carbs: 0.8, sugars: 0.5 }, ...over,
+  });
+
+  // Only the regular one is in the catalogue: it is never offered, so even a wrong pick cannot use it.
+  const c = scripted([typed('A Capri Sun Zero', [zero()]), chose([0, 'test-capri-orange', 'ml', 200])]);
+  coach.setCoachClient(c);
+  const [lone] = (await post('/api/food/describe', { text: 'a capri sun zero' })).items;
+  assert.notEqual(lone.match?.key, 'test-capri-orange', 'no regular Capri Sun for a zero one');
+  if (lone.match) assert.ok(lone.match.nutrients.sugars <= 1 || photo.variantsOf(lone.match.name).has('sugar free'), `a sugar-free stand-in, not ${lone.match.name}`);
+  assert.equal(lone.fill.sugars, 0.5, 'his zero-sugar estimate travels with it');
+  assert.ok(!askedText(c, 1).includes('key test-capri-orange '), 'the regular version was not on the shortlist');
+
+  // With the zero version in the catalogue, it wins, even without the AI's choice.
+  await food.upsertItem({ key: 'test-capri-zero', kind: 'product', name: 'Zero Orange', brand: 'Capri-Sun', basis: 'ml', liquid: true, source: 'off', nutrients: { ...DRINK, kcal: 4, carbs: 0.9, sugars: 0.6 } });
+  coach.setCoachClient(scripted([typed('A Capri Sun Zero', [zero()]), refused]));
+  assert.equal((await post('/api/food/describe', { text: 'a capri sun zero' })).items[0].match.key, 'test-capri-zero');
+
+  // And a plain Capri Sun keeps the regular one ahead of the zero.
+  coach.setCoachClient(scripted([typed('A Capri Sun', [zero({ name: 'Capri Sun', variety: '', searches: ['capri sun orange', 'capri sun'], per100: DRINK })]), refused]));
+  assert.equal((await post('/api/food/describe', { text: 'a capri sun' })).items[0].match.key, 'test-capri-orange');
+
+  assert.deepEqual([...photo.variantsOf('Diet Coke')], ['sugar free']);
+  assert.deepEqual([...photo.variantsOf('decaf flat white')], ['decaf']);
+  assert.deepEqual([...photo.variantsOf('Chicken, light meat')], ['light']);
+  assert.deepEqual([...photo.variantsOf('Kinnie')], []);
+});
+
+test('reading schemas stay within the API limit of 16 nullable fields', () => {
+  const unions = (s) => {
+    let k = 0;
+    const walk = (x) => {
+      if (!x || typeof x !== 'object') return;
+      if (Array.isArray(x.anyOf) || Array.isArray(x.type)) k += 1;
+      Object.values(x).forEach(walk);
+    };
+    walk(s);
+    return k;
+  };
+  for (const [name, s] of Object.entries({ photo: photo.PHOTO_SCHEMA, text: photo.TEXT_SCHEMA, choose: photo.CHOOSE_SCHEMA })) {
+    assert.ok(unions(s) <= 16, `${name} has ${unions(s)} nullable fields`);
+    strictSchema(s, name);
+  }
+  // The photo reading still comes back with nulls for what was not seen.
+  const r = photo.photoFromWire({ kind: 'label', summary: '', barcode: '', question: '',
+    product: { name: 'Zero Orange', brand: 'Capri-Sun', variant: '', pack_size: 200, pack_unit: 'ml', pack_count: 0 },
+    label: { basis: '100ml', serving_size: 0, serving_unit: '', serving_label: '', values: [{ key: 'kcal', value: 4 }, { key: 'sugars', value: 0.6 }] } });
+  assert.equal(r.barcode, null);
+  assert.deepEqual(r.product, { name: 'Zero Orange', brand: 'Capri-Sun', variant: null, pack_size: 200, pack_unit: 'ml', pack_count: null });
+  assert.equal(r.label.kcal, 4);
+  assert.equal(r.label.sugars, 0.6);
+  assert.equal(r.label.salt, null, 'a value not printed is unknown, not zero');
+  assert.equal(photo.photoFromWire({ kind: 'meal', label: { basis: 'none', values: [] } }).label, null);
+});

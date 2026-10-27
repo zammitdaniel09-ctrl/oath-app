@@ -64,39 +64,64 @@ const ITEM_RULES = `For each food or drink, be exactly as specific as what was s
 - per100: your estimate for this exact food per 100 g (per 100 ml for drinks), for a brand or restaurant its published values if you know them: kcal; protein, carbs, sugars, fat, satfat, fibre and salt in grams; caffeine in mg; alcohol in grams; and, from typical composition data for this food, ${MICRO_TEXT}. Give 0 only when the food really has none (no sugars in plain meat, no alcohol in juice, no vitamin B12 in plants): most foods have some sugars, fibre, salt, potassium and magnesium.
 A dish is one item unless its parts are listed or clearly separate (a kebab and chips are two items; a ham sandwich is one). Butter, oil, sauces, dressings and sugar are their own items.`;
 
+// The API allows at most 16 nullable fields in a schema, so nothing here is nullable: text is "" and a
+// size 0 when not seen, and the label's values come as a list of only those printed. photoFromWire
+// turns it back into nulls for the code below.
 export const PHOTO_SCHEMA = obj({
   kind: { type: 'string', enum: ['barcode', 'label', 'packet', 'meal', 'unclear'] },
   summary: STR,
-  barcode: maybe(STR),
-  product: maybe(obj({
+  barcode: STR,
+  product: obj({
     name: STR,
-    brand: maybe(STR),
-    variant: maybe(STR),
-    pack_size: maybe(NUM),
-    pack_unit: maybe({ type: 'string', enum: ['g', 'ml'] }),
-    pack_count: maybe({ type: 'integer' }),
-  })),
-  label: maybe(obj({
-    basis: { type: 'string', enum: ['100g', '100ml', 'serving'] },
-    serving_size: maybe(NUM),
-    serving_unit: maybe({ type: 'string', enum: ['g', 'ml'] }),
-    serving_label: maybe(STR),
-    ...Object.fromEntries(LABEL_KEYS.map((k) => [k, maybe(NUM)])),
-  })),
+    brand: STR,
+    variant: STR,
+    pack_size: NUM,
+    pack_unit: { type: 'string', enum: ['g', 'ml', ''] },
+    pack_count: { type: 'integer' },
+  }),
+  label: obj({
+    basis: { type: 'string', enum: ['100g', '100ml', 'serving', 'none'] },
+    serving_size: NUM,
+    serving_unit: { type: 'string', enum: ['g', 'ml', ''] },
+    serving_label: STR,
+    values: { type: 'array', items: obj({ key: { type: 'string', enum: LABEL_KEYS }, value: NUM }) },
+  }),
   items: { type: 'array', items: obj(MEAL_ITEM) },
-  question: maybe(STR),
+  question: STR,
 });
+
+// The reading as the rest of this file expects it: null for anything not seen. Readings already in that
+// shape (tests, older callers) pass through.
+export function photoFromWire(w = {}) {
+  const text = (s) => (typeof s === 'string' && s.trim() ? s.trim() : null);
+  const size = (v) => (typeof v === 'number' && v > 0 ? v : null);
+  const p = w.product;
+  const product = p && (text(p.name) || text(p.brand)) ? {
+    name: text(p.name) || '', brand: text(p.brand), variant: text(p.variant),
+    pack_size: size(p.pack_size), pack_unit: text(p.pack_unit), pack_count: size(p.pack_count),
+  } : null;
+  const l = w.label;
+  let label = null;
+  if (l && l.basis && l.basis !== 'none') {
+    const given = Array.isArray(l.values) ? Object.fromEntries(l.values.filter((x) => LABEL_KEYS.includes(x?.key) && typeof x.value === 'number').map((x) => [x.key, x.value])) : l;
+    label = {
+      basis: l.basis, serving_size: size(l.serving_size), serving_unit: text(l.serving_unit), serving_label: text(l.serving_label),
+      ...Object.fromEntries(LABEL_KEYS.map((k) => [k, typeof given[k] === 'number' ? given[k] : null])),
+    };
+  }
+  return { ...w, barcode: text(w.barcode), product, label, question: text(w.question) };
+}
 
 const SYSTEM = `You read photos for Oath, a personal food diary used in Malta. Say what the photo shows using the schema.
 
 kind:
 - "barcode": a barcode is readable. Put every digit in barcode, exactly as printed under the bars. Also fill product if the packet is visible.
 - "packet": a packaged product with no readable barcode. Fill product with the name, brand and variant as printed, and pack size if printed (for "6 x 330 ml" give pack_size 1980, pack_unit "ml", pack_count 6).
-- "label": a nutrition information table. Fill label with the values exactly as printed in the per 100 g or per 100 ml column; use the per serving column (basis "serving", with serving_size) only if there is no per 100 column. Copy numbers, never work them out. A value that is not printed is null. Salt as printed; if only sodium is printed, leave salt null. caffeine_mg only if a caffeine amount is printed. Fill product from the packet if visible.
+- "label": a nutrition information table. Fill label with the values exactly as printed in the per 100 g or per 100 ml column; use the per serving column (basis "serving", with serving_size) only if there is no per 100 column. Copy numbers, never work them out. In values, list only what is printed, one entry per value (key and number); leave out anything not printed. Salt as printed; if only sodium is printed, leave salt out. caffeine_mg only if a caffeine amount is printed. Fill product from the packet if visible.
 - "meal": food or drink ready to eat (a plate, a bowl, a sandwich, a glass, a takeaway box). List each separate food in items, following the item rules below. Include visible oil, butter, sauces and dressings as their own items.
 - "unclear": you cannot tell what it is, or it is not food or drink. Put a short question in question.
 
-Use null for anything you cannot read. Never guess a barcode digit, a brand or a label value. summary is one short line saying what you see. items is empty unless kind is "meal".
+Anything you cannot read stays empty: "" for text, 0 for a size or count, label basis "none" when there is no nutrition table, and product name "" when no packet is visible. Never guess a barcode digit, a brand or a label value. summary is one short line saying what you see. items is empty unless kind is "meal".
 
 Item rules:
 ${ITEM_RULES}`;
@@ -210,6 +235,38 @@ function queriesFor(u) {
   return { queries: out.slice(0, 9), head: head && !out.includes(head) ? head : null };
 }
 
+// Versions that change what is in it are different foods: "Capri Sun Zero" is not Capri Sun, and decaf
+// is not coffee. Each kind has its words; a kind he named must be on the record (or, for sugar free,
+// the record must have next to no sugar), and a kind only the record names counts against it.
+const VARIANTS = {
+  'sugar free': ['zero', 'diet', 'sugar free', 'sugarfree', 'sugarless', 'no sugar', 'no sugars', 'no added sugar', 'no added sugars', 'zero sugar', 'unsweetened'],
+  light: ['light', 'lite', 'low fat', 'reduced fat', 'fat free', 'skinny', 'low calorie'],
+  decaf: ['decaf', 'decaffeinated', 'caffeine free'],
+  'alcohol free': ['alcohol free', 'non alcoholic', 'alcoholfree', '0 0'],
+};
+// Only these words on a record mark it as a different version from the plain food: "light" and
+// "unsweetened" are everyday words in plain names (chicken light meat, unsweetened cocoa).
+const STRONG = {
+  'sugar free': ['zero', 'diet', 'sugar free', 'sugarfree', 'no sugar', 'no added sugar', 'zero sugar'],
+  decaf: ['decaf', 'decaffeinated', 'caffeine free'],
+  'alcohol free': ['alcohol free', 'non alcoholic', 'alcoholfree', '0 0'],
+};
+export function variantsOf(...texts) {
+  const t = ` ${norm(texts.flat().filter(Boolean).join(' '))} `;
+  return new Set(Object.entries(VARIANTS).filter(([, list]) => list.some((w) => t.includes(` ${w} `))).map(([k]) => k));
+}
+const strongOf = (rec) => {
+  const t = ` ${norm([rec.brand, rec.name].filter(Boolean).join(' '))} `;
+  return new Set(Object.entries(STRONG).filter(([, list]) => list.some((w) => t.includes(` ${w} `))).map(([k]) => k));
+};
+const recordVariants = (rec) => variantsOf(rec.brand, rec.name, ...(rec.aliases || []));
+const saidVariants = (u) => variantsOf(u.name, u.brand, u.variety, ...u.searches);
+// A version he named that the record is not. Sugar free also passes a record with at most 1 g of sugars per 100.
+function missingVariant(rec, said) {
+  const has = recordVariants(rec);
+  return [...said].find((k) => !has.has(k) && !(k === 'sugar free' && num(rec.nutrients?.sugars) !== null && rec.nutrients.sugars <= 1)) || null;
+}
+
 // How close a record is to what was understood. A named brand or restaurant decides first (its own
 // record far ahead, another brand's product pushed back), then the name or search words, variety and
 // preparation; a drink against a food, and words he never said, count against it.
@@ -236,6 +293,11 @@ function scoreFor(rec, u) {
   if (!u.anyForm && (u.unit === 'ml') !== Boolean(rec.liquid)) score -= 15;
   const said = new Set(words([u.name, u.brand, u.variety, u.preparation, ...u.searches].filter(Boolean).join(' ')));
   score -= Math.min(10, [...tokens].filter((t) => t && !said.has(t) && !said.has(`${t}s`) && !said.has(t.replace(/s$/, ''))).length);
+  // The same version: a zero for a zero gains; a diet or light record for a plain request loses.
+  const saidV = saidVariants(u);
+  const recV = recordVariants(rec);
+  const otherVersion = [...strongOf(rec)].some((k) => !saidV.has(k));
+  score += 20 * [...saidV].filter((k) => recV.has(k)).length - (otherVersion ? 40 : 0);
   // Hand-picked records (clean names, checked portions) win a tie with the bulk USDA rows.
   if (!String(rec.key).startsWith('fdc-')) score += 3;
   // Good enough to log without the AI: every word of the name, or of a search phrase of two words or
@@ -245,7 +307,7 @@ function scoreFor(rec, u) {
     return ws.length >= 2 && ws.every(has);
   });
   const otherBrand = Boolean(u.brand) && !brandMatch && Boolean(rec.brand);
-  return { score, brandMatch: brandMatch && same, fits: whole && !otherBrand };
+  return { score, brandMatch: brandMatch && same, fits: whole && !otherBrand && !otherVersion };
 }
 
 const SHORTLIST = 12;
@@ -256,10 +318,13 @@ const SHORTLIST = 12;
 // USDA records only, as references).
 export async function shortlistFor(u, { keep = null } = {}) {
   const pool = new Map();
+  // A zero, diet, light, decaf or alcohol-free version he named is never offered the regular one.
+  const said = saidVariants(u);
   const take = (rows) => {
     for (const r of rows) {
       if (pool.has(r.key) || num(r.nutrients?.kcal) === null || r.status === 'needs-label') continue;
       if (keep && !keep(r)) continue;
+      if (said.size && missingVariant(r, said)) continue;
       pool.set(r.key, r);
     }
   };
@@ -353,6 +418,7 @@ For each item you get what was understood (name, brand or restaurant, variety, p
 3. Then the state or preparation (cooked over dry when he ate it cooked, fried when it was fried).
 4. A generic record only when no record in the list is more specific and still the same food. Then say so in why, e.g. "No Burger King fries in the catalogue, so generic fast-food fries".
 5. key "" (empty) when nothing in the list is honestly the same food, including another brand's version of a branded food. An empty key is better than a wrong match: his estimate is logged instead.
+6. A version that changes what is in it is a different food: zero, diet, sugar free, light, decaf, alcohol free. Never pick the regular version for one of these (Capri Sun for a Capri Sun Zero, Coke for a Coke Zero), or one of these for the regular food. With no record of the right version, key "".
 
 Unit and qty, from the chosen record's units only, written exactly as listed:
 - When his size word matches a portion ("large" and "p:1 large serving"), use that portion, with qty how many of it (usually 1).
@@ -492,6 +558,7 @@ export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg
     maxTokens: 10000,
   });
   if (read.refused) return { kind: 'unclear', summary: '', question: 'I could not read that photo. What is it?' };
+  Object.assign(read, photoFromWire(read));
   await logEvent('food_photo', { kind: read.kind });
   const code = read.barcode ? read.barcode.replace(/\D/g, '') : '';
   const goodCode = code && validEan(code) ? code : null;

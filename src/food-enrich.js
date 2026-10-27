@@ -37,7 +37,6 @@ const KINDS = ['item', 'quick']; // meals, recipes and batches are made of catal
 
 const STR = { type: 'string' };
 const NUM = { type: 'number' };
-const maybe = (s) => ({ anyOf: [s, { type: 'null' }] });
 const obj = (properties) => ({ type: 'object', additionalProperties: false, required: Object.keys(properties), properties });
 const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
 const clip = (s, max = 120) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
@@ -312,22 +311,26 @@ Then say in plain text:
 If no reliable page gives values for this exact item, say so plainly.`;
 
 const WEB_READ_SYSTEM = `You turn the notes of a web search into a nutrition record for Oath, a personal food diary. Copy each value exactly as the notes give it, converted only into these units: energy in kcal (from kJ divided by 4.184 only when kcal is not given); grams for protein, carbs, sugars, fat, satfat (saturates), fibre, salt, alcohol, addsugars, mufa, pufa and transfat; mg for caffeine, chol, potassium, calcium, iron, magnesium, zinc, phosphorus, vitc, vite, b1, b2, b3 and b6; µg for selenium, vita, vitd, vitk, folate and b12.
-A value the notes do not give is null: never estimate one. When only sodium is given, put it in sodium_mg and leave salt null.
-per is "100g", "100ml" or "serving" as the notes say, with serving_size and serving_unit when per serving.
+values lists only what the notes give, one entry per value (key and number): never estimate one, and leave out anything not given. When only sodium is given, list it as sodium_mg in mg and leave salt out.
+per is "100g", "100ml" or "serving" as the notes say, with serving_size and serving_unit when per serving (0 and "" otherwise).
 url is the address the values come from, exactly as it appears in the list of pages read. name and brand are the product or menu item as the page names it.
 found is false when the notes give no reliable values for this exact item.`;
 
+// No nullable fields (the API allows at most 16 in a schema): a serving size of 0 means none, and the
+// values come as a list of only those the notes give, sodium among them.
 const WEB_SCHEMA = obj({
   found: { type: 'boolean' },
   name: STR,
   brand: STR,
   url: STR,
   per: { type: 'string', enum: ['100g', '100ml', 'serving'] },
-  serving_size: maybe(NUM),
-  serving_unit: maybe({ type: 'string', enum: ['g', 'ml'] }),
-  sodium_mg: maybe(NUM),
-  values: obj(Object.fromEntries(KEYS.map((k) => [k, maybe(NUM)]))),
+  serving_size: NUM,
+  serving_unit: { type: 'string', enum: ['g', 'ml', ''] },
+  values: { type: 'array', items: obj({ key: { type: 'string', enum: [...KEYS, 'sodium_mg'] }, value: NUM }) },
 });
+
+// The values list as { key: number }, the last of any repeat winning.
+const valuesOf = (list) => Object.fromEntries((Array.isArray(list) ? list : []).filter((x) => typeof x?.value === 'number').map((x) => [x.key, x.value]));
 
 // The pages the search really returned or cited, by address: { url: title }.
 function sourcesOf(blocks) {
@@ -384,6 +387,7 @@ export async function lookUpOnWeb({ name, brand = null, generic = '', liquid = f
     content: [{ type: 'text', text: `Item: ${what}\n\nNotes from the search:\n${notes.slice(0, 8000)}\n\nPages it read:\n${pages}` }],
   });
   if (read.refused || read.found !== true) return null;
+  const given = valuesOf(read.values);
   const src = sourceFor(read.url, sources);
   if (!src) return null;
   const per = ['100g', '100ml', 'serving'].includes(read.per) ? read.per : null;
@@ -393,12 +397,12 @@ export async function lookUpOnWeb({ name, brand = null, generic = '', liquid = f
   const factor = per === 'serving' ? 100 / size : 1;
   const nutrients = {};
   for (const k of KEYS) {
-    const v = num(read.values?.[k]);
+    const v = num(given[k]);
     const x = v === null || v < 0 ? null : round(v * factor, 4);
     nutrients[k] = x !== null && x <= perHundredCap(k) ? x : null;
   }
   let derived = '';
-  const sodium = num(read.sodium_mg);
+  const sodium = num(given.sodium_mg);
   if (nutrients.salt === null && sodium !== null && sodium >= 0) {
     const salt = round((sodium * factor * 2.5) / 1000, 4);
     if (salt <= 100) {

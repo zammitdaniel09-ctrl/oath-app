@@ -314,9 +314,11 @@ const webFound = reply('end_turn', [
     citations: [{ type: 'web_search_result_location', url: URL1, title: 'Twistees Cheese | Twistees', encrypted_index: 'x', cited_text: 'Energy 500 kcal' }],
   },
 ]);
+// The reading as the API returns it: no nulls, only the values the notes gave, sodium among them.
+const pairs = (o) => Object.entries(o).map(([key, value]) => ({ key, value }));
 const webRead = (over = {}) => said({
-  found: true, name: 'Twistees Cheese', brand: 'Twistees', url: `${URL1}/`, per: '100g', serving_size: null, serving_unit: null, sodium_mg: 800,
-  values: { ...Object.fromEntries(KEYS.map((k) => [k, null])), kcal: 500, protein: 6, carbs: 60, sugars: 3, fat: 26, satfat: 11, fibre: 2 },
+  found: true, name: 'Twistees Cheese', brand: 'Twistees', url: `${URL1}/`, per: '100g', serving_size: 0, serving_unit: '',
+  values: pairs({ kcal: 500, protein: 6, carbs: 60, sugars: 3, fat: 26, satfat: 11, fibre: 2, sodium_mg: 800 }),
   ...over,
 });
 
@@ -387,10 +389,10 @@ test('the web is never trusted past what it returned, and lookups stop at the da
   // A page the model names that the search never returned is not a source: nothing is saved.
   coach.setCoachClient(scripted({ web: [webFound], read: [webRead({ url: 'https://made-up.example/twistees' })] }));
   assert.equal(await enrich.lookUpOnWeb({ name: 'Twistees Paprika', brand: 'Twistees' }), null);
-  coach.setCoachClient(scripted({ web: [webFound], read: [said({ found: false, name: '', brand: '', url: '', per: '100g', serving_size: null, serving_unit: null, sodium_mg: null, values: Object.fromEntries(KEYS.map((k) => [k, null])) })] }));
+  coach.setCoachClient(scripted({ web: [webFound], read: [said({ found: false, name: '', brand: '', url: '', per: '100g', serving_size: 0, serving_unit: '', values: [] })] }));
   assert.equal(await enrich.lookUpOnWeb({ name: 'Twistees Paprika', brand: 'Twistees' }), null);
   // Values per serving become values per 100 by the serving size.
-  coach.setCoachClient(scripted({ web: [webFound], read: [webRead({ name: 'Twistees Cheese Bag', per: 'serving', serving_size: 25, serving_unit: 'g', sodium_mg: null, values: { ...Object.fromEntries(KEYS.map((k) => [k, null])), kcal: 125, protein: 1.5, salt: 0.5 } })] }));
+  coach.setCoachClient(scripted({ web: [webFound], read: [webRead({ name: 'Twistees Cheese Bag', per: 'serving', serving_size: 25, serving_unit: 'g', values: pairs({ kcal: 125, protein: 1.5, salt: 0.5 }) })] }));
   const bag = await enrich.lookUpOnWeb({ name: 'Twistees Cheese Bag', brand: 'Twistees' });
   assert.equal(bag.nutrients.kcal, 500);
   assert.equal(bag.nutrients.protein, 6);
