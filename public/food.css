@@ -1039,9 +1039,7 @@ html.scan-open, html.scan-open body { overflow: hidden; }
 .fnext-calm { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 0.9375rem; line-height: 1.45; color: var(--text-2); }
 .fnext-calm .ic { width: 18px; height: 18px; color: var(--menthol); }
 .fnext.is-covered .fnext-undo { margin: 0 0 12px; }
-@media (min-width: 1240px) {
-  .fd-sum > .fnext { margin-top: 14px; }
-}
+.fd-side > .fnext:first-child { margin-top: 14px; }
 
 /* Nutrients shown with a % of need open "Rich in…". They are real buttons that keep their look, with a
    small chevron by the name and a press state; rows grow to a 44 px target. */

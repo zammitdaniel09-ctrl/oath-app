@@ -71,6 +71,12 @@ function comboChip(c, days) {
     <button type="button" class="fu-more" data-action="food-usual-edit" data-key="${esc(c.key)}" aria-label="${esc(`Change your ${c.label.toLowerCase()} before logging`)}">${icon('chevron')}</button></div>`;
 }
 
+// The catalogue items the row is offering now, so the recent tray below does not offer them twice.
+export function usualItemKeys() {
+  const u = current();
+  return new Set((u?.now || []).filter((p) => p.key.startsWith('item:')).map((p) => p.key.slice(5)));
+}
+
 // The first row under the capture bar. With no history yet it is an empty placeholder, so a late
 // answer has somewhere to land.
 export function usualHtml() {

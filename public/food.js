@@ -16,7 +16,7 @@ import { wantLinks, linksSleepCard, linksTrainingCard, linksAlcoholCard, linksWi
 import { initScan, scanClick, scanMissBody, scanMissTitle } from './scan.js';
 // One-tap logging, water, what is left today, per-meal copy and add, swipe to remove.
 import {
-  initUsual, loadUsual, usualHtml, usualClick, usualSubmit, usualSheet, undoLog, waterHtml, leftHtml, slotAction, emptySlotsHtml,
+  initUsual, loadUsual, usualHtml, usualItemKeys, usualClick, usualSubmit, usualSheet, undoLog, waterHtml, leftHtml, slotAction, emptySlotsHtml,
 } from './food-usual.js';
 import { initNext, loadNext, nextCardHtml, nextClick, richBody, richTitle } from './food-next.js';
 
@@ -592,9 +592,10 @@ function pendingRows(date) {
       <span class="li-sub">${esc(x.preview?.amount || '')}</span></span><span class="li-side">${x.preview?.kcal !== undefined ? `<b>${round(x.preview.kcal, 0)}</b> kcal` : ''}</span></div>`).join('')}</div></section>`;
 }
 
-function trayHtml(list) {
-  if (!list?.length) return '';
-  return `<div class="tray" role="list" aria-label="Log again">${list.slice(0, 10).map((it) => {
+function trayHtml(list, skip = new Set()) {
+  const rest = (list || []).filter((it) => !skip.has(it.key));
+  if (!rest.length) return '';
+  return `<div class="tray" role="list" aria-label="Log again">${rest.slice(0, 10).map((it) => {
     const d = defaults(it);
     return `<button class="tray-chip" role="listitem" data-action="food-tray" data-key="${esc(it.key)}">${it.favourite ? icon('star', 'star-on') : ''}<span>${esc(it.name)}</span><small>${esc(amountText(d.qty, d.unit, it))}</small></button>`;
   }).join('')}</div>`;
@@ -647,7 +648,7 @@ function viewDiary() {
   const typing = document.activeElement?.matches?.('[data-food-text]');
   ctx.shell(`${head}${offline}${undo}<div class="split fdiary${anim}">
     <div class="fcol fcol-a"><div class="fd-cap">${captureHtml()}${takeHtml('day')}</div><div class="fd-meals">${pendingRows(d.date)}${slots}${empty}${emptySlotsHtml(d)}${repeat}</div></div>
-    <div class="fcol fcol-b"><div class="fd-sum">${daySummary(d)}${nextCardHtml(d)}</div><div class="fd-side">${burnTile(F.energy)}${trendPreview(F.week)}${plansHtml(d.plans)}${batchesHtml(F.batches)}</div></div>
+    <div class="fcol fcol-b"><div class="fd-sum">${daySummary(d)}</div><div class="fd-side">${nextCardHtml(d)}${burnTile(F.energy)}${trendPreview(F.week)}${plansHtml(d.plans)}${batchesHtml(F.batches)}</div></div>
     </div>${sheetHtml()}`);
   if (typing && !state.foodSheet) {
     const box = document.querySelector('[data-food-text]');
@@ -674,7 +675,7 @@ function captureHtml() {
     </form>
     ${usualHtml()}
     <div class="fcap-tools" role="group" aria-label="More ways to log">${tools.map(([a, ic, l, extra]) => `<button type="button" class="fcap-tool" data-action="${a}"${extra}>${icon(ic)}<span>${l}</span></button>`).join('')}</div>
-    ${trayHtml(f().recent)}
+    ${trayHtml(f().recent, usualItemKeys())}
   </section>`;
 }
 
