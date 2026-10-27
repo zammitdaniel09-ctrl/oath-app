@@ -1,6 +1,7 @@
 // Calendar feeds: Google, iCloud, Outlook and the University VLE (Moodle), subscribed to by their
 // iCal address. Events show what the day already holds (busy time for the capacity check and the
-// coach's view); a "deadlines" feed turns each VLE due date into a normal task, once.
+// coach's view); a "deadlines" feed turns each VLE due date into a normal task, once. Oath's own events
+// (added in the app or by the coach) live in their own table and join the same reads.
 //
 // The iCalendar parser is our own and covers what real feeds use (RFC 5545): line unfolding, text
 // escapes, DATE and DATE-TIME values in UTC, IANA, Windows or VTIMEZONE-defined zones, floating
@@ -14,9 +15,10 @@ import zlib from 'node:zlib';
 import crypto from 'node:crypto';
 import { Hono } from 'hono';
 import { DateTime, IANAZone, Zone } from 'luxon';
-import { db, logEvent } from './db.js';
+import { db, logEvent, getKV, setKV } from './db.js';
 import { nowUTC, addDays, deadlineAt, validTime, validDate } from './time.js';
-import { localNow, createTask, updateTask, RuleError } from './engine.js';
+import { localNow, createTask, updateTask, isScheduled, rulesOn, RuleError } from './engine.js';
+import { restSet } from './strength.js';
 
 const v = { validTime, validDate };
 // Every timestamp comes from the app clock, never the database clock.
@@ -36,6 +38,10 @@ const FRESH_MINUTES = 14; // "every 15 minutes", less a minute of slack so a 15-
 const MAX_RANGE_DAYS = 62;
 const SYNC_CONCURRENCY = 3;
 const PALETTE = ['#2f6f8f', '#c0612b', '#3d7a4a', '#a8842c', '#b0465c', '#4b5d73'];
+const OATH_COLOR = '#e10600'; // Merlot: his own events stand out from the feeds
+const OATH_DEFAULT_MIN = 60; // an event with a start and no end lasts an hour
+const OATH_MAX_MIN = 24 * 60;
+const OATH_MAX_DAYS = 62; // longest all-day span
 const USER_AGENT = 'Oath/1.0 (personal calendar sync)';
 
 // Tests serve feeds from a local http server: allow loopback and plain http there, let them point
@@ -75,6 +81,21 @@ alter table cal_events add column if not exists busy boolean not null default tr
 create index if not exists cal_events_start_idx on cal_events (start_at);
 alter table tasks add column if not exists ext_uid text;
 create unique index if not exists tasks_ext_uid_idx on tasks (ext_uid) where ext_uid is not null;
+-- Oath's own events: made in the app or by the coach. A table of their own, so no feed sync, removal or
+-- feed count ever touches them. All-day events are stored like the feeds' (UTC midnight, end exclusive).
+create table if not exists oath_events (
+  id serial primary key,
+  title text not null,
+  start_at timestamptz not null,
+  end_at timestamptz not null,
+  all_day boolean not null default false,
+  location text not null default '',
+  notes text not null default '',
+  created_by text not null default 'you',
+  created_at timestamptz not null,
+  updated_at timestamptz not null
+);
+create index if not exists oath_events_start_idx on oath_events (start_at);
 `;
 
 export async function migrateCalendar() {
@@ -1439,6 +1460,238 @@ function toEvent(r, tz) {
   };
 }
 
+// ---------- Oath's own events ----------
+
+// Same shape as a feed event, plus own, ownId and notes, so every reader (Today, busy time, the coach,
+// the calendar page) treats them alike. Feed events never carry those three.
+function toOwnEvent(r, tz) {
+  const e = toEvent({ ...r, feed_id: null, uid: String(r.id), feed: 'Oath', color: OATH_COLOR, kind: 'oath', busy: true }, tz);
+  return { ...e, id: `oath:${r.id}`, feedId: null, own: true, ownId: r.id, notes: r.notes, by: r.created_by };
+}
+
+const given = (x) => x !== undefined && x !== null && x !== '';
+const flag = (x) => x === true || x === 'true' || x === 'on' || x === 1 || x === '1';
+const hhmm = (x) => {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(String(x ?? '').trim());
+  return m ? `${m[1].padStart(2, '0')}:${m[2]}` : '';
+};
+const minutesOf = (hm) => Number(hm.slice(0, 2)) * 60 + Number(hm.slice(3));
+const notesText = (x) => String(x ?? '').replace(/\r\n?/g, '\n').trim().slice(0, 1000);
+
+// A stored event as the local date and times it was entered with.
+function localForm(r, tz) {
+  const base = { title: r.title, location: r.location, notes: r.notes };
+  if (r.all_day) {
+    const s = DateTime.fromJSDate(r.start_at, { zone: 'utc' });
+    const e = DateTime.fromJSDate(r.end_at, { zone: 'utc' }).minus({ days: 1 });
+    return { ...base, allDay: true, date: s.toISODate(), endDate: (e < s ? s : e).toISODate(), start: null, duration: null };
+  }
+  const s = DateTime.fromJSDate(r.start_at, { zone: tz });
+  const e = DateTime.fromJSDate(r.end_at, { zone: tz });
+  return { ...base, allDay: false, date: s.toISODate(), endDate: s.toISODate(), start: s.toFormat('HH:mm'), duration: Math.round(e.diff(s, 'minutes').minutes) };
+}
+
+// What was asked (a new event, or a patch to cur) as table columns. Every default lives here: no start
+// means all day, a start with no end lasts an hour, a moved start keeps the length, a moved day keeps
+// the times.
+function composeOwn(input, cur, tz, today) {
+  const title = input.title !== undefined ? text(input.title, 200) : cur?.title;
+  if (!title) throw new RuleError('Give the event a title.');
+  const date = given(input.date) ? String(input.date).trim() : cur?.date || today;
+  if (!validDate(date)) throw new RuleError('The date must look like 2026-10-28.');
+  let allDay;
+  if (given(input.all_day)) allDay = flag(input.all_day);
+  else if (cur) allDay = given(input.start) ? false : cur.allDay;
+  else allDay = !given(input.start);
+  const out = {
+    title,
+    location: input.location !== undefined ? text(input.location, 200) : cur?.location || '',
+    notes: input.notes !== undefined ? notesText(input.notes) : cur?.notes || '',
+    all_day: allDay,
+  };
+  if (allDay) {
+    const span = cur?.allDay ? Math.round(DateTime.fromISO(cur.endDate, { zone: 'utc' }).diff(DateTime.fromISO(cur.date, { zone: 'utc' }), 'days').days) : 0;
+    let endDate = date;
+    if (given(input.end_date)) endDate = String(input.end_date).trim();
+    else if (cur?.allDay) endDate = given(input.date) ? addDays(date, span, 'utc') : cur.endDate;
+    if (!validDate(endDate) || endDate < date) throw new RuleError('The last day must be on or after the first day.');
+    if (DateTime.fromISO(endDate, { zone: 'utc' }).diff(DateTime.fromISO(date, { zone: 'utc' }), 'days').days >= OATH_MAX_DAYS) {
+      throw new RuleError(`An all-day event can last up to ${OATH_MAX_DAYS} days.`);
+    }
+    out.start_at = DateTime.fromISO(date, { zone: 'utc' }).toJSDate();
+    out.end_at = DateTime.fromISO(endDate, { zone: 'utc' }).plus({ days: 1 }).toJSDate();
+    return out;
+  }
+  const start = given(input.start) ? hhmm(input.start) : cur && !cur.allDay ? cur.start : '';
+  if (!validTime(start)) throw new RuleError(given(input.start) ? 'The start must look like 18:00.' : 'Say what time it starts.');
+  let minutes = cur && !cur.allDay ? cur.duration : OATH_DEFAULT_MIN;
+  if (given(input.end)) {
+    const end = hhmm(input.end);
+    if (!validTime(end)) throw new RuleError('The end must look like 19:00.');
+    minutes = minutesOf(end) - minutesOf(start);
+    if (minutes <= 0) throw new RuleError('The end must be after the start.');
+  } else if (given(input.duration)) {
+    minutes = Math.round(Number(input.duration));
+    if (!(minutes >= 5 && minutes <= OATH_MAX_MIN)) throw new RuleError('The length must be between 5 minutes and 24 hours.');
+  }
+  const startAt = deadlineAt(date, start, tz);
+  out.start_at = startAt.toJSDate();
+  out.end_at = startAt.plus({ minutes }).toJSDate();
+  return out;
+}
+
+// Only Oath's own ids (7 or oath:7) pass; a feed event's id looks different and is refused.
+const ownIdOf = (id) => {
+  const s = String(id).replace(/^oath:/, '');
+  if (!/^\d{1,9}$/.test(s)) throw new RuleError('Only events made in Oath can be changed.');
+  return Number(s);
+};
+
+async function ownRow(id) {
+  const [row] = await db()`select * from oath_events where id = ${ownIdOf(id)}`;
+  if (!row) throw new RuleError('That event does not exist.', 404);
+  return row;
+}
+
+export async function getOathEvent(id) {
+  const { tz } = await localNow();
+  return toOwnEvent(await ownRow(id), tz);
+}
+
+export async function createOathEvent(input = {}, createdBy = 'you') {
+  const { tz, today } = await localNow();
+  const c = composeOwn(input, null, tz, today);
+  const [row] = await db()`
+    insert into oath_events (title, start_at, end_at, all_day, location, notes, created_by, created_at, updated_at)
+    values (${c.title}, ${c.start_at}, ${c.end_at}, ${c.all_day}, ${c.location}, ${c.notes}, ${createdBy === 'coach' ? 'coach' : 'you'}, ${ts()}, ${ts()})
+    returning *`;
+  await logEvent('calendar_event', { action: 'added', id: row.id, by: row.created_by });
+  return toOwnEvent(row, tz);
+}
+
+export async function updateOathEvent(id, patch = {}) {
+  const { tz, today } = await localNow();
+  const cur = await ownRow(id);
+  const c = composeOwn(patch, localForm(cur, tz), tz, today);
+  const [row] = await db()`
+    update oath_events set title = ${c.title}, start_at = ${c.start_at}, end_at = ${c.end_at}, all_day = ${c.all_day},
+      location = ${c.location}, notes = ${c.notes}, updated_at = ${ts()}
+    where id = ${cur.id} returning *`;
+  await logEvent('calendar_event', { action: 'changed', id: row.id });
+  return toOwnEvent(row, tz);
+}
+
+export async function deleteOathEvent(id) {
+  const { tz } = await localNow();
+  const [row] = await db()`delete from oath_events where id = ${ownIdOf(id)} returning *`;
+  if (!row) throw new RuleError('That event does not exist.', 404);
+  await logEvent('calendar_event', { action: 'deleted', id: row.id });
+  return { ok: true, event: toOwnEvent(row, tz) };
+}
+
+// Timed events that overlap this one, so a new booking can say what it lands on.
+export async function eventClashes(ev) {
+  if (ev.allDay) return [];
+  const { tz } = await localNow();
+  const day = DateTime.fromISO(ev.start, { zone: tz }).toISODate();
+  const s = DateTime.fromISO(ev.start).toMillis();
+  const e = DateTime.fromISO(ev.end).toMillis();
+  return (await eventsBetween(day, DateTime.fromISO(ev.end, { zone: tz }).toISODate()))
+    .filter((x) => x.id !== ev.id && !x.allDay && !x.deadline && DateTime.fromISO(x.start).toMillis() < e && DateTime.fromISO(x.end).toMillis() > s);
+}
+
+// ---------- Deadlines: the habits and tasks that fall due inside a range, for the calendar page ----------
+
+// Fixed-day habits on the days they are scheduled, and tasks with a due date. Tasks made from a VLE
+// deadline are left out: the deadline feed already shows them as events.
+export async function deadlineMarkers(from, to) {
+  const { tz } = await localNow();
+  const tasks = await db()`
+    select id, title, due_date, deadline, hard, done_at from tasks
+    where deleted_at is null and ext_uid is null and due_date >= ${from} and due_date <= ${to}
+    order by due_date, deadline nulls last, id`;
+  const habits = await db()`select * from habits where start_date <= ${to} and (archived_from is null or archived_from > ${from}) order by sort, id`;
+  const rest = await restSet();
+  const kept = new Set((await db()`select habit_id, date from completions where date >= ${from} and date <= ${to}`).map((r) => `${r.habit_id}:${r.date}`));
+  const out = tasks.map((t) => ({
+    kind: 'task', id: t.id, title: t.title, date: t.due_date, time: t.deadline || null, done: Boolean(t.done_at), hard: t.hard, midnight: t.deadline === '00:00',
+  }));
+  for (let d = from; d <= to; d = addDays(d, 1, tz)) {
+    for (const h of habits) {
+      if (!isScheduled(h, d, tz, rest)) continue;
+      const r = rulesOn(h, d);
+      out.push({ kind: 'habit', id: h.id, title: h.name, date: d, time: r.deadline, done: kept.has(`${h.id}:${d}`), hard: r.non_negotiable, midnight: r.deadline === '00:00' });
+    }
+  }
+  return out.sort((a, b) => a.date.localeCompare(b.date) || String(a.time || '99').localeCompare(String(b.time || '99')) || a.title.localeCompare(b.title));
+}
+
+// ---------- Subscribing from Apple Calendar: a secret address that serves Oath's own events ----------
+
+const icsText = (s) => String(s ?? '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+
+// Content lines are folded at 75 octets, never inside a character.
+function foldLine(line) {
+  const parts = [];
+  let cur = '';
+  let bytes = 0;
+  for (const ch of line) {
+    const size = Buffer.byteLength(ch);
+    if (bytes + size > (parts.length ? 74 : 75)) {
+      parts.push(cur);
+      cur = '';
+      bytes = 0;
+    }
+    cur += ch;
+    bytes += size;
+  }
+  parts.push(cur);
+  return parts.join('\r\n ');
+}
+
+const icsStamp = (d) => DateTime.fromJSDate(d, { zone: 'utc' }).toFormat("yyyyLLdd'T'HHmmss'Z'");
+const icsDay = (d) => DateTime.fromJSDate(d, { zone: 'utc' }).toFormat('yyyyLLdd');
+
+export async function oathIcs() {
+  const rows = await db()`select * from oath_events where end_at > ${nowUTC().minus({ days: 90 }).toJSDate()} order by start_at, id`
+    .catch(ignoreMissingTables([]));
+  const lines = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Oath//Calendar//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+    'X-WR-CALNAME:Oath', `X-APPLE-CALENDAR-COLOR:${OATH_COLOR.toUpperCase()}`,
+    'REFRESH-INTERVAL;VALUE=DURATION:PT15M', 'X-PUBLISHED-TTL:PT15M',
+  ];
+  for (const r of rows) {
+    lines.push('BEGIN:VEVENT', `UID:oath-${r.id}@oath`, `DTSTAMP:${icsStamp(r.updated_at)}`, `LAST-MODIFIED:${icsStamp(r.updated_at)}`);
+    if (r.all_day) lines.push(`DTSTART;VALUE=DATE:${icsDay(r.start_at)}`, `DTEND;VALUE=DATE:${icsDay(r.end_at)}`);
+    else lines.push(`DTSTART:${icsStamp(r.start_at)}`, `DTEND:${icsStamp(r.end_at)}`);
+    lines.push(`SUMMARY:${icsText(r.title)}`);
+    if (r.location) lines.push(`LOCATION:${icsText(r.location)}`);
+    if (r.notes) lines.push(`DESCRIPTION:${icsText(r.notes)}`);
+    lines.push('TRANSP:OPAQUE', 'END:VEVENT');
+  }
+  lines.push('END:VCALENDAR');
+  return `${lines.map(foldLine).join('\r\n')}\r\n`;
+}
+
+// The address holds the only secret: anyone with it can read the events. It is stored as it is, so the
+// app can show it again, and it is never logged or sent anywhere but to the signed-in app.
+async function icalToken({ make = false, rotate = false } = {}) {
+  const saved = (await getKV('ical', null))?.token || null;
+  if (saved && !rotate) return saved;
+  if (!make) return null;
+  const token = crypto.randomBytes(24).toString('base64url');
+  await setKV('ical', { token, at: ts().toISOString() });
+  await logEvent('calendar_subscription', { action: saved ? 'renewed' : 'created' });
+  return token;
+}
+
+async function icalTokenValid(candidate) {
+  const saved = await icalToken();
+  if (!saved || typeof candidate !== 'string') return false;
+  const sha = (s) => crypto.createHash('sha256').update(s).digest();
+  return crypto.timingSafeEqual(sha(saved), sha(candidate));
+}
+
 // Events overlapping a range, across all feeds, sorted by start (all-day events first on their
 // day). from and to are 'YYYY-MM-DD' local dates (both included) or ISO timestamps ([from, to)).
 export async function eventsBetween(fromISO, toISO) {
@@ -1459,21 +1712,24 @@ export async function eventsBetween(fromISO, toISO) {
     select e.*, f.name as feed, f.color, f.kind from cal_events e join cal_feeds f on f.id = e.feed_id
     where e.start_at < ${to.plus({ days: 1 }).toJSDate()} and coalesce(e.end_at, e.start_at) >= ${from.minus({ days: 1 }).toJSDate()}
     order by e.start_at, e.title`;
+  const own = await db()`
+    select * from oath_events
+    where start_at < ${to.plus({ days: 1 }).toJSDate()} and end_at >= ${from.minus({ days: 1 }).toJSDate()}
+    order by start_at, title`.catch(ignoreMissingTables([]));
   const fromMs = from.toMillis();
   const toMs = to.toMillis();
   const sortKey = (ev) => (ev.allDay ? DateTime.fromISO(ev.start, { zone: tz }).toMillis() - 1 : DateTime.fromISO(ev.start).toMillis());
-  return rows
-    .filter((r) => {
-      if (r.all_day) {
-        const s = DateTime.fromJSDate(r.start_at, { zone: 'utc' }).toISODate();
-        const endExcl = DateTime.fromJSDate(r.end_at || r.start_at, { zone: 'utc' }).toISODate();
-        return s <= lastDate && (endExcl > fromDate || s >= fromDate);
-      }
-      const s = r.start_at.getTime();
-      const e = (r.end_at || r.start_at).getTime();
-      return s < toMs && (e > fromMs || s >= fromMs);
-    })
-    .map((r) => toEvent(r, tz))
+  const inRange = (r) => {
+    if (r.all_day) {
+      const s = DateTime.fromJSDate(r.start_at, { zone: 'utc' }).toISODate();
+      const endExcl = DateTime.fromJSDate(r.end_at || r.start_at, { zone: 'utc' }).toISODate();
+      return s <= lastDate && (endExcl > fromDate || s >= fromDate);
+    }
+    const s = r.start_at.getTime();
+    const e = (r.end_at || r.start_at).getTime();
+    return s < toMs && (e > fromMs || s >= fromMs);
+  };
+  return [...rows.filter(inRange).map((r) => toEvent(r, tz)), ...own.filter(inRange).map((r) => toOwnEvent(r, tz))]
     .sort((a, b) => sortKey(a) - sortKey(b) || a.title.localeCompare(b.title));
 }
 
@@ -1484,18 +1740,21 @@ export async function eventsForDate(date) {
 }
 
 // Minutes between two local times on a date that are covered by timed, busy events of
-// 'calendar' feeds, overlaps merged. Deadlines and "free" events do not count.
+// 'calendar' feeds and Oath's own events, overlaps merged. Deadlines and "free" events do not count.
 export async function busyMinutes(date, fromHHMM = '00:00', toHHMM = '23:59') {
   if (!validDate(date) || !validTime(fromHHMM) || !validTime(toHHMM)) return 0;
   const { tz } = await localNow();
   const from = deadlineAt(date, fromHHMM, tz).toMillis();
   const to = deadlineAt(date, toHHMM, tz).toMillis();
   if (to <= from) return 0;
-  const rows = await db()`
+  const feedRows = await db()`
     select e.start_at, e.end_at from cal_events e join cal_feeds f on f.id = e.feed_id
     where f.kind = 'calendar' and not e.all_day and e.busy
       and e.start_at < ${new Date(to)} and e.end_at > ${new Date(from)}`.catch(ignoreMissingTables([]));
-  const spans = rows
+  const ownRows = await db()`
+    select start_at, end_at from oath_events
+    where not all_day and start_at < ${new Date(to)} and end_at > ${new Date(from)}`.catch(ignoreMissingTables([]));
+  const spans = [...feedRows, ...ownRows]
     .map((r) => [Math.max(from, r.start_at.getTime()), Math.min(to, r.end_at.getTime())])
     .filter(([a, b]) => b > a)
     .sort((x, y) => x[0] - y[0]);
@@ -1515,7 +1774,7 @@ export async function busyMinutes(date, fromHHMM = '00:00', toHHMM = '23:59') {
 export async function calendarForCoach() {
   try {
     const { today, tz } = await localNow();
-    const [{ n }] = await db()`select count(*)::int as n from cal_feeds`;
+    const [{ n }] = await db()`select (select count(*) from cal_feeds)::int + (select count(*) from oath_events)::int as n`;
     if (!n) return '';
     const lines = [];
     for (const [date, label] of [[today, 'today'], [addDays(today, 1, tz), 'tomorrow']]) {
@@ -1527,7 +1786,8 @@ export async function calendarForCoach() {
         if (e.allDay) when = e.end !== e.start ? `all day, until ${DateTime.fromISO(e.end).toFormat('ccc d LLL')}` : 'all day';
         else if (e.deadline) when = `due ${e.time}`;
         const title = e.deadline ? cleanDeadlineTitle(e.title) : e.title;
-        lines.push(`  ${when}: ${title}${e.location ? ` (${e.location})` : ''}${e.deadline ? ' [VLE deadline]' : ''}`);
+        // Oath's own events carry their id, so the coach can move or delete them.
+        lines.push(`  ${when}: ${title}${e.location ? ` (${e.location})` : ''}${e.deadline ? ' [VLE deadline]' : ''}${e.own ? ` [Oath event #${e.ownId}]` : ''}`);
       }
       if (events.length > 12) lines.push(`  and ${events.length - 12} more`);
     }
@@ -1556,7 +1816,8 @@ calendarApi.get('/calendar/feeds', async (c) => c.json({ feeds: await listFeeds(
 calendarApi.post('/calendar/feeds', async (c) => c.json(await addFeed(await jsonBody(c))));
 calendarApi.delete('/calendar/feeds/:id', async (c) => c.json(await removeFeed(c.req.param('id'))));
 calendarApi.post('/calendar/sync', async (c) => c.json({ results: await syncAllFeeds({ force: true }), feeds: await listFeeds() }));
-calendarApi.get('/calendar/events', async (c) => {
+// A range of local dates from the query, at most MAX_RANGE_DAYS long.
+async function rangeOf(c) {
   const { today, tz } = await localNow();
   const from = c.req.query('from') || today;
   const to = c.req.query('to') || from;
@@ -1564,5 +1825,43 @@ calendarApi.get('/calendar/events', async (c) => {
   if (to < from) throw new RuleError('The end date is before the start date.');
   const days = DateTime.fromISO(to, { zone: tz }).diff(DateTime.fromISO(from, { zone: tz }), 'days').days + 1;
   if (days > MAX_RANGE_DAYS) throw new RuleError(`Ask for at most ${MAX_RANGE_DAYS} days at a time.`);
+  return { from, to };
+}
+
+calendarApi.get('/calendar/events', async (c) => {
+  const { from, to } = await rangeOf(c);
   return c.json({ from, to, events: await eventsBetween(from, to) });
+});
+// Oath's own events. Feed events stay read-only: their ids are not numbers, so they cannot be reached here.
+calendarApi.post('/calendar/events', async (c) => c.json({ event: await createOathEvent(await jsonBody(c)) }));
+calendarApi.patch('/calendar/events/:id', async (c) => c.json({ event: await updateOathEvent(c.req.param('id'), await jsonBody(c)) }));
+calendarApi.delete('/calendar/events/:id', async (c) => c.json({ ok: true, event: (await deleteOathEvent(c.req.param('id'))).event }));
+// Habits and tasks falling due in a range, drawn as markers on the calendar page.
+calendarApi.get('/calendar/markers', async (c) => {
+  const { from, to } = await rangeOf(c);
+  return c.json({ from, to, markers: await deadlineMarkers(from, to) });
+});
+
+// The address to subscribe to from Apple Calendar. GET shows it (if there is one); POST makes it, or
+// with { rotate: true } makes a new one and turns the old one off.
+function subscriptionFor(c, token) {
+  if (!token) return { on: false, url: null, webcal: null };
+  const domain = process.env.PUBLIC_HOST || process.env.RAILWAY_PUBLIC_DOMAIN;
+  const origin = domain ? `https://${domain}` : new URL(c.req.url).origin;
+  const url = `${origin}/ical/${token}.ics`;
+  return { on: true, url, webcal: url.replace(/^https?:/, 'webcal:') };
+}
+calendarApi.get('/calendar/subscription', async (c) => c.json(subscriptionFor(c, await icalToken())));
+calendarApi.post('/calendar/subscription', async (c) => {
+  const b = await jsonBody(c);
+  return c.json(subscriptionFor(c, await icalToken({ make: true, rotate: Boolean(b.rotate) })));
+});
+
+// Mounted outside /api and the login: Apple Calendar cannot sign in, so the address carries the secret.
+// A wrong or missing one is a plain 404, which tells a guesser nothing.
+export const calendarPublic = new Hono();
+calendarPublic.get('/ical/:file', async (c) => {
+  const file = c.req.param('file');
+  if (!/\.ics$/i.test(file) || !(await icalTokenValid(file.replace(/\.ics$/i, '')))) return c.text('Not found.', 404);
+  return c.body(await oathIcs(), 200, { 'Content-Type': 'text/calendar; charset=utf-8', 'Cache-Control': 'no-store' });
 });

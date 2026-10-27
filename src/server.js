@@ -16,7 +16,7 @@ import { applySettings } from './settings.js';
 import { startLoop, runOnce, healIfEmpty } from './loop.js';
 import * as drive from './drive.js';
 import { healthApi, healthShortcut } from './health.js';
-import { calendarApi } from './calendar.js';
+import { calendarApi, calendarPublic } from './calendar.js';
 import { businessApi } from './business.js';
 import { initTelegram, telegramStatus, createLink, unlink, sendTelegram, handleUpdate, webhookSecret } from './telegram.js';
 import { setupStatus, noteIngestError } from './setup.js';
@@ -131,6 +131,7 @@ shortcut.post('/done', async (c) => c.json(await doneByText((await body(c)).text
 shortcut.get('/next', async (c) => c.json(await nextSay()));
 shortcut.route('/', healthShortcut); // POST /api/shortcut/health: Health Auto Export or the free Shortcut
 app.route('/api/shortcut', shortcut);
+app.route('/', calendarPublic); // /ical/<secret>.ics, for Apple Calendar to subscribe to
 
 const api = new Hono();
 api.use('*', auth.requireAuth());
@@ -191,7 +192,7 @@ api.delete('/rest/:date', async (c) => c.json(await engine.cancelRest(c.req.para
 // ---------- Export: everything, as one JSON file ----------
 const EXPORT_TABLES = ['habits', 'completions', 'tasks', 'misses', 'days', 'reflections', 'deferrals', 'focus_sessions',
   'day_plans', 'goals', 'goal_logs', 'nodes', 'rest_days', 'weekly_reviews', 'coach_messages', 'briefs', 'events',
-  'health_samples', 'health_workouts', 'cal_events', 'food_log', 'food_meals', 'food_batches', 'food_plans'];
+  'health_samples', 'health_workouts', 'cal_events', 'oath_events', 'food_log', 'food_meals', 'food_batches', 'food_plans'];
 api.get('/export', async (c) => {
   const out = { exportedAt: new Date().toISOString(), app: 'Oath' };
   for (const t of EXPORT_TABLES) out[t] = await db().unsafe(`select * from ${t} order by 1`);

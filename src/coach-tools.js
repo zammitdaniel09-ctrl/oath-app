@@ -1,11 +1,13 @@
 // Everything the coach can do in Oath. Each tool calls the same function the app's own buttons
 // call, so every rule still holds: locked deadlines, the undo window, pardon limits, rule changes
 // that start tomorrow. Tools that remove or rewrite something wait for Daniel to confirm.
+import { DateTime } from 'luxon';
 import { db, logEvent } from './db.js';
-import { validTime, validDate, deadlineText } from './time.js';
+import { validTime, validDate, deadlineText, addDays } from './time.js';
 import * as engine from './engine.js';
 import * as goals from './goals.js';
 import { FILL_KEYS } from './food.js';
+import { createOathEvent, updateOathEvent, deleteOathEvent, getOathEvent, eventsBetween, eventClashes, cleanDeadlineTitle } from './calendar.js';
 
 const v = { validTime, validDate };
 const { RuleError } = engine;
@@ -183,6 +185,55 @@ async function logFoodEstimate({ items, slot, date, time }) {
     }
   }
   return { receipts, detail: detail.length ? `Diary entries, all flagged as estimates: ${detail.join('; ')}` : '' };
+}
+
+// ---------- Calendar: his own events (feed events are read-only) ----------
+
+// "Tue 28 Oct 18:00 to 19:00", "Fri 30 Oct, all day", "Fri 30 Oct to Sun 1 Nov, all day".
+function whenText(ev) {
+  const s = DateTime.fromISO(ev.start, { setZone: true });
+  const e = DateTime.fromISO(ev.end, { setZone: true });
+  const day = (d) => d.toFormat('ccc d LLL');
+  if (ev.allDay) return ev.end > ev.start ? `${day(s)} to ${day(e)}, all day` : `${day(s)}, all day`;
+  return `${day(s)} ${ev.time} to ${e.toISODate() === s.toISODate() ? '' : `${day(e)} `}${ev.endTime}`;
+}
+
+// The model says duration_min; the calendar's own field is duration.
+const eventPatch = (input, keys) => {
+  const patch = pick(input, keys);
+  if (input.duration_min !== undefined) patch.duration = input.duration_min;
+  return patch;
+};
+
+async function ownEvent(id) {
+  try {
+    return await getOathEvent(id);
+  } catch (err) {
+    if (!(err instanceof RuleError)) throw err;
+    throw new RuleError('No event of his own with that id. Use find_events to look it up; events from his other calendars cannot be changed.');
+  }
+}
+
+async function overlapNote(ev) {
+  const clashes = await eventClashes(ev);
+  return clashes.length ? ` It overlaps ${clashes.slice(0, 3).map((x) => `"${x.title}" (${x.time} to ${x.endTime})`).join(', ')}: mention it in a few words.` : '';
+}
+
+async function findEvents({ query = '', from, to }) {
+  const { today } = await engine.localNow();
+  const start = from || today;
+  const end = to || addDays(start, 13, 'utc');
+  if (!validDate(start) || !validDate(end) || end < start) throw new RuleError('Give a from and to date like 2026-10-28.');
+  if (addDays(start, 61, 'utc') < end) throw new RuleError('Ask for at most 62 days at a time.');
+  const q = String(query).trim().toLowerCase();
+  const events = (await eventsBetween(start, end)).filter((e) => !q || `${e.title} ${e.location}`.toLowerCase().includes(q));
+  const lines = events.slice(0, 40).map((e) => {
+    const where = e.location ? `, ${e.location}` : '';
+    if (e.own) return `event #${e.ownId} "${e.title}", ${whenText(e)}${where} (his own, can be changed)`;
+    return `"${e.deadline ? cleanDeadlineTitle(e.title) : e.title}", ${whenText(e)}${where} (${e.feed}${e.deadline ? ', VLE deadline' : ''}, read-only)`;
+  });
+  if (events.length > 40) lines.push(`and ${events.length - 40} more: narrow the dates.`);
+  return lines.length ? lines.join('\n') : 'Nothing on his calendar in that time.';
 }
 
 // ---------- The tools ----------
@@ -675,6 +726,47 @@ const TOOLS = {
     properties: { date: DATE },
     async run({ date }) {
       return (await food()).foodForCoach(date);
+    },
+  },
+
+  // ---------- Calendar: his own events join the calendar page, Today and his busy time ----------
+  find_events: {
+    read: true,
+    description: 'Look up what is on his calendar between two dates (default: the next two weeks), with ids for the events he made in Oath. Use it for an id you do not have, or to answer what is on a day. Events from his other calendars are listed too but cannot be changed.',
+    properties: { query: S('Words from the title or place; empty lists everything'), from: DATE, to: DATE },
+    run: findEvents,
+  },
+  add_event: {
+    description: 'Add an event to his Oath calendar. It shows on the calendar page and Today, counts as busy time, and appears in Apple Calendar if he subscribed. Work out the date and 24-hour start from what he said ("gym at 6 tomorrow" is tomorrow 18:00); with no end or duration it lasts an hour. Leave start out for an all-day event (end_date for a span of days). Say what you assumed in a few words.',
+    properties: { title: S(), date: DATE, start: TIME, end: TIME, duration_min: I('Minutes, when no end'), all_day: B(), end_date: S('Last day of an all-day span, YYYY-MM-DD'), location: S(), notes: S() },
+    required: ['title'],
+    async run(input) {
+      const ev = await createOathEvent(eventPatch(input, ['title', 'date', 'start', 'end', 'all_day', 'end_date', 'location', 'notes']), 'coach');
+      return { receipts: [{ ok: true, text: `Added "${ev.title}" to your calendar, ${whenText(ev)}` }], detail: `Event #${ev.ownId}.${await overlapNote(ev)}` };
+    },
+  },
+  edit_event: {
+    description: 'Change an event he made in Oath: title, day, time, length, all-day, place or notes. Send only what changes. Moving the start keeps the length; moving the day keeps the times. Events from his other calendars cannot be changed.',
+    properties: { event_id: I('From find_events or the calendar in the current data'), title: S(), date: DATE, start: TIME, end: TIME, duration_min: I('Minutes, when no end'), all_day: B(), end_date: S('Last day of an all-day span, YYYY-MM-DD'), location: S('Empty clears it'), notes: S('Empty clears it') },
+    required: ['event_id'],
+    async run(input) {
+      await ownEvent(input.event_id);
+      const ev = await updateOathEvent(input.event_id, eventPatch(input, ['title', 'date', 'start', 'end', 'all_day', 'end_date', 'location', 'notes']));
+      return { receipts: [{ ok: true, text: `Updated "${ev.title}", ${whenText(ev)}` }], detail: await overlapNote(ev).then((n) => n.trim()) };
+    },
+  },
+  delete_event: {
+    description: 'Delete an event he made in Oath. Needs Daniel\'s confirmation in the app. Events from his other calendars cannot be deleted.',
+    properties: { event_id: I() },
+    required: ['event_id'],
+    async confirm({ event_id: id }) {
+      const ev = await ownEvent(id);
+      return `Delete "${ev.title}" (${whenText(ev)}) from your calendar`;
+    },
+    async run({ event_id: id }) {
+      const ev = await ownEvent(id);
+      await deleteOathEvent(id);
+      return `Deleted "${ev.title}" from your calendar, ${whenText(ev)}`;
     },
   },
 };
