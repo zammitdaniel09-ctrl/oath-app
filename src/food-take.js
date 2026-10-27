@@ -6,7 +6,8 @@ import { db } from './db.js';
 import { localNow, RuleError } from './engine.js';
 import { validDate } from './time.js';
 import { foodDay, foodHistory, HISTORY_SPANS } from './food.js';
-import { NUTRIENT, refOf } from '../public/nutrition.js';
+import { NUTRIENT, refOf, drinksRef } from '../public/nutrition.js';
+import { plainText } from '../public/rich.js';
 import { needRefs } from './body.js';
 import { aiEnabled, writeTake } from './coach.js';
 
@@ -74,7 +75,7 @@ async function dayFacts(date) {
     const g = gradeLine(d.grades);
     if (g) lines.push(g);
     const caf = num(t.caffeine);
-    lines.push(`Drinks ${fmt(d.drinksMl)} ml${caf !== null ? `, caffeine ${fmt(caf)} mg` : ''}.`);
+    lines.push(`Drinks ${fmt(d.drinksMl)} ml (reference about ${fmt(drinksRef(refs))} ml a day from drinks)${caf !== null ? `, caffeine ${fmt(caf)} mg` : ''}.`);
   } else {
     lines.push(`Nothing logged ${isToday ? 'yet today' : 'that day'}.`);
   }
@@ -86,12 +87,16 @@ async function dayFacts(date) {
   return { facts: lines.join('\n'), ask, date: d.date };
 }
 
-async function trendFacts(days) {
+// The period's numbers for the coach. report: the Sunday food report, not the Trends screen.
+async function trendFacts(days, { report = false } = {}) {
   refs = await needRefs();
   const h = await foodHistory({ days });
   if (!h.loggedDays && !h.series.some((s) => s.logged)) return null;
-  const lines = [`The Food Trends screen: the last ${h.days} days, ${h.loggedDays} of them fully logged (today is left out of averages).`];
+  const lines = [report
+    ? `His food over the last ${h.days} days, ${h.loggedDays} of them fully logged before today (today is still going, so it is left out of averages).`
+    : `The Food Trends screen: the last ${h.days} days, ${h.loggedDays} of them fully logged (today is left out of averages).`];
   if (h.loggedDays) lines.push(`Average day: ${averagesLine(h.avg, ['kcal', 'protein', 'carbs', 'sugars', 'fat', 'fibre', 'salt'])}.`);
+  if (num(h.avg?.drinksMl) !== null) lines.push(`Drinks: ${fmt(h.avg.drinksMl)} ml on an average logged day, against a reference of about ${fmt(drinksRef(refs))} ml from drinks.`);
   if (h.prev?.loggedDays) lines.push(`The ${h.days} days before (${h.prev.loggedDays} logged): ${averagesLine(h.prev.avg)}.`);
   const cov = (h.coverage || []).filter((c) => ['mineral', 'vitamin'].includes(c.group) && c.pct !== null);
   const low = [...cov].sort((a, b) => a.pct - b.pct).slice(0, 4);
@@ -106,8 +111,27 @@ async function trendFacts(days) {
   }
   if (h.top?.length) lines.push(`Most logged: ${h.top.map((f) => `${f.name} (${f.count}x)`).join(', ')}.`);
   lines.push(REF_LINE());
-  const ask = `Give your take on how he has been eating over these ${h.days} days, as a friend looking at the charts with him: three to five short sentences. The pattern, what is going well, and one or two concrete ideas built on foods he already eats. A number or two, not all of them. No greeting, no sign-off, no question.`;
+  const ask = report
+    ? 'It is Sunday evening. Write his weekly food report: a look back at what he ate over these 7 days against his needs, as a friend would sum up the week. Three to five short sentences: what went well first, then one or two concrete ideas for the week ahead, built on foods he already eats. A number or two, not all of them. No greeting, no sign-off, no question, no headings.'
+    : `Give your take on how he has been eating over these ${h.days} days, as a friend looking at the charts with him: three to five short sentences. The pattern, what is going well, and one or two concrete ideas built on foods he already eats. A number or two, not all of them. No greeting, no sign-off, no question.`;
   return { facts: lines.join('\n'), ask, date: h.today };
+}
+
+// The Sunday food report: the coach's take on the past 7 days, saved as a coach message so it shows in
+// the chat, and the notification that goes with it (its text plain, as a lock screen shows no Markdown).
+// Null with no AI key, or when nothing was logged that week.
+export async function foodWeekReport() {
+  if (!aiEnabled()) return null;
+  const built = await trendFacts(7, { report: true });
+  if (!built) return null;
+  const text = await writeTake(built.facts, built.ask, 'His food this week');
+  if (!text) return null;
+  const [message] = await db()`insert into coach_messages (role, text) values ('assistant', ${text}) returning id, role, text, at`;
+  const plain = plainText(text);
+  return {
+    message,
+    note: { title: 'Your food week', body: plain.length > 220 ? `${plain.slice(0, 217).trimEnd()}...` : plain, fullText: text, tag: 'food-week', url: '/#/coach' },
+  };
 }
 
 const inflight = new Map();

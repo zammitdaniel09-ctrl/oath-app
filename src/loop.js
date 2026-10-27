@@ -11,8 +11,13 @@ import { prepareReview } from './review.js';
 import { syncAllFeeds } from './calendar.js';
 import { refreshBusiness, businessSources } from './business.js';
 import { setAutoEnrich, drainEnrichment } from './food-enrich.js';
+import { foodWeekReport } from './food-take.js';
 
 const BRIEF_TITLES = { morning: 'Morning brief', midday: 'Midday check', evening: 'Evening check' };
+// The Sunday food report: from 19:00 local time, for three hours, once a week.
+const FOOD_WEEK_TIME = '19:00';
+const FOOD_WEEK_TRIES = 3;
+const foodWeekTries = new Map();
 
 async function claim(key) {
   const rows = await db()`insert into reminders_sent (key) values (${key}) on conflict do nothing returning key`;
@@ -54,6 +59,26 @@ async function scheduledBriefs() {
     if (n >= 4 && !done?.done_at && (await claim(`weekly:${lastWeek}`))) {
       await prepareReview();
       await sendPush({ title: 'Weekly review', body: 'Five minutes: keep, adjust or drop each habit, and pick this week\'s focus.', tag: 'weekly', url: '/#/review' });
+    }
+  }
+
+  // Sunday evening: the coach's take on the week's food, in the chat and on the lock screen. Nothing
+  // when no food was logged that week or the coach is off. A failed write frees the slot for the next
+  // tick, a few times at most.
+  const foodWeekAt = deadlineAt(today, FOOD_WEEK_TIME, tz);
+  if (weekday(today, tz) === 7 && local >= foodWeekAt && local < foodWeekAt.plus({ hours: 3 })) {
+    const key = `food-week:${today}`;
+    if (await claim(key)) {
+      let report = null;
+      try {
+        report = await foodWeekReport();
+      } catch (err) {
+        console.error('food week report failed', err.status || '', err.message);
+        const tries = (foodWeekTries.get(key) || 0) + 1;
+        foodWeekTries.set(key, tries);
+        if (tries < FOOD_WEEK_TRIES) await db()`delete from reminders_sent where key = ${key}`;
+      }
+      if (report) await sendPush(report.note);
     }
   }
 

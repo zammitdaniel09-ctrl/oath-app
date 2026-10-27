@@ -681,9 +681,15 @@ function daySummary(d) {
     const p = riPct(t, k);
     return `<div class="fmicro-i${p === null ? ' unk' : ''}"><span class="fmicro-k">${shortLabel(k)}</span><b>${pctText(p, t.missing?.[k])}</b>${riBar(p, k)}</div>`;
   }).join('')}</div>`;
-  const extra = [['sugars'], ['satfat'], ['salt'], ['fibre'], ['caffeine']];
-  const facts = `<dl class="fday-strip">${extra.map(([k]) => `<div><dt>${shortLabel(k)}</dt><dd>${val(t, k, fl)}</dd></div>`).join('')}
-    <div><dt>Drinks</dt><dd>${fmtN(d.drinksMl || 0)} ml</dd></div></dl>`;
+  const extra = [['sugars'], ['satfat'], ['salt'], ['fibre'], ['caffeine'], ['alcohol']];
+  const facts = `<dl class="fday-strip">${extra.map(([k]) => `<div><dt>${shortLabel(k)}</dt><dd>${val(t, k, fl)}</dd></div>`).join('')}</dl>`;
+  // Water from drinks against a reference (35 ml per kg, else 2,000 ml). No drinks logged is "—", not none.
+  const wref = N.drinksRef(needs());
+  const ml = num(d.drinksMl) > 0 ? d.drinksMl : null;
+  const wp = ml === null ? null : (ml / wref) * 100;
+  const water = `<div class="fwater"><p class="fwater-head"><span class="fday-k">Water from drinks</span>
+      <span class="fwater-v"><b>${ml === null ? '—' : fmtN(ml)}</b> of ${fmtN(wref)} ml ref${wp === null ? '' : ` · ${fmtN(wp)}%`}</span></p>
+    <span class="fwater-bar" role="img" aria-label="${esc(`Water from drinks: ${ml === null ? 'none logged' : `${fmtN(ml)} ml`}, reference ${fmtN(wref)} ml`)}"><i style="--p:${Math.min(100, wp || 0).toFixed(1)}"></i></span></div>`;
   return `<section class="card fday" aria-label="${esc(dateLabel(d))}">
     <div class="fday-head"><h2>${esc(dateLabel(d))}</h2><div class="fday-nav">
       <button class="icon-btn" data-action="food-day" data-step="-1" aria-label="Previous day">${icon('back')}</button>
@@ -691,7 +697,7 @@ function daySummary(d) {
     <div class="fday-main">${donut(t, { size: 112, sw: 12, center, label: `${show(t, 'kcal')}, energy from` })}<dl class="fmac">${rows}</dl></div>
     ${has ? `<div class="fday-sec"><p class="fday-k">${needs() ? 'Your daily needs' : 'Reference intake'}</p>${micros}</div>` : ''}
     ${has && gradeMix(d.grades) ? `<div class="fday-sec"><p class="fday-k">Nutri-Score</p>${gradeMix(d.grades)}</div>` : ''}
-    ${has ? `<div class="fday-sec">${facts}</div>` : ''}
+    ${has ? `<div class="fday-sec">${water}${facts}</div>` : ''}
     ${has ? `<div class="fday-foot">${infoBtn('day')}<button class="gh-link" data-action="food-daynut">All nutrients${icon('chevron')}</button></div>${infoLine('day')}` : ''}
   </section>`;
 }
@@ -1255,6 +1261,17 @@ function labelCard(h) {
     ${riLegend()}${riRows(list)}</section>`;
 }
 
+// The average day as a pack's nutrition label: the fats and carbohydrates broken down, each against
+// his need or the RI. Sub-rows nobody has a value for are left out, as on the day's label.
+function nutritionLabelCard(h) {
+  const n = h.label;
+  if (!n) return '';
+  const rows = LABEL_ROWS.filter(([k, sub]) => !sub || ['satfat', 'sugars'].includes(k) || num(n[k]) !== null);
+  return `<section class="card fcard">${cardHead('Nutrition label', `<span>Average of <b>${n.days}</b> ${n.days === 1 ? 'day' : 'days'}</span>`)}
+    <div class="nf-group nf-label"><div class="nf-cols" aria-hidden="true"><span></span><span></span><span>% ${riWord()}</span></div>
+      ${rows.map(([k, sub]) => factRow(n, k, sub, n.filled)).join('')}</div></section>`;
+}
+
 // Vitamins and minerals: the average % of reference intake, best first; the three highest and the
 // three lowest marked. Nutrients nothing he ate has a value for are named, never drawn as zero.
 function microCard(h) {
@@ -1446,9 +1463,29 @@ function caffeineCard(h) {
 // Cards below the fold are drawn when they come near the screen, once per session.
 // [draw, height held while waiting, full width on wide screens]
 const LAZY = {
-  label: [labelCard, 300], micro: [microCard, 520, true], rank: [rankCard, 260, true], sources: [sourcesCard, 300], timing: [timingCard, 250],
+  label: [labelCard, 300], micro: [microCard, 520, true], nlabel: [nutritionLabelCard, 420], rank: [rankCard, 260, true], sources: [sourcesCard, 300], timing: [timingCard, 250],
   advice: [adviceCard, 240, true], weekdays: [weekdayCard, 220], caffeine: [caffeineCard, 220], split: [splitCard, 300], compare: [compareCard, 330],
 };
+
+// Trends in four tabs. Each tab's first card is drawn at once and the rest as they come near the
+// screen. The tab is in the address (#/food/trends?tab=nutrients) and kept for the session.
+const TABS = [['overview', 'Overview'], ['nutrients', 'Nutrients'], ['foods', 'Foods'], ['timing', 'Timing']];
+const TAB_CARDS = {
+  overview: [(h, sel) => energyCard(h, sel), 'label'],
+  nutrients: [(h) => microCard(h), 'nlabel', 'sources'],
+  foods: [(h) => gradeCard(h), 'rank', 'advice'],
+  timing: [(h) => timingCard(h), 'weekdays', 'caffeine', 'split', 'compare'],
+};
+const TAB_KEY = 'oath.trendsTab';
+function trendTab() {
+  const q = state.query?.get('tab');
+  if (TAB_CARDS[q]) return q;
+  try {
+    const kept = sessionStorage.getItem(TAB_KEY);
+    if (TAB_CARDS[kept]) return kept;
+  } catch { /* storage unavailable */ }
+  return 'overview';
+}
 function lazy(name, h) {
   const F = f();
   if (F.shown?.has(name)) return LAZY[name][0](h);
@@ -1496,11 +1533,14 @@ function viewTrends() {
   const seg = `<div class="seg small ftr-span" role="group" aria-label="Period">${SPANS.map((n) => `<button type="button" data-action="food-span" data-days="${n}" class="${span === n ? 'on' : ''}" aria-pressed="${span === n}">${n} days</button>`).join('')}</div>`;
   if (!h) return ctx.shell(`${head}${seg}<div class="skeleton"><i></i><i></i><i class="short"></i></div>`);
   const sel = h.chosen.date;
+  const tab = trendTab();
   const legend = infoLine('trends', h.needs ? '<span><b>100%</b> your daily need, from your body</span>' : '<span><b>RI</b> EU reference intake</span>');
-  ctx.shell(`${head}${legend}${seg}
-    ${takeHtml('trends')}
-    ${kpiRow(h)}
-    <div class="ftr-grid${enter('trends')}">${energyCard(h, sel)}${gradeCard(h)}${['label', 'micro', 'rank', 'sources', 'timing', 'advice', 'weekdays', 'caffeine', 'split', 'compare'].map((x) => lazy(x, h)).join('')}</div>`);
+  const tabs = `<div class="seg ftr-tabs" role="tablist" aria-label="Trends">${TABS.map(([k, label]) => `<button type="button" role="tab" id="ftab-${k}" aria-controls="ftr-panel" aria-selected="${k === tab}" tabindex="${k === tab ? 0 : -1}" data-action="food-tab" data-tab="${k}">${label}</button>`).join('')}</div>`;
+  const [first, ...rest] = TAB_CARDS[tab];
+  const top = tab === 'overview' ? `${takeHtml('trends')}${kpiRow(h)}` : '';
+  ctx.shell(`${head}${legend}${seg}${tabs}
+    <div id="ftr-panel" role="tabpanel" aria-labelledby="ftab-${tab}">${top}
+    <div class="ftr-grid${enter(`trends-${tab}`)}">${first(h, sel)}${rest.map((x) => lazy(x, h)).join('')}</div></div>`);
   watchLazy();
 }
 
@@ -1834,6 +1874,17 @@ export async function foodClick(a, el) {
       ctx.render();
       await act(() => loadTrends());
       ctx.render();
+      return true;
+    }
+    case 'food-tab': {
+      const tab = el.dataset.tab;
+      if (!TAB_CARDS[tab]) return true;
+      try { sessionStorage.setItem(TAB_KEY, tab); } catch { /* storage unavailable */ }
+      // A tab is a view of the same page, not a step back can undo.
+      state.query = new URLSearchParams(tab === 'overview' ? '' : `tab=${tab}`);
+      history.replaceState(null, '', `#/food/trends${tab === 'overview' ? '' : `?tab=${tab}`}`);
+      ctx.render();
+      document.getElementById(`ftab-${tab}`)?.focus({ preventScroll: true });
       return true;
     }
     case 'food-trend-day': {
@@ -2295,8 +2346,15 @@ function onChange(e) {
   if (el.matches('[data-photo-index][data-photo-field="unit"]')) ctx.render();
 }
 
-// Return sends a typed meal; Shift+Return adds a new line.
+// Return sends a typed meal; Shift+Return adds a new line. The arrow keys move between the Trends tabs.
 function onKey(e) {
+  if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && e.target.matches?.('.ftr-tabs [role="tab"]')) {
+    const list = [...e.target.parentElement.querySelectorAll('[role="tab"]')];
+    const i = (list.indexOf(e.target) + (e.key === 'ArrowRight' ? 1 : list.length - 1)) % list.length;
+    e.preventDefault();
+    list[i].click();
+    return;
+  }
   if (e.key !== 'Enter' || e.shiftKey || e.isComposing || !e.target.matches?.('[data-food-text]')) return;
   e.preventDefault();
   e.target.form?.requestSubmit();

@@ -127,6 +127,14 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .fmicro-i b { font-size: 1rem; font-weight: 720; letter-spacing: -0.01em; line-height: 1.2; }
 .fmicro-i .ri-bar { width: 100%; margin-top: 3px; }
 .fmicro-i.unk b { color: var(--text-3); font-weight: 600; }
+/* Water from drinks: a bar in the Today ring's water colour, to its reference. */
+.fwater { margin-bottom: 14px; }
+.fwater-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 2px 10px; margin: 0 0 7px; }
+.fwater-head .fday-k { margin: 0; }
+.fwater-v { font-size: 0.8125rem; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.fwater-v b { font-size: 0.9375rem; font-weight: 700; color: var(--text); }
+.fwater-bar { position: relative; display: block; height: 8px; border-radius: 4px; background: var(--ring-water-t); overflow: hidden; }
+.fwater-bar i { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, var(--ring-water-0), var(--ring-water-1)); transform-origin: 0 50%; transform: scaleX(calc(var(--p) / 100)); }
 .fday-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 14px; margin: 0; }
 .fday-strip dt { font-size: 0.75rem; font-weight: 600; color: var(--text-3); }
 .fday-strip dd { margin: 2px 0 0; font-size: 0.9375rem; font-weight: 680; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
@@ -336,6 +344,11 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 
 .ftr-span { margin-top: 10px; }
 .ftr-span button { flex: 0 0 auto; min-width: 82px; white-space: nowrap; }
+/* The four tabs share the width evenly; their words stay on one line down to 320 px. */
+.ftr-tabs { margin-top: 10px; }
+.ftr-tabs button { padding: 6px 4px; font-size: 0.875rem; white-space: nowrap; }
+.ftr-tabs button:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+#ftr-panel > .ftake { margin-top: 16px; }
 .fkpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
 .fkpi { display: grid; gap: 2px; min-width: 0; padding: 14px 16px; border-radius: var(--r-tile); background: var(--card); box-shadow: var(--rim); }
 .fkpi b { font-size: 1.5rem; font-weight: 740; letter-spacing: -0.025em; line-height: 1.15; }
@@ -451,7 +464,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
   .f-enter .fx-bar, .f-enter .fc-bar, .f-enter .gx-col { transform-box: fill-box; transform-origin: 50% 100%; animation: f-rise 560ms var(--ease) both; }
   .f-enter .fd-bar { transform-box: fill-box; transform-origin: 50% 0; animation: f-rise 560ms var(--ease) both; }
   .f-enter .fring svg { animation: f-turn 640ms var(--ease) both; }
-  .f-enter .fmeal-bar, .f-enter .fcmp-bar i, .f-enter .gmix-bar, .f-enter .ri-bar i, .f-enter .rirow-bar i, .f-enter .fsrc-bar i { transform-origin: left center; animation: f-grow 620ms var(--ease) both; }
+  .f-enter .fmeal-bar, .f-enter .fcmp-bar i, .f-enter .gmix-bar, .f-enter .ri-bar i, .f-enter .rirow-bar i, .f-enter .fsrc-bar i, .f-enter .fwater-bar i { transform-origin: left center; animation: f-grow 620ms var(--ease) both; }
   .f-enter .rirow-bar i { animation-delay: calc(var(--i, 0) * 24ms); }
   .f-enter .fx-val { animation: f-fade 360ms 280ms var(--ease) both; }
   .f-enter .fheat-grid i { animation: f-fade 480ms var(--ease) both; }
@@ -483,6 +496,7 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
 }
 
 @media (max-width: 360px) {
+  .ftr-tabs button { font-size: 0.8125rem; }
   .fmac dd small { display: none; }
   .fsrc-list li { grid-template-columns: 22px minmax(0, 1fr) 36px; }
   .fsrc-bar { display: none; }

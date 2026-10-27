@@ -2,7 +2,7 @@
 // detail; the day's own lists follow below them (app.js). Plain strings, drawn on every redraw, so
 // anything that moves remembers where it was and never replays on a redraw.
 import { state, esc, api, icon, rings, RING_MS, ringEase, ringFx, fmtInt, fmtDay, fmtHours, daysBetween, miniRing, safeColor } from './ui.js';
-import { NUTRIENT, refOf } from './nutrition.js';
+import { NUTRIENT, refOf, drinksRef } from './nutrition.js';
 
 let ctx = { render: () => {} };
 export function initToday(c) {
@@ -152,8 +152,9 @@ function moveRing(t) {
   };
 }
 
-// HP, the day and movement on one set; energy, protein and fibre on the other, against the EU
-// reference intakes (a guide, not his target). foot: the stakes line under both, as HTML.
+// HP, the day and movement on one set; energy, protein, fibre and water on the other, against his
+// needs or the EU reference intakes (a guide, not his target). Water counts every drink's ml against a
+// reference (nutrition.js drinksRef). foot: the stakes line under both, as HTML.
 export function ringHero(t, food, foot) {
   const g = t.game;
   const p = t.progress;
@@ -188,8 +189,10 @@ export function ringHero(t, food, foot) {
     ['protein', 'Protein', 'r-pro', NUTRIENT.protein.ri, ' g', 'RI', true],
     ['fibre', 'Fibre', 'r-fib', FIBRE_REF, ' g', 'ref', true],
   ];
+  fuel.push(['water', 'Water', 'r-water', drinksRef(need), ' ml', 'ref', true]);
   const fuelRows = fuel.map(([k, label, cls, ref, unit, word, close]) => {
-    const v = num(n?.[k]);
+    // Water is the ml of every drink logged. No drinks logged is not known to be none drunk, so "–".
+    const v = k === 'water' ? (num(food?.drinksMl) > 0 ? food.drinksMl : null) : num(n?.[k]);
     const plus = v !== null && n?.missing?.[k] ? '<i class="lg-plus" title="Some entries have no value">+</i>' : '';
     const pct = v === null ? 0 : (v / ref) * 100;
     // "92% of your need", "92% of RI"; fibre without a body names its reference, as it is not an RI.
