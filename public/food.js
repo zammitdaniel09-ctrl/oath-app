@@ -13,6 +13,7 @@ import { richHtml } from './rich.js';
 // Real burn: the Body tab's cards and the diary tile.
 import { burnCard, weightCard, burnTile, loadEnergy, energyClick, energySubmit } from './food-energy.js';
 import { wantLinks, linksSleepCard, linksTrainingCard, linksAlcoholCard, linksWindowCard } from './food-links.js';
+import { initScan, scanClick, scanMissBody, scanMissTitle } from './scan.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 
@@ -647,6 +648,7 @@ function viewDiary() {
 // The two ways in sit in one bar: the camera, and a few typed words. Everything else is a tap below.
 function captureHtml() {
   const tools = [
+    ['food-scan', 'barcode', 'Scan', ''],
     ['food-search', 'search', 'Search', ''], ['food-quick', 'bolt', 'Quick add', ''], ['food-search', 'drink', 'Drinks', ' data-drinks="1"'],
     ['food-builder', 'blend', 'Shake', ' data-mode="shake"'], ['food-builder', 'bowl', 'Bowl', ' data-mode="bowl"'], ['food-builder', 'food', 'Plate', ' data-mode="plate"'],
   ];
@@ -737,8 +739,9 @@ function resultsHtml(s) {
 }
 
 function searchBody(s) {
-  return `<form data-form="food-search" class="food-search" role="search">
+  return `<form data-form="food-search" class="food-search has-scan" role="search">
       <input class="input" type="search" name="q" value="${esc(s.q || '')}" placeholder="${s.drinks ? 'Search drinks' : 'Search foods and drinks'}" data-food-q autocomplete="off" enterkeyhint="search" aria-label="Search">
+      <button type="button" class="icon-btn fscan-btn" data-action="food-scan" aria-label="Scan a barcode">${icon('barcode')}</button>
     </form>
     <div id="food-results">${resultsHtml(s)}</div>
     ${s.pick ? '' : `<div class="food-none"><p class="eyebrow">Not here?</p>
@@ -1031,6 +1034,7 @@ function sheetHtml() {
         : (s.busy ? 'Reading the photo' : s.result?.kind === 'meal' ? 'On the plate' : s.result?.kind === 'product' ? 'Found it' : 'From the photo');
       return sheetWrap(title, photoBody(s), 'tall');
     }
+    case 'scan-miss': return sheetWrap(scanMissTitle(s), scanMissBody(s));
     case 'entry': return sheetWrap(s.entry.name, entryBody(s), 'tall');
     case 'daynut': return sheetWrap(f().day?.today ? 'Today' : dateLabel(f().day), dayNutBody(), 'tall');
     case 'builder': return sheetWrap(s.mealId ? s.name || 'Saved meal' : `New ${(BUILDERS[s.mode] || BUILDERS.meal).title.toLowerCase()}`, builderBody(s), 'tall');
@@ -1607,22 +1611,30 @@ async function afterLog(r, name) {
 // a double tap) lands each entry once: the server keeps the first of an id.
 const photoItemsFrom = (r) => (r.items || []).map((x) => ({ ...x, edited: false, logId: uuid() }));
 
+// A product found by its barcode, from a photo or the live scanner, opens straight on its sheet. A scan
+// started while choosing a food for a builder or recipe carries on choosing.
+function openProduct(item, from = null) {
+  const d = defaults(item);
+  openSheet({ kind: 'food', item, qty: d.qty, unit: d.unit, pick: from?.pick || null, back: from?.pick ? from.back : null });
+  toast(`Found ${item.name}.`);
+}
+
 async function readPhoto(input) {
   const file = input.files?.[0];
   if (!file) return;
+  // A label photographed for a barcode the scanner could not find is saved under that barcode.
+  const barcode = input.dataset.barcode || '';
   state.foodSheet = { kind: 'photo', busy: true };
   ctx.render();
   try {
     const image = await shrink(file);
-    const result = await api('POST', '/api/food/photo', { image, media_type: 'image/jpeg' });
+    const result = await api('POST', '/api/food/photo', { image, media_type: 'image/jpeg', ...(barcode ? { barcode } : {}) });
     if (result.kind === 'label') {
       openSheet({ kind: 'custom', draft: result.draft, fromLabel: true });
       return;
     }
     if (result.kind === 'product') {
-      const d = defaults(result.item);
-      openSheet({ kind: 'food', item: result.item, qty: d.qty, unit: d.unit });
-      toast(`Found ${result.item.name}.`);
+      openProduct(result.item);
       return;
     }
     state.foodSheet = { kind: 'photo', result, items: photoItemsFrom(result) };
@@ -1685,6 +1697,7 @@ function settle(el) {
 export async function foodClick(a, el) {
   if (!a.startsWith('food-')) return false;
   if (a.startsWith('food-burn-')) return energyClick(a, el, refresh);
+  if (a.startsWith('food-scan')) return scanClick(a, el);
   const s = state.foodSheet;
   const F = f();
   switch (a) {
@@ -2389,6 +2402,7 @@ function onKey(e) {
 
 export function initFood(c) {
   ctx = c;
+  initScan({ found: openProduct, openSheet, render: () => ctx.render() });
   $app.addEventListener('input', onInput);
   $app.addEventListener('change', onChange);
   $app.addEventListener('keydown', onKey);

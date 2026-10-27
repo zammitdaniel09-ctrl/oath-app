@@ -421,6 +421,8 @@ const ICONS = {
   trash: '<path d="M5 7h14M10 4.5h4M7 7l.9 12c.1.9.8 1.5 1.7 1.5h4.8c.9 0 1.6-.6 1.7-1.5L17 7"/>',
   star: '<path d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/>',
   sound: '<path d="M4.5 9.8h3L12 6v12l-4.5-3.8h-3z"/><path d="M15.5 9.2a4 4 0 0 1 0 5.6M18 7a7.2 7.2 0 0 1 0 10"/>',
+  barcode: '<path d="M3.8 8V6.3c0-1.4 1.1-2.5 2.5-2.5H8M16 3.8h1.7c1.4 0 2.5 1.1 2.5 2.5V8M20.2 16v1.7c0 1.4-1.1 2.5-2.5 2.5H16M8 20.2H6.3c-1.4 0-2.5-1.1-2.5-2.5V16"/><path d="M7.8 8.3v7.4M10.6 8.3v7.4M12.8 8.3v7.4M16.2 8.3v7.4"/>',
+  torch: '<path d="M8 3.5h8v3.2l-2 3V20a.8.8 0 0 1-.8.8h-2.4A.8.8 0 0 1 10 20V9.7l-2-3z"/><path d="M8 6.7h8M12 13v2.2"/>',
 };
 
 // The Oath mark: a ring cut down the middle and slid apart. Chrome is the word, Merlot is the deed,
