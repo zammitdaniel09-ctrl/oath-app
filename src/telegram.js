@@ -8,6 +8,7 @@ import { chat, resolvePending } from './coach.js';
 import { captureTask, doneByText } from './capture.js';
 import { deadlineText } from './time.js';
 import { telegramHtml } from '../public/rich.js';
+import { photoIn, foodPhoto, foodCallback } from './food-telegram.js';
 
 const token = () => process.env.TELEGRAM_BOT_TOKEN;
 export const telegramEnabled = () => Boolean(token());
@@ -279,6 +280,9 @@ export async function handleUpdate(u) {
       }
     }
     if (!s.chatId || chatId !== s.chatId) return;
+    // A photo of food: read like the app's camera, logged only from the buttons under the answer.
+    const photo = photoIn(u.message);
+    if (photo) return foodPhoto(u.message, photo, { call, token: token(), open: openButton });
     if (text === '/today' || text === '/start') return sendToday(chatId);
     if (text === '/next') return sendNext(chatId);
     if (text === '/hp') return sendHp(chatId);
@@ -301,7 +305,7 @@ export async function handleUpdate(u) {
       return;
     }
     if (!text) {
-      await call('sendMessage', { chat_id: chatId, text: 'Text only for now.' });
+      await call('sendMessage', { chat_id: chatId, text: 'Text and food photos only for now.' });
       return;
     }
     await call('sendChatAction', { chat_id: chatId, action: 'typing' }).catch(() => {});
@@ -327,6 +331,7 @@ export async function handleUpdate(u) {
       return;
     }
     const [action, kind, id, focusId] = String(q.data || '').split(':');
+    if (action === 'food') return foodCallback(q, { verb: kind, id, portion: focusId }, { call });
     if (action === 'cy' || action === 'cn') {
       let answer;
       try {

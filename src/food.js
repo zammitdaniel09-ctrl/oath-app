@@ -224,6 +224,9 @@ create table if not exists food_lookups (
   value jsonb not null,
   at timestamptz not null default now()
 );
+-- v9: a recipe imported from a link keeps the page it came from, credited on its card (food-import.js).
+alter table recipes add column if not exists source_url text;
+alter table recipes add column if not exists source_name text;
 `;
 
 export async function migrateFood() {
@@ -1480,6 +1483,7 @@ const shapeRecipeRow = (r) => ({
   id: r.id, key: r.key, name: r.name, name_mt: r.name_mt, family: r.family, type: r.type, parent_key: r.parent_key, version: r.version,
   summary: r.summary, servings: r.servings, final_weight: r.final_weight, prep_min: r.prep_min, cook_min: r.cook_min, equipment: r.equipment,
   tags: r.tags, source: r.source, status: r.status, favourite: r.favourite, uses: r.uses, req: r.req,
+  source_url: r.source_url || null, source_name: r.source_name || null,
 });
 
 export async function listRecipes({ q = '', family = '', type = '', limit = 2000 } = {}) {
@@ -1538,6 +1542,21 @@ export async function getRecipe(ref, opts = {}) {
 
 const slug = (s) => norm(s).replace(/ /g, '-').slice(0, 50);
 
+// Where a recipe stands: written by Oath and not cooked yet, checked by him, cooked and confirmed, or
+// imported from a page he linked (food-import.js).
+export const RECIPE_STATUSES = ['ai-untested', 'user-reviewed', 'tested', 'imported'];
+
+// The page a recipe came from: a web address only, with the site's name for the credit on its card.
+function sourceLink(input) {
+  try {
+    const u = new URL(String(input.source_url || ''));
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') return { url: null, name: null };
+    return { url: u.toString().slice(0, 1000), name: clean(input.source_name, 80) || u.hostname.replace(/^www\./, '') };
+  } catch {
+    return { url: null, name: null };
+  }
+}
+
 // Saves a recipe of Daniel's: name, ingredients and servings are enough. Editing makes a new version;
 // batches and diary entries keep the version they were made from.
 export async function saveRecipe(input, { source = 'you' } = {}) {
@@ -1573,6 +1592,8 @@ export async function saveRecipe(input, { source = 'you' } = {}) {
     notes: clean(input.notes, 1000), req: (input.req || []).map((x) => clean(x, 120)),
     search: [norm(name), norm(input.name_mt), norm((input.tags || []).join(' ')), norm(input.family)].filter(Boolean).join(' '),
   };
+  // An edit that does not mention the page keeps it.
+  const link = sourceLink(input);
   return sql.begin(async (tx) => {
     let row;
     if (existing) {
@@ -1581,14 +1602,16 @@ export async function saveRecipe(input, { source = 'you' } = {}) {
         prep_min = ${fields.prep_min}, cook_min = ${fields.cook_min}, equipment = ${fields.equipment}::text[], tags = ${fields.tags}::text[],
         method = ${tx.json(method)}, notes = ${fields.notes}, req = ${fields.req}::text[], search = ${fields.search},
         version = version + 1, edited = ${source === 'you'}, status = ${source === 'you' && existing.status === 'ai-untested' ? 'user-reviewed' : existing.status},
+        source_url = coalesce(${link.url}, source_url), source_name = coalesce(${link.name}, source_name),
         updated_at = now() where id = ${existing.id} returning *`;
       await tx`delete from recipe_lines where recipe_id = ${existing.id}`;
     } else {
       [row] = await tx`insert into recipes (key, name, name_mt, family, type, parent_key, summary, servings, final_weight, prep_min, cook_min,
-        equipment, tags, method, notes, req, search, source, licence, status)
+        equipment, tags, method, notes, req, search, source, licence, status, source_url, source_name)
         values (${key}, ${fields.name}, ${fields.name_mt}, ${fields.family}, ${fields.type}, ${fields.parent_key}, ${fields.summary}, ${fields.servings},
         ${fields.final_weight}, ${fields.prep_min}, ${fields.cook_min}, ${fields.equipment}::text[], ${fields.tags}::text[], ${tx.json(method)},
-        ${fields.notes}, ${fields.req}::text[], ${fields.search}, ${source}, ${input.licence || null}, ${input.status || (source === 'you' ? 'user-reviewed' : 'ai-untested')})
+        ${fields.notes}, ${fields.req}::text[], ${fields.search}, ${source}, ${input.licence || null},
+        ${RECIPE_STATUSES.includes(input.status) ? input.status : source === 'you' ? 'user-reviewed' : 'ai-untested'}, ${link.url}, ${link.url ? link.name : null})
         returning *`;
     }
     for (const l of lines) {
