@@ -198,6 +198,15 @@ alter table food_items add column if not exists nova int;
 -- v6: the brand as searched (lower case, accents and punctuation folded), so "burger king fries" can lead with the brand.
 alter table food_items add column if not exists brand_norm text not null default '';
 alter table food_log add column if not exists filled text[] not null default '{}';
+-- v6.1: the coach's take on a Food screen, kept until the numbers behind it change (food-take.js).
+create table if not exists food_takes (
+  view text not null,
+  date date not null,
+  hash text not null,
+  text text not null,
+  at timestamptz not null default now(),
+  primary key (view, date)
+);
 `;
 
 export async function migrateFood() {

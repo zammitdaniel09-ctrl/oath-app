@@ -7,6 +7,7 @@ import { reactionAfterDone, finishFocus, closeFocusFor } from './drive.js';
 import { chat, resolvePending } from './coach.js';
 import { captureTask, doneByText } from './capture.js';
 import { deadlineText } from './time.js';
+import { telegramHtml } from '../public/rich.js';
 
 const token = () => process.env.TELEGRAM_BOT_TOKEN;
 export const telegramEnabled = () => Boolean(token());
@@ -28,6 +29,8 @@ async function call(method, body = {}) {
 }
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// The coach writes a little Markdown; Telegram gets it as its own small HTML set.
+const md = (s) => telegramHtml(s);
 
 async function tgState() {
   return (await getKV('telegram')) || {};
@@ -134,7 +137,7 @@ export async function sendTelegram(note) {
   }
   await call('sendMessage', {
     chat_id: s.chatId,
-    text: `<b>${esc(note.title)}</b>\n${esc(note.fullText || note.body || '')}`,
+    text: `<b>${esc(note.title)}</b>\n${md(note.fullText || note.body || '')}`,
     parse_mode: 'HTML',
     disable_web_page_preview: true,
     reply_markup: keyboard.length ? { inline_keyboard: keyboard } : undefined,
@@ -274,7 +277,7 @@ export async function handleUpdate(u) {
       { text: 'Cancel', callback_data: `cn:${p.id}` },
     ]);
     await call('sendMessage', {
-      chat_id: chatId, text: done ? `${reply.text}\n\n${done}` : reply.text,
+      chat_id: chatId, text: done ? `${md(reply.text)}\n\n${esc(done)}` : md(reply.text), parse_mode: 'HTML',
       reply_markup: keyboard.length ? { inline_keyboard: keyboard } : undefined,
     });
     return;

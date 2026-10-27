@@ -23,6 +23,7 @@ import { setupStatus, noteIngestError } from './setup.js';
 import { foodApi, saveCustomFood } from './food.js';
 import { ensureFoodSeed } from './food-seed.js';
 import { readFoodPhoto, readFoodText } from './food-photo.js';
+import { foodTake } from './food-take.js';
 import { productByBarcode, searchOff } from './off.js';
 import * as passkeys from './passkeys.js';
 
@@ -303,6 +304,8 @@ api.post('/food/describe', async (c) => c.json(await readFoodText(await body(c))
 api.post('/food/label', async (c) => c.json(await saveCustomFood(await body(c), { fromLabel: true })));
 api.get('/food/barcode/:code', async (c) => c.json({ item: await productByBarcode(c.req.param('code')) }));
 api.get('/food/off-search', async (c) => c.json({ items: await searchOff(c.req.query('q')) }));
+// The coach's take on the Food tab or Trends, kept until the numbers behind it change.
+api.get('/food/take', async (c) => c.json(await foodTake({ view: c.req.query('view'), date: c.req.query('date'), days: c.req.query('days') })));
 api.route('/', foodApi);
 
 app.route('/api', api);

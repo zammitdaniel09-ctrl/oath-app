@@ -1083,6 +1083,18 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 .chat > .empty-state { margin-top: 0; }
 .msg { max-width: min(88%, 620px); padding: 12px 16px; border-radius: 22px; line-height: 1.55; font-size: 1rem; overflow-wrap: anywhere; }
 .msg-text { white-space: pre-wrap; }
+/* The coach's words: paragraphs, short lists, bold and italics from its Markdown (rich.js). */
+.rich { white-space: normal; }
+.rich > * { margin: 0; }
+.rich > * + * { margin-top: 0.6em; }
+.rich ul, .rich ol { padding-left: 1.25em; display: grid; gap: 0.3em; }
+.rich ul { list-style: none; padding-left: 1.05em; }
+.rich ul > li { position: relative; }
+.rich ul > li::before { content: ''; position: absolute; left: -0.85em; top: 0.68em; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.55; }
+.rich ol > li::marker { color: var(--text-3); font-variant-numeric: tabular-nums; font-weight: 650; }
+.rich strong { font-weight: 720; color: var(--text); }
+.rich em { font-style: italic; }
+.rich code { font-family: var(--mono, ui-monospace, monospace); font-size: 0.9em; padding: 1px 5px; border-radius: 6px; background: var(--inset); }
 /* What a reply did, and what waits for a tap. */
 .receipts { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; }
 .receipts li {

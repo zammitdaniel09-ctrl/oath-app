@@ -4,6 +4,7 @@ import { deadlineAt, nowUTC, addDays, weekday } from './time.js';
 import { tick, localNow, ensureGame } from './engine.js';
 import { sendPush, vapidKeys } from './push.js';
 import { generateBrief } from './coach.js';
+import { plainText } from '../public/rich.js';
 import { buildToday } from './state.js';
 import { prepareReview } from './review.js';
 import { syncAllFeeds } from './calendar.js';
@@ -34,7 +35,9 @@ async function scheduledBriefs() {
     }
     const { text, openCount } = brief;
     if (kind === 'midday' && !openCount) continue;
-    const body = text.length > 220 ? `${text.slice(0, 217).trimEnd()}...` : text;
+    // A notification shows text only, so the coach's Markdown markers are dropped there.
+    const plain = plainText(text);
+    const body = plain.length > 220 ? `${plain.slice(0, 217).trimEnd()}...` : plain;
     await sendPush({ title: BRIEF_TITLES[kind], body, fullText: text, tag: `brief-${kind}`, url: '/#/today' });
   }
 

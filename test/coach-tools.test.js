@@ -350,6 +350,10 @@ test('coach: the persona is warm and assumes, and the estimate tool is offered w
   assert.ok(!persona.includes('—'), 'no em dashes');
   assert.match(persona, /Assume and act/);
   assert.match(persona, /Ask at most one short question/);
+  assert.match(persona, /Not pushy/);
+  assert.match(persona, /no labelled sections/);
+  assert.ok(!/End with the next action/.test(persona), 'no forced call to action at the end of every reply');
+  assert.match(persona, /\*\*bold\*\* for the one thing that matters most/, 'Markdown the app can draw');
   assert.match(persona, /Food never touches HP/);
   assert.match(persona, /Never ask him for grams/);
   assert.match(persona, /Never claim \(no evidence\)/);

@@ -6,6 +6,7 @@ import { $app, state, esc, api, act, toast, fmtDay, icon, pageHead, haptic, loca
 import { NUTRIENT, NUTRIENTS, line, total, scale, show, unitsFor, round, amountText, norm } from './nutrition.js';
 // Grades and tags come from the shared maths when it has them.
 import * as N from './nutrition.js';
+import { richHtml } from './rich.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 
@@ -95,6 +96,7 @@ async function loadDay() {
     f().day = c;
     f().offline = true;
   }
+  loadTake('day');
 }
 
 async function loadExtras() {
@@ -115,6 +117,49 @@ async function loadExtras() {
 async function loadTrends() {
   const F = f();
   F.trend = await api('GET', `/api/food/history?days=${F.span || 7}${F.trendDate ? `&date=${F.trendDate}` : ''}`);
+  loadTake('trends');
+}
+
+// ---------- The coach's take ----------
+
+// A few sentences from the coach on the day or the period. The screen draws without it and the take
+// lands in place when it arrives; the server keeps it until the numbers change, so a repeat visit is quick.
+let takeTimer = null;
+function loadTake(view) {
+  const F = f();
+  F.takes = F.takes || {};
+  const day = F.day && !F.day.today ? F.day.date : null;
+  const key = view === 'trends' ? `trends-${F.span || 7}` : `day-${day || 'today'}`;
+  const cur = F.takes[view];
+  F.takes[view] = { ...(cur?.key === key ? cur : {}), key, loading: true };
+  const query = view === 'trends' ? `view=trends&days=${F.span || 7}` : `view=day${day ? `&date=${day}` : ''}`;
+  clearTimeout(takeTimer);
+  takeTimer = setTimeout(async () => {
+    let next;
+    try {
+      const r = await api('GET', `/api/food/take?${query}`);
+      next = { key, text: r.text || null, loading: false };
+    } catch {
+      next = { ...F.takes[view], loading: false };
+    }
+    if (F.takes[view]?.key !== key) return;
+    // Only a take that just changed fades in; later redraws show it still.
+    F.takes[view] = { ...next, fresh: Boolean(next.text) && next.text !== F.takes[view]?.text };
+    const el = document.getElementById(`ftake-${view}`);
+    if (el) el.outerHTML = takeHtml(view) || '<div hidden></div>';
+    F.takes[view].fresh = false;
+  }, 350);
+}
+
+function takeHtml(view) {
+  const t = f().takes?.[view];
+  if (!t || (!t.text && !t.loading)) return '';
+  const ask = view === 'trends' ? 'About my food lately: ' : 'About my food today: ';
+  const body = t.text
+    ? `<div class="ftake-text rich">${richHtml(t.text)}</div>`
+    : '<div class="ftake-wait" role="status"><span class="sr">The coach is looking at your food</span><i></i><i></i><i></i></div>';
+  return `<section class="ftake${t.fresh ? ' fresh' : ''}" id="ftake-${view}" aria-label="The coach's take">
+    <div class="ftake-head"><span class="ftake-k">${icon('coach')}Coach</span>${t.text ? `<a class="ftake-reply" href="#/coach?ask=${enc(ask)}">Reply${icon('chevron')}</a>` : ''}</div>${body}</section>`;
 }
 
 async function loadMeals() {
@@ -577,7 +622,7 @@ function viewDiary() {
   const repeat = d.today ? `<div class="form-actions food-repeat"><button class="btn tinted small" data-action="food-repeat">${icon('review')}Repeat yesterday</button></div>` : '';
   const typing = document.activeElement?.matches?.('[data-food-text]');
   ctx.shell(`${head}${offline}${undo}<div class="split fdiary${anim}">
-    <div class="fcol fcol-a"><div class="fd-cap">${captureHtml()}</div><div class="fd-meals">${pendingRows(d.date)}${slots}${empty}${repeat}</div></div>
+    <div class="fcol fcol-a"><div class="fd-cap">${captureHtml()}${takeHtml('day')}</div><div class="fd-meals">${pendingRows(d.date)}${slots}${empty}${repeat}</div></div>
     <div class="fcol fcol-b"><div class="fd-sum">${daySummary(d)}</div><div class="fd-side">${trendPreview(F.week)}${plansHtml(d.plans)}${batchesHtml(F.batches)}</div></div>
     </div>${sheetHtml()}`);
   if (typing && !state.foodSheet) {
@@ -1437,6 +1482,7 @@ function viewTrends() {
   const sel = h.chosen.date;
   const legend = infoLine('trends', '<span><b>RI</b> EU reference intake</span>');
   ctx.shell(`${head}${legend}${seg}
+    ${takeHtml('trends')}
     ${kpiRow(h)}
     <div class="ftr-grid${enter('trends')}">${energyCard(h, sel)}${gradeCard(h)}${['label', 'micro', 'rank', 'sources', 'timing', 'advice', 'weekdays', 'caffeine', 'split', 'compare'].map((x) => lazy(x, h)).join('')}</div>`);
   watchLazy();

@@ -202,3 +202,51 @@ test('the coverage report counts nutrient values across the catalogue', async ()
   assert.equal(r.nutrients.list.find((x) => x.key === 'vitd').count, 1);
   assert.equal(r.nutrients.graded, 3);
 });
+
+test('the coach take: written from the numbers, kept until they change, quiet when the coach is off', async () => {
+  const coach = await import('../src/coach.js');
+  assert.deepEqual(await get('/api/food/take'), { text: null, off: true }, 'no key, no card');
+  process.env.ANTHROPIC_API_KEY = 'test';
+  const requests = [];
+  const answers = ['Cola is doing most of the work today: **330 ml** so far.', 'The lentils balance it nicely.', 'Cola keeps topping the sugar list.'];
+  coach.setCoachClient({
+    beta: { messages: { create: async (p) => {
+      requests.push(JSON.parse(JSON.stringify(p)));
+      return { stop_reason: 'end_turn', content: [{ type: 'text', text: answers.shift() }] };
+    } } },
+  });
+  try {
+    const t1 = await get('/api/food/take');
+    assert.match(t1.text, /^Cola is doing/);
+    assert.equal(requests.length, 1);
+    const sys = requests[0].system;
+    assert.match(sys, /What is on his screen:/);
+    assert.match(sys, /today, Monday, evening/);
+    assert.match(sys, /Cola \(330/);
+    assert.match(sys, /Nutri-Score E/);
+    assert.match(sys, /Energy by Nutri-Score: /);
+    assert.match(sys, /This past week, today left out \(2 logged days\)/);
+    assert.match(sys, /Not pushy/, 'the coach voice comes with it');
+    assert.ok(!requests[0].tools, 'a take has no tools');
+    assert.match(requests[0].messages[0].content, /No greeting, no sign-off, no question/);
+
+    assert.equal((await get('/api/food/take')).text, t1.text, 'same numbers, same take');
+    assert.equal(requests.length, 1, 'and no new call');
+
+    await log('lentil', 150, '2027-05-10', '18:00');
+    assert.equal((await get('/api/food/take')).text, 'The lentils balance it nicely.', 'a new entry, a new take');
+    assert.equal(requests.length, 2);
+
+    const tr = await get('/api/food/take?view=trends&days=7');
+    assert.equal(tr.text, 'Cola keeps topping the sugar list.');
+    assert.match(requests[2].system, /the last 7 days, 2 of them fully logged/);
+    assert.match(requests[2].system, /Lowest graded: [^\n]*Cola \(E, 3x\)/);
+    assert.match(requests[2].system, /Top sugars sources: Cola/);
+
+    const bad = await call('GET', '/api/food/take?date=not-a-date');
+    assert.equal(bad.status, 400);
+  } finally {
+    delete process.env.ANTHROPIC_API_KEY;
+    coach.setCoachClient(null);
+  }
+});

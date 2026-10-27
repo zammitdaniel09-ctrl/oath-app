@@ -171,7 +171,7 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 /* ---------- Grades: Nutri-Score, NOVA, the grade mix ---------- */
 
 .ns-dot {
-  display: inline-grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 7px;
+  display: inline-grid; place-items: center; justify-content: center; align-content: center; flex: none; width: 22px; height: 22px; border-radius: 7px;
   font-size: 0.75rem; font-weight: 800; line-height: 1; color: #fff; letter-spacing: 0;
 }
 .ns-dot.sm { width: 16px; height: 16px; border-radius: 5px; font-size: 0.625rem; }
@@ -212,8 +212,9 @@ i.est { font-style: normal; font-weight: 600; color: var(--text-3); margin-right
 .gmix { display: grid; gap: 9px; }
 .gmix-bar { display: flex; gap: 2px; height: 10px; border-radius: 5px; overflow: hidden; }
 .gmix-bar i { display: block; min-width: 3px; }
-.gmix-key { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.8125rem; font-weight: 650; color: var(--text-2); font-variant-numeric: tabular-nums; }
-.gmix-key span { display: inline-flex; align-items: center; gap: 6px; }
+/* Equal columns, so all six usually sit in one row; only the row items flex, never the letter badges inside them. */
+.gmix-key { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 8px 6px; font-size: 0.8125rem; font-weight: 650; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.gmix-key > span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
 .gmix.bare { margin-top: 8px; }
 .gmix.bare .gmix-bar { height: 5px; border-radius: 3px; }
 
@@ -516,4 +517,33 @@ rect.gx-none { fill: rgba(138, 144, 156, 0.35); }
   .fdiary .fcap-tool { justify-content: center; }
   .fd-sum > .fday { margin-top: 8px; }
   .fd-meals > .section:first-child .gh { margin-top: 30px; }
+}
+
+/* ---------- The coach's take: a few lines on the day, or on the period in Trends ---------- */
+
+.ftake {
+  margin-top: 14px; padding: 13px 16px 15px; border-radius: 20px;
+  background: linear-gradient(180deg, rgba(225, 6, 0, 0.075), rgba(225, 6, 0, 0.015) 70%), var(--card);
+  box-shadow: var(--rim);
+}
+.ftr-span + .ftake { margin-top: 16px; }
+.ftake-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 24px; margin-bottom: 4px; }
+.ftake-k {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2);
+}
+.ftake-k .ic { width: 15px; height: 15px; color: var(--merlot-hi); }
+.ftake-reply { display: inline-flex; align-items: center; gap: 1px; padding: 4px 0 4px 10px; font-size: 0.8125rem; font-weight: 620; color: var(--text-2); text-decoration: none; }
+.ftake-reply .ic { width: 14px; height: 14px; }
+.ftake-text { font-size: 0.9375rem; line-height: 1.55; color: var(--text); }
+.ftake.fresh .ftake-text { animation: ftake-in 380ms var(--ease) both; }
+.ftake-wait { display: flex; align-items: center; gap: 6px; height: 23px; }
+.ftake-wait i { width: 7px; height: 7px; border-radius: 50%; background: var(--chrome-c); opacity: 0.35; animation: typing 1.3s var(--ease-in-out) infinite; }
+.ftake-wait i:nth-of-type(2) { animation-delay: 0.16s; }
+.ftake-wait i:nth-of-type(3) { animation-delay: 0.32s; }
+@keyframes ftake-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (hover: hover) { .ftake-reply:hover { color: var(--text); } }
+@media (prefers-reduced-motion: reduce) {
+  .ftake.fresh .ftake-text { animation: none; }
+  .ftake-wait i { animation-name: typing-fade; }
 }

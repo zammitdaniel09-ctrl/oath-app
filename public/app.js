@@ -6,6 +6,7 @@ import {
   urgency, URGENCY, brandMark, emptyState,
 } from './ui.js';
 import * as motion from './motion.js';
+import { richHtml } from './rich.js';
 import { parseCapture } from './parse.js';
 import { initGoals, loadGoals, loadGoal, viewGoals, viewGoalNew, viewGoal, goalsClick, goalsSubmit } from './goals.js';
 import { initData, loadDashboard, viewDashboard, dataClick, dataSubmit, AUTO_LABELS, autoValue } from './data.js';
@@ -515,7 +516,7 @@ function planCard(t) {
   if (!t.plan?.coachPlan) return '';
   return `<details class="card plan-card"${planOpen(t) ? ' open' : ''}>
     <summary>${icon('coach')}Battle plan${t.plan.intention ? `: ${esc(t.plan.intention)}` : ''}</summary>
-    <div class="plan-text">${esc(t.plan.coachPlan)}</div>
+    <div class="plan-text rich">${richHtml(t.plan.coachPlan)}</div>
   </details>`;
 }
 
@@ -544,7 +545,7 @@ function goalsStrip(goals) {
 function closeDayCard(t) {
   if (t.reflection) {
     return `<section class="section"><div class="gh"><h2>Day closed</h2><span class="gh-count">${t.reflection.rating} out of 5</span></div>
-      <div class="card brief"><p class="eyebrow">${icon('coach')}Coach</p><div class="brief-text">${esc(t.reflection.coachReply || 'The coach is writing back.')}</div>${t.reflection.tomorrow ? `<p class="brief-who">Tomorrow's one thing: ${esc(t.reflection.tomorrow)}</p>` : ''}</div></section>`;
+      <div class="card brief"><p class="eyebrow">${icon('coach')}Coach</p><div class="brief-text rich">${richHtml(t.reflection.coachReply || 'The coach is writing back.')}</div>${t.reflection.tomorrow ? `<p class="brief-who">Tomorrow's one thing: ${esc(t.reflection.tomorrow)}</p>` : ''}</div></section>`;
   }
   if (t.localHour < 18 && t.progress.open) return '';
   const stars = [1, 2, 3, 4, 5].map((n) => `<label class="rate"><input type="radio" name="rating" value="${n}" required><span>${n}</span></label>`).join('');
@@ -617,7 +618,7 @@ function briefCard(t) {
   const brief = t.briefs.find((x) => Date.now() - new Date(x.at).getTime() < 4 * 3600 * 1000);
   if (!brief) return '';
   const titles = { morning: 'Morning brief', midday: 'Midday check', evening: 'Evening check' };
-  return `<section class="card brief"><p class="eyebrow">${icon('coach')}${titles[brief.kind] || 'Coach'}, ${fmtClock(brief.at)}</p><div class="brief-text">${esc(brief.text)}</div></section>`;
+  return `<section class="card brief"><p class="eyebrow">${icon('coach')}${titles[brief.kind] || 'Coach'}, ${fmtClock(brief.at)}</p><div class="brief-text rich">${richHtml(brief.text)}</div></section>`;
 }
 
 function viewToday() {
@@ -943,7 +944,8 @@ function coachMessage(m) {
   const pending = (m.pending || []).map((p) => (p.status === 'open'
     ? `<div class="confirm-row"><span>${esc(p.summary)}?</span><span class="confirm-btns"><button class="btn chrome small" data-action="coach-confirm" data-id="${p.id}" data-yes="1">Confirm</button><button class="btn tinted small" data-action="coach-confirm" data-id="${p.id}" data-yes="0">Cancel</button></span></div>`
     : `<p class="confirm-done ${p.status}">${esc(p.summary)}: ${PENDING_DONE[p.status] || p.status}${p.status === 'failed' && p.outcome ? `, ${esc(p.outcome)}` : ''}</p>`)).join('');
-  return `<div class="msg ${m.role}"><span class="msg-text">${esc(m.text)}</span>${receipts}${pending}${m.at ? `<time>${fmtClock(m.at)}</time>` : ''}</div>`;
+  const words = m.role === 'assistant' ? `<div class="msg-text rich">${richHtml(m.text)}</div>` : `<span class="msg-text">${esc(m.text)}</span>`;
+  return `<div class="msg ${m.role}">${words}${receipts}${pending}${m.at ? `<time>${fmtClock(m.at)}</time>` : ''}</div>`;
 }
 
 // The coach thinking: three dots in a bubble of its own.
@@ -1000,7 +1002,7 @@ function reviewCard(r) {
   if (rv.doneAt) {
     return `<section class="section"><div class="gh"><h2>Week of ${fmtDay(rv.weekStart)}</h2><span class="gh-count">Reviewed</span></div>
       <div class="card"><p>This week's focus: <b>${esc(rv.focus)}</b></p>${rv.obstaclePlan ? `<p class="small muted" style="margin-top:6px">${esc(rv.obstaclePlan)}</p>` : ''}
-      ${rv.coachText ? `<details style="margin-top:10px"><summary class="small">Coach's review</summary><div class="plan-text">${esc(rv.coachText)}</div></details>` : ''}</div></section>`;
+      ${rv.coachText ? `<details style="margin-top:10px"><summary class="small">Coach's review</summary><div class="plan-text rich">${richHtml(rv.coachText)}</div></details>` : ''}</div></section>`;
   }
   if (!w.judgedDays) {
     return `<section class="section"><div class="gh"><h2>Weekly review</h2></div>
@@ -1017,7 +1019,7 @@ function reviewCard(r) {
   }).join('');
   return `<section class="section"><div class="gh"><h2>Weekly review</h2><span class="gh-count">Week of ${fmtDay(rv.weekStart)}</span></div>
     <div class="card review">
-      ${rv.coachText ? `<div class="plan-text">${esc(rv.coachText)}</div>` : `<button class="btn tinted" data-action="review-write">${icon('coach')}Let the coach pre-fill it</button>`}
+      ${rv.coachText ? `<div class="plan-text rich">${richHtml(rv.coachText)}</div>` : `<button class="btn tinted" data-action="review-write">${icon('coach')}Let the coach pre-fill it</button>`}
       ${weekStats(w)}
       <form data-form="review-finish">
         ${rows ? `<h3 style="margin-top:18px">Each habit: keep, adjust or drop</h3>${rows}` : ''}
