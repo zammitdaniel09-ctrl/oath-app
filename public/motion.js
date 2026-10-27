@@ -136,8 +136,11 @@ export function beforeShell() {
   if (!inShell) entered.clear(); // back from the lock screen: the day gets its entrance again
   const same = inShell && view === lastView;
   const snap = { view, same, condensed: same && Boolean($app.querySelector('.topbar.on')) };
-  const pill = $app.querySelector('.tab-pill');
-  if (pill) snap.pill = { rect: pill.getBoundingClientRect(), tab: pill.closest('.tab')?.getAttribute('href'), wide: WIDE.matches };
+  // The selection as drawn: the capsule, or on the phone the raised Food button, which has none.
+  const cur = $app.querySelector('.tabbar .tab[aria-current="page"]');
+  const pill = cur?.querySelector('.tab-pill');
+  if (pill?.offsetWidth) snap.pill = { rect: pill.getBoundingClientRect(), tab: cur.getAttribute('href'), wide: WIDE.matches };
+  else if (cur?.classList.contains('tab-centre')) snap.pill = { rect: cur.querySelector('.tab-ic').getBoundingClientRect(), tab: cur.getAttribute('href'), wide: WIDE.matches, fab: true };
   const sheet = $app.querySelector('.sheet');
   if (sheet) {
     snap.sheet = sheet;
@@ -184,16 +187,17 @@ export function afterShell(snap) {
 
 // ---------- Navigation ----------
 
-// Settings and Review sit one level under the tabs on the phone; a parameter is one level deeper.
+// Settings, Review and Dashboard sit one level under the tabs on the phone; a parameter is one level deeper.
+const UNDER = ['review', 'settings', 'dashboard'];
 function depth(v) {
   const parts = v.split('/');
-  return parts.length - 1 + (!WIDE.matches && ['review', 'settings'].includes(parts[0]) ? 1 : 0);
+  return parts.length - 1 + (!WIDE.matches && UNDER.includes(parts[0]) ? 1 : 0);
 }
 function navKind(from, to) {
   if (!from) return 'tab';
   const a = from.split('/')[0];
   const b = to.split('/')[0];
-  const sub = ['review', 'settings'];
+  const sub = UNDER;
   const related = a === b || (!WIDE.matches && (sub.includes(a) || sub.includes(b)));
   if (related && depth(to) > depth(from)) return 'fwd';
   if (related && depth(to) < depth(from)) return 'back';
@@ -323,12 +327,20 @@ function count(key, node, from, to, ms) {
 // ---------- The tab bar: the selection slides, the new icon gives a small bounce ----------
 
 function pillAfter(snap, jobs) {
-  const pill = $app.querySelector('.tab-pill');
-  const tab = pill?.closest('.tab');
+  const tab = $app.querySelector('.tabbar .tab[aria-current="page"]');
   if (!tab) return;
   const href = tab.getAttribute('href');
-  const ic = tab.querySelector('.tab-ic .ic');
   const changed = snap.pill && snap.pill.wide === WIDE.matches && snap.pill.tab !== href;
+  const pill = tab.querySelector('.tab-pill');
+  // On the phone the raised Food button is the selection: arriving at it, it settles with a press.
+  if (!pill?.offsetWidth) {
+    const disc = tab.classList.contains('tab-centre') ? tab.querySelector('.tab-ic') : null;
+    if (!disc) return;
+    if (changed && !reduced()) jobs.push(() => playKeyed(`fab:${href}`, disc, [{ transform: 'scale(0.88)' }, { transform: 'none' }], spring(0.5, 0.42)));
+    else jobs.push(() => replay(`fab:${href}`, disc));
+    return;
+  }
+  const ic = tab.querySelector('.tab-ic .ic');
   const r = changed && !reduced() ? pill.getBoundingClientRect() : null;
   if (!r?.width) {
     jobs.push(() => {
@@ -337,10 +349,15 @@ function pillAfter(snap, jobs) {
     });
     return;
   }
-  const dx = snap.pill.rect.left - r.left;
-  const dy = snap.pill.rect.top - r.top;
+  // From centre to centre, so a capsule leaving the round Food button grows out of it.
+  const from = snap.pill.rect;
+  const dx = from.left + from.width / 2 - (r.left + r.width / 2);
+  const dy = from.top + from.height / 2 - (r.top + r.height / 2);
+  const frames = snap.pill.fab
+    ? [{ transform: `translate(${dx}px, ${dy}px) scale(0.6)`, opacity: 0 }, { transform: 'none', opacity: 1 }]
+    : [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }];
   jobs.push(() => {
-    playKeyed(`pill:${href}`, pill, [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }], spring(0.78, 0.38));
+    playKeyed(`pill:${href}`, pill, frames, spring(0.78, 0.38));
     playKeyed(`pill-ic:${href}`, ic, [{ transform: 'scale(0.82)' }, { transform: 'none' }], spring(0.55, 0.36));
   });
 }

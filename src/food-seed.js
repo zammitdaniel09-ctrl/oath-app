@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { db, getKV, setKV, logEvent } from './db.js';
-import { upsertItem } from './food.js';
+import { upsertItems } from './food.js';
 import { norm } from '../public/nutrition.js';
 
 const DATA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../data');
@@ -19,6 +19,7 @@ function seedFiles() {
     path.join(DATA, 'food-requirements.json'),
     path.join(DATA, 'recipe-requirements.json'),
     path.join(DATA, 'foods/usda-foods.json'),
+    path.join(DATA, 'foods/usda-all.json'),
     path.join(DATA, 'foods/placeholders.json'),
     ...jsonIn(path.join(DATA, 'foods/map')),
     ...jsonIn(path.join(DATA, 'recipes')),
@@ -32,6 +33,8 @@ export function seedHash() {
 }
 
 const RECIPE_ORDER = { component: 0, base: 1, template: 2, variant: 3 };
+// Rows per multi-row upsert: about 500 keeps each statement small and the whole catalogue in seconds.
+const SEED_BATCH = 500;
 
 function loadRecipes() {
   const out = [];
@@ -93,23 +96,30 @@ export async function seedFood({ force = false, log = () => {} } = {}) {
   const prev = await getKV('food_seed');
   if (!force && prev?.hash === hash) return { skipped: true, ...prev.counts };
   const sql = db();
-  const counts = { items: 0, foodRequirements: 0, recipeRequirements: 0, recipes: { added: 0, updated: 0, kept: 0 } };
+  const counts = { items: 0, usdaAll: 0, rejected: 0, foodRequirements: 0, recipeRequirements: 0, recipes: { added: 0, updated: 0, kept: 0 } };
+  const started = Date.now();
 
-  // Generic records from USDA.
-  const usda = readJson(path.join(DATA, 'foods/usda-foods.json'));
-  for (const item of usda.items) {
-    await upsertItem(item);
-    counts.items += 1;
-  }
-  // Foods with no generic source: every value unknown until a label is added.
+  // The hand-picked records (USDA generics for the blueprint list, and foods with no generic source:
+  // every value unknown until a label is added). A bad record here is a bug in the data, so it stops the seed.
+  const curated = [...readJson(path.join(DATA, 'foods/usda-foods.json')).items];
   const holders = path.join(DATA, 'foods/placeholders.json');
-  if (fs.existsSync(holders)) {
-    for (const item of readJson(holders).items) {
-      await upsertItem(item);
-      counts.items += 1;
-    }
+  if (fs.existsSync(holders)) curated.push(...readJson(holders).items);
+  const first = await upsertItems(curated, sql, { batch: SEED_BATCH });
+  if (first.rejected.length) throw new Error(`food seed: ${first.rejected.length} curated records failed: ${first.rejected.slice(0, 3).map((r) => `${r.key} ${r.error}`).join('; ')}`);
+  counts.items += first.saved;
+
+  // The rest of USDA (SR Legacy, Foundation, FNDDS), in multi-row upserts. Portions were built from USDA's
+  // own labels, so they are marked as such. A record that fails validation is skipped and counted.
+  const all = path.join(DATA, 'foods/usda-all.json');
+  if (fs.existsSync(all)) {
+    const rest = readJson(all).items.map((i) => ({ ...i, portions: (i.portions || []).map((p) => ({ source: 'usda', ...p })) }));
+    const r = await upsertItems(rest, sql, { batch: SEED_BATCH });
+    counts.usdaAll = r.saved;
+    counts.rejected = r.rejected.length;
+    counts.items += r.saved;
+    if (r.rejected.length) log(`food seed: ${r.rejected.length} USDA records skipped, first: ${r.rejected[0].key} ${r.rejected[0].error}`);
   }
-  log(`food seed: ${counts.items} catalogue records`);
+  log(`food seed: ${counts.items} catalogue records in ${((Date.now() - started) / 1000).toFixed(1)} s`);
 
   // The blueprint's food list, with what each requirement was matched to.
   const maps = new Map();

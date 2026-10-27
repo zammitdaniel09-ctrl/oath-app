@@ -89,7 +89,7 @@ function healthSetup(connected) {
   const url = `${location.origin}/api/shortcut/health`;
   const urlField = `<span class="copy-row"><input class="input mono" id="health-url" readonly value="${esc(url)}"><button class="btn tinted small" data-action="copy" data-target="health-url">Copy</button></span>`;
   const count = state.tokens?.count || 0;
-  const keyStep = `<li><b>Make your key.</b> ${count && !state.newToken ? 'You already have one (it was only shown once). If you no longer have it, make a new one; the old one keeps working.' : 'It lets your iPhone send data to Oath and nothing else.'}
+  const keyStep = `<li><b>Make your key.</b> ${count && !state.newToken ? 'You have one. Lost it? Make another.' : ''}
       ${keyBlock()}${state.newToken ? '' : `<div class="form-actions"><button class="btn ${count ? 'tinted' : 'primary'} small" data-action="token-new">${icon('key')}${count ? 'Make a new key' : 'Make a key'}</button></div>`}</li>`;
   const hae = `<ol class="steps">
       ${keyStep}
@@ -101,8 +101,7 @@ function healthSetup(connected) {
       <li>Export Format <b>JSON</b>, Version <b>2</b>, Date Range <b>Default</b>, Summarize Data <b>on</b>, Time Grouping <b>Hours</b>. Sync every hour. Save and switch it on.</li>
       <li>Make a second automation exactly the same, with Data Type <b>Workouts</b> (route data off).</li>
       <li>Tap <b>Manual Export</b> once. This page then says "Synced just now".</li>
-    </ol>
-    <p class="note">iOS does not let any app read Health while the phone is locked, so syncs happen when you use your phone. Keep Background App Refresh on.</p>`;
+    </ol>`;
   const shortcut = `<ol class="steps">
       ${keyStep}
       <li>Open <b>Shortcuts</b>, tap +, name it <b>Send Health to Oath</b>.</li>
@@ -113,11 +112,10 @@ function healthSetup(connected) {
         Tap Show More: Method <b>POST</b>, add a Header <b>Authorization</b> with your key as the value, Request Body <b>JSON</b> with fields <b>steps</b>, <b>exercise_min</b>, <b>active_kcal</b> (numbers) and <b>sleep_hours</b> (text), each set to the matching result.</li>
       <li>Run it once with the play button. Oath's setup list on Today turns Apple Health green when it lands.</li>
       <li>In the <b>Automation</b> tab, tap +, <b>Time of Day</b>, <b>Run Immediately</b>, pick this shortcut. Make four: <b>08:00</b> (last night's sleep), <b>12:00</b>, <b>17:00</b> and <b>20:30</b>.</li>
-    </ol>
-    <p class="note">Running it often is safe: a later run that reads less, for example on a locked phone, never lowers a total Oath already has. It sends these four numbers only, so habits linked to workouts need the paid app on the other tab, and a habit due early in the day only ticks itself off if a run lands before its deadline.</p>`;
+    </ol>`;
   return `<div class="card setup${connected ? ' quiet' : ''}">
     ${connected ? '' : `<div class="setup-hero"><span class="setup-ic">${icon('heart')}</span><div><h3>Connect Apple Health</h3>
-      <p class="muted">Apple does not let web apps read Health directly, so your iPhone sends it here. Then habits like "10k steps" or "Gym" tick themselves off, and a miss that Health proves wrong is overturned.</p></div></div>`}
+      <p class="muted">Steps, workouts and sleep, sent from your iPhone.</p></div></div>`}
     <div class="seg wide-seg" role="tablist" aria-label="How to connect">
       <button role="tab" aria-selected="${tab === 'shortcut'}" data-action="health-setup" data-tab="shortcut">Free shortcut</button>
       <button role="tab" aria-selected="${tab === 'hae'}" data-action="health-setup" data-tab="hae">Paid app, everything</button>
@@ -179,7 +177,7 @@ function healthSection(h) {
       ${barChart(sleep, { goal: g.sleep_hours, labels, titles, cls: 'c-sleep', label: `Sleep, last ${days.length} nights`, fmt: fmtHours })}
       ${lastNight?.sleep ? `<p class="stages-label">Last night${lastNight.date ? `, ${fmtDay(lastNight.date)}` : ''}</p>${sleepStages(lastNight.sleep)}` : ''}
     </div>
-    ${autos ? `<div class="gh sub"><h3>Habits Health ticks off</h3></div><div class="group">${autos}</div>` : `<p class="note">Link a habit to Health in Plan: open the habit, then "Tick it off from Apple Health".</p>`}
+    ${autos ? `<div class="gh sub"><h3>Habits Health ticks off</h3></div><div class="group">${autos}</div>` : ''}
     ${workouts ? `<div class="gh sub"><h3>Workouts</h3></div><div class="group">${workouts}</div>` : ''}
     ${body ? `<div class="gh sub"><h3>Body</h3></div><div class="body-grid">${body}</div>` : ''}
     ${other ? `<div class="gh sub"><h3>Everything else</h3></div><div class="group">${other}</div>` : ''}
@@ -237,7 +235,7 @@ function businessSection(b) {
   if (!b || !b.configured) {
     return `<section class="section" id="business"><div class="gh"><h2>Business</h2></div>
       <div class="card setup quiet"><div class="setup-hero"><span class="setup-ic biz-ic">${icon('business')}</span><div><h3>Your sites, on one screen</h3>
-        <p class="muted">Revenue, sales, licences, trials and whether your EAs are online for GoldenStraddler, and members, activity and backups for Exposed FX Journal. Each site needs a small read-only update first; it is ready and waiting for your go-ahead.</p></div></div>
+        <p class="muted">GoldenStraddler and Exposed FX Journal. Not connected yet.</p></div></div>
         ${b?.problem ? `<p class="note bad">${esc(b.problem)}</p>` : ''}</div>
     </section>`;
   }
@@ -280,7 +278,7 @@ function calendarSection(d) {
     ${feeds ? `<div class="group flush">${feeds}</div>` : ''}
     <form class="cal-add" data-form="cal-add">
       ${d.feeds.length ? '' : `<div class="setup-hero"><span class="setup-ic cal-ic">${icon('calendar')}</span><div><h3>Add your calendars</h3>
-        <p class="muted">Events show on Today and the day plan only counts the time you actually have free. Your UM VLE calendar turns every assignment deadline into a task on its own.</p></div></div>`}
+        <p class="muted">Events on Today; VLE deadlines become tasks.</p></div></div>`}
       <label class="field"><span>Calendar link (iCal or webcal)</span><input class="input" name="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://calendar.google.com/calendar/ical/..." required></label>
       <div class="seg" role="radiogroup" aria-label="What it is">
         <label><input type="radio" name="kind" value="" checked><span>Work it out</span></label>
@@ -302,7 +300,6 @@ function calendarSection(d) {
         <p class="howto-h">Outlook, your UM email</p>
         <ol><li>On a computer, outlook.office.com, Settings, <b>Calendar</b>, <b>Shared calendars</b>.</li>
           <li>Under Publish a calendar choose <b>Can view titles and locations</b>, Publish, copy the <b>ICS</b> link.</li></ol>
-        <p class="note">These links are private. Anyone with one can read that calendar, so keep them to yourself.</p>
       </details>
     </form>
     </details>
@@ -327,7 +324,7 @@ function nextEvent(events) {
 
 // HP over the last 30 days as a filled line on a fixed 0 to max scale, deaths marked at 0.
 function hpArea(days, maxHp) {
-  if (days.length < 2) return '<p class="muted small">The line starts once two days have closed.</p>';
+  if (days.length < 2) return '<p class="muted small">Not enough days yet</p>';
   const w = 300;
   const h = 84;
   const step = w / (days.length - 1);
@@ -362,10 +359,10 @@ function seasonSection(s) {
       ${hpArea(s.days, g.maxHp)}
       ${streaks ? `<p class="season-sub">Longest streaks</p><ul class="streaks">${streaks}</ul>` : ''}
     </div>
-    ${s.reviewDue ? `<a class="banner action" href="#/review">${icon('review')}<span><b>Weekly review is ready.</b> Keep, adjust or drop each habit and pick this week's focus.</span>${icon('chevron', 'chev')}</a>` : ''}
+    ${s.reviewDue ? `<a class="banner action" href="#/review">${icon('review')}<span><b>Weekly review is ready</b></span>${icon('chevron', 'chev')}</a>` : ''}
     <div class="group">
-      <a class="li li-plain li-nav" href="#/review"><span class="li-ic">${icon('review')}</span><span class="li-body"><span class="li-title">Weekly review</span><span class="li-sub">Keep, adjust or drop each habit. Pick the week's focus.</span></span>${icon('chevron', 'chev')}</a>
-      <a class="li li-plain li-nav" href="#/review"><span class="li-ic">${icon('trend')}</span><span class="li-body"><span class="li-title">History</span><span class="li-sub">HP, habit strength, misses, pardons and deaths</span></span>${icon('chevron', 'chev')}</a>
+      <a class="li li-plain li-nav" href="#/review"><span class="li-ic">${icon('review')}</span><span class="li-body"><span class="li-title">Weekly review</span></span>${icon('chevron', 'chev')}</a>
+      <a class="li li-plain li-nav" href="#/review"><span class="li-ic">${icon('trend')}</span><span class="li-body"><span class="li-title">History</span></span>${icon('chevron', 'chev')}</a>
     </div>
   </section>`;
 }
@@ -374,7 +371,7 @@ function seasonSection(s) {
 
 export function viewDashboard() {
   const d = state.dash;
-  const head = pageHead('Dashboard', { over: 'Your command centre', actions: iconLink('#/settings', 'settings', 'Settings') });
+  const head = pageHead('Dashboard', { actions: iconLink('#/settings', 'settings', 'Settings') });
   if (!d) return ctx.shell(`${head}<div class="skeleton"><i></i><i></i><i class="short"></i></div>`);
   // Your season first, then the week at uni, then your body; the businesses sit alongside.
   ctx.shell(`${head}

@@ -59,16 +59,26 @@ async function fakeOff(url) {
   return reply(200, { hits });
 }
 
-// A stand-in for the Anthropic client.
+// A stand-in for the Anthropic client. A scripted response can be a function of the request.
 function scripted(responses) {
   const requests = [];
   return {
     requests,
-    beta: { messages: { create: async (params) => { requests.push(JSON.parse(JSON.stringify(params))); const r = responses.shift(); if (!r) throw new Error('no scripted response left'); return r; } } },
+    beta: { messages: { create: async (params) => {
+      requests.push(JSON.parse(JSON.stringify(params)));
+      const r = responses.shift();
+      if (!r) throw new Error('no scripted response left');
+      return typeof r === 'function' ? r(params) : r;
+    } } },
   };
 }
 const said = (obj) => ({ stop_reason: 'end_turn', content: [{ type: 'text', text: JSON.stringify(obj) }] });
 const reading = (over) => ({ kind: 'unclear', summary: '', barcode: null, product: null, label: null, items: [], question: null, ...over });
+// One food as the Understand step returns it, and the Choose step's answer.
+const PER100 = { kcal: 100, protein: 2, carbs: 20, sugars: 8, fat: 1, satfat: 0.2, fibre: 2, salt: 0.05, caffeine: 0, alcohol: 0 };
+const eaten = (over) => ({ name: 'Food', brand: '', variety: '', preparation: '', size: '', amount: 100, unit: 'g', weight: 100, confidence: 'medium', searches: [], per100: PER100, ...over });
+const chose = (...picks) => said({ choices: picks.map(([item, key, unit, qty, why = 'Closest record']) => ({ item, key, unit, qty, why })) });
+const MEDIUM_BANANA = 'p:1 medium (7" to 7-7/8" long)';
 const reply = (stop_reason, content) => ({ stop_reason, content });
 let t = 0;
 const use = (name, input) => ({ type: 'tool_use', id: `t${(t += 1)}`, name, input });
@@ -463,16 +473,30 @@ test('photo: a label becomes a draft to check, a plate is matched to records wit
   assert.equal(label.requests[0].output_config.format.type, 'json_schema');
   assert.equal(label.requests[0].messages[0].content[0].type, 'image');
 
-  coach.setCoachClient(scripted([said(reading({ kind: 'meal', summary: 'Rice and a banana', items: [
-    { name: 'Banana', search: 'banana', amount: 1, unit: 'piece', confidence: 'high' },
-    { name: 'White rice', search: 'white rice cooked', amount: 180, unit: 'g', confidence: 'medium' },
-  ] }))]));
+  // A plate: the reading understands each food, then one more call chooses the records.
+  const plate = scripted([
+    said(reading({ kind: 'meal', summary: 'Rice and a banana', items: [
+      eaten({ name: 'Banana', searches: ['banana raw', 'banana'], amount: 1, unit: 'piece', weight: 118, confidence: 'high' }),
+      eaten({ name: 'White rice', preparation: 'boiled', searches: ['white rice cooked', 'rice'], amount: 180, weight: 180 }),
+    ] })),
+    chose([0, 'banana-raw', MEDIUM_BANANA, 1, 'A medium banana'], [1, 'rice-white-long-grain-cooked', 'g', 180, 'Cooked white rice, as eaten']),
+  ]);
+  coach.setCoachClient(plate);
   const m = await post('/api/food/photo', { image: 'iVBORw0KGgoAAAANSUhEUg==', media_type: 'image/png' });
   assert.equal(m.kind, 'meal');
   assert.equal(m.items[0].match.key, 'banana-raw');
-  assert.match(m.items[0].unit, /^p:1 medium/);
+  assert.equal(m.items[0].unit, MEDIUM_BANANA);
+  assert.equal(m.items[0].why, 'A medium banana');
   assert.equal(m.items[1].match.state, 'cooked');
-  assert.ok(m.items.every((x) => x.estimate));
+  assert.equal(m.items[1].qty, 180);
+  assert.ok(m.items.every((x) => x.estimate && x.fill && 'brand' in x && 'size' in x && x.why));
+  assert.equal(plate.requests.length, 2, 'one reading, one choice for all items');
+  const photoItem = plate.requests[0].output_config.format.schema.properties.items.items.properties;
+  assert.ok(photoItem.per100 && photoItem.brand && photoItem.size && photoItem.searches, 'the photo reading understands each food in detail');
+  const choice = plate.requests[1];
+  assert.equal(choice.output_config.format.type, 'json_schema');
+  assert.match(choice.messages[0].content[0].text, /Item 0: name "Banana"[\s\S]*key banana-raw/);
+  assert.match(choice.messages[0].content[0].text, /Item 1: name "White rice"[\s\S]*key rice-white-long-grain-cooked/);
 
   coach.setCoachClient(scripted([said(reading({ kind: 'barcode', summary: 'A can', barcode: '5000000000011' }))]));
   const b = await post('/api/food/photo', { image: 'iVBORw0KGgoAAAANSUhEUg==', media_type: 'image/png' });
@@ -501,23 +525,32 @@ test('coach: finds and logs food with a receipt, and removing an entry waits for
 });
 
 test('describe: typed words become catalogue matches with estimated amounts; a food with no record keeps a rough estimate', async () => {
-  const typed = scripted([said({ kind: 'meal', summary: 'A banana and a wrap', question: null, items: [
-    { name: 'Banana', search: 'banana', amount: 1, unit: 'piece', confidence: 'high', kcal: 105, protein: 1.3, carbs: 27, fat: 0.4 },
-    { name: 'Zzqx mystery wrap', search: 'zzqx wrap', amount: 300, unit: 'g', confidence: 'low', kcal: 640, protein: 32, carbs: 70, fat: null },
-  ] })]);
+  const wrap = { kcal: 200, protein: 10, carbs: 25, sugars: 2, fat: 8, satfat: 3, fibre: 2, salt: 1.2, caffeine: 0, alcohol: 0 };
+  const typed = scripted([
+    said({ kind: 'meal', summary: 'A banana and a wrap', question: null, items: [
+      eaten({ name: 'Banana', searches: ['banana'], amount: 1, unit: 'piece', weight: 118, confidence: 'high' }),
+      eaten({ name: 'Zzqx mystery wrap', searches: ['zzqx wrap'], amount: 300, weight: 300, confidence: 'low', per100: wrap }),
+    ] }),
+    chose([0, 'banana-raw', MEDIUM_BANANA, 1, 'A medium banana'], [1, '', 'g', 300, 'Nothing like it in the catalogue']),
+  ]);
   coach.setCoachClient(typed);
   const r = await post('/api/food/describe', { text: 'a banana and a zzqx mystery wrap' });
   assert.equal(r.kind, 'meal');
   assert.equal(r.source, 'text');
   assert.equal(r.items[0].match.key, 'banana-raw');
-  assert.match(r.items[0].unit, /^p:1 medium/);
+  assert.equal(r.items[0].unit, MEDIUM_BANANA);
   assert.equal(r.items[0].qty, 1);
   assert.ok(r.items.every((x) => x.estimate));
   assert.equal(r.items[1].match, null);
-  assert.deepEqual(r.items[1].guess, { kcal: 640, protein: 32, carbs: 70, fat: null, amount: 300, unit: 'g' });
+  assert.equal(r.items[1].qty, 300);
+  assert.deepEqual(r.items[1].fill, { basis: 'g', ...wrap });
+  // The whole amount, worked out from the profile per 100: every value, so a quick add is complete.
+  assert.deepEqual(r.items[1].guess, { kcal: 600, protein: 30, carbs: 75, sugars: 6, fat: 24, satfat: 9, fibre: 6, salt: 3.6, caffeine: 0, alcohol: 0, amount: 300, unit: 'g', weight: 300 });
   const req = typed.requests[0];
   assert.equal(req.output_config.format.type, 'json_schema');
-  assert.ok(req.output_config.format.schema.properties.items.items.properties.kcal, 'every item carries a rough estimate');
+  const props = req.output_config.format.schema.properties.items.items.properties;
+  for (const k of ['brand', 'variety', 'preparation', 'size', 'amount', 'unit', 'weight', 'searches', 'per100']) assert.ok(props[k], `every item carries ${k}`);
+  assert.deepEqual(Object.keys(props.per100.properties), ['kcal', 'protein', 'carbs', 'sugars', 'fat', 'fibre', 'salt', 'satfat', 'caffeine', 'alcohol']);
   assert.equal(req.messages[0].content.length, 1);
   assert.equal(req.messages[0].content[0].type, 'text');
   assert.equal(req.messages[0].content[0].text, 'a banana and a zzqx mystery wrap');

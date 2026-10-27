@@ -52,25 +52,17 @@ export function viewGoals() {
   const closed = goals.filter((g) => g.status !== 'active');
   const behind = active.filter((g) => g.pace?.state === 'behind').length;
   ctx.shell(`${pageHead('Goals', { over: `${active.length} active${behind ? `, ${behind} behind pace` : ''}`, actions: `<a class="icon-btn accent" href="#/goals/new" aria-label="New goal">${icon('plus')}</a>` })}
-    <div class="split"><div>
+    <div><div>
     <section class="section">
       ${active.length ? `<div class="goal-list">${active.map(goalCard).join('')}</div>`
         : emptyState({
           icon: 'goals',
           title: 'What are you working towards?',
-          text: 'A goal gets a number or a set of steps, a date, and the obstacle you expect. Break it down in a map, and any branch can become a habit or a task. Progress rolls back up on its own.',
           actions: '<a class="btn primary" href="#/goals/new">Set your first goal</a>',
         })}
     </section>
     ${closed.length ? `<section class="section"><div class="gh"><h2>Closed</h2></div><div class="goal-list">${closed.map(goalCard).join('')}</div></section>` : ''}
-  </div><aside>
-    <section class="section"><div class="gh"><h2>How goals work here</h2></div>
-      <div class="card prose">
-        <p>Each goal is written as WOOP: what you want, why it matters, what inside you will get in the way, and your if-then plan for that moment. That format has the best evidence behind it.</p>
-        <p>Give it a number when you can. Specific, measurable goals beat "do your best".</p>
-        <p>Break it down in the map. Tap any branch to turn it into a task or a habit; finishing them moves the goal.</p>
-      </div></section>
-  </aside></div>`);
+  </div></div>`);
 }
 
 // ---------- New and edit ----------
@@ -156,7 +148,7 @@ function outline(goal, tree) {
   const parent = state.mapParent ? findNode(tree, state.mapParent) : null;
   return `<div class="outline">
     <div class="node-root"><span>${esc(goal.title)}</span></div>
-    ${tree.length ? outlineRows(tree) : '<p class="muted outline-empty">Start with the 3 to 5 big pieces this goal breaks into. Then add the steps under each.</p>'}
+    ${tree.length ? outlineRows(tree) : '<p class="muted outline-empty">No branches yet</p>'}
     <form class="node-add" data-form="node-add">
       <label class="sr" for="node-add-text">New branch</label>
       <input id="node-add-text" class="input" name="text" maxlength="200" autocomplete="off" placeholder="${parent ? `Add under "${esc(parent.text)}"` : 'Add a branch'}" required>
@@ -333,7 +325,7 @@ export function viewGoal() {
       ${!closed && g.targetDate && g.daysLeft >= 0 ? `<span class="goal-countdown"><b>${g.daysLeft}</b><span>${g.daysLeft === 1 ? 'day' : 'days'} left</span></span>` : ''}
     </div>
     <div class="goal-bar${g.pace ? ` pace-${g.pace.state}` : ''}">${bar(g.pct, 'big', `goal-${g.id}`)}${g.pace ? `<i class="pace-mark" style="left:${g.pace.expected}%" title="Even pace: ${g.pace.expected}%"></i>` : ''}</div>
-    ${g.pace ? `<p class="pace-line">${paceChip(g)}<span>An even pace would be at ${g.pace.expected}% today.</span></p>` : ''}
+    ${g.pace ? `<p class="pace-line">${paceChip(g)}<span>Even pace: ${g.pace.expected}%</span></p>` : ''}
     ${!closed && g.nextStep ? `<div class="card next-step">
       <p class="eyebrow">${icon('bolt')}Next step</p>
       <p class="next-step-title">${esc(g.nextStep.title)}</p>

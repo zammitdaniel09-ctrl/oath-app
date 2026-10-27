@@ -10,8 +10,11 @@ import { db, logEvent } from './db.js';
 import { nowUTC, addDays, validDate, validTime } from './time.js';
 import { localNow, RuleError } from './engine.js';
 import {
-  KEYS, NUTRIENT, norm, scale, total, complete, line, recipeTotals, shareOf, batchPortion, batchLeft, unknown, round, amountText, unitsFor, resolve, show,
+  KEYS, NUTRIENT, NUTRIENTS, norm, scale, total, complete, line, recipeTotals, shareOf, batchPortion, batchLeft, unknown, round, amountText, unitsFor, resolve, show,
 } from '../public/nutrition.js';
+// Grades and tags come from the shared maths when it has them; read through the namespace so the
+// diary still works on a build without them.
+import * as NUT from '../public/nutrition.js';
 
 // ---------- Schema ----------
 
@@ -192,11 +195,25 @@ create table if not exists food_requirements (
 -- diary line were filled with an estimate because the record had none.
 alter table food_items add column if not exists nutriscore text;
 alter table food_items add column if not exists nova int;
+-- v6: the brand as searched (lower case, accents and punctuation folded), so "burger king fries" can lead with the brand.
+alter table food_items add column if not exists brand_norm text not null default '';
 alter table food_log add column if not exists filled text[] not null default '{}';
 `;
 
 export async function migrateFood() {
-  await db().unsafe(FOOD_SCHEMA);
+  const sql = db();
+  await sql.unsafe(FOOD_SCHEMA);
+  // Search over the whole USDA catalogue stays quick with a trigram index where the host allows the
+  // extension (Railway may not); without it a plain scan is fast enough, so this is optional.
+  try {
+    await sql.unsafe('create extension if not exists pg_trgm');
+    await sql.unsafe('create index if not exists food_items_search_trgm on food_items using gin (search gin_trgm_ops)');
+  } catch { /* optional */ }
+  // Records saved before brand_norm existed.
+  const old = await sql`select id, brand from food_items where brand is not null and brand_norm = ''`;
+  if (old.length) {
+    await sql`update food_items f set brand_norm = t.b from unnest(${old.map((r) => r.id)}::int[], ${old.map((r) => norm(r.brand))}::text[]) as t(id, b) where f.id = t.id`;
+  }
 }
 
 // ---------- Records ----------
@@ -258,10 +275,40 @@ export function energyCheck(nut) {
   return `The energy on this record (${Math.round(kcal)} kcal) doesn't match its protein, carbs and fat (about ${Math.round(est)} kcal). Check it against the label.`;
 }
 
-// What the maths and the screens need from a row.
+const safeGrade = (fn) => {
+  try { return fn(); } catch { return null; }
+};
+const letterOf = (x) => {
+  const g = String((typeof x === 'string' ? x : x?.grade) || '').toLowerCase();
+  return g.length === 1 && 'abcde'.includes(g) ? g : null;
+};
+
+// The Nutri-Score of a record: the source's own grade (Open Food Facts) when it has one, else the 2023
+// algorithm on its numbers. A drink held per 100 g is worked out per 100 ml through its density.
+function gradeOfRow(r) {
+  const given = letterOf(r.nutriscore);
+  if (given) return { grade: given, from: 'source' };
+  const per = r.basis !== 'ml' && r.liquid && r.density > 0 ? scale(r.nutrients, r.density, 1) : r.nutrients;
+  const computed = safeGrade(() => NUT.nutriScore?.(per, { category: r.category, liquid: r.liquid, name: r.name }));
+  return computed ? { grade: computed.grade, from: 'computed' } : { grade: null, from: null };
+}
+
+// What the maths and the screens need from a row. `nutriscore` is a lower case letter, a to e, or null;
+// `nutriscoreFrom` says whether it came from the source or was worked out here; `tags` is the ordered
+// list of { key, label, tone, why } ("Protein packed", "Sugar rush", "Ultra-processed" ...).
 export function shapeItem(r) {
   if (!r) return null;
+  const graded = gradeOfRow(r);
+  const nova = Number(r.nova) >= 1 && Number(r.nova) <= 4 ? Number(r.nova) : null;
+  const tags = safeGrade(() => NUT.foodTags?.({
+    nutrients: r.nutrients, basis: r.basis, liquid: r.liquid, density: r.density, category: r.category, state: r.state, name: r.name, nutriscore: graded.grade, nova,
+    portions: r.portions, serving: r.serving, pack: r.pack,
+  })) || [];
   return {
+    nutriscore: graded.grade,
+    nutriscoreFrom: graded.from,
+    nova,
+    tags,
     id: r.id,
     key: r.key,
     kind: r.kind,
@@ -298,31 +345,50 @@ export function shapeItem(r) {
   };
 }
 
-// Inserts or updates one record by its key. Seeds and imports call this; Daniel's favourites, use
-// counts and hidden flags are never touched by an update.
-export async function upsertItem(input, tx = db()) {
+// Size words that a portion can carry ("1 large serving", "small"). They go into the search text, so
+// "large fries" finds the records that have a large portion.
+const SIZE_WORDS = ['small', 'medium', 'large', 'jumbo', 'mini', 'junior', 'kids'];
+const sizesOf = (portions) => {
+  const words = new Set(portions.flatMap((p) => norm(p.label).split(' ')));
+  return SIZE_WORDS.filter((w) => words.has(w));
+};
+
+const gradeLetter = (x) => {
+  const g = String(x ?? '').trim().toLowerCase();
+  return g.length === 1 && 'abcde'.includes(g) ? g : null;
+};
+const novaGroup = (x) => {
+  const v = Math.round(Number(x));
+  return Number.isFinite(v) && v >= 1 && v <= 4 ? v : null;
+};
+
+// Everything a catalogue row needs, validated and normalised. Single saves, imports and the seed all go through here.
+export function prepareItem(input) {
   const key = clean(input.key, 120).toLowerCase();
   if (!/^[a-z0-9][a-z0-9:._-]*$/.test(key)) throw new RuleError(`Bad food key "${key}".`);
   const kind = KINDS.includes(input.kind) ? input.kind : 'generic';
   const name = clean(input.name, 160);
   if (!name) throw new RuleError('A food needs a name.');
-  const aliases = [...new Set((input.aliases || []).map((a) => clean(a, 80)).filter(Boolean))];
+  const aliases = [...new Set((input.aliases || []).map((a) => clean(a, 160)).filter(Boolean))];
   const nameNorm = norm(name);
   const aliasNorm = [...new Set(aliases.map(norm).concat(input.name_mt ? [norm(input.name_mt)] : []).filter(Boolean))];
-  const search = [nameNorm, ...aliasNorm, norm(input.brand), norm(input.barcode)].filter(Boolean).join(' ');
+  const portions = portionList(input.portions);
+  const brandNorm = norm(input.brand);
+  const search = [nameNorm, ...aliasNorm, brandNorm, norm(input.barcode), ...sizesOf(portions)].filter(Boolean).join(' ');
   const basis = input.basis === 'ml' ? 'ml' : 'g';
   const nutrients = cleanNutrients(input.nutrients || {});
   const edible = n(Number(input.edible)) && input.edible > 0 && input.edible <= 1 ? Number(input.edible) : null;
   const density = n(Number(input.density)) && input.density > 0.3 && input.density < 3 ? Number(input.density) : null;
   const concentrate = input.concentrate && Number(input.concentrate.water) > 0 ? { water: Number(input.concentrate.water) } : null;
-  const row = {
+  return {
     key, kind, name, name_mt: input.name_mt ? clean(input.name_mt, 160) : null, aliases, name_norm: nameNorm, alias_norm: aliasNorm, search,
     brand: input.brand ? clean(input.brand, 80) : null,
+    brand_norm: brandNorm,
     barcode: input.barcode ? String(input.barcode).replace(/\D/g, '').slice(0, 14) || null : null,
     market: input.market ? clean(input.market, 40) : null,
     category: input.category ? clean(input.category, 60) : null,
     state: input.state ? clean(input.state, 30) : null,
-    basis, nutrients, portions: portionList(input.portions), edible, refuse: input.refuse ? clean(input.refuse, 80) : null, density,
+    basis, nutrients, portions, edible, refuse: input.refuse ? clean(input.refuse, 80) : null, density,
     pack: sizeOf(input.pack), serving: sizeOf(input.serving), concentrate,
     liquid: Boolean(input.liquid) || basis === 'ml',
     source: clean(input.source || 'you', 20),
@@ -331,24 +397,68 @@ export async function upsertItem(input, tx = db()) {
     status: clean(input.status || 'ok', 30),
     notes: clean(input.notes, 600),
     req: (input.req || []).map((x) => clean(x, 120)),
+    nutriscore: gradeLetter(input.nutriscore),
+    nova: novaGroup(input.nova),
   };
+}
+
+// Inserts or updates one record by its key. Seeds and imports call this; Daniel's favourites, use
+// counts and hidden flags are never touched by an update.
+export async function upsertItem(input, tx = db()) {
+  const row = prepareItem(input);
   const [saved] = await tx`
-    insert into food_items (key, kind, name, name_mt, aliases, name_norm, alias_norm, search, brand, barcode, market, category, state,
-      basis, nutrients, portions, edible, refuse, density, pack, serving, concentrate, liquid, source, source_ref, source_date, status, notes, req)
+    insert into food_items (key, kind, name, name_mt, aliases, name_norm, alias_norm, search, brand, brand_norm, barcode, market, category, state,
+      basis, nutrients, portions, edible, refuse, density, pack, serving, concentrate, liquid, source, source_ref, source_date, status, notes, req,
+      nutriscore, nova)
     values (${row.key}, ${row.kind}, ${row.name}, ${row.name_mt}, ${row.aliases}::text[], ${row.name_norm}, ${row.alias_norm}::text[], ${row.search},
-      ${row.brand}, ${row.barcode}, ${row.market}, ${row.category}, ${row.state}, ${row.basis}, ${tx.json(row.nutrients)}, ${tx.json(row.portions)},
+      ${row.brand}, ${row.brand_norm}, ${row.barcode}, ${row.market}, ${row.category}, ${row.state}, ${row.basis}, ${tx.json(row.nutrients)}, ${tx.json(row.portions)},
       ${row.edible}, ${row.refuse}, ${row.density}, ${row.pack ? tx.json(row.pack) : null}, ${row.serving ? tx.json(row.serving) : null},
       ${row.concentrate ? tx.json(row.concentrate) : null}, ${row.liquid}, ${row.source}, ${row.source_ref}, ${row.source_date}, ${row.status},
-      ${row.notes}, ${row.req}::text[])
+      ${row.notes}, ${row.req}::text[], ${row.nutriscore}, ${row.nova})
     on conflict (key) do update set kind = excluded.kind, name = excluded.name, name_mt = excluded.name_mt, aliases = excluded.aliases,
-      name_norm = excluded.name_norm, alias_norm = excluded.alias_norm, search = excluded.search, brand = excluded.brand, barcode = excluded.barcode,
-      market = excluded.market, category = excluded.category, state = excluded.state, basis = excluded.basis, nutrients = excluded.nutrients,
+      name_norm = excluded.name_norm, alias_norm = excluded.alias_norm, search = excluded.search, brand = excluded.brand, brand_norm = excluded.brand_norm,
+      barcode = excluded.barcode, market = excluded.market, category = excluded.category, state = excluded.state, basis = excluded.basis, nutrients = excluded.nutrients,
       portions = excluded.portions, edible = excluded.edible, refuse = excluded.refuse, density = excluded.density, pack = excluded.pack,
       serving = excluded.serving, concentrate = excluded.concentrate, liquid = excluded.liquid, source = excluded.source,
       source_ref = excluded.source_ref, source_date = excluded.source_date, status = excluded.status, notes = excluded.notes, req = excluded.req,
-      updated_at = now()
+      nutriscore = excluded.nutriscore, nova = excluded.nova, updated_at = now()
     returning *`;
   return saved;
+}
+
+const BULK_COLUMNS = ['key', 'kind', 'name', 'name_mt', 'aliases', 'name_norm', 'alias_norm', 'search', 'brand', 'brand_norm', 'barcode', 'market', 'category', 'state',
+  'basis', 'nutrients', 'portions', 'edible', 'refuse', 'density', 'pack', 'serving', 'concentrate', 'liquid', 'source', 'source_ref', 'source_date', 'status', 'notes', 'req',
+  'nutriscore', 'nova'];
+
+// The same upsert for thousands of records, in multi-row statements of about `batch` rows. A record that
+// fails validation is skipped and reported, never fatal; a repeated key keeps its last record. Favourites,
+// use counts, last-used and hidden flags are not in the column list, so they are never touched. Rows
+// whose values did not change are still written, which keeps ids stable and the counts the same.
+export async function upsertItems(inputs, tx = db(), { batch = 500 } = {}) {
+  const byKey = new Map();
+  const rejected = [];
+  for (const input of inputs) {
+    try {
+      const row = prepareItem(input);
+      byKey.set(row.key, row);
+    } catch (e) {
+      rejected.push({ key: input?.key ?? null, error: e.message });
+    }
+  }
+  const rows = [...byKey.values()];
+  for (let i = 0; i < rows.length; i += batch) {
+    const chunk = rows.slice(i, i + batch);
+    await tx`
+      insert into food_items ${tx(chunk, ...BULK_COLUMNS)}
+      on conflict (key) do update set kind = excluded.kind, name = excluded.name, name_mt = excluded.name_mt, aliases = excluded.aliases,
+        name_norm = excluded.name_norm, alias_norm = excluded.alias_norm, search = excluded.search, brand = excluded.brand, brand_norm = excluded.brand_norm,
+        barcode = excluded.barcode, market = excluded.market, category = excluded.category, state = excluded.state, basis = excluded.basis, nutrients = excluded.nutrients,
+        portions = excluded.portions, edible = excluded.edible, refuse = excluded.refuse, density = excluded.density, pack = excluded.pack,
+        serving = excluded.serving, concentrate = excluded.concentrate, liquid = excluded.liquid, source = excluded.source,
+        source_ref = excluded.source_ref, source_date = excluded.source_date, status = excluded.status, notes = excluded.notes, req = excluded.req,
+        nutriscore = excluded.nutriscore, nova = excluded.nova, updated_at = now()`;
+  }
+  return { saved: rows.length, rejected };
 }
 
 export async function itemByKey(key) {
@@ -368,31 +478,65 @@ export async function getFood(ref) {
   return shapeItem(r);
 }
 
-// Local ranking: exact name, an exact alias, name starts with the words, an alias starts with them,
-// then anything containing every word. Plain foods before products, then what Daniel uses most,
-// then shorter names. Aliases only lead to a record; they never merge two foods.
+// Words that carry no meaning in "large fries from Burger King", and the size words that point at a
+// portion rather than a food: sizes are not required in a record's text, they rank it higher and name
+// the portion to pick ("1 large serving").
+const FILLER = new Set(['from', 'at', 'the', 'a', 'an', 'of', 'my', 'some', 'for', 'please']);
+const SIZE_QUERY = new Set(['small', 'medium', 'large']);
+
+// Local ranking: exact name (or brand and name), an exact alias, name starts with the words, an alias
+// starts with them, then anything containing every word. Plain foods before products, then what Daniel
+// uses most, then the hand-picked records before the bulk USDA ones, then shorter names. Aliases only lead
+// to a record; they never merge two foods. A size word in the query ("large", "small") ranks the records
+// that have such a portion first and adds `portionHint: { unit, label }` to them.
 export async function searchFoods(q, { limit = 30, kind = null, liquid = null } = {}) {
-  const query = norm(q);
-  if (!query) return [];
-  const words = query.split(' ').slice(0, 6);
+  const asked = norm(q).split(' ').filter(Boolean).slice(0, 8);
+  if (!asked.length) return [];
+  let words = asked.filter((w) => !FILLER.has(w));
+  if (!words.length) words = asked;
+  const sizes = words.filter((w) => SIZE_QUERY.has(w));
+  const core = words.filter((w) => !SIZE_QUERY.has(w)).slice(0, 6);
+  if (!core.length) core.push(...words.slice(0, 6));
+  const query = core.join(' ');
   const sql = db();
-  const all = words.reduce((acc, w) => sql`${acc} and search like ${`%${w}%`}`, sql``);
+  // One or two letters typed so far ("b"): names that start with them, not every record that contains them.
+  const typing = core.every((w) => w.length < 2);
+  const all = typing ? sql`and name_norm like ${`${core[0]}%`}` : core.reduce((acc, w) => sql`${acc} and search like ${`%${w}%`}`, sql``);
+  const sized = sizes.length ? sizes.reduce((acc, w) => sql`${acc} and search like ${`%${w}%`}`, sql`true`) : sql`false`;
+  const max = Math.min(Number(limit) || 30, 80);
+  // The bulk USDA records (keys fdc-<id>) rank four places lower than a hand-picked or imported record, so an
+  // exact name in the bulk file (the survey's "Grapes") ties with a hand-picked record that has the name
+  // inside it ("Red grapes") and loses the tie, while a bulk exact name still beats a hand-picked record
+  // that only has the words somewhere ("Milk chocolate" for "cola").
   const rows = await sql`
-    select *, case
-      when name_norm = ${query} then 0
-      when ${query} = any(alias_norm) then 1
-      when name_norm like ${`${query} %`} then 2
-      when exists (select 1 from unnest(alias_norm) a where a like ${`${query}%`}) then 3
-      when name_norm like ${`%${query}%`} then 4
-      when name_norm like ${`${words[0]} %`} then 5
-      else 6 end as rank
-    from food_items
-    where hidden = false ${all}
-      ${kind ? sql`and kind = ${kind}` : sql``}
-      ${liquid === null ? sql`` : sql`and liquid = ${liquid}`}
-    order by rank, (kind = 'generic') desc, (market = 'Malta') desc, uses desc, length(name), name
-    limit ${Math.min(Number(limit) || 30, 80)}`;
-  return rows.map(shapeItem);
+    select f.* from (
+      select id, row_number() over (order by
+        (case
+          when name_norm = ${query} then 0
+          when brand_norm <> '' and brand_norm || ' ' || name_norm = ${query} then 0
+          when ${query} = any(alias_norm) then 1
+          when name_norm like ${`${query} %`} then 2
+          when brand_norm <> '' and brand_norm || ' ' || name_norm like ${`${query} %`} then 2
+          when exists (select 1 from unnest(alias_norm) a where a like ${`${query}%`}) then 3
+          when name_norm like ${`%${query}%`} then 4
+          when brand_norm <> '' and brand_norm || ' ' || name_norm like ${`%${query}%`} then 4
+          when name_norm like ${`${core[0]} %`} then 5
+          else 6 end) + (case when key like 'fdc-%' then 4 else 0 end),
+        ${sized} desc, (kind = 'generic') desc, (market = 'Malta') desc, uses desc, (key like 'fdc-%'), length(name), name) as ord
+      from food_items
+      where hidden = false ${all}
+        ${kind ? sql`and kind = ${kind}` : sql``}
+        ${liquid === null ? sql`` : sql`and liquid = ${liquid}`}
+      order by ord
+      limit ${max}) h
+    join food_items f on f.id = h.id
+    order by h.ord`;
+  return rows.map((r) => {
+    const item = shapeItem(r);
+    if (!sizes.length) return item;
+    const hit = (r.portions || []).find((p) => norm(p.label).split(' ').includes(sizes[0]));
+    return hit ? { ...item, portionHint: { unit: `p:${hit.label}`, label: hit.label } } : item;
+  });
 }
 
 export async function recentFoods({ liquid = null, limit = 16 } = {}) {
@@ -481,6 +625,8 @@ const shapeEntry = (r) => ({
   nutrients: r.nutrients,
   lines: r.lines,
   estimate: r.estimate,
+  // Nutrients the record had no value for, filled from an estimate: the screen marks them as estimated.
+  filled: r.filled || [],
   source: r.source,
   note: r.note,
   planId: r.plan_id,
@@ -488,13 +634,14 @@ const shapeEntry = (r) => ({
 
 // Writes one entry once. The id comes from the phone, so an offline entry replayed later lands once.
 async function insertEntry(e, tx = db()) {
+  const filled = (Array.isArray(e.filled) ? e.filled : []).filter((k) => KEYS.includes(k));
   const rows = await tx`
     insert into food_log (id, date, at, slot, kind, ref_id, ref_key, name, brand, qty, unit, amount_text, grams, ml, share, liquid,
-      nutrients, lines, estimate, source, note, plan_id)
+      nutrients, lines, estimate, source, note, plan_id, filled)
     values (${e.id}, ${e.date}, ${e.at}, ${e.slot}, ${e.kind}, ${e.ref_id ?? null}, ${e.ref_key ?? null}, ${e.name}, ${e.brand ?? null},
       ${e.qty ?? null}, ${e.unit ?? null}, ${e.amount_text || ''}, ${e.grams ?? null}, ${e.ml ?? null}, ${e.share ?? null}, ${Boolean(e.liquid)},
       ${tx.json(e.nutrients)}, ${e.lines ? tx.json(e.lines) : null}, ${Boolean(e.estimate)}, ${e.source || 'you'}, ${clean(e.note, 300)},
-      ${e.plan_id ?? null})
+      ${e.plan_id ?? null}, ${filled}::text[])
     on conflict (id) do nothing returning *`;
   if (rows.length) return { entry: shapeEntry(rows[0]), duplicate: false };
   const [existing] = await tx`select * from food_log where id = ${e.id}`;
@@ -508,7 +655,56 @@ async function existingEntry(id) {
   return r ? { entry: shapeEntry(r), duplicate: true } : null;
 }
 
-// Logs an amount of one catalogue record: { id, key, qty, unit, date, time, slot, estimate, note }.
+// ---------- Fills: an estimate for what a record does not say ----------
+
+// The nutrients an estimate covers: the label's core values plus saturates, caffeine and alcohol.
+export const FILL_KEYS = [...KEYS.filter((k) => NUTRIENT[k].core), 'satfat', 'caffeine', 'alcohol'];
+
+// An estimated profile per 100 g or ml: { basis, kcal, protein, ... }. Values that are missing,
+// negative or not believable are dropped (they stay unknown), never guessed further.
+export function cleanFill(input, basis = 'g') {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return null;
+  const out = { basis: ['g', 'ml'].includes(input.basis) ? input.basis : basis === 'ml' ? 'ml' : 'g' };
+  let any = false;
+  for (const k of FILL_KEYS) {
+    const raw = input[k];
+    const v = Number(raw);
+    const cap = k === 'kcal' ? 950 : k === 'caffeine' ? 6000 : NUTRIENT[k].unit === 'g' ? 100 : 100000;
+    const ok = raw !== null && raw !== undefined && raw !== '' && Number.isFinite(v) && v >= 0 && v <= cap;
+    out[k] = ok ? v : null;
+    any = any || ok;
+  }
+  // Part of a value is never more than the whole.
+  if (out.sugars !== null && out.carbs !== null) out.sugars = Math.min(out.sugars, out.carbs);
+  if (out.satfat !== null && out.fat !== null) out.satfat = Math.min(out.satfat, out.fat);
+  return any ? out : null;
+}
+
+// Fills each nutrient that is unknown (null) from the estimate, scaled to `amount` g or ml of the
+// fill's basis. Sugars and saturates follow the record's own carbs and fat where it has them, so an
+// estimate never claims more sugar than the record's carbs. Returns { nutrients, filled: [keys] }.
+export function fillGaps(nutrients, amount, fill) {
+  const out = { ...nutrients };
+  const filled = [];
+  if (!fill || !(Number(amount) > 0)) return { nutrients: out, filled };
+  const parentOf = { sugars: 'carbs', satfat: 'fat' };
+  for (const k of FILL_KEYS) {
+    if (n(out[k]) !== null || n(fill[k]) === null) continue;
+    let v = (fill[k] * amount) / 100;
+    const parent = parentOf[k];
+    if (parent && n(out[parent]) !== null) {
+      if (n(fill[parent]) > 0) v = (out[parent] * fill[k]) / fill[parent];
+      v = Math.min(v, out[parent]);
+    }
+    out[k] = round(v, 6);
+    filled.push(k);
+  }
+  return { nutrients: out, filled };
+}
+
+// Logs an amount of one catalogue record: { id, key, qty, unit, date, time, slot, estimate, note, fill }.
+// `fill` is an estimated profile per 100 (from the photo or text reading): every nutrient the record
+// has no value for is taken from it, scaled to the amount, and listed in `filled`.
 export async function logFood(input, source = 'you') {
   const again = await existingEntry(input.id);
   if (again) return again;
@@ -518,6 +714,8 @@ export async function logFood(input, source = 'you') {
   const unit = input.unit || (item.last?.unit && item.units.some((u) => u.unit === item.last.unit) ? item.last.unit : item.basis);
   const l = line(item, input.qty, unit);
   if (l.error) throw new RuleError(l.error);
+  const fill = cleanFill(input.fill, item.basis);
+  const { nutrients, filled } = fillGaps(l.nutrients, fill?.basis === 'ml' ? (l.ml ?? l.g) : (l.g ?? l.ml), fill);
   const place = await placeEntry(input, item.liquid);
   const out = await insertEntry({
     id: input.id || newId(),
@@ -533,7 +731,8 @@ export async function logFood(input, source = 'you') {
     grams: l.g,
     ml: l.ml,
     liquid: item.liquid,
-    nutrients: l.nutrients,
+    nutrients,
+    filled,
     estimate: Boolean(input.estimate),
     source,
     note: input.note,
@@ -547,31 +746,42 @@ export async function logFood(input, source = 'you') {
 
 // Calories and whatever macros are known, kept in the diary only and never added to the catalogue.
 // `estimate` marks numbers that are a rough guess (a typed meal with no catalogue match); `amount`
-// is a short note of how much, such as "about 300 g".
+// is a short note of how much, such as "about 300 g". With `fill` (an estimated profile per 100) and
+// `grams` or `ml` (how much was eaten), every value not given is worked out from the estimate and
+// listed in `filled`; the calories can come from it too.
 export async function quickAdd(input, source = 'you') {
   const again = await existingEntry(input.id);
   if (again) return again;
-  const kcal = Number(input.kcal);
-  if (!(kcal >= 0) || kcal > 10000 || input.kcal === '' || input.kcal === null || input.kcal === undefined) throw new RuleError('Give the calories.');
+  const given = (k) => !(input[k] === undefined || input[k] === null || input[k] === '');
+  const ml = Number(input.ml) > 0 && Number(input.ml) <= 10000 ? Number(input.ml) : null;
+  const grams = Number(input.grams) > 0 && Number(input.grams) <= 10000 ? Number(input.grams) : null;
+  const fill = cleanFill(input.fill, ml && !grams ? 'ml' : 'g');
   const nutrients = unknown();
-  nutrients.kcal = kcal;
+  if (given('kcal')) {
+    const kcal = Number(input.kcal);
+    if (!(kcal >= 0) || kcal > 10000) throw new RuleError('Give the calories.');
+    nutrients.kcal = kcal;
+  }
   for (const k of ['protein', 'carbs', 'sugars', 'fat', 'satfat', 'fibre', 'salt', 'caffeine', 'alcohol']) {
-    if (input[k] === undefined || input[k] === null || input[k] === '') continue;
+    if (!given(k)) continue;
     const v = Number(input[k]);
     if (!(v >= 0) || v > 2000) throw new RuleError(`${k} must be zero or more.`);
     nutrients[k] = v;
   }
-  const ml = Number(input.ml) > 0 ? Number(input.ml) : null;
+  const { nutrients: full, filled } = fillGaps(nutrients, fill?.basis === 'ml' ? (ml ?? grams) : (grams ?? ml), fill);
+  if (full.kcal === null || !(full.kcal <= 10000)) throw new RuleError('Give the calories.');
   const place = await placeEntry(input, Boolean(ml));
   return insertEntry({
     id: input.id || newId(),
     ...place,
     kind: 'quick',
     name: clean(input.name, 120) || 'Quick add',
-    amount_text: clean(input.amount, 60) || (ml ? `${ml} ml` : ''),
+    amount_text: clean(input.amount, 60) || (ml ? `${ml} ml` : grams ? `${grams} g` : ''),
+    grams,
     ml,
     liquid: Boolean(ml),
-    nutrients,
+    nutrients: full,
+    filled,
     estimate: Boolean(input.estimate),
     source,
     note: input.note,
@@ -611,6 +821,14 @@ export async function editEntry(id, input) {
       if (!r) throw new RuleError('The food behind this entry is gone, so its amount cannot change.');
       const l = line(shapeItem(r), qty, unit);
       if (l.error) throw new RuleError(l.error);
+      // Values that were estimated because the record has none keep their estimate, scaled to the new amount.
+      const before = e.grams ?? e.ml;
+      const after = l.g ?? l.ml;
+      if (before > 0 && after > 0) {
+        for (const k of e.filled || []) {
+          if (l.nutrients[k] === null && typeof e.nutrients?.[k] === 'number') l.nutrients[k] = e.nutrients[k] * (after / before);
+        }
+      }
       Object.assign(patch, { qty: Number(qty), unit, amount_text: l.note ? `${l.text} (${l.note})` : l.text, grams: l.g, ml: l.ml, nutrients: l.nutrients, estimate: false });
     } else if (e.kind === 'batch') {
       const [b] = await db()`select * from food_batches where id = ${e.ref_id}`;
@@ -652,12 +870,65 @@ export async function repeatDay({ from, to, slot = null }) {
   return { entries: out };
 }
 
+// ---------- Grades: Nutri-Score, NOVA and tags for what was eaten ----------
+
+const GRADES = ['a', 'b', 'c', 'd', 'e'];
+const gradeOf = (x) => {
+  const g = String((typeof x === 'string' ? x : x?.grade) || '').toLowerCase();
+  return GRADES.includes(g) ? g : null;
+};
+const safely = (fn) => {
+  try { return fn(); } catch { return null; }
+};
+
+// Per 100 g (or ml) of what was eaten, from an entry's frozen nutrients and its weight. A quick add
+// has no weight, so it has no per-100 values and no grade.
+function per100(e) {
+  const amount = e.grams > 0 ? e.grams : e.ml > 0 ? e.ml : null;
+  return amount ? scale(e.nutrients, 100, amount) : null;
+}
+
+// Adds grade, nova and tags to diary entries. A catalogue food is graded as the food it is (the
+// source's own Nutri-Score first, then the shared maths on its per-100 values); a recipe, meal or
+// batch is graded on what was eaten, per 100 g. Anything without a weight stays ungraded.
+async function gradeEntries(entries) {
+  const keys = [...new Set(entries.filter((e) => e.kind === 'item' && e.refKey).map((e) => e.refKey))];
+  // The tagger needs the same fields shapeItem gives it: state for whole foods, density, portions,
+  // serving and pack for the per-100 ml and drinks-portion rules.
+  const items = keys.length ? await db()`select key, kind, name, brand, category, state, basis, liquid, density, portions, serving, pack,
+    nutrients, nutriscore, nova, source from food_items where key = any(${keys})` : [];
+  const byKey = new Map(items.map((i) => [i.key, i]));
+  return entries.map((e) => {
+    const it = e.kind === 'item' ? byKey.get(e.refKey) : null;
+    let base = null;
+    if (it) base = { ...it };
+    else {
+      const p = per100(e);
+      if (p) base = { name: e.name, kind: e.kind, nutrients: p, liquid: Boolean(e.liquid), basis: !e.grams && e.ml ? 'ml' : 'g', category: null, nova: null };
+    }
+    let grade = gradeOf(it?.nutriscore);
+    if (!grade && base) grade = gradeOf(safely(() => NUT.nutriScore?.(base.nutrients, { category: base.category, liquid: base.liquid })));
+    const tags = base ? safely(() => NUT.foodTags?.({ ...base, nutriscore: grade })) : null;
+    return { ...e, grade, nova: it?.nova ?? null, tags: Array.isArray(tags) ? tags : [] };
+  });
+}
+
+// Energy by grade: { a, b, c, d, e, none } in kcal. Entries with no known energy add nothing.
+function gradeMix(entries) {
+  const out = { a: 0, b: 0, c: 0, d: 0, e: 0, none: 0 };
+  for (const e of entries) {
+    const k = n(e.nutrients?.kcal);
+    if (k) out[e.grade || 'none'] = round(out[e.grade || 'none'] + k, 1);
+  }
+  return out;
+}
+
 export async function foodDay(date) {
   const { today } = await localNow();
   const d = date || today;
   if (!validDate(d)) throw new RuleError('Bad date.');
   const rows = await db()`select * from food_log where date = ${d} and deleted_at is null order by at, created_at`;
-  const entries = rows.map(shapeEntry);
+  const entries = await gradeEntries(rows.map(shapeEntry));
   const slots = SLOTS.map((s) => {
     const list = entries.filter((e) => e.slot === s);
     return { slot: s, entries: list, total: total(list.map((e) => e.nutrients)) };
@@ -671,6 +942,7 @@ export async function foodDay(date) {
     total: total(entries.map((e) => e.nutrients)),
     drinksMl: round(entries.filter((e) => e.liquid && e.ml).reduce((a, e) => a + e.ml, 0), 0),
     estimates: entries.filter((e) => e.estimate).length,
+    grades: gradeMix(entries),
     plans: plans.filter((p) => !p.loggedId),
   };
 }
@@ -728,8 +1000,7 @@ export async function foodHistory({ days = 7, date = null } = {}) {
   if (date && !validDate(String(date))) throw new RuleError('Bad date.');
   const chosen = date && String(date) <= today ? String(date) : today;
   const lo = chosen < prevFrom ? chosen : prevFrom;
-  const rows = await db()`select date, at, kind, ref_key, name, nutrients, liquid, ml, estimate from food_log
-    where deleted_at is null and date >= ${lo} and date <= ${today} order by at, created_at`;
+  const rows = (await db()`select * from food_log where deleted_at is null and date >= ${lo} and date <= ${today} order by at, created_at`).map(shapeEntry);
   const byDate = new Map();
   for (const r of rows) byDate.set(r.date, [...(byDate.get(r.date) || []), r]);
   const run = (start, n) => Array.from({ length: n }, (_, i) => {
@@ -744,13 +1015,14 @@ export async function foodHistory({ days = 7, date = null } = {}) {
   // Most logged: catalogue foods and recipes by record, everything else by name.
   const counts = new Map();
   for (const r of rows.filter((x) => x.date >= from)) {
-    const key = ['item', 'recipe'].includes(r.kind) && r.ref_key ? `${r.kind}:${r.ref_key}` : `name:${norm(r.name)}`;
+    const key = ['item', 'recipe'].includes(r.kind) && r.refKey ? `${r.kind}:${r.refKey}` : `name:${norm(r.name)}`;
     const c = counts.get(key) || { name: r.name, kind: r.kind, count: 0 };
     c.count += 1;
     c.name = r.name;
     counts.set(key, c);
   }
   const top = [...counts.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)).slice(0, 6);
+  const insights = periodInsights(await gradeEntries(rows.filter((r) => r.date >= from)), { series, today, tz });
 
   // The chosen day by local hour. A drink with no caffeine value is counted apart, not as zero.
   const dayRows = byDate.get(chosen) || [];
@@ -768,8 +1040,146 @@ export async function foodHistory({ days = 7, date = null } = {}) {
     ...current,
     prev,
     top,
+    ...insights,
     chosen: { ...dayStats(chosen, dayRows), today: chosen === today, hours },
   };
+}
+
+// ---------- Insights: what the period's food adds up to ----------
+
+const RI_LIST = NUTRIENTS.filter((x) => x.ri);
+export const SOURCE_KEYS = ['sugars', 'salt', 'satfat', 'protein', 'fibre'];
+const LIMIT_KEYS = ['sugars', 'salt', 'satfat'];
+const weekday = (date) => (new Date(`${date}T12:00:00Z`).getUTCDay() + 6) % 7; // Monday 0
+
+// One row per food eaten in the period: how often, its grade, and what it added up to.
+function foodsEaten(entries) {
+  const foods = new Map();
+  for (const e of entries) {
+    const key = ['item', 'recipe'].includes(e.kind) && e.refKey ? `${e.kind}:${e.refKey}` : `${e.kind === 'quick' ? 'name' : e.kind}:${norm(e.name)}`;
+    const f = foods.get(key) || { key, name: e.name, brand: e.brand || null, kind: e.kind, grade: null, nova: null, tags: [], count: 0, sums: {}, known: {} };
+    f.count += 1;
+    f.name = e.name;
+    f.grade = e.grade || f.grade;
+    f.nova = e.nova ?? f.nova;
+    if (e.tags?.length) f.tags = e.tags;
+    for (const k of KEYS) {
+      const v = n(e.nutrients?.[k]);
+      if (v === null) continue;
+      f.sums[k] = (f.sums[k] || 0) + v;
+      f.known[k] = (f.known[k] || 0) + 1;
+    }
+    foods.set(key, f);
+  }
+  return [...foods.values()];
+}
+
+// Average % of the EU reference intake per nutrient over complete logged days. A day with no value
+// for a nutrient is left out of its average, and `partial` counts the days that were unknown or a
+// floor, so the screen can say the average is at least that.
+function coverageOf(totals) {
+  return RI_LIST.map((x) => {
+    const vals = totals.map((t) => n(t[x.key])).filter((v) => v !== null);
+    const avg = vals.length ? vals.reduce((a, v) => a + v, 0) / vals.length : null;
+    return {
+      key: x.key, label: x.label, group: x.group, unit: x.unit, ri: x.ri,
+      avg: avg === null ? null : round(avg, 3),
+      pct: avg === null ? null : round((avg / x.ri) * 100, 1),
+      days: vals.length,
+      partial: totals.filter((t) => n(t[x.key]) === null || t.missing?.[x.key]).length,
+    };
+  });
+}
+
+// "Eat more of": for his least-covered vitamins and minerals, the food he already eats that brings
+// the most of each per time (never one graded D or E). "Eat less of": the top source of any of
+// sugars, salt or saturates whose average day is over its reference intake, then D and E foods he
+// had more than once. Nothing is invented: every reason is his own data against an official measure.
+function adviceFrom(foods, coverage, sources) {
+  const more = [];
+  const seen = new Set();
+  const low = coverage.filter((c) => ['mineral', 'vitamin'].includes(c.group) && c.pct !== null && c.pct < 100).sort((a, b) => a.pct - b.pct).slice(0, 4);
+  for (const c of low) {
+    const best = foods.filter((f) => !['d', 'e'].includes(f.grade) && f.sums[c.key] > 0 && !seen.has(f.key))
+      .map((f) => ({ f, per: f.sums[c.key] / f.count })).sort((a, b) => b.per - a.per)[0];
+    if (!best) continue;
+    seen.add(best.f.key);
+    more.push({ key: best.f.key, name: best.f.name, grade: best.f.grade, nutrient: c.key, reason: c.label, pct: round((best.per / c.ri) * 100, 0), avgPct: c.pct });
+  }
+  if (!more.length) {
+    for (const f of foods.filter((x) => x.grade === 'a').sort((a, b) => b.count - a.count).slice(0, 3)) more.push({ key: f.key, name: f.name, grade: f.grade, reason: 'Nutri-Score A', count: f.count });
+  }
+  const less = [];
+  const out = new Set();
+  for (const k of LIMIT_KEYS) {
+    const c = coverage.find((x) => x.key === k);
+    const top = sources[k]?.items[0];
+    if (!c || !(c.pct > 100) || !top || out.has(top.key)) continue;
+    out.add(top.key);
+    less.push({ key: top.key, name: top.name, grade: top.grade, nutrient: k, reason: NUTRIENT[k].label, share: top.share, avgPct: c.pct });
+  }
+  for (const f of foods.filter((x) => ['d', 'e'].includes(x.grade) && x.count > 1).sort((a, b) => b.count - a.count || (b.sums.kcal || 0) - (a.sums.kcal || 0))) {
+    if (out.has(f.key)) continue;
+    out.add(f.key);
+    less.push({ key: f.key, name: f.name, grade: f.grade, reason: `Nutri-Score ${f.grade.toUpperCase()}`, count: f.count });
+  }
+  return { more: more.slice(0, 5), less: less.slice(0, 5) };
+}
+
+// Everything the Trends screen draws past the energy bars: reference-intake coverage, the grade mix
+// by day, best and worst foods, top sources, eat more or less, meal timing and weekday averages.
+// Averages use complete logged days (not today); counts, sources and grades use the whole period.
+function periodInsights(entries, { series, today, tz }) {
+  const completeDates = new Set(series.filter((d) => d.logged && d.date !== today).map((d) => d.date));
+  const byDate = new Map();
+  for (const e of entries) byDate.set(e.date, [...(byDate.get(e.date) || []), e]);
+  const totals = [...completeDates].map((d) => total((byDate.get(d) || []).map((e) => e.nutrients)));
+  const coverage = coverageOf(totals);
+
+  const grades = { total: gradeMix(entries), days: series.map((d) => ({ date: d.date, ...gradeMix(byDate.get(d.date) || []) })) };
+
+  const foods = foodsEaten(entries);
+  const card = (f) => ({ key: f.key, name: f.name, brand: f.brand, kind: f.kind, grade: f.grade, nova: f.nova, count: f.count, kcal: round(f.sums.kcal ?? null, 0), tags: f.tags.slice(0, 3) });
+  const byCount = (a, b) => b.count - a.count || (b.sums.kcal || 0) - (a.sums.kcal || 0) || a.name.localeCompare(b.name);
+  const rank = {
+    best: foods.filter((f) => ['a', 'b'].includes(f.grade)).sort((a, b) => a.grade.localeCompare(b.grade) || byCount(a, b)).slice(0, 5).map(card),
+    worst: foods.filter((f) => ['d', 'e'].includes(f.grade)).sort((a, b) => b.grade.localeCompare(a.grade) || byCount(a, b)).slice(0, 5).map(card),
+    graded: foods.filter((f) => f.grade).length,
+    foods: foods.length,
+  };
+
+  const sources = {};
+  for (const k of SOURCE_KEYS) {
+    const sum = foods.reduce((a, f) => a + (f.sums[k] || 0), 0);
+    sources[k] = {
+      total: round(sum, 2),
+      items: foods.filter((f) => f.sums[k] > 0).sort((a, b) => b.sums[k] - a.sums[k]).slice(0, 5)
+        .map((f) => ({ key: f.key, name: f.name, grade: f.grade, count: f.count, amount: round(f.sums[k], 2), share: sum ? round((f.sums[k] / sum) * 100, 1) : null })),
+    };
+  }
+
+  // Meal timing: average kcal by weekday and local hour, over complete days.
+  const heat = Array.from({ length: 7 }, () => Array(24).fill(0));
+  const perWeekday = Array(7).fill(0);
+  for (const d of completeDates) perWeekday[weekday(d)] += 1;
+  for (const e of entries) {
+    if (!completeDates.has(e.date)) continue;
+    const k = n(e.nutrients?.kcal);
+    if (!k) continue;
+    heat[weekday(e.date)][DateTime.fromJSDate(new Date(e.at)).setZone(tz).hour] += k;
+  }
+  const timing = { kcal: heat.map((row, w) => row.map((v) => (perWeekday[w] ? round(v / perWeekday[w], 0) : null))), days: perWeekday };
+
+  const weekdays = Array.from({ length: 7 }, (_, w) => {
+    const list = series.filter((d) => completeDates.has(d.date) && weekday(d.date) === w);
+    const avg = (k) => {
+      const vals = list.map((d) => d[k]).filter((v) => v !== null);
+      return vals.length ? round(vals.reduce((a, v) => a + v, 0) / vals.length, 1) : null;
+    };
+    return { day: w, n: list.length, kcal: avg('kcal'), protein: avg('protein'), carbs: avg('carbs'), fat: avg('fat'), sugars: avg('sugars') };
+  });
+
+  return { coverage, grades, rank, sources, advice: adviceFrom(foods, coverage, sources), timing, weekdays };
 }
 
 // ---------- Saved meals: shakes, fruit bowls, plates and anything else logged together ----------
@@ -1275,7 +1685,11 @@ export async function coverageReport() {
   };
   const count = (list, states) => rows.filter((r) => r.list === list && states.includes(r.state)).length;
   const recipeTypes = await sql`select type, count(*)::int as n from recipes where deleted_at is null and source = 'oath' group by type`;
+  // How much of the catalogue has a value for each nutrient, and how many records carry a grade.
+  const values = await sql`select nutrients, nutriscore, nova from food_items where hidden = false and status <> 'needs-label'`;
+  const nutrients = NUTRIENTS.map((x) => ({ key: x.key, label: x.label, group: x.group, count: values.filter((v) => typeof v.nutrients?.[x.key] === 'number').length }));
   return {
+    nutrients: { total: values.length, list: nutrients, graded: values.filter((v) => gradeOf(v.nutriscore)).length, nova: values.filter((v) => v.nova).length },
     foods: { total: rows.filter((r) => r.list === 'food').length, matched: count('food', ['mapped', 'products', 'recipe']), incomplete: count('food', ['partial', 'estimate']), missing: count('food', ['missing', 'gap']), categories: group('food') },
     recipes: { total: rows.filter((r) => r.list === 'recipe').length, covered: count('recipe', ['covered']), missing: count('recipe', ['missing']), categories: group('recipe'), byType: Object.fromEntries(recipeTypes.map((t) => [t.type, t.n])) },
     catalogue: {

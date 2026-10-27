@@ -5,6 +5,7 @@
 // app. Calls queue behind a spacer so Oath never goes over, and a product is fetched once and kept.
 import { db, getKV, setKV, logEvent } from './db.js';
 import { upsertItem, shapeItem, itemByKey } from './food.js';
+import { NUTRIENT } from '../public/nutrition.js';
 
 const BASE = 'https://world.openfoodfacts.org';
 // Name and country searches go to Open Food Facts' search service; the main site now refuses
@@ -14,7 +15,7 @@ const UA = `Oath/1.0 (personal food diary; ${process.env.PUBLIC_URL || 'https://
 const FIELDS = [
   'code', 'product_name', 'product_name_en', 'product_name_mt', 'generic_name', 'brands', 'quantity', 'product_quantity', 'product_quantity_unit',
   'serving_size', 'serving_quantity', 'serving_quantity_unit', 'nutriments', 'nutrition_data_per', 'countries_tags', 'categories_tags',
-  'last_modified_t', 'no_nutrition_data',
+  'last_modified_t', 'no_nutrition_data', 'nutriscore_grade', 'nova_group',
 ].join(',');
 
 let fetcher = (url, init) => fetch(url, init);
@@ -68,6 +69,18 @@ export function parseQuantity(q) {
   return null;
 }
 
+// Open Food Facts keeps minerals, vitamins and cholesterol in grams per 100: [Oath key, their key, factor to
+// Oath's unit]. Milligrams are 1000 per gram, micrograms 1,000,000.
+const MICRO = [
+  ['addsugars', 'added-sugars_100g', 1], ['mufa', 'monounsaturated-fat_100g', 1], ['pufa', 'polyunsaturated-fat_100g', 1], ['transfat', 'trans-fat_100g', 1],
+  ['chol', 'cholesterol_100g', 1e3],
+  ['potassium', 'potassium_100g', 1e3], ['calcium', 'calcium_100g', 1e3], ['iron', 'iron_100g', 1e3], ['magnesium', 'magnesium_100g', 1e3],
+  ['zinc', 'zinc_100g', 1e3], ['phosphorus', 'phosphorus_100g', 1e3], ['selenium', 'selenium_100g', 1e6],
+  ['vita', 'vitamin-a_100g', 1e6], ['vitc', 'vitamin-c_100g', 1e3], ['vitd', 'vitamin-d_100g', 1e6], ['vite', 'vitamin-e_100g', 1e3], ['vitk', 'vitamin-k_100g', 1e6],
+  ['b1', 'vitamin-b1_100g', 1e3], ['b2', 'vitamin-b2_100g', 1e3], ['b3', 'vitamin-pp_100g', 1e3], ['b6', 'vitamin-b6_100g', 1e3],
+  ['folate', 'vitamin-b9_100g', 1e6], ['b12', 'vitamin-b12_100g', 1e6],
+];
+
 const num = (x) => {
   const v = typeof x === 'string' ? Number(x.replace(',', '.')) : x;
   return typeof v === 'number' && Number.isFinite(v) ? v : null;
@@ -105,7 +118,22 @@ export function mapProduct(p) {
     kcal, protein: num(nm.proteins_100g), carbs: num(nm.carbohydrates_100g), sugars: num(nm.sugars_100g), fat: num(nm.fat_100g),
     satfat: num(nm['saturated-fat_100g']), fibre: num(nm.fiber_100g), salt, caffeine, alcohol,
   };
-  for (const k of Object.keys(nutrients)) if (nutrients[k] !== null && (nutrients[k] < 0 || (k !== 'kcal' && k !== 'caffeine' && nutrients[k] > 100) || (k === 'kcal' && nutrients[k] > 950))) nutrients[k] = null;
+  for (const [key, theirs, factor] of MICRO) {
+    const v = num(nm[theirs]);
+    nutrients[key] = v === null ? null : Math.round(v * factor * 1e4) / 1e4;
+  }
+  // Values nobody could believe per 100 are dropped rather than kept: the limits are the ones the catalogue enforces.
+  for (const k of Object.keys(nutrients)) {
+    const v = nutrients[k];
+    if (v === null) continue;
+    const unit = NUTRIENT[k]?.unit;
+    const cap = k === 'kcal' ? 950 : k === 'caffeine' ? 6000 : unit === 'g' ? 100 : unit === 'mg' ? 100000 : 1000000;
+    if (v < 0 || v > cap) nutrients[k] = null;
+  }
+  // The grade and the processing level, as the source gives them. Open Food Facts says "unknown" or
+  // "not-applicable" when it has none.
+  const grade = String(p.nutriscore_grade || '').trim().toLowerCase();
+  const nova = Number(p.nova_group);
   const countries = p.countries_tags || [];
   return {
     key: `off:${code}`,
@@ -119,6 +147,8 @@ export function mapProduct(p) {
     state: 'as-sold',
     basis: liquid ? 'ml' : 'g',
     nutrients,
+    nutriscore: ['a', 'b', 'c', 'd', 'e'].includes(grade) ? grade : null,
+    nova: Number.isInteger(nova) && nova >= 1 && nova <= 4 ? nova : null,
     pack: pack ? { ...pack, label: p.quantity || null } : null,
     serving,
     liquid,

@@ -13,29 +13,33 @@ import { initFood, loadFood, viewFood, foodClick, foodSubmit, loadFoodToday, foo
 
 // ---------- Shell ----------
 
+// Five tabs on the phone with Food raised in the middle; Dashboard joins them in the sidebar and is
+// an icon in Today's header on the phone.
 const TABS = [
   ['today', 'Today', 'today'],
   ['plan', 'Plan', 'plan'],
-  ['food', 'Food', 'food'],
+  ['food', 'Food', 'food', 'centre'],
   ['goals', 'Goals', 'goals'],
-  ['dashboard', 'Dashboard', 'dashboard'],
+  ['dashboard', 'Dashboard', 'dashboard', 'wide'],
   ['coach', 'Coach', 'coach'],
 ];
 const WIDE_EXTRA = [['review', 'Review', 'review'], ['settings', 'Settings', 'settings']];
 const ROUTES = ['today', 'plan', 'food', 'goals', 'dashboard', 'coach', 'review', 'settings'];
 
 function shell(inner) {
-  // One selected destination: on the phone Review lives under Dashboard; the sidebar has its own row.
+  // One selected destination: on the phone Dashboard and Review sit under Today; the sidebar has its own rows.
   const wide = window.matchMedia('(min-width: 900px)').matches;
-  const active = state.route === 'review' && !wide ? 'dashboard' : state.route;
+  const active = ['review', 'dashboard'].includes(state.route) && !wide ? 'today' : state.route;
   // The Today tab carries a count of what is still open, so the next tick is never out of mind.
   const open = state.today?.progress?.open || 0;
   const badge = (id) => (id === 'today' && open ? `<b class="tab-badge"><span class="sr">, </span>${open}<span class="sr"> open</span></b>` : '');
-  // The selected tab carries a pill, which slides over from the last one (motion.js).
-  const link = ([id, label, ic], extra = '') => {
+  // The selected tab carries a pill, which slides over from the last one (motion.js). The raised Food
+  // button is its own highlight on the phone, so its pill only shows in the sidebar.
+  const link = ([id, label, ic, kind], extra = '') => {
     const on = active === id || (extra && state.route === id);
     const pill = on && (!extra || wide) ? '<span class="tab-pill" aria-hidden="true"></span>' : '';
-    return `<a href="#/${id}" class="tab${extra}"${on ? ' aria-current="page"' : ''}><span class="tab-ic">${pill}${icon(ic)}${badge(id)}</span><span>${label}</span></a>`;
+    const cls = `tab${extra}${kind === 'centre' ? ' tab-centre' : ''}${kind === 'wide' ? ' wide-only' : ''}`;
+    return `<a href="#/${id}" class="${cls}"${on ? ' aria-current="page"' : ''}><span class="tab-ic">${pill}${icon(ic)}${badge(id)}</span><span>${label}</span></a>`;
   };
   const nav = TABS.map((t) => link(t)).join('');
   const more = WIDE_EXTRA.map((t) => link(t, ' wide-only')).join('');
@@ -135,7 +139,6 @@ function pardonControls(missId, t) {
         <textarea class="input" name="reason" minlength="10" required></textarea></label>
       <label class="field"><span>If that happens again, I will...</span>
         <input class="input" name="plan" minlength="10" required value="If " autocomplete="off"></label>
-      <p class="note">Your plan is quoted back in this habit's next reminder.</p>
       <div class="form-actions">
         <button class="btn primary" type="submit">Pardon it</button>
         <button class="btn tinted" type="button" data-action="pardon-cancel">Cancel</button>
@@ -211,8 +214,7 @@ const DURATIONS = [15, 25, 45, 60];
 function capacityLine(c, settings) {
   if (!c) return '';
   const over = c.over > 0;
-  const free = c.busy ? `Free before ${settings.dayEnd}, after ${fmtMin(c.busy)} of calendar` : `Time left before ${settings.dayEnd}`;
-  return `<div class="capacity${over ? ' over' : ''}">${icon('clock')}<p>Planned task work <b>${fmtMin(c.estimated)}</b>. ${free}: <b>${fmtMin(c.available)}</b>.${over ? ` That is ${fmtMin(c.over)} more than you have. Cut or move something now.` : ''}</p></div>`;
+  return `<div class="capacity${over ? ' over' : ''}">${icon('clock')}<p>Planned <b>${fmtMin(c.estimated)}</b> · free before ${settings.dayEnd} <b>${fmtMin(c.available)}</b>${over ? ` · <b>${fmtMin(c.over)} over</b>` : ''}</p></div>`;
 }
 
 // The daily loss cap in plain words: what today can still cost, and whether that would end the season.
@@ -281,12 +283,11 @@ function oathView(t) {
 // "Not now" needs a reason. The same form serves Up next and a row swiped to the left.
 function dodgeForm(n) {
   const chips = REASONS.map((r) => `<label class="chip"><input type="radio" name="reason" value="${esc(r)}"><span>${esc(r)}</span></label>`).join('');
-  return `${n.minimum ? `<button class="btn primary big wide" data-action="keep-minimum" data-id="${n.id}">Do the minimum now: ${esc(n.minimum)}</button>
-      <p class="note">The minimum saves the HP and the streak. It does not earn the clean-day bonus.</p>` : ''}
+  return `${n.minimum ? `<button class="btn primary big wide" data-action="keep-minimum" data-id="${n.id}">Do the minimum now: ${esc(n.minimum)}</button>` : ''}
     <form data-form="defer" data-kind="${n.kind}" data-id="${n.id}">
       <fieldset class="chips"><legend>Why not now</legend>${chips}</fieldset>
       <label class="field"><span>Or in your own words</span><input class="input" name="own" maxlength="300" autocomplete="off"></label>
-      ${n.kind === 'task' && !n.heavy ? '<label class="check"><input type="checkbox" name="move"> Move it to tomorrow</label>' : `<p class="note">${n.kind === 'habit' ? 'Habits cannot be moved.' : 'Hard tasks cannot be moved.'} The deadline stays ${n.deadline || '23:59'}.</p>`}
+      ${n.kind === 'task' && !n.heavy ? '<label class="check"><input type="checkbox" name="move"> Move it to tomorrow</label>' : ''}
       <div class="now-actions">
         <button class="btn tinted" type="submit">Log it</button>
         <button class="btn tinted" type="button" data-action="dodge-cancel">Back, I will do it</button>
@@ -328,7 +329,6 @@ function nowPanel(t) {
     return `<section class="card now secured">
       <p class="eyebrow">${icon('check')}Day secured</p>
       <h2 class="now-title">Everything due today is done.</h2>
-      <p class="now-meta">Keep it clean to midnight for +${t.settings.cleanBonus} HP. Then close the day below.</p>
     </section>`;
   }
   const l = n.dueAt ? left(n.dueAt) : null;
@@ -441,7 +441,7 @@ function healthMini(t) {
   if (!h.connected) {
     return `<a class="card connect-card" href="#/dashboard?section=health">
       <span class="connect-ic">${icon('heart')}</span>
-      <span><b>Connect Apple Health</b><span class="li-sub">Steps, workouts and sleep flow in, and habits like "Gym" tick themselves off.</span></span>
+      <span><b>Connect Apple Health</b><span class="li-sub">Steps, workouts and sleep</span></span>
       ${icon('chevron', 'chev')}</a>`;
   }
   const g = h.goals || {};
@@ -467,11 +467,11 @@ function healthMini(t) {
 // Reminders only reach the phone from the Home Screen app with notifications allowed, so Today says so.
 function remindersPrompt() {
   if (isIOS() && !isStandalone()) {
-    return `<div class="banner">${icon('bell')}<span><b>Add Oath to your Home Screen.</b> Tap Share, then Add to Home Screen, and open it from the icon so reminders can reach you.</span></div>`;
+    return `<div class="banner">${icon('bell')}<span><b>Add Oath to your Home Screen</b> for reminders: Share, then Add to Home Screen.</span></div>`;
   }
   const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
   if (!supported || Notification.permission !== 'default') return '';
-  return `<div class="banner">${icon('bell')}<span><b>Turn on reminders</b> so last calls reach your lock screen.</span><button class="btn small primary" data-action="push-on">Turn on</button></div>`;
+  return `<div class="banner">${icon('bell')}<span><b>Reminders are off</b></span><button class="btn small primary" data-action="push-on">Turn on</button></div>`;
 }
 
 // One row per connection: green once it works, otherwise what is missing, linking to where to fix it.
@@ -531,7 +531,7 @@ function triageCard(t) {
         <button class="btn plain small danger-text" data-action="triage" data-do="drop" data-id="${k.id}">Drop</button>
       </div></div>`).join('');
   return `<section class="section"><div class="gh"><h2>Clear the backlog</h2><span class="gh-count">${t.triage.length} waiting</span></div>
-    <div class="card triage">${rows}<p class="note">One decision each. A short list you trust beats a pile you never look at.</p></div></section>`;
+    <div class="card triage">${rows}</div></section>`;
 }
 
 function goalsStrip(goals) {
@@ -626,13 +626,13 @@ function viewToday() {
   const part = t.localHour < 12 ? 'Morning' : t.localHour < 18 ? 'Afternoon' : 'Evening';
   const head = pageHead(`${part}, <em>${esc(t.settings.ownerName || 'Daniel')}</em>`, {
     over: fmtDay(t.today, { weekday: 'long', day: 'numeric', month: 'long' }),
-    actions: iconLink('#/settings', 'settings', 'Settings'),
+    actions: `<span class="only-narrow-flex">${iconLink('#/dashboard', 'dashboard', 'Dashboard')}</span>${iconLink('#/settings', 'settings', 'Settings')}`,
   });
   const banners = [
-    state.offline ? `<div class="banner offline">${icon('clock')}<span><b>Offline.</b> This is ${t.today === realToday(t) ? 'today' : fmtDay(t.today)} as of ${fmtClock(state.offline)}. Ticks need a connection.</span><button class="btn small" data-action="retry">Retry</button></div>` : '',
+    state.offline ? `<div class="banner offline">${icon('clock')}<span><b>Offline.</b> ${t.today === realToday(t) ? 'Today' : fmtDay(t.today)} as of ${fmtClock(state.offline)}.</span><button class="btn small" data-action="retry">Retry</button></div>` : '',
     remindersPrompt(),
-    t.rest ? `<div class="banner calm">${icon('moon')}<span>Rest day. Fixed habits are excused today. Hard tasks still count.</span></div>` : '',
-    t.reviewDue ? `<a class="banner action" href="#/review">${icon('review')}<span><b>Weekly review is ready.</b> Five minutes: keep, adjust or drop each habit and pick this week's focus.</span>${icon('chevron', 'chev')}</a>` : '',
+    t.rest ? `<div class="banner calm">${icon('moon')}<span><b>Rest day</b></span></div>` : '',
+    t.reviewDue ? `<a class="banner action" href="#/review">${icon('review')}<span><b>Weekly review is ready</b></span>${icon('chevron', 'chev')}</a>` : '',
   ].join('');
 
   // No oath yet and something is due: the oath card sits under Up next, and the lists stay tickable.
@@ -641,7 +641,6 @@ function viewToday() {
   if (!t.items.length && !t.tasks.length && !t.anytime.length && !t.triage.length) {
     shell(`${head}${ringsCard(t)}${banners}
       <section class="card now empty-now"><p class="eyebrow">${icon('plan')}Start here</p><h2 class="now-title">Add the habits you swear to.</h2>
-      <p class="now-meta">Start with two or three non-negotiables, each tied to something you already do every day. Add more once they are strong.</p>
       <div class="now-actions"><a class="btn primary big" href="#/plan">Add habits</a><a class="btn tinted big" href="#/goals/new">Set a goal</a></div></section>
       ${healthMini(t)}${timeline(t)}`);
     return;
@@ -748,7 +747,6 @@ function autoFields(h) {
       <label class="field auto-on"><span>Target</span><input class="input" name="auto_target" inputmode="decimal" value="${esc(a?.target ?? '')}" placeholder="10000"></label>
     </div>
     <label class="field auto-workout"><span>Workout type contains (optional)</span><input class="input" name="auto_filter" maxlength="60" value="${esc(a?.filter || '')}" placeholder="strength, run, swim"></label>
-    <p class="note auto-on">When Apple Health shows the target was hit, the habit is kept for you, and a miss it proves wrong is overturned.</p>
   </div>`;
 }
 
@@ -778,16 +776,15 @@ function habitForm(h) {
       <label class="check"><input type="checkbox" name="non_negotiable"${r.non_negotiable ? ' checked' : ''}> Non-negotiable</label>
       <label class="field"><span>HP lost on a miss</span><input class="input" type="number" name="penalty" min="1" max="100" inputmode="numeric" value="${esc(r.penalty)}" placeholder="25 or 10"></label>
     </div>
-    ${!h?.non_negotiable && nnCount >= cap ? `<p class="note">You already have ${nnCount} non-negotiables. A new one is only allowed once each of them is above 80% strength.</p>` : ''}
+    ${!h?.non_negotiable && nnCount >= cap ? `<p class="note">${nnCount} of ${cap} non-negotiables in use.</p>` : ''}
     ${autoFields(h)}
     ${goalOptions(h?.goalId)}
     <label class="field"><span>Notes</span><input class="input" name="notes" maxlength="1000" value="${esc(h?.notes || '')}" placeholder="Optional"></label>
-    ${h && h.nextRulesFrom ? `<p class="note">New rules start ${fmtDay(h.nextRulesFrom)}. Today keeps the old ones.</p>` : ''}
+    ${h && h.nextRulesFrom ? `<p class="note">New rules from ${fmtDay(h.nextRulesFrom)}.</p>` : ''}
     <div class="form-actions">
       <button class="btn primary" type="submit">${h ? 'Save habit' : 'Add habit'}</button>
       ${h ? `<button class="btn tinted danger-text" type="button" data-action="archive-habit" data-id="${h.id}">Archive</button>` : ''}
     </div>
-    <p class="note">${h ? 'Changes to a habit still open today, and any new minimum version, take effect tomorrow.' : 'Most habits take about two months to feel automatic, anywhere from two weeks to eight months. Strength shows how far along you are; one miss costs a few points, not everything.'}</p>
   </form>`;
 }
 
@@ -803,7 +800,7 @@ function taskForm(k) {
     ${goalOptions(k?.goalId)}
     <label class="check"><input type="checkbox" name="hard"${k?.hard ? ' checked' : ''}${locked ? ' disabled' : ''}> Hard task: costs HP if not done by the deadline</label>
     <label class="field hard-only"><span>First step: the very first physical action</span><input class="input" name="first_step" maxlength="200" value="${esc(k?.firstStep || '')}" placeholder="Open the VAT portal and log in"></label>
-    ${locked ? '<p class="note">This hard task is due, so its date and penalty are locked.</p>' : ''}
+    ${locked ? '<p class="note">Locked while due.</p>' : ''}
     <div class="form-actions">
       <button class="btn primary" type="submit">${k ? 'Save task' : 'Add task'}</button>
       ${k && !locked ? `<button class="btn tinted danger-text" type="button" data-action="delete-task" data-id="${k.id}">Delete</button>` : ''}
@@ -816,7 +813,7 @@ function habitCard(h, p) {
   const weekly = h.weeklyTarget;
   const sched = weekly ? `${weekly} times a week, ${h.weekDone} done this week` : scheduleText(h.days, h.deadline);
   const pending = h.nextRulesFrom ? `<p class="note">From ${fmtDay(h.nextRulesFrom)}: ${r.weekly_target ? `${r.weekly_target} times a week` : scheduleText(r.days, r.deadline)}${r.minimum ? `, minimum "${esc(r.minimum)}"` : ''}.</p>` : '';
-  const building = h.strength < 80 ? `Day ${h.buildingDay} of building. The median is about 66.` : 'Established. Reminders now fade.';
+  const building = h.strength < 80 ? `Day ${h.buildingDay} of building.` : 'Established.';
   const facts = [
     h.cue ? ['After', esc(h.cue)] : null,
     h.minimum ? ['Minimum', esc(h.minimum)] : null,
@@ -844,7 +841,6 @@ function restCard(p) {
     <button class="btn tinted small" data-action="rest-cancel" data-date="${d.date}">Cancel</button></div>`).join('');
   return `<section class="section"><div class="gh"><h2>Rest days</h2><span class="gh-count">${p.settings.restDaysPerMonth} a month</span></div>
     <div class="card">
-      <p class="muted small">For travel or a planned day off. Fixed habits are excused, X-a-week targets shrink, hard tasks still count, and there is no clean-day bonus. Book before the day starts.</p>
       ${list ? `<div class="group flush">${list}</div>` : ''}
       <form class="rest-form" data-form="rest">
         <label class="sr" for="rest-date">Date</label>
@@ -859,9 +855,7 @@ function restCard(p) {
 function budgetNote(s) {
   if (!s?.worstDay) return '';
   const capped = s.worstDay > s.dailyLossCap;
-  return `<div class="capacity${capped ? ' over' : ''}">${icon('shield')}<p>Your worst day puts <b>${s.worstDay} HP</b> on the line. ${capped
-    ? `One day can cost at most <b>${s.dailyLossCap}</b>, so two bad days in a row end the season.`
-    : `That is within the ${s.dailyLossCap} HP a day can cost.`}</p></div>`;
+  return `<div class="capacity${capped ? ' over' : ''}">${icon('shield')}<p>Worst day <b>${s.worstDay} HP</b> · day cap <b>${s.dailyLossCap} HP</b></p></div>`;
 }
 
 function viewPlan() {
@@ -889,7 +883,7 @@ function viewPlan() {
     <div class="pane-habits">
       <section class="section"><div class="gh"><h2>Habits</h2><button class="gh-link" data-action="sheet" data-kind="habit">New habit</button></div>
         ${budgetNote(p.settings)}
-        ${habits || emptyState({ icon: 'plan', title: 'No habits yet', text: 'Start with two or three, each tied to something you already do every day.', actions: '<button class="btn primary" data-action="sheet" data-kind="habit">Add the first habit</button>' })}
+        ${habits || emptyState({ icon: 'plan', title: 'No habits yet', actions: '<button class="btn primary" data-action="sheet" data-kind="habit">Add the first habit</button>' })}
       </section>
       ${restCard(p)}
     </div>
@@ -963,10 +957,10 @@ function viewCoach() {
   if (!c) return shell(skeleton('Coach'));
   const msgs = c.messages.map(coachMessage).join('');
   const ask = state.query.get('ask') || '';
-  const empty = emptyState({ icon: 'coach', title: 'Talk to your coach', text: 'Ask for a plan, report a slip, or say what you are avoiding. It sees your HP, deadlines, habit strength, goals, calendar, Apple Health, dodges and pardon reasons.' });
+  const empty = emptyState({ icon: 'coach', title: 'Talk to your coach' });
   const quick = QUICK.map((q) => `<button type="button" class="qchip" data-action="coach-quick" data-text="${esc(q)}"${state.sending ? ' disabled' : ''}>${esc(q)}</button>`).join('');
-  shell(`${pageHead('Coach', { over: c.aiEnabled ? 'Claude, with your whole day in view' : 'Offline', actions: iconLink('#/settings', 'settings', 'Settings') })}
-      ${c.aiEnabled ? '' : '<div class="banner warn">The coach is offline. It needs an Anthropic API key in the app\'s Railway variables. Briefs still arrive with plain numbers until then.</div>'}
+  shell(`${pageHead('Coach', { over: c.aiEnabled ? '' : 'Offline', actions: iconLink('#/settings', 'settings', 'Settings') })}
+      ${c.aiEnabled ? '' : '<div class="banner warn">The coach is offline: no Anthropic API key in Railway.</div>'}
       <div class="brief-buttons">
         <button class="btn tinted small" data-action="brief" data-kind="morning">${icon('sun')}Morning brief</button>
         <button class="btn tinted small" data-action="brief" data-kind="midday">${icon('clock')}Midday check</button>
@@ -1010,7 +1004,7 @@ function reviewCard(r) {
   }
   if (!w.judgedDays) {
     return `<section class="section"><div class="gh"><h2>Weekly review</h2></div>
-      <div class="card muted">Your first weekly review opens on Monday, once a full week has been judged.</div></section>`;
+      <div class="card muted">Opens on Monday.</div></section>`;
   }
   const rows = w.habits.map((h) => {
     const d = state.decisions[h.id] || 'keep';
@@ -1030,7 +1024,6 @@ function reviewCard(r) {
         <label class="field"><span>This week's one or two things that matter most</span><input class="input" name="focus" maxlength="300" required autocomplete="off"></label>
         <label class="field"><span>If-then plan for the week's biggest obstacle</span><input class="input" name="obstaclePlan" maxlength="300" autocomplete="off" placeholder="If I skip Monday's gym, then I go Tuesday at 7:00"></label>
         <div class="form-actions"><button class="btn primary" type="submit">Finish the review</button></div>
-        <p class="note">Drop archives the habit. Adjust takes you to it after the review.</p>
       </form>
     </div></section>`;
 }
@@ -1053,13 +1046,13 @@ function viewReview() {
         <button class="btn plain small danger-text" data-action="triage" data-do="drop" data-id="${k.id}">Drop</button>
       </div></div>`).join('');
 
-  shell(`${pageHead('Review', { over: 'The week, and everything that counted', actions: iconLink('#/settings', 'settings', 'Settings') })}
+  shell(`${pageHead('Review', { actions: iconLink('#/settings', 'settings', 'Settings') })}
     <div class="split"><div>
       ${reviewCard(r)}
       <section class="section"><div class="gh"><h2>This week so far</h2></div><div class="card">${weekStats(r.thisWeek)}</div></section>
       ${stale ? `<section class="section"><div class="gh"><h2>Clear the backlog</h2><span class="gh-count">${r.stale.length}</span></div><div class="card triage">${stale}</div></section>` : ''}
       <section class="section"><div class="gh"><h2>Habit strength</h2></div>
-        ${strengthRows ? `<div class="group">${strengthRows}</div>` : emptyState({ icon: 'plan', title: 'No habits yet', text: 'Strength builds with every repetition once you add one.', small: true })}
+        ${strengthRows ? `<div class="group">${strengthRows}</div>` : emptyState({ icon: 'plan', title: 'No habits yet', small: true })}
       </section>
       <section class="section"><div class="gh"><h2>HP, last 30 days</h2></div><div class="card">${hpBars(days, 30)}</div></section>
     </div><aside>
@@ -1087,16 +1080,16 @@ function pushCard() {
   let action = '';
   if (!p.supported) {
     status = isIOS() && !isStandalone()
-      ? 'To get reminders on iPhone or iPad, add Oath to your Home Screen first: tap Share, then Add to Home Screen, then open Oath from the new icon and come back here.'
-      : 'This browser does not support push notifications.';
+      ? 'Add Oath to your Home Screen first: Share, then Add to Home Screen.'
+      : 'This browser has no push notifications.';
   } else if (p.permission === 'denied') {
-    status = 'Notifications are blocked. Turn them on in iOS Settings, Notifications, Oath.';
+    status = 'Blocked. Turn them on in iOS Settings, Notifications, Oath.';
   } else if (p.subscribed) {
-    const devices = p.devices == null ? '' : ` The server is sending to ${p.devices} ${p.devices === 1 ? 'device' : 'devices'}.`;
-    status = `Reminders are on for this device.${devices} The app icon shows how many things can still cost HP today.`;
+    const devices = p.devices == null ? '' : ` · ${p.devices} ${p.devices === 1 ? 'device' : 'devices'}`;
+    status = `On for this device${devices}`;
     action = '<button class="btn tinted" data-action="push-test">Send a test</button><button class="btn tinted" data-action="push-off">Turn off on this device</button>';
   } else {
-    status = 'Reminders are off on this device. Turn them on so last calls and briefs reach your lock screen.';
+    status = 'Off on this device';
     action = '<button class="btn primary" data-action="push-on">Turn on reminders</button>';
   }
   return settingsCard('bell', 'Reminders', `<p class="muted">${status}</p>${action ? `<div class="form-actions">${action}</div>` : ''}`);
@@ -1109,12 +1102,11 @@ function settingsCard(ic, title, body, id = '') {
 function alertsCard(s) {
   const opt = (v, label, hint) => `<label class="radio-row"><input type="radio" name="alerts" value="${v}"${(s.alerts || 'both') === v ? ' checked' : ''}><span><b>${label}</b><br><span class="muted small">${hint}</span></span></label>`;
   return settingsCard('phone', 'Where alerts go', `<form data-form="alerts">
-      ${opt('smart', 'One channel per alert', 'Telegram gets reminders with Done buttons, misses and briefs. The lock screen gets last calls and deaths. Fewer, sharper alerts.')}
-      ${opt('both', 'Everything, everywhere', 'Every alert on both the lock screen and Telegram.')}
-      ${opt('push', 'App only', 'Telegram stays quiet except when you write to it.')}
+      ${opt('smart', 'One channel per alert', 'Telegram for reminders and briefs, the lock screen for last calls')}
+      ${opt('both', 'Everything, everywhere', 'Lock screen and Telegram')}
+      ${opt('push', 'App only', 'Telegram stays quiet')}
       <div class="form-actions"><button class="btn primary" type="submit">Save</button></div>
-    </form>
-    <p class="note">Reminders fade on their own once a habit passes 80% strength. Non-negotiables always keep a last call.</p>`);
+    </form>`);
 }
 
 function telegramCard() {
@@ -1122,14 +1114,14 @@ function telegramCard() {
   let body;
   let actions = '';
   if (!tg.enabled) {
-    body = 'Create a bot with @BotFather in Telegram and add its token in Railway as TELEGRAM_BOT_TOKEN. This turns on after the next deploy.';
+    body = 'Off: add TELEGRAM_BOT_TOKEN in Railway.';
   } else if (tg.linked) {
-    body = `Connected${tg.botUsername ? ` to @${esc(tg.botUsername)}` : ''}. Anything you write goes to the coach. Commands: /today, /next, /hp, /add call the bank friday 3pm, /done gym.`;
+    body = `Connected${tg.botUsername ? ` to @${esc(tg.botUsername)}` : ''}. /today, /next, /hp, /add, /done.`;
     actions = '<button class="btn tinted" data-action="tg-test">Send a test</button><button class="btn tinted" data-action="tg-unlink">Disconnect</button>';
   } else {
-    body = 'Connect your Telegram so the coach can reach you there. The button opens Telegram; tap Start in the chat with your bot.';
+    body = 'Not connected';
     actions = '<button class="btn primary" data-action="tg-link">Connect Telegram</button>';
-    if (tg.linkUrl) body += ` If Telegram did not open, use this link: <a href="${esc(tg.linkUrl)}">${esc(tg.linkUrl)}</a>`;
+    if (tg.linkUrl) body += `. <a href="${esc(tg.linkUrl)}">Open the link</a>`;
   }
   return settingsCard('telegram', 'Telegram', `<p class="muted">${body}</p>${actions ? `<div class="form-actions">${actions}</div>` : ''}`);
 }
@@ -1138,7 +1130,7 @@ function siriCard() {
   const host = location.origin;
   const count = state.tokens?.count || 0;
   return settingsCard('mic', 'Siri and Shortcuts', `
-    <p class="muted">Say "Add to Oath", "Oath done" or "What's next in Oath" from your iPhone, Apple Watch or the Action button. The same key lets Apple Health send its data.</p>
+    <p class="muted">"Add to Oath", "Oath done", "What's next in Oath". The key also lets Apple Health send data.</p>
     ${keyBlock()}
     <div class="form-actions">
       <button class="btn ${count ? 'tinted' : 'primary'}" data-action="token-new">${count ? 'Make a new key' : 'Make a key'}</button>
@@ -1153,7 +1145,6 @@ function siriCard() {
         <li>Say "Hey Siri, Add to Oath", or put it on the Action button or a Home Screen widget.</li>
       </ol>
       <p class="small">"Oath done": the same, with URL <code>${esc(host)}/api/shortcut/done</code> and prompt "What did you do?". "What's next in Oath": Get Contents of URL with <code>${esc(host)}/api/shortcut/next</code>, Method GET, the same header, then Get Dictionary Value <b>say</b> and Speak Text.</p>
-      <p class="small">Things added by voice are normal tasks. Making something hard stays a decision you make in the app.</p>
     </details>`);
 }
 
@@ -1176,7 +1167,6 @@ function rulesForm(s) {
   return `<form class="card rules-form" data-form="rules">
     <div class="grid2">${fields}</div>
     <div class="form-actions"><button class="btn primary" type="submit">Save rules</button></div>
-    <p class="note">Changes apply from now on and never re-charge a day already judged. You can also tell the coach, which asks you to confirm.</p>
   </form>`;
 }
 
@@ -1191,7 +1181,18 @@ function viewSettings() {
       <a class="li li-plain li-nav" href="#/dashboard"><span class="li-ic">${icon('business')}</span><span class="li-body"><span class="li-title">Business sites</span><span class="li-sub">GoldenStraddler, Exposed FX Journal</span></span>${icon('chevron', 'chev')}</a>
     </div>
     <div class="form-actions"><a class="btn tinted" href="/api/export" download>${icon('download')}Download all my data</a></div>`);
-  shell(`${pageHead('Settings', { over: 'Oath' })}
+  // Where the food numbers come from: credits and licences live here, not on the screens.
+  const src = (name, what, licence, href = '') => `<${href ? `a href="${href}"` : 'div'} class="li li-plain${href ? ' li-nav' : ''}"><span class="li-body"><span class="li-title">${name}</span><span class="li-sub">${what}${licence ? ` · ${licence}` : ''}</span></span>${href ? icon('chevron', 'chev') : ''}</${href ? 'a' : 'div'}>`;
+  const sources = settingsCard('food', 'Data sources', `<div class="group flush">
+      ${src('USDA FoodData Central', 'Generic foods and their nutrients', 'public domain')}
+      ${src('Open Food Facts', 'Packaged products', '© Open Food Facts contributors, ODbL')}
+      ${src('EU reference intakes', 'The % RI on every label', 'Regulation (EU) 1169/2011, Annex XIII')}
+      ${src('Nutri-Score', 'Grades A to E', 'Santé publique France')}
+      ${src('NOVA', 'Processing groups 1 to 4', 'Monteiro et al., as given by Open Food Facts')}
+      ${src('Recipe library', 'Written for Oath by AI, not kitchen-tested', '')}
+      ${src('Coverage report', 'What the catalogue holds', '', '#/food/report')}
+    </div>`, 'data-sources');
+  shell(`${pageHead('Settings')}
     <div class="split"><div>
       ${connections}
       ${faceIdCard()}
@@ -1217,23 +1218,9 @@ function viewSettings() {
           <div class="form-actions"><button class="btn primary" type="submit">Change password</button><button class="btn tinted" type="button" data-action="logout">Log out</button></div>
         </form>`)}
     </div>
-    <aside><section class="section"><div class="gh"><h2>Game rules</h2><span class="gh-count">Yours to set</span></div>
-      ${rulesForm(s)}
-      <div class="card prose rules-prose">
-        <p>You have ${s.maxHp} HP. Miss a habit's deadline and you lose its HP. Miss the same habit twice in a row and the second costs ${s.repeatMultiplier}x.</p>
-        <p>Keep a habit right after missing it and you earn ${s.comebackBonus} HP back. One miss is an accident; the second is the start of a new habit.</p>
-        <p>Strength is the real measure: it grows with every repetition and a miss costs a few points, never everything. Streaks reset on a miss.</p>
-        <p>Once a deadline passes, the habit is locked. A mistaken tick can be undone within ${s.undoMinutes} minutes. If Apple Health later proves it was done before the deadline, the miss is overturned.</p>
-        <p>"Times a week" habits are settled on Sunday night. Each missing session costs its share of the HP.</p>
-        <p>A minimum version, set a day ahead, saves the HP and the streak but not the clean-day bonus.</p>
-        <p>Hard tasks cost ${s.taskPenalty} HP if not done by their deadline, need a first step, and cannot be deleted or moved once due.</p>
-        <p>A clean day, with nothing missed and no minimums, gives back ${s.cleanBonus} HP.</p>
-        <p>One day can cost at most ${s.dailyLossCap} HP, however much is missed. A bad day hurts; two in a row can end the season.</p>
-        <p>At 0 HP you die. The season ends and streaks reset, but every habit keeps its strength. Whatever else that day misses costs the new season nothing.</p>
-        <p>${s.pardonsPerMonth} pardons a month, within 24 hours, each with what got in the way and an if-then plan. ${s.restDaysPerMonth} rest days a month, booked before the day starts.</p>
-        <p>At most ${s.maxNonNegotiables} non-negotiables until each is above 80% strength.</p>
-        <p>Every morning you take the oath: the one thing, and when and where. "Not now" needs a reason; every dodge is logged.</p>
-      </div></section></aside></div>`);
+    <aside><section class="section"><div class="gh"><h2>Game rules</h2></div>
+      ${rulesForm(s)}</section>
+      <section class="section">${sources}</section></aside></div>`);
 }
 
 // ---------- Gate ----------
@@ -1788,21 +1775,19 @@ async function faceIdAdd(el) {
 
 function faceIdCard() {
   if (!window.PublicKeyCredential) {
-    return settingsCard('faceid', 'Face ID', '<p class="muted">This browser cannot use Face ID login. Open Oath from the Home Screen on your iPhone.</p>');
+    return settingsCard('faceid', 'Face ID', '<p class="muted">Not available in this browser. Open Oath from the Home Screen.</p>');
   }
   const keys = state.passkeys || [];
   const rows = keys.map((k) => `<div class="li li-plain"><span class="li-body"><span class="li-title">${esc(k.device || 'Device')}</span>
       <span class="li-sub">Added ${fmtDay(String(k.createdAt).slice(0, 10))}${k.lastUsed ? `, last used ${ago(k.lastUsed)}` : ', not used yet'}</span></span>
       <button class="btn tinted small" data-action="faceid-remove" data-id="${esc(k.id)}">Remove</button></div>`).join('');
   const lockOn = state.settings?.faceIdLock !== false;
-  const text = !keys.length
-    ? 'Open Oath with your face. Your iPhone keeps the key; Oath only stores its public half.'
-    : lockOn ? 'Oath opens with Face ID only, every time. Without Face ID, the password needs the recovery code (SETUP_CODE in Railway).'
-      : 'These devices can log in with your face. The password also works on its own.';
+  // The one line kept: with the lock on, the password alone is not enough to get back in.
+  const text = keys.length && lockOn ? 'Password login then needs the recovery code.' : '';
   const lock = keys.length
     ? `<label class="check"><input type="checkbox" data-action="faceid-lock"${lockOn ? ' checked' : ''}> Face ID every time Oath opens</label>`
     : '';
-  return settingsCard('faceid', 'Face ID', `<p class="muted">${text}</p>
+  return settingsCard('faceid', 'Face ID', `${text ? `<p class="muted small">${text}</p>` : ''}
     ${rows ? `<div class="group flush">${rows}</div>` : ''}${lock}
     <div class="form-actions"><button class="btn primary" data-action="faceid-add">${icon('faceid')}${keys.length ? 'Add this device too' : 'Turn on Face ID'}</button></div>`);
 }

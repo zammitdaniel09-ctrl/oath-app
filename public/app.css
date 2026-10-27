@@ -1483,7 +1483,7 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 
 .tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
-  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
   height: calc(var(--tabbar) + env(safe-area-inset-bottom));
   padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   background: rgba(6, 7, 10, 0.96); box-shadow: 0 -1px 0 var(--line);
@@ -1498,8 +1498,29 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 .tab .ic { width: 24px; height: 24px; stroke-width: 1.7; padding: 0; transition: color var(--t-ctl); }
 .tab-ic { position: relative; display: grid; place-items: center; isolation: isolate; transition: transform var(--spring-ms) var(--spring); }
 .tab:active .tab-ic { transform: scale(0.86); transition: transform var(--t-press) var(--ease); }
-/* Six tabs on a small phone are about 53 px each: the capsule stays inside its own tab. */
-@media (max-width: 380px) { .tabbar .tab-pill { inset: -4px -13px; } }
+/* Five tabs on a 320 px phone are 64 px each: the capsule stays inside its own tab. */
+@media (max-width: 340px) { .tabbar .tab-pill { inset: -4px -14px; } }
+
+/* Food, raised in the middle: a lit Merlot disc that sits a little above the bar, ringed in the bar's
+   own black so it reads as cut out of it. It is always lit; selected, its glow opens up. */
+.tab-centre { position: relative; z-index: 1; }
+.tab-centre .tab-ic {
+  width: 54px; height: 54px; margin-top: -24px; border-radius: 50%; color: #fff;
+  background: radial-gradient(110% 110% at 32% 18%, #ff5a40 0%, var(--merlot-hi) 30%, var(--merlot) 62%, #a10400 100%);
+  box-shadow: 0 0 0 3.5px #050608, 0 12px 26px -10px rgba(225, 6, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 8px rgba(80, 0, 0, 0.35);
+  transition: transform var(--spring-ms) var(--spring), box-shadow 260ms var(--ease);
+}
+.tab-centre .tab-ic .ic { width: 26px; height: 26px; stroke-width: 2.1; color: #fff; }
+.tab-centre:active .tab-ic { transform: scale(0.9); }
+.tab-centre .tab-pill { display: none; }
+.tab-centre > span:last-child { margin-top: 1px; }
+.tab-centre[aria-current="page"] { color: var(--text); }
+.tab-centre[aria-current="page"] .tab-ic .ic { color: #fff; }
+.tab-centre[aria-current="page"] .tab-ic {
+  box-shadow: 0 0 0 3.5px #050608, 0 0 0 5px rgba(255, 42, 23, 0.32), 0 14px 30px -8px rgba(255, 42, 23, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -3px 8px rgba(80, 0, 0, 0.3);
+}
+.tab-centre:focus-visible { outline: none; }
+.tab-centre:focus-visible .tab-ic { outline: 2px solid var(--focus); outline-offset: 5px; }
 /* The label sits above the capsule, which in the sidebar runs under it. */
 .tab { isolation: isolate; }
 .tab > span:last-child { position: relative; z-index: 1; }
@@ -1680,6 +1701,13 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
   }
   .tab:active .tab-ic { transform: none; }
   .tab:active { transform: scale(0.98); }
+  /* In the sidebar Food is a row like the others, its icon lit in Merlot. */
+  .tab-centre .tab-ic, .tab-centre[aria-current="page"] .tab-ic { width: 24px; height: 24px; margin-top: 0; border-radius: 0; background: none; box-shadow: none; }
+  .tab-centre .tab-ic .ic, .tab-centre[aria-current="page"] .tab-ic .ic { width: 21px; height: 21px; stroke-width: 1.9; color: var(--merlot-hi); }
+  .tab-centre .tab-pill { display: block; }
+  .tab-centre > span:last-child { margin-top: 0; }
+  .tab-centre:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; }
+  .tab-centre:focus-visible .tab-ic { outline: none; }
   .tab { transition: background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease), transform var(--spring-ms) var(--spring); }
   .tab.wide-only:first-of-type { margin-top: 0; }
   .wide-only { display: grid !important; }
@@ -1727,6 +1755,7 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
   .map-panes.view-outline .pane-map, .map-panes.view-map .pane-outline { display: block; }
   .map-panes .pane-map { position: sticky; top: 24px; }
   .page-settings .split { grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); }
+  .page-goals .goal-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* ---------- Empty states ---------- */
@@ -1943,6 +1972,8 @@ a.tag { text-decoration: none; }
 @media (max-width: 380px) {
   .tab > span:last-child { font-size: 0.625rem; letter-spacing: 0; }
   .tab .ic { width: 22px; height: 22px; }
+  .tab-centre .tab-ic { width: 50px; height: 50px; margin-top: -22px; }
+  .tab-centre .tab-ic .ic { width: 24px; height: 24px; }
   .recipe-filters { grid-template-columns: 1fr; }
 }
 

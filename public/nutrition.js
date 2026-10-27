@@ -304,3 +304,241 @@ export function show(n, key, { unit = true } = {}) {
   const s = new Intl.NumberFormat('en-GB', { maximumFractionDigits: d.dec }).format(round(v, d.dec));
   return `${s}${n?.missing?.[key] ? '+' : ''}${unit ? (d.unit === 'kcal' ? ' kcal' : ` ${d.unit}`) : ''}`;
 }
+
+// ---------- Grades and tags ----------
+//
+// Everything here reads a record's nutrients per 100 g (or per 100 ml for a drink), exactly as the
+// catalogue stores them, and never guesses: an unknown value means no grade and no tag.
+
+const pointsOver = (v, list) => list.reduce((a, t) => a + (v > t ? 1 : 0), 0);
+const pointsAtLeast = (v, list) => list.reduce((a, t) => a + (v >= t ? 1 : 0), 0);
+
+// Nutri-Score 2023: the updated algorithm of Santé publique France ("Nutri-Score: update of the algorithm
+// for general foods and beverages", scientific committee report 2022, published as the 2023 update; the
+// rules at santepubliquefrance.fr/nutri-score). The threshold tables below are those of the update, checked
+// against Open Food Facts' open-source implementation (openfoodfacts-server, lib/ProductOpener/Nutriscore.pm).
+// A value counts a point for each threshold it is over (the saturates share of fat: at or over).
+const NS = {
+  energy: [335, 670, 1005, 1340, 1675, 2010, 2345, 2680, 3015, 3350], // kJ per 100 g
+  energyBeverage: [30, 90, 150, 210, 240, 270, 300, 330, 360, 390], // kJ per 100 ml
+  sugars: [3.4, 6.8, 10, 14, 17, 20, 24, 27, 31, 34, 37, 41, 44, 48, 51],
+  sugarsBeverage: [0.5, 2, 3.5, 5, 6, 7, 8, 9, 10, 11],
+  satfat: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  salt: [0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 4],
+  satEnergy: [120, 240, 360, 480, 600, 720, 840, 960, 1080, 1200], // kJ of saturates: fats, oils, nuts and seeds
+  satRatio: [10, 16, 22, 28, 34, 40, 46, 52, 58, 64], // saturates as % of fat: fats, oils, nuts and seeds
+  fvl: [40, 60, 80, 80, 80], // % fruit, vegetables and legumes
+  fvlBeverage: [40, 40, 60, 60, 80, 80],
+  fibre: [3.0, 4.1, 5.2, 6.3, 7.4],
+  protein: [2.4, 4.8, 7.2, 9.6, 12, 14, 17],
+  proteinBeverage: [1.2, 1.5, 1.8, 2.1, 2.4, 2.7, 3.0],
+};
+const KJ_PER_KCAL = 4.184;
+const KJ_PER_G_SATFAT = 37; // the update's figure for the energy of saturates
+
+// Where the catalogue's readable groups (see scripts/usda-names.mjs) meet Nutri-Score's families.
+const NS_NOT_GRADED = new Set(['alcoholic drinks', 'baby food', 'supplements and powders', 'herbs and spices', 'coffee and tea']);
+const NS_FAT_GROUPS = new Set(['fats and oils', 'nuts and seeds']);
+const NS_FVL_GROUPS = new Set(['fruit', 'vegetables', 'legumes', 'fruit juice']);
+const NS_RED_MEAT_GROUPS = new Set(['beef', 'pork', 'lamb, veal and game']);
+const NS_NOT_BEVERAGE = new Set(['soups', 'sauces and condiments', 'fats and oils', 'cheese', 'dairy']);
+const RED_MEAT_WORDS = /\b(beef|pork|lamb|veal|mutton|ham|bacon|salami|bologna|pepperoni|frankfurter|hot dog|chorizo|sausage|steak|venison|bison)\b/i;
+const WHITE_MEAT_WORDS = /\b(chicken|turkey|duck|poultry|fish|salmon|tuna)\b/i;
+const CREAM = /^(single |double |whipping |whipped |heavy |light |soured |sour |clotted |half )?cream\b(?! cheese| of| soda| puff)/i;
+
+function scoreFamily(category, name, liquid) {
+  const c = String(category || '').trim().toLowerCase();
+  const nm = String(name || '').trim();
+  const known = c && c !== 'product';
+  if (NS_NOT_GRADED.has(c)) return { skip: true };
+  const fat = NS_FAT_GROUPS.has(c) ? !/chestnut/i.test(nm)
+    : c === 'dairy' ? CREAM.test(nm)
+      : !known && /\b(oil|butter|margarine|lard|ghee)\b/i.test(nm);
+  const cheese = c === 'cheese' || (!known && /\bcheese\b/i.test(nm) && !/\b(sauce|cake|spread)\b/i.test(nm));
+  const redMeat = NS_RED_MEAT_GROUPS.has(c) || (c === 'sausages and cold cuts' && RED_MEAT_WORDS.test(nm) && !WHITE_MEAT_WORDS.test(nm))
+    || (!known && RED_MEAT_WORDS.test(nm) && !WHITE_MEAT_WORDS.test(nm));
+  const beverage = !fat && !cheese && Boolean(liquid) && !NS_NOT_BEVERAGE.has(c);
+  return { skip: false, fat, cheese, redMeat, beverage, water: c === 'water' };
+}
+
+// The Nutri-Score of a food: { grade: 'a'..'e', points }, or null when energy, sugars, saturates or salt
+// is unknown (or the food is outside the system: alcoholic drinks, tea and coffee, baby food, supplements).
+// `nutrients` are per 100 g, or per 100 ml for a drink. Fruit, vegetable and legume share comes from
+// `fruitVegShare`, else 100 for the fruit, vegetable, legume and juice groups and 0 for everything else.
+// Missing sugars are zero when carbs are zero and missing saturates zero when fat is zero (as Open Food
+// Facts does); missing fibre and protein count as zero, as the rules say. `sweeteners` (a drink with
+// non-nutritive sweeteners, +4) and `name` (cream, red meat, chestnut) are optional extra knowledge.
+export function nutriScore(nutrients, { category = null, liquid = false, fruitVegShare = null, name = null, sweeteners = false } = {}) {
+  const n = nutrients || {};
+  const f = scoreFamily(category, name, liquid);
+  if (f.skip) return null;
+  const kcal = num(n.kcal);
+  let sugars = num(n.sugars);
+  if (sugars === null && num(n.carbs) === 0) sugars = 0;
+  let satfat = num(n.satfat);
+  if (satfat === null && num(n.fat) === 0) satfat = 0;
+  const salt = num(n.salt);
+  if (kcal === null || sugars === null || satfat === null || salt === null) return null;
+  const fat = num(n.fat);
+  if (f.fat && fat === null) return null;
+  const kj = kcal * KJ_PER_KCAL;
+  const fibre = num(n.fibre) ?? 0;
+  const protein = num(n.protein) ?? 0;
+  const share = num(fruitVegShare) ?? (NS_FVL_GROUPS.has(String(category || '').toLowerCase()) ? 100 : 0);
+
+  let negative;
+  if (f.fat) {
+    const ratio = fat > 0 ? (satfat / fat) * 100 : 0;
+    negative = pointsOver(satfat * KJ_PER_G_SATFAT, NS.satEnergy) + pointsOver(sugars, NS.sugars) + pointsAtLeast(ratio, NS.satRatio) + pointsOver(salt, NS.salt);
+  } else if (f.beverage) {
+    negative = pointsOver(kj, NS.energyBeverage) + pointsOver(sugars, NS.sugarsBeverage) + pointsOver(satfat, NS.satfat) + pointsOver(salt, NS.salt) + (sweeteners ? 4 : 0);
+  } else {
+    negative = pointsOver(kj, NS.energy) + pointsOver(sugars, NS.sugars) + pointsOver(satfat, NS.satfat) + pointsOver(salt, NS.salt);
+  }
+
+  let proteinPoints = pointsOver(protein, f.beverage ? NS.proteinBeverage : NS.protein);
+  if (f.redMeat) proteinPoints = Math.min(proteinPoints, 2); // red meat: at most 2 protein points
+  // Protein counts for drinks and cheese always, otherwise only while the food is not too heavy on the negative side.
+  const countProtein = f.beverage || f.cheese || (f.fat ? negative < 7 : negative < 11);
+  const positive = pointsOver(fibre, NS.fibre) + pointsOver(share, f.beverage ? NS.fvlBeverage : NS.fvl) + (countProtein ? proteinPoints : 0);
+  const points = negative - positive;
+
+  let grade;
+  if (f.beverage) {
+    // Only plain water is an A; anything with energy or sugar is graded as a drink.
+    const plainWater = f.water && kcal <= 1 && sugars <= 0.5 && !sweeteners;
+    grade = plainWater ? 'a' : points <= 2 ? 'b' : points <= 6 ? 'c' : points <= 9 ? 'd' : 'e';
+  } else if (f.fat) grade = points <= -6 ? 'a' : points <= 2 ? 'b' : points <= 10 ? 'c' : points <= 18 ? 'd' : 'e';
+  else grade = points <= 0 ? 'a' : points <= 2 ? 'b' : points <= 10 ? 'c' : points <= 18 ? 'd' : 'e';
+  return { grade, points };
+}
+
+// ---------- Tags ----------
+
+// Official criteria where they exist, and the criterion is named in `why`:
+//  - UK Food Standards Agency front-of-pack traffic lights, per 100 g (solids) or 100 ml (drinks):
+//      fat low <= 3 / high > 17.5 g (drinks 1.5 / 8.75), saturates low <= 1.5 / high > 5 g (0.75 / 2.5),
+//      total sugars low <= 5 / high > 22.5 g (2.5 / 11.25), salt low <= 0.3 / high > 1.5 g (0.3 / 0.75),
+//      and for a drink portion over 150 ml, sugars over 13.5 g per portion are red too (a can of cola).
+//  - EU nutrition claims, Regulation (EC) 1924/2006 annex: high protein when at least 20% of the energy comes
+//    from protein, a source at 12%; high fibre 6 g and a source 3 g per 100 g; low fat 3 g (1.5 g per 100 ml);
+//    sugars-free 0.5 g per 100 g or ml. Energy from protein uses the EU factors (17 kJ per g, 4.184 kJ per kcal).
+//  - EU high caffeine labelling for drinks, Regulation (EU) 1169/2011 annex III: over 150 mg per litre.
+//  - NOVA (Monteiro et al., from Open Food Facts) and the Nutri-Score grade, where the record has them.
+// Oath's own, documented: "Carb heavy" (at least 55% of energy from carbs and 30 g per 100 g), and a floor
+// on the protein tags (5 g and 3 g per 100 g) so that watery vegetables do not count as protein sources.
+const PROTEIN_KJ = 17;
+const CARB_KJ = 17;
+const PROTEIN_FLOOR = { high: 5, source: 3 };
+const WHOLE_RAW_GROUPS = new Set(['fruit', 'vegetables', 'legumes', 'nuts and seeds', 'eggs']);
+
+const letter = (x) => {
+  const g = String((typeof x === 'string' ? x : x?.grade) || '').toLowerCase();
+  return g.length === 1 && 'abcde'.includes(g) ? g : null;
+};
+
+// The portion a drink is usually had in, in ml: the label's serving, else one of a multipack, else a can,
+// bottle, glass or serving portion. Null when the record has none.
+function drinkPortionMl(it) {
+  const dens = num(it.density) || 1;
+  const toMl = (size, unit) => (unit === 'ml' ? size : size / dens);
+  if (num(it.serving?.size) > 0) return toMl(it.serving.size, it.serving.unit);
+  if (num(it.pack?.size) > 0) return toMl(it.pack.size / (num(it.pack.count) > 1 ? it.pack.count : 1), it.pack.unit);
+  for (const p of it.portions || []) {
+    if (!/\b(can|bottle|glass|carton|pouch|serving)\b/i.test(p?.label || '')) continue;
+    const ml = num(p.ml) ?? (num(p.g) ? p.g / dens : null);
+    if (ml) return ml;
+  }
+  return null;
+}
+
+// An ordered list of { key, label, tone: 'good' | 'neutral' | 'warn', why } for a catalogue record
+// ({ nutrients, basis, liquid, density, category, state, name, nutriscore, nova, and for the drinks portion
+// rule serving, pack and portions }).
+export function foodTags(item) {
+  const it = item || {};
+  const raw = it.nutrients || {};
+  const drink = Boolean(it.liquid) || it.basis === 'ml';
+  // A drink held per 100 g is looked at per 100 ml, through its density (water-like when it has none).
+  const k = it.basis === 'ml' || !drink ? 1 : num(it.density) || 1;
+  const v = (key) => {
+    const x = num(raw[key]);
+    return x === null ? null : x * k;
+  };
+  const unit = drink ? '100 ml' : '100 g';
+  const tags = [];
+  const add = (key, label, tone, why) => tags.push({ key, label, tone, why });
+
+  const grade = letter(it.nutriscore);
+  if (grade === 'a' || grade === 'b') add('good-choice', 'Good choice', 'good', `Nutri-Score ${grade.toUpperCase()} (2023 algorithm, Santé publique France).`);
+  else if (grade === 'd' || grade === 'e') add('eat-less', 'Eat less often', 'warn', `Nutri-Score ${grade.toUpperCase()} (2023 algorithm, Santé publique France).`);
+
+  const nova = it.nova === null || it.nova === undefined ? NaN : Number(it.nova);
+  const group = String(it.category || '').toLowerCase();
+  if (nova === 4) add('ultra-processed', 'Ultra-processed', 'warn', 'NOVA group 4: ultra-processed food.');
+  if (nova === 1) add('whole-food', 'Whole food', 'good', 'NOVA group 1: unprocessed or minimally processed.');
+  else if (!Number.isFinite(nova) && WHOLE_RAW_GROUPS.has(group) && it.state === 'raw' && !/substitute|powder|dried|flour|butter|oil/i.test(String(it.name || ''))) {
+    add('whole-food', 'Whole food', 'good', 'A plain raw fruit, vegetable, legume, nut or egg: NOVA group 1 by definition.');
+  }
+
+  const kcal = v('kcal');
+  const protein = v('protein');
+  if (kcal !== null && kcal > 0 && protein !== null) {
+    const share = (protein * PROTEIN_KJ) / (kcal * KJ_PER_KCAL);
+    if (share >= 0.2 && protein >= PROTEIN_FLOOR.high) add('protein-packed', 'Protein packed', 'good', `At least 20% of the energy is protein (${Math.round(share * 100)}%): the EU "high protein" claim, Regulation 1924/2006.`);
+    else if (share >= 0.12 && protein >= PROTEIN_FLOOR.source) add('protein-source', 'Source of protein', 'good', `At least 12% of the energy is protein (${Math.round(share * 100)}%): the EU "source of protein" claim, Regulation 1924/2006.`);
+  }
+
+  const fibre = v('fibre');
+  if (fibre !== null) {
+    if (fibre >= 6) add('high-fibre', 'High fibre', 'good', `${round(fibre, 1)} g of fibre per ${unit}, at least 6 g: the EU "high fibre" claim, Regulation 1924/2006.`);
+    else if (fibre >= 3) add('source-fibre', 'Source of fibre', 'good', `${round(fibre, 1)} g of fibre per ${unit}, at least 3 g: the EU "source of fibre" claim, Regulation 1924/2006.`);
+  }
+
+  const sugars = v('sugars');
+  if (sugars !== null) {
+    const [low, high] = drink ? [2.5, 11.25] : [5, 22.5];
+    // Meat, fish and oils have no carbohydrate to speak of: "sugar free" says nothing about them.
+    const carbs0 = v('carbs');
+    const sweetPossible = drink || carbs0 === null || carbs0 >= 1;
+    // The FSA's portion rule for drinks: a portion over 150 ml is red above 13.5 g of sugars.
+    const portionMl = drink ? drinkPortionMl(it) : null;
+    const portionSugars = portionMl && portionMl > 150 ? (sugars * portionMl) / 100 : null;
+    if (sugars > high) add('sugar-rush', 'Sugar rush', 'warn', `${round(sugars, 1)} g of sugars per ${unit}, over ${high} g: red on the UK FSA front-of-pack traffic lights.`);
+    else if (portionSugars !== null && portionSugars > 13.5) add('sugar-rush', 'Sugar rush', 'warn', `${round(portionSugars, 1)} g of sugars in a ${round(portionMl, 0)} ml portion, over 13.5 g: red on the UK FSA front-of-pack traffic lights (the portion rule for drinks over 150 ml).`);
+    else if (sugars <= 0.5 && sweetPossible) add('sugar-free', 'Sugar free', 'good', `No more than 0.5 g of sugars per ${unit}: the EU "sugars-free" claim, Regulation 1924/2006.`);
+    else if (sugars <= low && sweetPossible) add('low-sugar', 'Low sugar', 'good', `${round(sugars, 1)} g of sugars per ${unit}, at most ${low} g: green on the UK FSA front-of-pack traffic lights.`);
+  }
+
+  const fat = v('fat');
+  if (fat !== null) {
+    const [low, high] = drink ? [1.5, 8.75] : [3, 17.5];
+    if (fat <= low) add('low-fat', 'Low fat', 'good', `${round(fat, 1)} g of fat per ${unit}, at most ${low} g: the EU "low fat" claim, Regulation 1924/2006.`);
+    else if (fat > high) add('high-fat', 'High fat', 'warn', `${round(fat, 1)} g of fat per ${unit}, over ${high} g: red on the UK FSA front-of-pack traffic lights.`);
+  }
+
+  const satfat = v('satfat');
+  if (satfat !== null) {
+    const [low, high] = drink ? [0.75, 2.5] : [1.5, 5];
+    if (satfat <= low) add('low-saturates', 'Low saturates', 'good', `${round(satfat, 1)} g of saturates per ${unit}, at most ${low} g: green on the UK FSA front-of-pack traffic lights.`);
+    else if (satfat > high) add('high-saturates', 'High saturates', 'warn', `${round(satfat, 1)} g of saturates per ${unit}, over ${high} g: red on the UK FSA front-of-pack traffic lights.`);
+  }
+
+  const salt = v('salt');
+  if (salt !== null) {
+    const high = drink ? 0.75 : 1.5;
+    if (salt <= 0.3) add('low-salt', 'Low salt', 'good', `${round(salt, 2)} g of salt per ${unit}, at most 0.3 g: green on the UK FSA traffic lights and the EU "low sodium" level.`);
+    else if (salt > high) add('salty', 'Salty', 'warn', `${round(salt, 2)} g of salt per ${unit}, over ${high} g: red on the UK FSA front-of-pack traffic lights.`);
+  }
+
+  const carbs = v('carbs');
+  if (kcal !== null && kcal > 0 && carbs !== null && carbs >= 30) {
+    const share = (carbs * CARB_KJ) / (kcal * KJ_PER_KCAL);
+    if (share >= 0.55) add('carb-heavy', 'Carb heavy', 'neutral', `Carbs give ${Math.round(share * 100)}% of the energy and there are ${round(carbs, 0)} g per ${unit}: Oath's rule is at least 55% and 30 g.`);
+  }
+
+  const caffeine = v('caffeine');
+  if (drink && caffeine !== null && caffeine * 10 > 150) add('high-caffeine', 'High caffeine', 'warn', `${round(caffeine * 10, 0)} mg of caffeine per litre, over 150 mg: the level at which EU rules (Regulation 1169/2011, annex III) require a high-caffeine warning on drinks.`);
+
+  return tags;
+}

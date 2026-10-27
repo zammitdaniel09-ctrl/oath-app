@@ -5,6 +5,7 @@ import { db, logEvent } from './db.js';
 import { validTime, validDate, deadlineText } from './time.js';
 import * as engine from './engine.js';
 import * as goals from './goals.js';
+import { FILL_KEYS } from './food.js';
 
 const v = { validTime, validDate };
 const { RuleError } = engine;
@@ -100,32 +101,57 @@ function roughly(entry) {
 }
 const kcalText = (kcal) => (given(kcal) ? `${Math.round(Number(kcal))} kcal` : 'energy unknown');
 
-// "Had a kebab and chips": each item is matched to a catalogue record and logged with its amount
-// flagged as an estimate. An item with no record, no usable amount, or a record with no energy value
-// becomes a quick add of the coach's own calorie estimate instead. One receipt per item; the detail
-// (entry ids, slot, the record used) goes to the model only, so it can say what it assumed.
+// The coach's own item as an understood food: it stands in for the photo or text reading. Its whole
+// calorie estimate becomes energy per 100 when it gave no profile of its own.
+function coachItem(it, understood) {
+  const unit = ESTIMATE_UNITS.includes(it.unit) ? it.unit : 'g';
+  const amount = Number(it.amount) > 0 ? Number(it.amount) : null;
+  const weight = Number(it.weight) > 0 ? Number(it.weight) : unit === 'piece' ? null : amount;
+  const kcal = given(it.kcal_estimate) && Number(it.kcal_estimate) >= 0 ? Number(it.kcal_estimate) : null;
+  const per100 = it.per100 && typeof it.per100 === 'object' && !Array.isArray(it.per100) ? { ...it.per100 } : {};
+  if (!given(per100.kcal) && kcal !== null && weight) per100.kcal = (kcal / weight) * 100;
+  const searches = [it.search, ...(Array.isArray(it.searches) ? it.searches : [])].filter((s) => typeof s === 'string');
+  return { u: understood({ ...it, unit, amount, weight, searches, per100, confidence: 'medium' }), kcal };
+}
+
+// "Large fries from Burger King and a coke": the coach's items go through the same search and choice
+// as a photo or a typed meal, so each is logged against the most specific record (the restaurant's own
+// item and the portion his size word names) with its amount flagged as an estimate, and every value
+// the record lacks filled from the coach's profile. An item with no record or no usable amount becomes
+// a quick add of the coach's estimate instead. One receipt per item; the detail (entry ids, slot, the
+// record, why it was chosen, what was filled) goes to the model only, so it can say what it assumed.
 async function logFoodEstimate({ items, slot, date, time }) {
   const list = Array.isArray(items) ? items.filter((x) => x && (x.name || x.search)).slice(0, 12) : [];
   if (!list.length) throw new RuleError('Give at least one item he ate or drank.');
   const f = await food();
-  const { matchMealItem } = await foodPhoto();
+  const { matchItems, understood } = await foodPhoto();
   const when = pick({ slot, date, time }, ['slot', 'date', 'time']);
+  const read = list.map((it) => coachItem(it, understood));
+  // Only items with an amount are matched; the rest can still be quick adds of their estimate.
+  const asked = read.map((r, i) => (r.u.amount ? i : -1)).filter((i) => i >= 0);
+  const found = new Map();
+  try {
+    const reviewed = await matchItems(asked.map((i) => read[i].u));
+    asked.forEach((i, j) => found.set(i, reviewed[j]));
+  } catch (err) {
+    // Matching failed as a whole: every item falls back to its own estimate.
+    console.error('coach food matching failed', err);
+  }
   const receipts = [];
   const detail = [];
-  for (const it of list) {
+  for (const [i, it] of list.entries()) {
+    const { u } = read[i];
     const name = String(it.name || it.search).trim().slice(0, 120);
-    const unit = ESTIMATE_UNITS.includes(it.unit) ? it.unit : 'g';
-    const amount = Number(it.amount) > 0 ? Number(it.amount) : null;
-    const guess = given(it.kcal_estimate) && Number(it.kcal_estimate) >= 0 ? Number(it.kcal_estimate) : null;
+    const { unit, amount } = u;
+    const m = found.get(i) || null;
+    const guess = read[i].kcal ?? m?.guess?.kcal ?? (u.fill?.kcal != null && u.weight ? Math.round((u.fill.kcal * u.weight) / 10) / 10 : null);
     const count = unit === 'piece' && amount > 1 ? ` x${Number(amount.toFixed(2))}` : '';
     try {
-      const m = amount ? await matchMealItem({ name, search: String(it.search || name), amount, unit, confidence: 'medium' }) : null;
       const record = m?.match || null;
-      const noEnergy = record && !given(record.nutrients?.kcal);
       let entry = null;
-      if (record && Number(m.qty) > 0 && !(noEnergy && guess !== null)) {
+      if (record && Number(m.qty) > 0) {
         try {
-          ({ entry } = await f.logFood({ key: record.key, qty: m.qty, unit: m.unit, ...when, estimate: true }, 'coach'));
+          ({ entry } = await f.logFood({ key: record.key, qty: m.qty, unit: m.unit, ...when, estimate: true, fill: u.fill }, 'coach'));
         } catch (err) {
           // An amount the record cannot take falls back to the calorie estimate, when there is one.
           if (!(err instanceof RuleError) || guess === null) throw err;
@@ -133,7 +159,8 @@ async function logFoodEstimate({ items, slot, date, time }) {
       }
       if (entry) {
         receipts.push({ ok: true, text: `Logged ${name}${count} ${roughly(entry)} (estimate, ${kcalText(entry.nutrients?.kcal)})` });
-        detail.push(`${name}: entry ${entry.id}, ${entry.slot} on ${entry.date}, catalogue record "${entry.name}"`);
+        const filled = entry.filled?.length ? `, filled from your estimate: ${entry.filled.join(' and ')}` : '';
+        detail.push(`${name}: entry ${entry.id}, ${entry.slot} on ${entry.date}, catalogue record "${entry.name}"${entry.brand ? ` by ${entry.brand}` : ''}, ${entry.amountText}${m.why ? `, chosen because: ${m.why}` : ''}${filled}`);
         continue;
       }
       if (guess === null) {
@@ -144,7 +171,9 @@ async function logFoodEstimate({ items, slot, date, time }) {
       // The assumed size stays on the diary entry, so he can see what the calories stand for.
       const howMuch = !amount ? '' : unit === 'piece' ? `${Number(amount.toFixed(2))} ${amount === 1 ? 'piece' : 'pieces'}` : `about ${Math.round(amount)} ${unit}`;
       const { entry: q } = await f.quickAdd({
-        name, kcal: guess, estimate: true, ...when, ...(howMuch ? { amount: howMuch } : {}), ...(unit === 'ml' && amount ? { ml: amount } : {}),
+        name, kcal: guess, estimate: true, ...when, fill: u.fill,
+        ...(howMuch ? { amount: howMuch } : {}),
+        ...(unit === 'ml' && amount ? { ml: amount } : u.weight ? { grams: u.weight } : {}),
       }, 'coach');
       receipts.push({ ok: true, text: `Logged ${name}${size} as a quick add (estimate, ${kcalText(q.nutrients?.kcal)})` });
       detail.push(`${name}: entry ${q.id}, ${q.slot} on ${q.date}, quick add${record ? '' : ', no catalogue match'}`);
@@ -563,7 +592,7 @@ const TOOLS = {
     },
   },
   log_food_estimate: {
-    description: 'Log food and drink he describes loosely ("had a kebab and chips", "two slices of pizza and a coke", "a big bowl of pasta"). Prefer this over search_food + log_food whenever he does not give an exact product and amount; keep log_food for exact items he names with amounts. Never ask him for grams: use a typical portion for each item and say what you assumed in a few words. One item per food or drink; list sides, sauces and drinks separately. Each item is matched to the closest catalogue record and logged as an estimate he can edit in the Food tab. Give kcal_estimate on every item: anything the catalogue lacks is then logged as a quick add of your estimate instead of being dropped. Leave slot, date and time out to use now, or set them from what he said.',
+    description: 'Log food and drink he describes loosely ("large fries from Burger King", "a medium bunch of grapes", "had a kebab and chips", "a big bowl of pasta"). Prefer this over search_food + log_food whenever he does not give an exact product and amount; keep log_food for exact items he names with amounts. Never ask him for grams: use the real portion for what he said (that restaurant\'s large, a typical medium) and say what you assumed in a few words. One item per food or drink; list sides, sauces and drinks separately. Be as specific as he was: put the brand or restaurant, the variety, how it was cooked and his size words in their own fields, because each item is matched to the most specific catalogue record (the restaurant\'s own item and the portion his size word names, before anything generic) and logged as an estimate he can edit in the Food tab. Give kcal_estimate and per100 on every item: per100 fills the values a record lacks (sugars, fibre, salt), and anything the catalogue lacks is logged as a quick add of your estimate instead of being dropped. Leave slot, date and time out to use now, or set them from what he said.',
     properties: {
       items: {
         type: 'array',
@@ -571,11 +600,22 @@ const TOOLS = {
         items: {
           type: 'object',
           properties: {
-            name: S('Plain UK English, as he would say it, e.g. "chicken kebab", "chips", "Coca-Cola"'),
-            search: S('2 to 4 generic words that would find it in a food database, e.g. "chicken kebab", "chips fried", "cola", "pizza cheese"'),
-            amount: N('A typical portion, in the unit'),
+            name: S('Plain UK English without size words, e.g. "fries", "red grapes", "chicken kebab", "Coca-Cola"'),
+            brand: S('The brand or restaurant when he names one, e.g. "Burger King", "Kinnie"; leave it out otherwise'),
+            variety: S('The kind, e.g. "red", "wholemeal", "zero sugar"; leave it out if he did not say'),
+            preparation: S('How it was cooked or served, e.g. "deep fried", "grilled", "raw"'),
+            size: S('His size words as he said them, e.g. "large", "medium", "a bowl of"'),
+            search: S('2 to 4 words that would find it in a mostly American (USDA) food database, without size words, the brand first when there is one, e.g. "burger king french fries", "red grapes", "chicken kebab", "cola"'),
+            searches: { type: 'array', items: S(), description: 'Up to 2 more search phrases, ending with a plain generic one, e.g. ["french fries", "potato french fries"]' },
+            amount: N('The amount, in the unit: his own, or the real portion for that size and place'),
             unit: E(ESTIMATE_UNITS, 'g for food, ml for drinks, piece for whole countable things (a slice, an egg, a banana)'),
+            weight: N('The same amount in grams (ml for drinks), so pieces are weighed too'),
             kcal_estimate: N('Your best calorie estimate for the whole amount'),
+            per100: {
+              type: 'object',
+              description: 'Your estimate per 100 g (per 100 ml for drinks) of this exact food: kcal; protein, carbs, sugars, fat, satfat, fibre and salt in g; caffeine in mg; alcohol in g. 0 only when it truly has none.',
+              properties: Object.fromEntries(FILL_KEYS.map((k) => [k, N()])),
+            },
           },
           required: ['name', 'search', 'amount', 'unit'],
         },
