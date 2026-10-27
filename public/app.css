@@ -71,6 +71,21 @@
   --c-day: var(--menthol);
   --c-move: var(--blaze);
   --c-sleep: var(--cherry);
+  /* Today's rings: a deep start (0), a bright head (1), a dark track (t) and a glow (g) each. Merlot is
+     HP; Chrome is the day, turning Menthol once everything due is done; Sky is movement. Fuel: Honey
+     for energy, the Food page's teal for protein, Lime for fibre. */
+  --ring-hp-0: #9c0700; --ring-hp-1: #ff5a36; --ring-hp-t: #2b0907; --ring-hp-g: rgba(255, 46, 20, 0.6);
+  --ring-day-0: #646c7b; --ring-day-1: #ffffff; --ring-day-t: #1d2027; --ring-day-g: rgba(222, 230, 245, 0.42);
+  --ring-done-0: #0c9a6f; --ring-done-1: #a6ffe4; --ring-done-t: #07261c; --ring-done-g: rgba(63, 240, 185, 0.6);
+  --ring-move-0: #1747d8; --ring-move-1: #5cd5ff; --ring-move-t: #0a1730; --ring-move-g: rgba(52, 150, 255, 0.6);
+  --ring-kcal-0: #d9410b; --ring-kcal-1: #ffbe2e; --ring-kcal-t: #2c1405; --ring-kcal-g: rgba(255, 140, 26, 0.55);
+  --ring-pro-0: #08766c; --ring-pro-1: #3fe8b0; --ring-pro-t: #062319; --ring-pro-g: rgba(31, 200, 140, 0.55);
+  --ring-fib-0: #7c9e0a; --ring-fib-1: #cdf23c; --ring-fib-t: #18220a; --ring-fib-g: rgba(170, 230, 50, 0.5);
+  /* The overview's small charts: one step of each ring's hue, dark enough for a filled mark. */
+  --cv-hp: #e8180a;
+  --cv-kcal: #e88a0c;
+  --cv-move: #2f8af2;
+  --cv-sleep: var(--c-sleep);
   /* Urgency: the current item's colour, set per element by class. */
   --urg: var(--chrome-c);
 
@@ -714,56 +729,82 @@ button.li:active .chk { transform: scale(0.86); transition: background-color var
 
 /* ---------- Today: rings ---------- */
 
-/* The rings are the hero: big, glowing arcs with HP in the middle, on a faint Merlot bloom. */
-.rings-card {
-  position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 18px;
-  padding: 24px 20px 20px; background: radial-gradient(90% 70% at 50% 0%, rgba(225, 6, 0, 0.14), transparent 70%), var(--card);
+/* The hero: two sets of rings on a faint Merlot bloom. HP, the day and movement with HP in the middle;
+   then energy, protein and fibre, which open Food. Each arc is a conic gradient from a deep start to a
+   bright head over a dark track of its own colour, with a glow; past a full lap the second lap runs
+   over the first and its head casts a shadow. --ring-p (0 to 2) is how full a ring is, registered so
+   it can be swept; size, stroke and gap are tokens per set and screen. */
+@property --ring-p { syntax: '<number>'; inherits: true; initial-value: 0; }
+.rings-card { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr); padding: 20px 18px 16px; }
+.rc-set { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 20px; min-width: 0; color: inherit; text-decoration: none; }
+.rc-fuel { grid-template-columns: auto minmax(0, 1fr) auto; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); border-radius: 0; }
+.rc-fuel .rings { transition: transform var(--spring-ms) var(--spring); }
+.rc-fuel:active .rings { transform: scale(0.97); transition-duration: var(--t-press); }
+.rings { --size: 168px; --sw: 15px; --rgap: 3px; --amb: rgba(225, 6, 0, 0.2); position: relative; width: var(--size); height: var(--size); flex: none; }
+/* Each set sits in a soft light of its own colour. */
+.rings::before { content: ''; position: absolute; inset: -16%; border-radius: 50%; background: radial-gradient(closest-side, var(--amb), transparent); pointer-events: none; }
+.rc-fuel .rings { --amb: rgba(255, 140, 26, 0.13); }
+.ring {
+  position: absolute; inset: calc(var(--i) * (var(--sw) + var(--rgap))); border-radius: 50%;
+  --band: radial-gradient(farthest-side, transparent calc(100% - var(--sw) - 0.5px), #000 calc(100% - var(--sw) + 0.5px));
 }
-.rings-hero { position: relative; width: 200px; height: 200px; }
-.rings-hero .rings { width: 100%; height: 100%; }
-.rings { display: block; overflow: visible; }
+.ring > i, .ring-ink > i { position: absolute; inset: 0; border-radius: 50%; }
+.ring-track { background: var(--rt); -webkit-mask: var(--band); mask: var(--band); }
+.ring-ink { filter: drop-shadow(0 0 calc(var(--sw) * 0.42) var(--rg)); }
+.ring-arc { background: conic-gradient(var(--r0), var(--r1) calc(min(var(--ring-p), 1) * 1turn), transparent 0); -webkit-mask: var(--band); mask: var(--band); }
+.ring-lap { display: none; background: conic-gradient(var(--r1) calc(max(var(--ring-p) - 1, 0) * 1turn), transparent 0); -webkit-mask: var(--band); mask: var(--band); }
+.ring.over .ring-lap { display: block; }
+.ring.over .ring-cap { display: none; }
+.ring-cap, .ring-head { opacity: clamp(0, calc(var(--ring-p) * 400), 1); }
+.ring-cap::before, .ring-head::before {
+  content: ''; position: absolute; left: 50%; top: 0; width: var(--sw); height: var(--sw); margin-left: calc(var(--sw) / -2); border-radius: 50%;
+}
+.ring-cap::before { background: var(--r0); }
+.ring-head { transform: rotate(calc(var(--ring-p) * 1turn)); }
+.ring-head::before { background: var(--r1); }
+.ring.over .ring-head::before { box-shadow: calc(var(--sw) * 0.2) 0 calc(var(--sw) * 0.3) rgba(0, 0, 0, 0.7); }
+/* The closing moment: the band flares and a light runs once around it (ui.js). */
+.ring-flare { opacity: 0; border: var(--sw) solid var(--r1); filter: blur(calc(var(--sw) * 0.4)); }
+.ring-shine {
+  opacity: 0; mix-blend-mode: screen; -webkit-mask: var(--band); mask: var(--band);
+  background: conic-gradient(transparent 0 70%, rgba(255, 255, 255, 0.95) 93%, transparent 96%);
+}
+.r-hp { --r0: var(--ring-hp-0); --r1: var(--ring-hp-1); --rt: var(--ring-hp-t); --rg: var(--ring-hp-g); }
+.r-day { --r0: var(--ring-day-0); --r1: var(--ring-day-1); --rt: var(--ring-day-t); --rg: var(--ring-day-g); }
+.r-day.done { --r0: var(--ring-done-0); --r1: var(--ring-done-1); --rt: var(--ring-done-t); --rg: var(--ring-done-g); }
+.r-move { --r0: var(--ring-move-0); --r1: var(--ring-move-1); --rt: var(--ring-move-t); --rg: var(--ring-move-g); }
+.r-kcal { --r0: var(--ring-kcal-0); --r1: var(--ring-kcal-1); --rt: var(--ring-kcal-t); --rg: var(--ring-kcal-g); }
+.r-pro { --r0: var(--ring-pro-0); --r1: var(--ring-pro-1); --rt: var(--ring-pro-t); --rg: var(--ring-pro-g); }
+.r-fib { --r0: var(--ring-fib-0); --r1: var(--ring-fib-1); --rt: var(--ring-fib-t); --rg: var(--ring-fib-g); }
+.rings-card.low .r-hp .ring-ink { animation: hp-pulse 1.8s ease-in-out infinite; }
+.rings-card.ticked .r-day .ring-ink { animation: day-pulse 0.9s var(--ease) 1; }
+@keyframes hp-pulse { 50% { filter: drop-shadow(0 0 calc(var(--sw) * 0.95) rgba(255, 30, 10, 0.95)); } }
+@keyframes day-pulse { 40% { filter: drop-shadow(0 0 var(--sw) var(--rg)) brightness(1.25); } }
 .rings-center { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; line-height: 1; pointer-events: none; }
-.rings-center b { font-size: 2.5rem; font-weight: 780; letter-spacing: -0.045em; color: var(--text); }
-.rings-center span { margin-top: 4px; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.16em; color: var(--merlot-hi); }
+.rings-center b { font-size: calc(var(--size) * 0.2); font-weight: 780; letter-spacing: -0.045em; color: var(--text); }
+.rings-center b.wide { font-size: calc(var(--size) * 0.155); }
+.rings-center > span { margin-top: 3px; font-family: var(--mono); font-size: 0.625rem; letter-spacing: 0.16em; color: var(--merlot-hi); }
+.rings-center .ic { width: 22px; height: 22px; color: var(--text-3); }
 .rings-card.low .rings-center b { color: var(--merlot-hi) !important; -webkit-text-fill-color: var(--merlot-hi) !important; background: none !important; }
-.ring { color: var(--c-day); }
-.ring.r-hp { color: var(--c-hp); }
-.ring.r-day { color: var(--c-day); }
-.ring.r-move { color: var(--c-move); }
-.ring-track { stroke: currentColor; opacity: 0.17; }
-.ring-fill { stroke: currentColor; filter: drop-shadow(0 0 5px color-mix(in srgb, currentColor 55%, transparent)); }
-.ring.r-hp .ring-fill { stroke: url(#rg-r-hp); }
-.ring.r-day .ring-fill { stroke: url(#rg-r-day); }
-.ring.r-move .ring-fill { stroke: url(#rg-r-move); }
-.rings-card.low .r-hp .ring-fill { animation: hp-pulse 1.8s ease-in-out infinite; }
-.rings-card.ticked .r-day .ring-fill { animation: day-pulse 0.9s var(--ease) 1; }
-@keyframes hp-pulse { 50% { filter: drop-shadow(0 0 13px rgba(225, 6, 0, 0.95)); } }
-@keyframes day-pulse { 40% { filter: drop-shadow(0 0 16px rgba(63, 240, 185, 0.95)); } }
-.legend { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; width: 100%; min-width: 0; }
-.lg {
-  --lg-c: var(--c-day);
-  display: grid; align-content: start; gap: 2px; min-width: 0; padding: 11px 12px 12px; border-radius: var(--r-inset);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--lg-c) 9%, transparent), transparent 70%), var(--inset);
-  box-shadow: inset 0 2px 0 var(--lg-c), inset 0 0 0 1px var(--line-soft);
-}
-.lg.r-hp { --lg-c: var(--merlot); }
-.lg.r-move { --lg-c: var(--blaze); }
-.lg-label { font-family: var(--mono); font-size: 0.71875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
-.lg.r-hp .lg-label { color: var(--c-hp); }
-.lg.r-day .lg-label { color: var(--c-day); }
-.lg.r-move .lg-label { color: var(--c-move); }
-.lg-val { font-size: 1.3125rem; font-weight: 740; line-height: 1.15; letter-spacing: -0.02em; }
-.lg-val small { display: inline-block; font-size: 0.875rem; font-weight: 600; color: var(--text-3); letter-spacing: 0; margin-left: 1px; }
+/* The legend: a lit swatch and a quiet label, the number big, what it means under it. */
+.legend { display: grid; gap: 12px; min-width: 0; }
+.lg { display: grid; gap: 1px; min-width: 0; }
+.lg-label { display: flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2); }
+.lg-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; background: linear-gradient(135deg, var(--r1), var(--r0)); box-shadow: 0 0 9px var(--rg); }
+.lg-val { font-size: 1.375rem; font-weight: 740; line-height: 1.15; letter-spacing: -0.02em; white-space: nowrap; }
+.lg-val small { font-size: 0.8125rem; font-weight: 600; color: var(--text-3); letter-spacing: 0; margin-left: 2px; }
+.lg-val .na { color: var(--text-3); font-weight: 600; }
+.lg-plus { font-style: normal; font-weight: 600; color: var(--text-3); }
 .lg.low .lg-val { color: var(--red) !important; -webkit-text-fill-color: var(--red) !important; background: none !important; }
-.lg-sub { font-size: 0.75rem; color: var(--text-2); line-height: 1.35; }
-.lg.r-hp .lg-label { color: var(--merlot-hi); }
+.lg-sub { font-size: 0.75rem; color: var(--text-2); line-height: 1.3; }
 @media (min-width: 640px) {
-  .rings-hero { width: 224px; height: 224px; }
-  .rings-center b { font-size: 2.75rem; }
+  .rings-card { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 24px 22px 18px; }
+  .rc-fuel { margin-top: 0; padding: 0 0 0 22px; border-top: 0; border-left: 1px solid var(--line); }
+  .rings { --size: 176px; --sw: 16px; }
   .lg-val { font-size: 1.5rem; }
 }
 .rings-foot {
-  grid-column: 1 / -1; width: 100%; margin-top: 2px; padding-top: 14px; border-top: 1px solid var(--line);
+  grid-column: 1 / -1; width: 100%; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line);
   font-size: 0.875rem; color: var(--text-2); line-height: 1.6;
 }
 .rings-foot b { color: var(--text); font-weight: 650; }
@@ -904,27 +945,118 @@ body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(saf
 .tl-now::after { content: ''; position: absolute; left: 52px; width: 10px; height: 10px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 3px var(--card); }
 .tl-now span { font-family: var(--mono); font-size: 0.75rem; font-weight: 600; color: var(--red); background: var(--card); padding-right: 4px; position: relative; }
 
-/* ---------- Health on Today ---------- */
+/* ---------- Today: the overview tiles ---------- */
 
-.health-mini { padding: 16px 18px 18px; }
-.hm-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px 12px; font-weight: 650; }
-.hm-head > span { display: inline-flex; align-items: center; gap: 6px; }
-.hm-head > span:first-child .ic { color: var(--red); width: 18px; height: 18px; }
-.hm-head .faint { font-weight: 500; }
-.hm-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 18px; margin-top: 14px; }
-.hm-tile { min-width: 0; }
-.hm-label { display: flex; align-items: center; gap: 6px; font-size: 0.8125rem; color: var(--text-2); }
-.hm-label .ic { width: 15px; height: 15px; }
-.hm-val { display: block; margin-top: 3px; font-weight: 720; font-size: 1.375rem; letter-spacing: -0.015em; line-height: 1.2; }
-.hm-val small { font-size: 0.8125rem; color: var(--text-2); font-weight: 600; letter-spacing: 0; }
-.hm-tile:nth-child(1) .pbar i { background: var(--c-move); }
-.hm-tile:nth-child(2) .pbar i { background: var(--c-day); }
-.hm-tile:nth-child(3) .pbar i { background: var(--c-hp); }
-.hm-tile:nth-child(4) .pbar i { background: var(--c-sleep); }
-.hm-work { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 0.875rem; color: var(--text-2); }
-.hm-work .ic { width: 16px; height: 16px; }
-.connect-card { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: center; }
-.connect-card b { display: block; font-weight: 650; }
+/* Small tiles under Up next, two across on the phone and three on wider screens. Each is a link to
+   the page with the detail: a quiet label, one number, a small chart, a line of context. */
+.ov { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.ov > .card, .ov-wide > .card { margin-top: 0; }
+.ov-wide { grid-column: 1 / -1; min-width: 0; }
+.ov-tile { --ov-c: var(--text-3); display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 14px 14px 13px; border-radius: var(--r-tile); }
+.ov-h {
+  display: flex; align-items: center; gap: 6px; min-width: 0;
+  font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2);
+}
+.ov-h > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ov-h > .ic:first-child { width: 15px; height: 15px; color: var(--ov-c); }
+.ov-v { margin-top: 2px; font-size: 1.5rem; font-weight: 740; letter-spacing: -0.02em; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ov-v small { margin-left: 4px; font-size: 0.8125rem; font-weight: 600; color: var(--text-3); letter-spacing: 0; }
+.ov-v .na { color: var(--text-3); font-weight: 600; }
+.ov-sub { margin-top: auto; padding-top: 2px; font-size: 0.75rem; line-height: 1.35; color: var(--text-2); }
+.ov-food, .ov-energy { --ov-c: var(--honey); }
+.ov-hp { --ov-c: var(--merlot-hi); }
+.ov-week { --ov-c: var(--menthol); }
+.ov-steps { --ov-c: var(--ring-move-1); }
+.ov-sleep { --ov-c: var(--cv-sleep); }
+.ov-next { --ov-c: var(--chrome-c); gap: 10px; }
+.ov-hp.low .ov-v { color: var(--merlot-hi); }
+
+/* Columns: past days in graphite (tinted when they met the goal), today in full colour, a hairline
+   for the goal or the average with its number in the margin. */
+.ov-chart { margin-top: 6px; }
+.oc-plot { position: relative; padding-right: 26px; }
+.oc-plot svg { display: block; overflow: hidden; }
+.oc-bar { fill: #2c3039; transform-box: fill-box; transform-origin: 50% 100%; }
+.oc-bar.met { fill: color-mix(in oklab, var(--oc) 46%, #2c3039); }
+.oc-bar.cur { fill: var(--oc); }
+.oc-none { fill: var(--line-strong); transform-box: fill-box; transform-origin: 50% 100%; }
+.oc-ref { stroke: var(--text-3); stroke-width: 1; opacity: 0.75; }
+.oc-ref-label { position: absolute; right: 0; transform: translateY(50%); font-family: var(--mono); font-size: 0.625rem; line-height: 1; color: var(--text-3); }
+.oc-axis { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); margin: 5px 26px 0 0; text-align: center; font-family: var(--mono); font-size: 0.625rem; color: var(--text-3); }
+.oc-axis .cur { color: var(--text); font-weight: 600; }
+.c-kcal { --oc: var(--cv-kcal); }
+.c-move { --oc: var(--cv-move); }
+.c-sleep { --oc: var(--cv-sleep); }
+
+/* HP: a line on a fixed 0 to 100 scale, a wash under it and a lit dot on now. */
+.ov-spark { position: relative; height: 48px; margin-top: 8px; }
+.ov-spark svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.sp-line { fill: none; stroke: var(--cv-hp); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+.sp-w0 { stop-color: var(--cv-hp); stop-opacity: 0.3; }
+.sp-w1 { stop-color: var(--cv-hp); stop-opacity: 0; }
+.sp-base { stroke: var(--line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.sp-hit { fill: transparent; }
+.sp-dot {
+  position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%;
+  background: var(--merlot-hi); box-shadow: 0 0 0 2px var(--card), 0 0 10px rgba(255, 42, 23, 0.85);
+}
+
+/* The week: a dot a day, Monday first. Clean is a lit Menthol check, a miss a Merlot cross, rest
+   hatched, today its progress, the days to come an empty outline. */
+.wk { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; margin-top: 8px; }
+.wk-day { display: grid; justify-items: center; gap: 5px; min-width: 0; }
+.wk-dot {
+  display: grid; place-items: center; width: 100%; max-width: 22px; aspect-ratio: 1; border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--line-strong); color: var(--text-3);
+}
+.wk-dot .ic { width: 64%; height: 64%; stroke-width: 2.8; }
+.wk-dot .mring { width: 100%; height: 100%; color: var(--silver); }
+.wk-day.clean .wk-dot { background: linear-gradient(160deg, #8dffdc, var(--menthol) 55%, #14b585); color: #03261b; box-shadow: 0 0 10px rgba(63, 240, 185, 0.32); }
+.wk-day.missed .wk-dot { background: rgba(225, 6, 0, 0.2); color: var(--merlot-hi); box-shadow: inset 0 0 0 1.5px var(--merlot-hi); }
+.wk-day.rest .wk-dot { background: repeating-linear-gradient(45deg, var(--line-strong) 0 1.5px, transparent 1.5px 4px); box-shadow: inset 0 0 0 1.5px var(--line-ctl); }
+.wk-day.quiet .wk-dot { background: var(--fill-2); box-shadow: none; }
+.wk-day.none .wk-dot { box-shadow: inset 0 0 0 1px var(--line); }
+.wk-day.future .wk-dot { box-shadow: inset 0 0 0 1.5px var(--line); }
+.wk-day.today .wk-dot { box-shadow: none; }
+.wk-l { font-family: var(--mono); font-size: 0.625rem; line-height: 1; color: var(--text-3); }
+.wk-day.today .wk-l { color: var(--text); font-weight: 600; }
+
+/* Food: the macro split as one bar, a 2 px gap between its parts. */
+.ov-split { display: flex; gap: 2px; height: 8px; margin-top: 10px; border-radius: 4px; overflow: hidden; }
+.ov-split i { min-width: 2px; background: var(--m); }
+.ov-key { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 8px; font-size: 0.75rem; color: var(--text-2); }
+.ov-key span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.ov-key i { width: 8px; height: 8px; border-radius: 2px; background: var(--m); }
+.ov-split i.m-unknown, .ov-key i.m-unknown { background: var(--hatch, var(--fill-2)); }
+
+/* Next today: up to three rows, a time, the event's colour, what and where. */
+.nx-chips { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.nx-chip {
+  display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 3px 10px 3px 8px; border-radius: 999px;
+  background: var(--fill); box-shadow: inset 0 0 0 1px var(--line); font-size: 0.75rem; font-weight: 600; color: var(--text-2);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.nx-chip::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--chrome-c)); flex: none; }
+.nx-list { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
+.nx-row { display: grid; grid-template-columns: 42px 3px minmax(0, 1fr); gap: 10px; align-items: stretch; min-width: 0; }
+.nx-time { padding-top: 2px; font-family: var(--mono); font-size: 0.8125rem; font-weight: 500; color: var(--text-2); }
+.nx-row.on .nx-time { color: var(--menthol); font-weight: 600; }
+.nx-bar { border-radius: 2px; background: var(--c, var(--chrome-c)); min-height: 18px; }
+.nx-row[class*="due"] .nx-bar { background: transparent; box-shadow: inset 0 0 0 1.5px var(--amber); }
+.nx-row.deadline .nx-bar { background: var(--red); }
+.nx-body { display: grid; min-width: 0; }
+.nx-body b { font-size: 0.9375rem; font-weight: 600; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nx-body small { font-size: 0.75rem; color: var(--text-2); line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nx-empty { font-size: 0.9375rem; color: var(--text-2); }
+
+.ov-connect { grid-column: 1 / -1; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: center; flex-direction: initial; }
+.ov-connect b { display: block; font-weight: 650; }
+@media (min-width: 640px) {
+  .ov { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .ov-tile { padding: 16px 16px 14px; }
+  .ov-connect { grid-column: span 2; }
+}
+
 .connect-ic, .setup-ic {
   width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; flex: none;
   background: var(--raised); color: var(--red); box-shadow: inset 0 0 0 1px var(--line);
@@ -1655,12 +1787,11 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
 
 @media (max-width: 380px) {
   :root { --pad: 16px; --gutter: 14px; }
-  .rings-card { padding: 20px 14px 16px; }
-  .rings-hero { width: 176px; height: 176px; }
-  .rings-center b { font-size: 2.125rem; }
-  .legend { grid-template-columns: minmax(0, 1fr); }
-  .lg { grid-template-columns: auto auto minmax(0, 1fr); align-items: baseline; gap: 2px 10px; }
-  .lg-sub { text-align: right; }
+  .rings-card { padding: 18px 14px 14px; }
+  .rc-set { gap: 16px; }
+  .rings { --size: 148px; --sw: 14px; }
+  .ov { gap: 8px; }
+  .ov-tile { padding: 13px 12px 12px; }
   .li { gap: 4px 12px; padding: 12px 14px; }
   .li-min { padding-left: 56px; }
   .now { padding: 20px 16px 18px; }
@@ -1669,9 +1800,20 @@ body.sheet-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px
   .node-add .btn { flex: 1 1 100%; }
 }
 
-/* Very narrow, as at 200% zoom: the rings sit above their legend. */
+/* The smallest phones: smaller rings, so the legend keeps its room beside them. */
+@media (max-width: 340px) {
+  .rc-set { gap: 14px; }
+  .rings { --size: 124px; --sw: 12px; --rgap: 2px; }
+  .rings-center .ic { width: 18px; height: 18px; }
+  .lg-val { font-size: 1.25rem; }
+  .ov-v { font-size: 1.3125rem; }
+}
+
+/* Very narrow, as at 200% zoom: the rings sit above their legend, the tiles in one column. */
 @media (max-width: 300px) {
-  .rings-card { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+  .rc-set, .rc-fuel { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+  .rc-fuel > .chev { display: none; }
+  .ov { grid-template-columns: minmax(0, 1fr); }
   .lt { flex-wrap: wrap; }
   .tab > span:last-child { font-size: 0.625rem; }
   .now-foot .seg.mini { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }

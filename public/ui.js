@@ -306,66 +306,141 @@ export function icon(name, cls = '') {
 }
 
 // ---------- Rings: the day at a glance ----------
-// list: [{ pct, cls }] outside in. Each ring is a track plus a gradient arc. They sweep in from empty
-// once per session, and after that from where they were whenever their value changes (a tick).
-const RING_STOPS = {
-  'r-hp': ['var(--merlot-hi)', 'var(--merlot)', '#a30400'],
-  'r-day': ['#8dffdc', 'var(--menthol)', '#1fbf8e'],
-  'r-move': ['var(--honey)', 'var(--blaze)', 'var(--ember)'],
-  'r-sleep': ['#ff7d97', 'var(--cherry)', '#c4103a'],
-};
-const RING_MS = 1100;
-let ringsDrawn = false;
+// list: [{ pct, cls, key, close, fx }] outside in. Each ring is a dark track and an arc painted as a
+// conic gradient, deep at its start and bright at its head, with a round cap at each end and a glow.
+// Past 100% a second lap runs over the first, its head casting a shadow onto it. Size, stroke and gap
+// come from CSS (--size, --sw, --rgap on .rings), so one set can change size with the screen.
+// set names the set, so two sets on a screen sweep on their own. A ring sweeps in from empty the
+// first time its set is drawn this session, and after that from where it was whenever its value
+// changes. A ring marked close that crosses 100% after that gets a closing moment once its sweep
+// lands, and sends its fx (default 'ring-close') to the sounds.
+export const RING_MS = 1100;
+const RING_EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
+
+// The same curve in JS, so numbers can count on the rings' clock.
+function bezier(x1, y1, x2, y2) {
+  const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
+  const cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+  const at = (a, b, c, t) => ((a * t + b) * t + c) * t;
+  return (x) => {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    let t = x;
+    for (let i = 0; i < 8; i += 1) {
+      const err = at(ax, bx, cx, t) - x;
+      if (Math.abs(err) < 1e-5) break;
+      t -= err / ((3 * ax * t + 2 * bx) * t + cx);
+    }
+    return at(ay, by, cy, Math.max(0, Math.min(1, t)));
+  };
+}
+export const ringEase = bezier(0.23, 1, 0.32, 1);
+
+// Sweeping a custom property needs it registered (@property --ring-p in app.css); without that the
+// rings simply show their values.
+const canSweep = typeof window.CSS?.registerProperty === 'function';
 const ringWas = {};
-let sweep = null; // the sweep under way: when it started, and each ring's start and end
-export function rings(list, size = 128) {
-  // Big rings get relatively thinner strokes, leaving room for the number in the middle.
-  const sw = Math.round(size * (size >= 160 ? 0.086 : 0.105));
-  const gap = Math.max(2, Math.round(size * 0.02));
-  const first = !ringsDrawn;
-  ringsDrawn = true;
+const setsDrawn = new Set();
+const sweeps = new Map(); // set: { t0, from: { key }, to: { key } }
+const closings = []; // { key, at, fx, fired }
+const CLOSE_MS = 1000;
+const FX_RANK = { 'ring-close': 1, 'all-done': 2 };
+let lastFx = null;
+
+// A ring's moment for the sounds (the oath:fx contract). Rings closing together make one sound:
+// the biggest of them.
+export function ringFx(fx) {
   const now = performance.now();
-  // A redraw in the middle of a sweep carries on with it rather than jumping to the end.
-  const going = sweep && now - sweep.t0 < RING_MS && list.every((ring) => sweep.to[ring.cls] === Math.max(0, Math.min(1, (ring.pct || 0) / 100))) ? sweep : null;
+  const rank = FX_RANK[fx] || 1;
+  if (lastFx && now - lastFx.at < 200 && lastFx.rank >= rank) return;
+  lastFx = { at: now, rank };
+  document.dispatchEvent(new CustomEvent('oath:fx', { detail: fx }));
+}
+const clampRing = (pct) => Math.max(0, Math.min(1.97, (Number(pct) || 0) / 100));
+
+// ready: false while a set's data is still on its way; the set is drawn as given and its first sweep
+// waits for the data.
+export function rings(list, { set = 'main', center = '', ready = true } = {}) {
+  const first = !setsDrawn.has(set);
+  if (ready) setsDrawn.add(set);
+  const now = performance.now();
+  const prev = sweeps.get(set);
+  const live = prev && now - prev.t0 < RING_MS;
+  // A redraw in the middle of a sweep carries on with it rather than jumping to the end; a new value
+  // mid-sweep starts from where the ring is on screen.
+  const going = live && list.every((r) => prev.to[r.key || r.cls] === clampRing(r.pct)) ? prev : null;
+  const shown = (k) => (live && prev.to[k] !== undefined ? prev.from[k] + (prev.to[k] - prev.from[k]) * ringEase((now - prev.t0) / RING_MS) : ringWas[k]);
   const next = { t0: now, from: {}, to: {} };
   let moving = false;
-  const defs = list.map(({ cls }) => RING_STOPS[cls] && `<linearGradient id="rg-${cls}" x1="0" y1="0" x2="1" y2="1">${RING_STOPS[cls]
-    .map((c, i) => `<stop offset="${i / 2}" style="stop-color:${c}"/>`).join('')}</linearGradient>`).filter(Boolean).join('');
-  const circles = list.map((ring, i) => {
-    const r = size / 2 - sw / 2 - i * (sw + gap);
-    const c = 2 * Math.PI * r;
-    const p = Math.max(0, Math.min(1, (ring.pct || 0) / 100));
-    const off = c * (1 - p);
-    const from = going ? going.from[ring.cls] : first ? 0 : (ringWas[ring.cls] ?? p);
-    ringWas[ring.cls] = p;
-    next.from[ring.cls] = from;
-    next.to[ring.cls] = p;
+  const html = list.map((ring, i) => {
+    const k = ring.key || ring.cls;
+    const p = clampRing(ring.pct);
+    const was = ringWas[k];
+    const from = !ready ? p : going ? going.from[k] : first ? 0 : (shown(k) ?? p);
+    if (ready) {
+      if (!going && !first && ring.close && was !== undefined && was < 1 && p >= 1) closings.push({ key: k, at: now + RING_MS, fx: ring.fx || 'ring-close', fired: false });
+      ringWas[k] = p;
+    }
+    next.from[k] = from;
+    next.to[k] = p;
     if (from !== p) moving = true;
-    return `<g class="ring ${ring.cls}">
-      <circle cx="${size / 2}" cy="${size / 2}" r="${r.toFixed(2)}" class="ring-track" stroke-width="${sw}" fill="none"/>
-      <circle cx="${size / 2}" cy="${size / 2}" r="${r.toFixed(2)}" class="ring-fill" stroke-width="${sw}" fill="none" stroke-linecap="round"
-        stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}"${from !== p ? ` data-from="${(c * (1 - from)).toFixed(2)}"` : ''}
-        transform="rotate(-90 ${size / 2} ${size / 2})"${p || from ? '' : ' opacity="0"'}/>
-    </g>`;
+    return `<div class="ring ${ring.cls}${p > 1 ? ' over' : ''}" data-ring="${k}" style="--i:${i};--ring-p:${p.toFixed(4)}"${from !== p ? ` data-from="${from.toFixed(4)}"` : ''}>
+      <i class="ring-track"></i><i class="ring-flare"></i><i class="ring-ink"><i class="ring-arc"></i><i class="ring-lap"></i><i class="ring-cap"></i><i class="ring-head"></i></i><i class="ring-shine"></i></div>`;
   }).join('');
-  sweep = going || (moving ? next : null);
-  return `<svg class="rings" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><defs>${defs}</defs>${circles}</svg>`;
+  if (!going && ready) sweeps.set(set, moving ? next : null);
+  return `<div class="rings" data-rings="${set}" aria-hidden="true">${html}${center ? `<div class="rings-center">${center}</div>` : ''}</div>`;
 }
 
-// After a render, sweep any ring drawn away from its value to it (Web Animations, so a redraw can
-// pick the sweep up where it was). Reduced motion shows the value at once.
+// A ring that has just closed: its glow flares and a light runs once around it. t: how far in, so a
+// redraw in the middle picks the moment up where it was. Reduced motion keeps the flare, not the run.
+function closeMoment(el, t, reduce) {
+  const flare = el.querySelector('.ring-flare');
+  const shine = el.querySelector('.ring-shine');
+  try {
+    const a = flare?.animate([{ opacity: 0 }, { opacity: 0.8, offset: 0.22 }, { opacity: 0 }], { duration: CLOSE_MS, easing: 'ease-out' });
+    if (a) a.currentTime = t;
+    if (!reduce && shine) {
+      const b = shine.animate([{ transform: 'rotate(0turn)', opacity: 0 }, { opacity: 1, offset: 0.15 }, { opacity: 1, offset: 0.7 }, { transform: 'rotate(1turn)', opacity: 0 }],
+        { duration: CLOSE_MS * 0.85, easing: 'cubic-bezier(0.5, 0, 0.3, 1)' });
+      b.currentTime = t;
+    }
+  } catch { /* no Web Animations: the closed ring still shows full */ }
+}
+
+// After a render: sweep every ring drawn away from its value to it (Web Animations on --ring-p, so a
+// redraw can pick the sweep up where it was), and play any closing moment that is due. Reduced
+// motion shows values at once; the closing flare and its sound still happen.
 export function drawRings() {
-  const svg = document.querySelector('svg.rings');
-  if (!svg || !sweep || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const t = performance.now() - sweep.t0;
-  if (t >= RING_MS) return;
-  svg.querySelectorAll('.ring-fill[data-from]').forEach((c) => {
-    try {
-      const a = c.animate([{ strokeDashoffset: `${c.dataset.from}px` }, { strokeDashoffset: `${c.getAttribute('stroke-dashoffset')}px` }],
-        { duration: RING_MS, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'backwards' });
-      a.currentTime = t;
-    } catch { /* no Web Animations: the ring shows its value */ }
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const now = performance.now();
+  document.querySelectorAll('[data-rings]').forEach((box) => {
+    const s = sweeps.get(box.dataset.rings);
+    if (!s || reduce || !canSweep || now - s.t0 >= RING_MS) return;
+    box.querySelectorAll('.ring[data-from]').forEach((el) => {
+      try {
+        const a = el.animate([{ '--ring-p': el.dataset.from }, { '--ring-p': el.style.getPropertyValue('--ring-p') }], { duration: RING_MS, easing: RING_EASE, fill: 'backwards' });
+        a.currentTime = now - s.t0;
+      } catch { /* no Web Animations: the ring shows its value */ }
+    });
   });
+  for (const c of closings) {
+    if (c.fired) {
+      const el = document.querySelector(`.ring[data-ring="${c.key}"]`);
+      if (el && now - c.firedAt < CLOSE_MS) closeMoment(el, now - c.firedAt, reduce);
+      continue;
+    }
+    if (c.timer) continue;
+    const wait = reduce ? 0 : Math.max(0, c.at - now);
+    c.timer = setTimeout(() => {
+      c.fired = true;
+      c.firedAt = performance.now();
+      const el = document.querySelector(`.ring[data-ring="${c.key}"]`);
+      if (el) closeMoment(el, 0, reduce);
+      ringFx(c.fx);
+    }, wait);
+  }
+  // Moments long past are forgotten.
+  for (let i = closings.length - 1; i >= 0; i -= 1) if (closings[i].fired && now - closings[i].firedAt > CLOSE_MS) closings.splice(i, 1);
 }
 
 // ---------- Small charts ----------
