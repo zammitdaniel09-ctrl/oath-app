@@ -340,6 +340,41 @@ function monthHtml(c) {
   return track('main', [addMonths(first, -1), first, addMonths(first, 1)].map((f) => monthPane(f, today, c.date)));
 }
 
+// Under the month on a phone, the chosen day in full: its all-day events, then its events and the habits
+// and tasks due that day in time order, each a tap away from its sheet. Wider screens show them in the
+// month's cells instead (calendar.css).
+function monthDayHtml(c) {
+  const d = c.date;
+  const info = dayInfo(d);
+  const row = ({ time, title, sub, color, cls, action, attr, done }) => `<li><button type="button" class="cal-ag-row ${cls}${done ? ' done' : ''}" data-action="${action}" ${attr}${safeColor(color) ? ` style="--c:${safeColor(color)}"` : ''}>
+      <span class="cal-ag-time">${esc(time)}</span><i class="cal-ag-bar" aria-hidden="true"></i>
+      <span class="cal-ag-body"><b>${done ? icon('check', 'done-ic') : ''}${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span></button></li>`;
+  const allDay = info.allDay.map((x) => (x.ev
+    ? row({ time: 'All day', title: x.ev.title, sub: x.ev.feed || '', color: x.ev.own ? '' : x.ev.color, cls: x.ev.own ? 'own' : '', action: 'cal-event', attr: `data-id="${esc(x.ev.id)}"`, done: x.ev.done })
+    : row({ time: 'Due', title: x.m.title, sub: x.m.kind === 'habit' ? 'Habit' : 'Task', cls: 'due', action: 'cal-mark', attr: `data-key="${esc(`${x.m.kind}:${x.m.id}:${x.m.date}`)}"`, done: x.m.done })));
+  const timed = [
+    ...info.timed.map((e) => ({
+      min: e.start.slice(0, 10) < d ? 0 : minutesOf(e.time),
+      html: row({
+        time: e.start.slice(0, 10) < d ? 'Cont.' : e.time, title: e.title,
+        sub: [e.endTime && e.endTime !== e.time ? `until ${e.endTime}` : '', e.location, e.own ? '' : e.feed].filter(Boolean).join(', '),
+        color: e.own ? '' : e.color, cls: e.own ? 'own' : '', action: 'cal-event', attr: `data-id="${esc(e.id)}"`, done: e.done,
+      }),
+    })),
+    ...info.marks.map((mk) => ({
+      min: mk.min,
+      html: mk.ev
+        ? row({ time: mk.ev.time, title: mk.title, sub: 'Deadline', cls: 'deadline', action: 'cal-event', attr: `data-id="${esc(mk.ev.id)}"` })
+        : row({ time: mk.min >= 1440 ? '00:00' : hm(mk.min), title: mk.title, sub: `${mk.kind === 'habit' ? 'Habit' : 'Task'} due${mk.hard ? ', hard' : ''}`, cls: 'due', action: 'cal-mark', attr: `data-key="${esc(mk.key)}"`, done: mk.done }),
+    })),
+  ].sort((a, b) => a.min - b.min).map((x) => x.html);
+  const list = [...allDay, ...timed];
+  return `<section class="cal-agenda" aria-label="${esc(longDay(d))}">
+    <div class="cal-ag-head"><h3>${esc(longDay(d))}</h3><button type="button" class="cal-ag-open" data-action="cal-open" data-date="${d}">Open day${icon('chevron')}</button></div>
+    ${list.length ? `<ol class="cal-ag-list">${list.join('')}</ol>` : '<p class="cal-ag-empty">Nothing on this day.</p>'}
+  </section>`;
+}
+
 function labelOf(c) {
   if (c.view === 'month' || c.view === 'day' || cols() === 3) return monthYear(c.date);
   const s = monday(c.date);
@@ -438,7 +473,8 @@ export function viewCalendar() {
       <button type="button" class="icon-btn accent" data-action="cal-new" aria-label="New event" title="New event">${icon('plus')}</button>`,
   });
   const body = c.view === 'month' ? monthHtml(c) : gridHtml(c);
-  ctx.shell(`${head}<div class="cal v-${c.view}">${topHtml(c)}<div class="cal-frame">${body}</div></div>${sheetHtml(c)}`);
+  const agenda = c.view === 'month' && !MQ_WEEK.matches ? monthDayHtml(c) : '';
+  ctx.shell(`${head}<div class="cal v-${c.view}">${topHtml(c)}<div class="cal-frame">${body}</div>${agenda}</div>${sheetHtml(c)}`);
   afterRender(c);
 }
 
@@ -774,6 +810,14 @@ export async function calendarClick(a, el) {
       if (validDate(el.dataset.date)) { c.date = el.dataset.date; settle(); }
       return true;
     case 'cal-open':
+      // On a phone the month picks a day first and lists it underneath; the chosen day, tapped again,
+      // opens it.
+      if (validDate(el.dataset.date) && c.view === 'month' && !MQ_WEEK.matches && el.classList.contains('cal-cell') && el.dataset.date !== c.date) {
+        c.date = el.dataset.date;
+        haptic('toggle');
+        settle();
+        return true;
+      }
       if (validDate(el.dataset.date)) {
         c.date = el.dataset.date;
         c.view = 'day';
