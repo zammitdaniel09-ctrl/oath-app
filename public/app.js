@@ -1477,8 +1477,8 @@ function showLock({ auto = true, offline = false } = {}) {
 }
 
 // Locks the open app in place, with no reload and no flash of the day, and asks for Face ID.
-function lockApp() {
-  showLock();
+function lockApp(opts) {
+  showLock(opts);
   // The server locks its own session too, so an app closed before unlocking leaves nothing open.
   door.locking = api('POST', '/api/lock', {}).catch(() => {});
 }
@@ -2718,21 +2718,23 @@ document.addEventListener('visibilitychange', () => {
   const away = hiddenAt ? Date.now() - hiddenAt : 0;
   hiddenAt = 0;
   // Ask for a newer version first, also when the lock screen comes up: a phone that only ever resumes the
-  // app would otherwise keep running an old version (watchForUpdates swaps it in at a quiet moment).
+  // app would otherwise keep running an old version.
   navigator.serviceWorker?.getRegistration().then((reg) => reg?.update()).catch(() => {});
   if (lockEl()) {
-    resumeLock();
+    resumeFresh();
     return;
   }
   if (state.faceIdOnly && away > 60000 && document.querySelector('.tabbar')) {
-    lockApp();
+    lockApp({ auto: false });
+    resumeFresh();
     return;
   }
+  newerBuild().then((n) => { if (n) reloadWhenQuiet(); });
   if (document.querySelector('.tabbar') && canRedraw()) go();
 });
 
 // A page restored from the back-forward cache comes back without a visibility change.
-window.addEventListener('pageshow', (e) => { if (e.persisted && lockEl()) resumeLock(); });
+window.addEventListener('pageshow', (e) => { if (e.persisted && lockEl()) resumeFresh(); });
 
 window.addEventListener('hashchange', (e) => {
   // Behind the lock screen a new address (a tapped notification) waits: unlocking opens it.
@@ -2766,18 +2768,52 @@ motion.initMotion({
 
 // ---------- Boot ----------
 
-// When a new version of the app is installed, switch to it at the next quiet moment: never while the
-// lock screen is asking for Face ID or while he is typing, so nothing he is doing is lost.
+// This copy of the app. sw.js carries the same name, and test/syntax.test.js keeps the two in step.
+const BUILD = 'oath-v27';
+const RELOADED = 'oath.reloadedFor';
+
+// The version the server has now, when it differs from this one: sw.js names it. An iPhone that only
+// ever resumes the app never loads a new version on its own (the service worker's handover does not
+// reach the open page), so the app asks each time it comes back. Once per version: if a reload did not
+// bring it, it is not tried again.
+async function newerBuild() {
+  try {
+    const res = await fetch('/sw.js', { cache: 'no-store', signal: AbortSignal.timeout(1500) });
+    const live = (await res.text()).match(/oath-v\d+/)?.[0];
+    let tried = null;
+    try { tried = sessionStorage.getItem(RELOADED); } catch { /* storage unavailable */ }
+    if (!live || live === BUILD || tried === live) return null;
+    try { sessionStorage.setItem(RELOADED, live); } catch { /* storage unavailable */ }
+    return live;
+  } catch {
+    return null;
+  }
+}
+
+// Back to the lock screen: a newer version loads first and asks for Face ID itself, so the prompt is never
+// cut off; otherwise Face ID starts as before.
+async function resumeFresh() {
+  if (await newerBuild()) {
+    location.reload();
+    return;
+  }
+  resumeLock();
+}
+
+// Switches to a new version at the next quiet moment: never while the lock screen is up, while he is
+// typing, has a sheet open or is recording, so nothing he is doing is lost.
+let reloading = false;
+function reloadWhenQuiet() {
+  if (reloading) return;
+  reloading = true;
+  const swap = () => (lockEl() || state.sheet || recording() || document.documentElement.classList.contains('kb-open') ? setTimeout(swap, 1000) : location.reload());
+  swap();
+}
+
 function watchForUpdates() {
   if (!('serviceWorker' in navigator)) return;
   const hadController = Boolean(navigator.serviceWorker.controller);
-  let reloading = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!hadController || reloading) return;
-    reloading = true;
-    const swap = () => (lockEl() || document.documentElement.classList.contains('kb-open') ? setTimeout(swap, 1000) : location.reload());
-    swap();
-  });
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController) reloadWhenQuiet(); });
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 

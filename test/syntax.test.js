@@ -19,3 +19,12 @@ test('every script in public parses', () => {
     }
   }
 });
+
+// The app checks its own name against sw.js each time it comes back and reloads when they differ, so
+// the two are bumped together: a mismatch would reload the phone on every return.
+test('the app and its service worker carry the same version', () => {
+  const sw = fs.readFileSync(new URL('sw.js', dir), 'utf8').match(/const CACHE = '(oath-v\d+)'/)?.[1];
+  const app = fs.readFileSync(new URL('app.js', dir), 'utf8').match(/const BUILD = '(oath-v\d+)'/)?.[1];
+  assert.ok(sw, 'sw.js names its cache');
+  assert.equal(app, sw);
+});
