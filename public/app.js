@@ -2769,7 +2769,7 @@ motion.initMotion({
 // ---------- Boot ----------
 
 // This copy of the app. sw.js carries the same name, and test/syntax.test.js keeps the two in step.
-const BUILD = 'oath-v27';
+const BUILD = 'oath-v28';
 const RELOADED = 'oath.reloadedFor';
 
 // The version the server has now, when it differs from this one: sw.js names it. An iPhone that only
@@ -2794,7 +2794,9 @@ async function newerBuild() {
 // cut off; otherwise Face ID starts as before.
 async function resumeFresh() {
   if (await newerBuild()) {
-    location.reload();
+    // The new service worker reloads the app as it takes over; when it is already in charge, the app
+    // reloads itself.
+    setTimeout(() => location.reload(), 2500);
     return;
   }
   resumeLock();

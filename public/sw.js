@@ -1,5 +1,5 @@
 // Service worker: offline shell and push notifications.
-const CACHE = 'oath-v27';
+const CACHE = 'oath-v28';
 // The ZXing barcode reader in /vendor/ (about 1 MB) is left out on purpose: only phones without a
 // BarcodeDetector need it, and the fetch handler below keeps a copy the first time it loads.
 const SHELL = ['/', '/app.css', '/app.js', '/ui.js', '/parse.js', '/goals.js', '/data.js', '/food.js', '/food-energy.js', '/food-links.js', '/food-usual.js', '/food-next.js', '/food-import.js', '/food-chat.js', '/coach-media.js', '/mail.js', '/food.css', '/calendar.js', '/calendar.css', '/nutrition.js', '/food-tags.js', '/rich.js', '/motion.js', '/sound.js', '/today.js', '/manifest.webmanifest', '/icons/apple-touch-icon.png', '/icons/icon-192.png', '/icons/badge.png',
@@ -9,12 +9,18 @@ self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
 
+// Taking over from an older version (its cache was still here), every open copy of the app is reloaded
+// into this one. An iPhone resumes the app from memory and never reloads it by itself, and the page's
+// own handover can miss, so the service worker does it.
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim()),
-  );
+  event.waitUntil((async () => {
+    const old = (await caches.keys()).filter((k) => k !== CACHE);
+    await Promise.all(old.map((k) => caches.delete(k)));
+    await self.clients.claim();
+    if (!old.length) return;
+    const open = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    await Promise.all(open.map((c) => c.navigate(c.url).catch(() => {})));
+  })());
 });
 
 self.addEventListener('fetch', (event) => {
