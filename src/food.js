@@ -256,6 +256,9 @@ export async function migrateFood() {
   // Drinks logged in grams before their ml was worked out from the record's sourced density.
   await sql`update food_log l set ml = l.grams / i.density from food_items i
             where l.ref_id = i.id and l.kind = 'item' and l.liquid and l.ml is null and l.grams > 0 and i.density > 0`;
+  // Drinks with no sourced density, logged by weight or by a portion in grams, never reached the day's
+  // drinks; their grams stand for ml now (public/nutrition.js resolve), and the ones already logged follow.
+  await sql`update food_log set ml = grams where liquid and ml is null and grams > 0`;
 }
 
 // ---------- Records ----------

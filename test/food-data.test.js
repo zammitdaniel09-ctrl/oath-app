@@ -394,6 +394,19 @@ test('the catalogue stays honest: a USDA record without a value has null, and li
   assert.equal(n, 0);
 });
 
+test('a photo that names a product finds it by brand and name, and a drink logged by weight counts as ml', async () => {
+  const photo = await import('../src/food-photo.js');
+  assert.equal((await photo.namedProduct({ brand: 'Pepsi', name: 'Pepsi Max' }))?.key, 'brand:pepsi:max');
+  assert.equal((await photo.namedProduct({ brand: 'PEPSI', name: 'Max' }))?.key, 'brand:pepsi:max');
+  assert.equal((await photo.namedProduct({ brand: 'Kinnie', name: 'Kinnie Zero' }))?.key, 'brand:kinnie:kinnie-zero');
+  assert.equal(await photo.namedProduct({ brand: 'Pepsi', name: 'Pepsi Max Mango' }), null, 'every word of the name must fit');
+  assert.equal(await photo.namedProduct({ brand: '', name: 'Pepsi Max' }), null, 'no brand, no guess');
+  // A diet drink held per 100 g with no sourced density: its grams stand for ml, so it counts as a drink.
+  const { resolve } = await import('../public/nutrition.js');
+  assert.equal(resolve({ basis: 'g', liquid: true, nutrients: {}, portions: [{ label: '1 can', g: 355 }] }, 1, 'p:1 can').ml, 355);
+  assert.equal(resolve({ basis: 'g', liquid: false, nutrients: {} }, 100, 'g').ml, null, 'food is never given ml');
+});
+
 test('Maltese words find their foods, with or without the Maltese letters', async () => {
   const words = JSON.parse(fs.readFileSync(new URL('../data/foods/aliases-mt.json', import.meta.url), 'utf8')).items;
   for (const mt of ['tadam', 'ġbejniet', 'tuffieħ', 'ħobż']) {

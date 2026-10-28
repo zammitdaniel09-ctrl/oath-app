@@ -176,6 +176,10 @@ export function resolve(item, qty, unit) {
   // counts towards the day's drinks.
   if (density && ml === null) ml = g / density;
   if (density && g === null) g = ml * density;
+  // A drink with no sourced density still counts towards the day's drinks (Pepsi Max, diet cola,
+  // sparkling water from the USDA tables are per 100 g): its grams stand for ml, as water is 1 g per ml
+  // and soft drinks 1.00 to 1.05. Only the drinks tally reads it; nutrients use the record's own basis.
+  if (!density && item.liquid && ml === null && g !== null) ml = g;
   const amount = basis === 'g' ? g : ml;
   return { amount: r6(amount), basis, g: g === null ? null : r6(g), ml: ml === null ? null : r6(ml), text: amountText(q, u, item), note };
 }

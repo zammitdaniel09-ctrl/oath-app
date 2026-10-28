@@ -2600,6 +2600,20 @@ hooks.idle = () => {
   if (state.stale && state.stale === state.route && canRedraw()) render();
 };
 
+// The keyboard. iOS keeps fixed bars on the part of the screen left above the keyboard, so the tab bar
+// rode up with it and sat on top of the keys. While a text field has focus the tab bar steps aside
+// (app.css, html.kb-open) and the chat composers drop to just above the keyboard.
+const TYPING = 'input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]), textarea, select, [contenteditable="true"]';
+document.addEventListener('focusin', (e) => {
+  if (e.target.matches?.(TYPING)) document.documentElement.classList.add('kb-open');
+});
+document.addEventListener('focusout', () => {
+  // Moving from one field to the next keeps the keyboard up, so wait for the next focus before deciding.
+  setTimeout(() => {
+    if (!document.activeElement?.matches?.(TYPING)) document.documentElement.classList.remove('kb-open');
+  }, 120);
+});
+
 // Back from the background. With the lock screen up, ask for Face ID again. With Face ID only and
 // more than a minute away, lock the open app in place (no reload, no flash of the day) and ask.
 let hiddenAt = 0;

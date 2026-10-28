@@ -162,13 +162,26 @@ async function complete({ system, messages, maxTokens = CHAT_TOKENS, effort = 'm
 
 // One structured reading of an image (food photos): the coach's client, model and refusal fallback,
 // with the answer held to a JSON schema. Returns the parsed object, or { refused: true }.
-export async function readStructured({ system, content, schema, maxTokens = 6000 }) {
+// Reading food (a photo, what he typed, which record fits) uses the strongest model; everything else
+// uses the coach's. FOOD_MODEL on the server overrides it.
+export const FOOD_MODEL = () => process.env.FOOD_MODEL || 'claude-opus-5-5';
+
+export async function readStructured({ system, content, schema, maxTokens = 6000, model = null, effort = 'medium' }) {
   const c = anthropic();
   if (!c) throw new RuleError('Reading photos needs the AI key, which is not set on the server.', 503);
-  const res = await ask(c, {
-    model: MODEL(), max_tokens: maxTokens, system, messages: [{ role: 'user', content }],
-    output_config: { effort: 'medium', format: { type: 'json_schema', schema } },
+  const params = (m) => ({
+    model: m, max_tokens: maxTokens, system, messages: [{ role: 'user', content }],
+    output_config: { effort, format: { type: 'json_schema', schema } },
   });
+  let res;
+  try {
+    res = await ask(c, params(model || MODEL()));
+  } catch (err) {
+    // A model this account cannot use falls back to the coach's, so a reading never fails for that alone.
+    if (!model || model === MODEL() || ![400, 403, 404].includes(err?.status) || !/model/i.test(String(err?.message || ''))) throw err;
+    console.error(`food model ${model} unavailable (${err.status}), using ${MODEL()}`);
+    res = await ask(c, params(MODEL()));
+  }
   if (res.stop_reason === 'refusal') return { refused: true };
   if (res.stop_reason === 'max_tokens') throw new RuleError('The photo reading was cut off. Try a closer photo.', 502);
   const text = res.content.filter((b) => b.type === 'text').map((b) => b.text).join('');

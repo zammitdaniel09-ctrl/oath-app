@@ -21,7 +21,7 @@
 // has tried a USDA reference and the web (food-enrich.js). Filled values stay marked as estimated.
 import { logEvent } from './db.js';
 import { RuleError } from './engine.js';
-import { readStructured, aiEnabled } from './coach.js';
+import { readStructured, aiEnabled, FOOD_MODEL } from './coach.js';
 import { searchFoods, FILL_KEYS, ESTIMATE_KEYS, MICRO_TEXT, cleanFill } from './food.js';
 import { productByBarcode } from './off.js';
 import { resolve, round, norm } from '../public/nutrition.js';
@@ -499,7 +499,7 @@ export async function chooseRecords(items, shortlists, { context = '', note = ''
   ].filter(Boolean).join('\n\n');
   let read;
   try {
-    read = await readStructured({ system: CHOOSE_SYSTEM, schema: CHOOSE_SCHEMA, content: [{ type: 'text', text: prompt }], maxTokens: 8000 });
+    read = await readStructured({ system: CHOOSE_SYSTEM, schema: CHOOSE_SCHEMA, content: [{ type: 'text', text: prompt }], maxTokens: 8000, model: FOOD_MODEL() });
   } catch (err) {
     console.warn('food choice failed, using the local choice:', err.status || '', err.message);
     return local;
@@ -575,6 +575,7 @@ export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg
       { type: 'text', text: said ? `Daniel's note about this photo: "${said}"` : 'What is in this photo?' },
     ],
     maxTokens: 10000,
+    model: FOOD_MODEL(),
   });
   if (read.refused) return { kind: 'unclear', summary: '', question: 'I could not read that photo. What is it?' };
   Object.assign(read, photoFromWire(read));
@@ -582,7 +583,15 @@ export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg
   const code = read.barcode ? read.barcode.replace(/\D/g, '') : '';
   const goodCode = scanned || lookupCode(code);
 
-  if (read.kind === 'label') return { kind: 'label', summary: read.summary, draft: labelDraft(read, scanned) };
+  // A label or packet names its product: the barcode first, then the product by brand and name in the
+  // catalogue (Pepsi Max, Kinnie Zero), and only then the label as a new food to check.
+  if (read.kind === 'label') {
+    let item = null;
+    if (goodCode) item = await productByBarcode(goodCode).catch(() => null);
+    if (!item) item = await namedProduct(read.product);
+    if (item) return { kind: 'product', summary: read.summary, barcode: goodCode, item, byName: !goodCode || item.barcode !== goodCode, draft: labelDraft(read, scanned) };
+    return { kind: 'label', summary: read.summary, draft: labelDraft(read, scanned) };
+  }
 
   if (read.kind === 'barcode' || read.kind === 'packet') {
     let item = null;
@@ -595,6 +604,8 @@ export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg
       }
     }
     if (item) return { kind: 'product', summary: read.summary, barcode: goodCode, item };
+    const named = await namedProduct(read.product);
+    if (named) return { kind: 'product', summary: read.summary, barcode: goodCode, item: named, byName: true, offError };
     const words = [read.product?.brand, read.product?.name, read.product?.variant].filter(Boolean).join(' ');
     const suggestions = words ? await searchFoods(words, { limit: 8 }) : [];
     return {
@@ -615,6 +626,19 @@ export async function readFoodPhoto({ image, media_type: mediaType = 'image/jpeg
     return { kind: 'meal', summary: read.summary, items };
   }
   return { kind: 'unclear', summary: read.summary, question: read.question || 'What is it?' };
+}
+
+// The product a photo names, found in the catalogue by its brand and name: a record of that brand whose
+// name holds every word of the photo's product name ("Pepsi" and "Pepsi Max" find Pepsi Max, not Pepsi Max
+// Cherry, which comes later in the search). Null when the photo named no brand or nothing fits that well.
+export async function namedProduct(p) {
+  if (!p?.brand || !p?.name) return null;
+  const brand = norm(p.brand);
+  const name = norm(p.name);
+  if (!brand || !name) return null;
+  const words = name.split(' ').filter((w) => w.length > 1);
+  const hits = await searchFoods(name.includes(brand) ? name : `${brand} ${name}`, { limit: 12 });
+  return hits.find((h) => h.brand && norm(h.brand) === brand && words.every((w) => ` ${norm(`${h.brand} ${h.name}`)} `.includes(` ${w} `))) || null;
 }
 
 // ---------- "What did you eat?" ----------
@@ -663,7 +687,7 @@ export async function readFoodText({ text, before = null } = {}) {
   if (!aiEnabled()) throw new RuleError('Working out a typed meal needs the AI key, which is not set on the server.', 503);
   const prior = earlier(before);
   const ask = prior ? `${prior}.\nNow he says: "${words}"` : words;
-  const read = await readStructured({ system: TEXT_SYSTEM, schema: TEXT_SCHEMA, content: [{ type: 'text', text: ask }], maxTokens: 10000 });
+  const read = await readStructured({ system: TEXT_SYSTEM, schema: TEXT_SCHEMA, content: [{ type: 'text', text: ask }], maxTokens: 10000, model: FOOD_MODEL() });
   const unclear = (question) => ({ kind: 'unclear', source: 'text', summary: read.summary || '', question });
   if (read.refused) return unclear('I could not read that as food. What did you have?');
   await logEvent('food_text', { kind: read.kind, items: read.items?.length || 0 });

@@ -1981,6 +1981,12 @@ body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(s
 
 /* ---------- Tablet and desktop: a sidebar from 900px ---------- */
 
+/* While typing on a phone (app.js sets kb-open) the tab bar steps aside instead of riding up on top of
+   the keyboard, and everything placed above it (the chat composers, toasts) drops to the keyboard. */
+@media (max-width: 899px) {
+  html.kb-open { --tabbar: 0px; }
+  html.kb-open .tabbar { visibility: hidden; opacity: 0; pointer-events: none; transform: translateY(16px); transition: none; }
+}
 @media (min-width: 900px) {
   :root { --tabbar: 0px; --pad: 22px; --pad-sm: 16px; }
   .shell:has(> .tabbar) { padding-left: var(--side); }

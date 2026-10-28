@@ -189,7 +189,7 @@ function answerPhoto(r) {
     const name = [r.draft?.brand, r.draft?.name].filter(Boolean).join(' ');
     push({ role: 'food', kind: 'say', text: `That is a nutrition label${name ? ` for ${name}` : ''}. Check the values, then save it as a food you can log.`, draft: r.draft, act: 'label' });
   } else if (r.kind === 'product') {
-    push({ role: 'food', kind: 'card', state: 'open', reply: `Found it from the barcode, Boss: ${r.item.name}${r.item.brand ? `, ${r.item.brand}` : ''}.`, title: r.item.name, items: [productItem(r.item)], said: r.item.name });
+    push({ role: 'food', kind: 'card', state: 'open', reply: `${r.byName ? 'Found it, Boss' : 'Found it from the barcode, Boss'}: ${r.item.name}${r.item.brand ? `, ${r.item.brand}` : ''}.`, title: r.item.name, items: [productItem(r.item)], said: r.item.name });
   } else if (r.kind === 'product-unknown') {
     const name = [r.read?.brand, r.read?.name, r.read?.variant].filter(Boolean).join(' ');
     const why = r.barcode ? `Barcode ${r.barcode} is not in Oath or Open Food Facts.` : r.unreadBarcode ? 'I could not read the barcode.' : 'I could not see a barcode.';
