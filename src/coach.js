@@ -5,6 +5,7 @@ import { deadlineText } from './time.js';
 import { coachSnapshot, buildToday } from './state.js';
 import { localNow, RuleError } from './engine.js';
 import { TOOL_DEFS, runTool, resolvePendingAction } from './coach-tools.js';
+import { unsentMedia, attachMedia, photoData } from './coach-media.js';
 
 const MODEL = () => process.env.COACH_MODEL || 'claude-sonnet-5-5';
 
@@ -100,6 +101,10 @@ Food (a diary, never part of the game):
 - Use search_food and log_food when he names an exact item with an amount, or one of his saved meals or recipes.
 - A missing product is never a reason to refuse or stall. Log your estimate, and where it helps, mention he can snap a photo of the plate or the label, or type it in the Food tab, to make it exact. Never pass a similar branded product off as the one he had.
 - Pick the record whose state matches what he ate (cooked or dry, drained or not).
+
+Photos and voice notes:
+- He can send photos from his camera or his library: a meal, a label, a timetable, a screenshot, a page of notes, where he is. Look closely and treat what it shows like words he typed: act on it with your tools when that is what he wants (a timetable or a screenshot of plans becomes events or tasks, a meal or a drink can be logged), and say in a line what you took from it. If a photo is too unclear to act on, say what you can make out and ask the one thing you need.
+- A voice note reaches you as its transcript. Read it for what he meant: a word that looks out of place was probably misheard, so go with the obvious reading and never quote a transcription slip back at him.
 
 Limits:
 - The app's only penalties are HP, streak resets and seasons. Never suggest real self-punishment, sleep deprivation, skipping meals or anything harmful.
@@ -212,7 +217,9 @@ export async function coachHistory(limit = 60) {
       (select json_agg(json_build_object('id', p.id, 'summary', p.summary, 'outcome', p.outcome,
                                          'status', case when p.status = 'open' and p.created_at < now() - interval '30 minutes' then 'expired' else p.status end)
                        order by p.id)
-         from coach_pending p where p.message_id = m.id) as pending
+         from coach_pending p where p.message_id = m.id) as pending,
+      (select json_agg(json_build_object('id', x.id, 'kind', x.kind, 'ms', x.duration_ms, 'peaks', x.peaks) order by x.id)
+         from coach_media x where x.message_id = m.id) as media
     from coach_messages m order by m.id desc limit ${limit}`;
   return rows.reverse();
 }
@@ -220,10 +227,40 @@ export async function coachHistory(limit = 60) {
 // What a reply did is part of what it said, so the coach remembers its own actions.
 const spoken = (m) => (m.actions?.length ? `${m.text}\n[${m.actions.map((a) => (a.ok ? a.text : `failed: ${a.text}`)).join('; ')}]` : m.text);
 
+// The coach looks at the last few photos of the conversation itself; older ones are only mentioned, so a
+// long chat does not resend every picture.
+const PHOTOS_SEEN = 3;
+
+// One of his messages as the coach reads it: its photos, a note that it was spoken, and the words.
+function heard(m, images) {
+  const media = m.media || [];
+  if (!media.length) return m.text;
+  const photos = media.filter((x) => x.kind === 'photo');
+  const blocks = photos.filter((p) => images.has(p.id)).map((p) => ({ type: 'image', source: { type: 'base64', media_type: images.get(p.id).mime, data: images.get(p.id).data } }));
+  const gone = photos.length - blocks.length;
+  const notes = [];
+  if (gone) notes.push(gone === 1 ? '[He sent a photo here; it is no longer shown to you.]' : `[He sent ${gone} photos here; they are no longer shown to you.]`);
+  if (media.some((x) => x.kind === 'voice')) notes.push('[Voice note, transcribed:]');
+  blocks.push({ type: 'text', text: [...notes, m.text].filter(Boolean).join('\n') || '(He sent this with no words.)' });
+  return blocks;
+}
+
 export async function chat(userText) {
-  const text = String(userText || '').trim().slice(0, 4000);
-  if (!text) throw new RuleError('Write something first.');
-  await db()`insert into coach_messages (role, text) values ('user', ${text})`;
+  return (await chatWith({ text: userText })).reply;
+}
+
+// A message from the chat, with any photos and voice note he uploaded for it (by id). A voice note with no
+// typed words is sent as its transcript. Returns the reply and his message as it was kept.
+export async function chatWith({ text: userText = '', media = [] } = {}) {
+  let text = String(userText || '').trim().slice(0, 4000);
+  const ids = [...new Set((Array.isArray(media) ? media : []).map(Number).filter((n) => Number.isInteger(n) && n > 0))].slice(0, 6);
+  const items = await unsentMedia(ids);
+  if (items.length !== ids.length) throw new RuleError('A photo or voice note did not upload. Send it again.', 409);
+  const voice = items.find((x) => x.kind === 'voice');
+  if (!text && voice) text = voice.transcript.slice(0, 4000);
+  if (!text && !items.some((x) => x.kind === 'photo')) throw new RuleError(voice ? 'Nothing could be heard in that voice note. Try again a little closer.' : 'Write something first.');
+  const [sent] = await db()`insert into coach_messages (role, text) values ('user', ${text}) returning id, role, text, failed, at`;
+  await attachMedia(ids, sent.id);
   let reply;
   let failed = false;
   const ctx = { actions: [], pending: [] };
@@ -233,7 +270,10 @@ export async function chat(userText) {
   } else {
     try {
       // Failed replies stay visible in the chat but are never fed back to the model as its own words.
-      const history = (await coachHistory(20)).filter((m) => !m.failed).map((m) => ({ role: m.role, content: spoken(m) }));
+      const rows = (await coachHistory(20)).filter((m) => !m.failed);
+      const seen = rows.filter((m) => m.role === 'user').flatMap((m) => (m.media || []).filter((x) => x.kind === 'photo').map((x) => x.id)).slice(-PHOTOS_SEEN);
+      const images = await photoData(seen);
+      const history = rows.map((m) => ({ role: m.role, content: m.role === 'user' ? heard(m, images) : spoken(m) }));
       // The API needs the conversation to start with the user.
       while (history.length && history[0].role !== 'user') history.shift();
       const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
@@ -251,7 +291,8 @@ export async function chat(userText) {
   const [row] = await db()`insert into coach_messages (role, text, failed, actions) values ('assistant', ${reply}, ${failed}, ${actions})
                            returning id, role, text, failed, at, actions`;
   if (ctx.pending.length) await db()`update coach_pending set message_id = ${row.id} where id in ${db()(ctx.pending.map((p) => p.id))}`;
-  return { ...row, pending: ctx.pending.map((p) => ({ ...p, status: 'open' })) };
+  const kept = items.length ? items.map(({ id, kind, ms, peaks }) => ({ id, kind, ms, peaks })) : null;
+  return { reply: { ...row, pending: ctx.pending.map((p) => ({ ...p, status: 'open' })) }, sent: { ...sent, media: kept } };
 }
 
 // Daniel tapped Confirm or Cancel under a reply. The outcome joins the conversation, so the coach

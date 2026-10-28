@@ -284,12 +284,12 @@ export function nextTile(rows, allDay, now) {
   const ahead = rows.filter((r) => !r.past);
   const shown = ahead.slice(0, 3);
   const more = ahead.length - shown.length;
-  const chips = allDay.slice(0, 2).map((e) => `<span class="nx-chip"${safeColor(e.color) ? ` style="--c:${safeColor(e.color)}"` : ''}>${esc(e.title)}</span>`).join('');
+  const chips = allDay.slice(0, 2).map((e) => `<span class="nx-chip${e.done ? ' done' : ''}"${safeColor(e.color) ? ` style="--c:${safeColor(e.color)}"` : ''}>${e.done ? icon('check', 'done-ic') : ''}${esc(e.title)}</span>`).join('');
   const list = shown.map((r) => {
-    const on = r.kind === 'event' && r.time <= now;
-    return `<li class="nx-row ${r.kind}${on ? ' on' : ''}"><span class="nx-time">${on ? 'Now' : esc(r.time)}</span>
+    const on = r.kind === 'event' && !r.done && r.time <= now;
+    return `<li class="nx-row ${r.kind}${on ? ' on' : ''}${r.done ? ' done' : ''}"><span class="nx-time">${on ? 'Now' : esc(r.time)}</span>
       <i class="nx-bar"${safeColor(r.color) ? ` style="--c:${safeColor(r.color)}"` : ''}></i>
-      <span class="nx-body"><b>${esc(r.title)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span></li>`;
+      <span class="nx-body"><b>${r.done ? icon('check', 'done-ic') : ''}${esc(r.title)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span></li>`;
   }).join('');
   const body = `${chips ? `<span class="nx-chips">${chips}</span>` : ''}
     ${list ? `<ol class="nx-list">${list}</ol>` : `<span class="nx-empty">Nothing else on today</span>`}

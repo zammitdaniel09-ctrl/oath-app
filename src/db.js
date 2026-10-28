@@ -286,6 +286,8 @@ export async function migrate() {
   await migrateMail();
   const { migrateProblems } = await import('./problems.js');
   await migrateProblems();
+  const { migrateCoachMedia } = await import('./coach-media.js');
+  await migrateCoachMedia();
 }
 
 export async function getKV(key, fallback = null) {

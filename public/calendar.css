@@ -115,8 +115,9 @@
 }
 .cal-chip.own { --c: var(--merlot); box-shadow: inset 3px 0 0 var(--merlot-hi); }
 /* Crossed off: struck through and quieter, still where it was. */
-.cal-chip.done, .cal-ev.done { opacity: 0.55; }
-.cal-chip.done, .cal-ev.done .cal-ev-t { text-decoration: line-through; }
+.cal-chip.done, .cal-ev.done { opacity: 0.62; }
+.cal-chip.done, .cal-ev.done .cal-ev-t { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: currentColor; }
+.cal-chip .done-ic, .cal-ev .done-ic { display: inline-block; width: 13px; height: 13px; margin-right: 4px; vertical-align: -2px; stroke-width: 3; color: var(--menthol, #9be29b); }
 .cal-chip.flag::before, .cal-chip.task i, .cal-mk i, .cal-d-feed.mark i {
   content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%;
   background: var(--c, var(--chrome-c)); vertical-align: 1px;

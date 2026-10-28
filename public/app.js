@@ -16,6 +16,10 @@ import { initFood, loadFood, viewFood, foodClick, foodSubmit, loadFoodToday, flu
 import { initMail, loadMail, viewMail, mailClick, mailSubmit, mailChange, mailChip } from './mail.js';
 import { initToday, ringHero, overview, nextTile, afterToday } from './today.js';
 import { initCalendar, loadCalendar, viewCalendar, calendarClick, calendarSubmit } from './calendar.js';
+import {
+  initCoachMedia, mediaHtml, stagedHtml, stagePhotos, unstage, takePhotos, toggleVoice, startRecording, cancelRecording, finishRecording,
+  recording, recBarHtml, draft as coachDraft, syncComposer, composerEmpty, leaveChat,
+} from './coach-media.js';
 
 // ---------- Shell ----------
 
@@ -73,6 +77,7 @@ initFood({ shell, render: () => render(), go: () => go() });
 initMail({ shell, render: () => render() });
 initToday({ render: () => render() });
 initCalendar({ shell, render: () => render(), go: () => go() });
+initCoachMedia({ render: () => render(), send: (x) => sendCoach(x), addMessage: (m) => coachShow(m) });
 
 // ---------- Today ----------
 
@@ -379,7 +384,7 @@ function scheduleRows(t, now) {
     ...events.filter((e) => !e.allDay).map((e) => ({
       time: e.time, title: e.title, kind: e.deadline ? 'deadline' : 'event', color: e.color, done: Boolean(e.done),
       sub: [e.done ? 'Done' : '', e.endTime && e.endTime !== e.time ? `until ${e.endTime}` : '', e.location, e.feed].filter(Boolean).join(', '),
-      past: Boolean(e.done) || (e.endTime || e.time) < now,
+      past: (e.endTime || e.time) < now,
     })),
     ...t.items.filter((i) => !i.flexible && i.status !== 'met' && i.deadline !== '00:00').map((i) => ({
       time: i.deadline, title: i.title, kind: `due ${i.status}`, sub: i.status === 'open' ? `Habit due${i.heavy ? `, ${i.penalty} HP` : ''}` : i.status === 'kept' ? 'Kept' : i.status,
@@ -411,12 +416,12 @@ function timeline(t) {
     return `${marker}<div class="tl-row ${r.kind}${r.past ? ' past' : ''}${r.done ? ' done' : ''}">
       <span class="tl-time">${r.time}</span>
       <span class="tl-bar"${safeColor(r.color) ? ` style="--c:${safeColor(r.color)}"` : ''}></span>
-      <span class="tl-body"><span class="tl-title">${esc(r.title)}</span>${r.sub ? `<span class="tl-sub">${esc(r.sub)}</span>` : ''}</span>
+      <span class="tl-body"><span class="tl-title">${r.done ? icon('check', 'done-ic') : ''}${esc(r.title)}</span>${r.sub ? `<span class="tl-sub">${esc(r.sub)}</span>` : ''}</span>
     </div>`;
   }).join('') + (nowPlaced ? '' : `<div class="tl-now"><span>${now}</span></div>`);
   return `<section class="section"><div class="gh"><h2>Schedule</h2><a href="#/calendar" class="gh-link">Calendar</a></div>
     <div class="card timeline">
-      ${allDay.length ? `<div class="tl-allday">${allDay.map((e) => `<span class="tl-chip"${safeColor(e.color) ? ` style="--c:${safeColor(e.color)}"` : ''}>${esc(e.title)}</span>`).join('')}</div>` : ''}
+      ${allDay.length ? `<div class="tl-allday">${allDay.map((e) => `<span class="tl-chip${e.done ? ' done' : ''}"${safeColor(e.color) ? ` style="--c:${safeColor(e.color)}"` : ''}>${e.done ? icon('check', 'done-ic') : ''}${esc(e.title)}</span>`).join('')}</div>` : ''}
       ${html}
     </div></section>`;
 }
@@ -911,6 +916,9 @@ function sheetHtml() {
     if (!state.today) return '';
     title = 'Morning oath';
     body = oathView(state.today);
+  } else if (s.kind === 'photo') {
+    title = 'Photo';
+    body = `<img class="cc-full" src="${esc(s.src)}" alt="The photo you sent">`;
   } else if (s.kind === 'briefs') {
     title = 'Briefs';
     body = `<div class="group">${BRIEFS.map(([kind, ic, label]) => `<button class="li li-plain li-nav" data-action="brief" data-kind="${kind}">
@@ -937,11 +945,16 @@ function coachMessage(m, last = false) {
   const pending = (m.pending || []).map((p) => (p.status === 'open'
     ? `<div class="confirm-row"><span>${esc(p.summary)}?</span><span class="confirm-btns"><button class="btn chrome small" data-action="coach-confirm" data-id="${p.id}" data-yes="1">Confirm</button><button class="btn tinted small" data-action="coach-confirm" data-id="${p.id}" data-yes="0">Cancel</button></span></div>`
     : `<p class="confirm-done ${p.status}">${esc(p.summary)}: ${PENDING_DONE[p.status] || p.status}${p.status === 'failed' && p.outcome ? `, ${esc(p.outcome)}` : ''}</p>`)).join('');
-  const words = m.role === 'assistant' ? `<div class="msg-text rich">${richHtml(m.text)}</div>` : `<span class="msg-text">${esc(m.text)}</span>`;
+  const media = m.role === 'user' ? mediaHtml(m) : '';
+  const voice = (m.media || []).some((x) => x.kind === 'voice');
+  const words = m.role === 'assistant' ? `<div class="msg-text rich">${richHtml(m.text)}</div>` : m.text ? `<span class="msg-text${voice ? ' cc-transcript' : ''}">${esc(m.text)}</span>` : '';
+  const note = m.hearing ? '<span class="cc-note"><i class="cc-dots" aria-hidden="true"></i>Transcribing</span>'
+    : m.unheard ? '<span class="cc-note bad">Nothing could be heard</span>' : m.notSent ? '<span class="cc-note bad">Not sent</span>' : '';
   const trouble = m.failed || (m.actions || []).some((a) => !a.ok) || (m.pending || []).some((p) => p.status === 'failed');
   const report = m.role === 'assistant' && (last || trouble)
     ? `<button type="button" class="msg-report" data-action="coach-report"${m.id ? ` data-id="${m.id}"` : ''}>Report a problem</button>` : '';
-  return `<div class="msg ${m.role}">${words}${receipts}${pending}${m.at ? `<time>${fmtClock(m.at)}</time>` : ''}${report}</div>`;
+  const photos = (m.media || []).some((x) => x.kind === 'photo');
+  return `<div class="msg ${m.role}${photos ? ' has-photos' : ''}${voice ? ' has-voice' : ''}">${media}${words}${note}${receipts}${pending}${m.at ? `<time>${fmtClock(m.at)}</time>` : ''}${report}</div>`;
 }
 
 // The coach thinking: three dots in a bubble of its own.
@@ -961,7 +974,17 @@ function viewCoach() {
   const empty = emptyState({ icon: 'coach', title: 'Talk to your coach' });
   // Food has a chat of its own: the last chip opens it.
   const quick = `${QUICK.map((q) => `<button type="button" class="qchip" data-action="coach-quick" data-text="${esc(q)}"${state.sending ? ' disabled' : ''}>${esc(q)}</button>`).join('')}
+    <label class="qchip">From photos<input class="vh" type="file" accept="image/*" multiple data-coach-photo></label>
     <a class="qchip qchip-food" href="#/food/chat">Log food</a>`;
+  const d = coachDraft();
+  if (ask && !d.text) d.text = ask;
+  const composer = recording() ? recBarHtml() : `<form class="composer cc-composer${composerEmpty() ? ' empty' : ''}" data-form="coach">
+          <label class="cc-cam" title="Take a photo">${icon('camera')}<span class="sr">Take a photo</span><input class="vh" type="file" accept="image/*" capture="environment" data-coach-photo></label>
+          <label class="sr" for="coach-text">Message</label>
+          <textarea id="coach-text" class="input" name="text" rows="1" maxlength="4000" placeholder="${d.photos.length ? 'Add a message (optional)' : 'Message the coach'}">${esc(d.text)}</textarea>
+          <button type="button" class="cc-mic" data-action="coach-mic" aria-label="Record a voice note"${state.sending ? ' disabled' : ''}>${icon('mic')}</button>
+          <button class="btn primary send" type="submit" aria-label="Send"${state.sending ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+        </form>`;
   const briefs = `<button class="btn tinted small briefs-btn" data-action="briefs-open"${state.sending ? ' disabled' : ''}>Briefs</button>`;
   // The coach has a face of its own in Merlot, as the food chat has its lime, so the two never look alike.
   const head = `<header class="chd-head"><span class="chd-av" aria-hidden="true">C</span>
@@ -971,12 +994,9 @@ function viewCoach() {
       ${c.aiEnabled ? '' : '<div class="banner warn">The coach is offline: no Anthropic API key in Railway.</div>'}
       <div class="chat cchat" id="chat" data-chat="coach">${msgs || empty}${state.sending ? TYPING : ''}</div>
       <div class="composer-dock">
+        ${stagedHtml()}
         <div class="quick-replies" role="group" aria-label="Quick replies">${quick}</div>
-        <form class="composer" data-form="coach">
-          <label class="sr" for="coach-text">Message</label>
-          <textarea id="coach-text" class="input" name="text" rows="1" maxlength="4000" placeholder="Message the coach" required>${esc(ask)}</textarea>
-          <button class="btn primary send" type="submit" aria-label="Send"${state.sending ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
-        </form>
+        ${composer}
       </div></div>`);
   // The chat ends at the composer, so the newest message sits just above it.
   motion.chatToEnd();
@@ -1789,6 +1809,7 @@ function parseHash() {
 // where it was). native: the browser already animated this step, as with a swipe back in Safari.
 async function go({ top = false, native = false } = {}) {
   parseHash();
+  if (state.route !== 'coach') leaveChat();
   motion.navigate(() => {
     if (top) window.scrollTo({ top: 0 });
     render();
@@ -2038,11 +2059,39 @@ async function keepHabit(el, id, minimum = false) {
 }
 
 // The coach may have changed tasks, habits or settings: reload what it touched, in the background.
+// A message of his on screen at once, with the coach writing under it.
+function coachShow(msg) {
+  state.coach.messages.push(msg);
+  state.sending = true;
+  if (state.query.has('ask')) history.replaceState(null, '', '#/coach');
+  state.query = new URLSearchParams();
+  render();
+}
+
+// Sends a message already on screen (msg): its words and the ids of its uploaded photos or voice note.
+// The kept copy replaces it, holding on to what this phone already shows (thumbnails, a local recording).
+async function sendCoach({ text = '', media = [], msg }) {
+  state.sending = true;
+  const r = await act(() => api('POST', '/api/coach', { text, media }));
+  state.sending = false;
+  if (r) {
+    const mine = msg.media || [];
+    Object.assign(msg, { id: r.sent.id, at: r.sent.at, text: r.sent.text, media: r.sent.media ? r.sent.media.map((x, i) => ({ ...mine[i], ...x })) : null });
+    state.coach.messages.push(r.reply);
+  } else {
+    msg.notSent = true;
+  }
+  render();
+  if (r) fx('receive');
+  await coachChangedThings(r?.reply);
+}
+
 async function coachChangedThings(reply) {
   if (!reply?.actions?.some((x) => x.ok)) return;
   state.plan = null;
   state.goals = null;
   state.dash = null;
+  state.cal?.chunks.clear();
   await fetchToday().catch(() => { state.today = null; });
   if (!['today', 'coach'].includes(state.route)) await load(state.route).catch(() => {});
 }
@@ -2204,6 +2253,19 @@ $app.addEventListener('click', async (e) => {
     if (state.sheet?.kind === 'dodge') state.sheet = null;
     toast('Good. Start it now.');
     render();
+  } else if (a === 'coach-mic') {
+    await startRecording();
+  } else if (a === 'coach-rec-cancel') {
+    await cancelRecording();
+  } else if (a === 'coach-rec-send') {
+    await finishRecording();
+  } else if (a === 'coach-unstage') {
+    unstage(el.dataset.key);
+  } else if (a === 'coach-voice') {
+    toggleVoice(el.dataset.key);
+  } else if (a === 'coach-photo') {
+    state.sheet = { kind: 'photo', src: el.dataset.src };
+    render();
   } else if (a === 'coach-quick') {
     // A quick reply goes out as if typed.
     const form = $app.querySelector('form[data-form="coach"]');
@@ -2352,6 +2414,7 @@ $app.addEventListener('change', (e) => {
   const d = e.target.closest('[data-decide]');
   if (d) state.decisions[d.dataset.decide] = d.value;
   if (e.target.matches('[data-mail-setting]')) mailChange(e.target);
+  if (e.target.matches('[data-coach-photo]')) stagePhotos(e.target);
 });
 
 // Live preview of what quick add understood: the date, time, estimate and goal.
@@ -2456,19 +2519,21 @@ $app.addEventListener('submit', async (e) => {
       }
     } else if (kind === 'coach') {
       const text = form2obj(form).text.trim();
-      if (!text) return;
-      state.coach.messages.push({ role: 'user', text, at: new Date().toISOString() });
-      state.sending = true;
-      if (state.query.has('ask')) history.replaceState(null, '', '#/coach');
-      state.query = new URLSearchParams();
-      render();
+      if ((!text && !coachDraft().photos.length) || state.sending) return;
+      const photos = takePhotos();
+      const msg = { role: 'user', text, at: new Date().toISOString(), media: photos.shown.length ? photos.shown : null };
+      coachDraft().text = '';
+      coachShow(msg);
       haptic('send');
-      const r = await act(() => api('POST', '/api/coach', { text }));
-      state.sending = false;
-      if (r) state.coach.messages.push(r.reply);
-      render();
-      if (r) fx('receive');
-      await coachChangedThings(r?.reply);
+      const ids = await photos.ids;
+      if (msg.media) msg.media = msg.media.filter((p) => ids.some((x) => x.key === p.key));
+      if (!text && !ids.length) {
+        msg.notSent = true;
+        state.sending = false;
+        render();
+        return;
+      }
+      await sendCoach({ text, media: ids.map((x) => x.id), msg });
     } else if (kind === 'ask-coach') {
       // The quick line on Today and Plan: the answer, and what the coach did, open in a sheet. A reply
       // lands there only if that same sheet is still up on the same screen; a late one waits in the chat.
@@ -2549,6 +2614,8 @@ $app.addEventListener('keydown', (e) => {
 // Grow the coach composer with its text, up to a few lines.
 $app.addEventListener('input', (e) => {
   if (e.target.id !== 'coach-text') return;
+  coachDraft().text = e.target.value;
+  syncComposer();
   e.target.style.height = 'auto';
   e.target.style.height = `${Math.min(140, e.target.scrollHeight)}px`;
 });

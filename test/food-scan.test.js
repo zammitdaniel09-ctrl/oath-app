@@ -95,7 +95,7 @@ after(async () => {
 test('the app may use its own camera, and nothing else may', async () => {
   const res = await app.request('/healthz');
   assert.match(res.headers.get('permissions-policy'), /camera=\(self\)/);
-  assert.match(res.headers.get('permissions-policy'), /microphone=\(\)/);
+  assert.match(res.headers.get('permissions-policy'), /microphone=\(self\)/);
 });
 
 test('a scanned code no database knows, then its label photographed with the code as a hint, is found by the next scan', async () => {

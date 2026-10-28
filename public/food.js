@@ -1820,7 +1820,7 @@ async function readPhoto(input) {
 }
 
 // About 1,600 px on the long side as a JPEG: plenty for a label, small enough to send quickly.
-async function shrink(file, long = 1600, quality = 0.82) {
+export async function shrink(file, long = 1600, quality = 0.82) {
   let src;
   let w;
   let h;

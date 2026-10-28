@@ -214,7 +214,7 @@ function eventBlock(it, n) {
   const sub = `${e.time} to ${e.endTime}`;
   const place = e.location ? `<span class="cal-ev-p">${esc(e.location)}</span>` : '';
   const style = `top:${((it.s / 1440) * 100).toFixed(3)}%;height:${((mins / 1440) * 100).toFixed(3)}%;left:calc(${((it.col / it.cols) * 100).toFixed(3)}% + 1px);width:calc(${((it.span / it.cols) * 100).toFixed(3)}% - 3px)${colorOf(e) ? `;--c:${colorOf(e)}` : ''}`;
-  return `<button type="button" class="${cls}" style="${style}" data-action="cal-event" data-id="${esc(e.id)}" aria-label="${esc(`${e.title}, ${sub}${e.location ? `, ${e.location}` : ''}`)}"><span class="cal-ev-t">${esc(e.title)}</span><span class="cal-ev-s">${sub}</span>${place}</button>`;
+  return `<button type="button" class="${cls}" style="${style}" data-action="cal-event" data-id="${esc(e.id)}" aria-label="${esc(`${e.title}, ${sub}${e.location ? `, ${e.location}` : ''}${e.done ? ', done' : ''}`)}"><span class="cal-ev-t">${e.done ? icon('check', 'done-ic') : ''}${esc(e.title)}</span><span class="cal-ev-s">${sub}</span>${place}</button>`;
 }
 
 // A deadline: a thin line across the column at its time, with a small flag above it.
@@ -255,7 +255,7 @@ function allDayCell(info) {
   const chips = shown.map((x) => {
     if (x.ev) {
       const e = x.ev;
-      return `<button type="button" class="cal-chip${e.own ? ' own' : ''}${e.done ? ' done' : ''}${e.deadline ? ' flag' : ''}"${cVar(e.color)} data-action="cal-event" data-id="${esc(e.id)}">${esc(e.title)}</button>`;
+      return `<button type="button" class="cal-chip${e.own ? ' own' : ''}${e.done ? ' done' : ''}${e.deadline ? ' flag' : ''}"${cVar(e.color)} data-action="cal-event" data-id="${esc(e.id)}">${e.done ? icon('check', 'done-ic') : ''}${esc(e.title)}</button>`;
     }
     const m = x.m;
     return `<button type="button" class="cal-chip task${m.done ? ' done' : ''}" data-action="cal-mark" data-key="${esc(`${m.kind}:${m.id}:${m.date}`)}"><i></i>${esc(m.title)}</button>`;

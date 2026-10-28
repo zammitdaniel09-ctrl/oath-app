@@ -11,7 +11,8 @@ import { captureTask, createToken, revokeTokens, tokenCount, tokenValid, keyShap
 import { prepareReview, finishReview } from './review.js';
 import { db } from './db.js';
 import { vapidKeys, saveSubscription, removeSubscription, sendPush, subscriptionCount } from './push.js';
-import { chat, coachHistory, generateBrief, aiEnabled, checkCoach, resolvePending } from './coach.js';
+import { chatWith, coachHistory, generateBrief, aiEnabled, checkCoach, resolvePending } from './coach.js';
+import { coachMediaApi, voiceEnabled } from './coach-media.js';
 import { applySettings } from './settings.js';
 import { startLoop, runOnce, healIfEmpty } from './loop.js';
 import * as drive from './drive.js';
@@ -46,8 +47,9 @@ app.use('*', async (c, next) => {
   c.header('X-Content-Type-Options', 'nosniff');
   c.header('Referrer-Policy', 'same-origin');
   c.header('X-Frame-Options', 'DENY');
-  // The camera is the app's own, for the live barcode scanner; no frame or other site gets it.
-  c.header('Permissions-Policy', 'camera=(self), microphone=(), geolocation=()');
+  // The camera (the barcode scanner) and the microphone (voice notes to the coach) are the app's own;
+  // no frame or other site gets them.
+  c.header('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=()');
 });
 
 // A failed Shortcuts or Health Auto Export request is noted on the setup list so Daniel can see what
@@ -293,8 +295,11 @@ api.post('/push/test', async (c) => {
 });
 
 // ---------- Coach ----------
-api.get('/coach', async (c) => c.json({ messages: await coachHistory(), aiEnabled: aiEnabled() }));
-api.post('/coach', async (c) => c.json({ reply: await chat((await body(c)).text) }));
+api.get('/coach', async (c) => c.json({ messages: await coachHistory(), aiEnabled: aiEnabled(), voice: voiceEnabled() }));
+api.post('/coach', async (c) => {
+  const b = await body(c);
+  return c.json(await chatWith({ text: b.text, media: b.media }));
+});
 // The coach's destructive actions wait here until Daniel confirms or cancels them.
 api.post('/coach/pending/:id', async (c) => c.json(await resolvePending(idParam(c), Boolean((await body(c)).confirm))));
 api.post('/briefs/:kind', async (c) => {
@@ -331,6 +336,7 @@ api.get('/food/take', async (c) => c.json(await foodTake({ view: c.req.query('vi
 api.route('/', importApi);
 api.route('/', tagApi); // the tag database: browse foods by tag (food-tags.js)
 api.route('/', problemsApi); // Report a problem: kept and written to the log (problems.js)
+api.route('/', coachMediaApi); // Photos and voice notes in the coach chat (coach-media.js)
 api.route('/', foodApi);
 // Real burn: his energy use measured from his weight trend and logged food.
 api.route('/', energyApi);

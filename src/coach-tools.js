@@ -872,6 +872,8 @@ export async function runTool(name, input, ctx = { actions: [], pending: [] }) {
     if (!t.read) {
       for (const r of receipts) {
         ctx.actions.push(r);
+        // One line per action in the server log, so what the coach really did can be checked there.
+        console.log(`[coach-tool] ${name} ${r.ok ? 'ok' : 'failed'}: ${String(r.text).slice(0, 160)}`);
         if (r.ok) await logEvent('coach_action', { tool: name, text: r.text });
       }
     }
@@ -881,7 +883,10 @@ export async function runTool(name, input, ctx = { actions: [], pending: [] }) {
   } catch (err) {
     const why = err instanceof RuleError ? err.message : 'unexpected error';
     if (!(err instanceof RuleError)) console.error('coach tool failed', name, err);
-    if (!t.read) ctx.actions.push({ ok: false, text: `${name.replace(/_/g, ' ')}: ${why}` });
+    if (!t.read) {
+      console.log(`[coach-tool] ${name} failed: ${why.slice(0, 160)}`);
+      ctx.actions.push({ ok: false, text: `${name.replace(/_/g, ' ')}: ${why}` });
+    }
     return { content: `Failed: ${why}`, isError: true };
   }
 }
