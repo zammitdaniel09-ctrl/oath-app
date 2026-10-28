@@ -352,8 +352,8 @@ test('the API joins the diary and seeded Health samples, and the coach hears the
 
   const food = await import('../src/food.js');
   const coach = await food.foodForCoach();
-  assert.match(coach, /Food and body, the clearest link/);
-  assert.match(coach, /On nights you ate after \d\d:\d\d you slept/);
+  // Sleep is not shown anywhere, so the coach is never told about it, even when it is the clearest link.
+  assert.ok(!/sleep|slept/i.test(coach), coach);
   assert.ok(!/Food and body/.test(await food.foodForCoach('2027-02-03')), 'only the snapshot carries it');
   assert.equal((await call('GET', '/api/food/links?days=nonsense')).data.days, 90);
 });

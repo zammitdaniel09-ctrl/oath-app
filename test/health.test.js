@@ -640,8 +640,9 @@ test('11. healthSummary, todayHealth, goals and the coach lines', async () => {
   const lines = coach.split('\n');
   assert.equal(lines[0], 'Apple Health (last sync Thu 8 Oct 10:00):');
   assert.ok(lines.includes('  Today so far: 4,210 steps, 12 exercise min, 230 active kcal, 6 stand hours.'), coach);
-  assert.ok(lines.includes('  Last night: 7.2 h asleep.'), coach);
-  assert.ok(lines.includes('  Last 7 days, average per day with data: 6,403 steps, 12 exercise min, 230 active kcal, 6.9 h sleep, resting heart rate 60, HRV 40 ms.'), coach);
+  // Sleep is not shown anywhere, so the coach is not told about it either.
+  assert.ok(!/sleep|asleep/i.test(coach), coach);
+  assert.ok(lines.includes('  Last 7 days, average per day with data: 6,403 steps, 12 exercise min, 230 active kcal, resting heart rate 60, HRV 40 ms.'), coach);
   assert.ok(lines.includes('  Workouts this week: Tue Traditional Strength Training 45 min.'), coach);
   assert.ok(lines.includes('  Weight: 78.6 kg on 2026-10-07.'), coach);
   assert.ok(lines.includes('  Habits ticked off by Apple Health data: Walk (10,000 steps, today 4,210 steps).'), coach);

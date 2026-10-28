@@ -377,7 +377,7 @@ const TOOLS = {
   },
   link_habit_to_health: {
     description: 'Let Apple Health tick a habit off when a target is reached. metric empty or "off" unlinks it.',
-    properties: { habit_id: I(), metric: E(['off', 'steps', 'exercise_min', 'active_kcal', 'stand_hours', 'sleep_hours', 'distance_km', 'mindful_min', 'flights', 'workout', 'water_ml']), target: N(), filter: S('For workout: a word the workout type must contain') },
+    properties: { habit_id: I(), metric: E(['off', 'steps', 'exercise_min', 'active_kcal', 'stand_hours', 'distance_km', 'mindful_min', 'flights', 'workout', 'water_ml']), target: N(), filter: S('For workout: a word the workout type must contain') },
     required: ['habit_id', 'metric'],
     async run({ habit_id: id, metric, target, filter }) {
       const h = await habitRow(id);
@@ -610,9 +610,9 @@ const TOOLS = {
   },
   set_health_targets: {
     description: 'Set his daily Apple Health targets.',
-    properties: { steps: I(), exercise_min: I(), active_kcal: I(), sleep_hours: N(), stand_hours: I() },
+    properties: { steps: I(), exercise_min: I(), active_kcal: I(), stand_hours: I() },
     async run(input) {
-      const patch = pick(input, ['steps', 'exercise_min', 'active_kcal', 'sleep_hours', 'stand_hours']);
+      const patch = pick(input, ['steps', 'exercise_min', 'active_kcal', 'stand_hours']);
       if (!Object.keys(patch).length) throw new RuleError('Say which target to change.');
       await (await health()).setHealthGoals(patch);
       return `Targets saved: ${Object.entries(patch).map(([k, x]) => `${k} ${x}`).join(', ')}`;

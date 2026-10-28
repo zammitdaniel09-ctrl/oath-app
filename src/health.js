@@ -1286,21 +1286,15 @@ export async function healthForCoach() {
   if (t.active_kcal !== null) todayBits.push(`${fmtInt(t.active_kcal)} active kcal`);
   if (t.stand_hours !== null) todayBits.push(plural(t.stand_hours, 'stand hour'));
   if (todayBits.length) lines.push(`  Today so far: ${todayBits.join(', ')}.`);
-  if (t.sleep_hours !== null) {
-    const st = t.sleep;
-    const parts = st ? [['deep', st.deep], ['REM', st.rem], ['core', st.core], ['awake', st.awake]].filter(([, x]) => x).map(([k, x]) => `${k} ${fmtDec(x, 1)} h`) : [];
-    lines.push(`  Last night: ${fmtDec(t.sleep_hours, 1)} h asleep${parts.length ? ` (${parts.join(', ')})` : ''}.`);
-  }
   const avg = (k) => {
     const v = sum.days.map((d) => d[k]).filter((x) => x !== null);
     return v.length ? sumOf(v) / v.length : null;
   };
   const avgBits = [];
-  const a = { steps: avg('steps'), exercise_min: avg('exercise_min'), active_kcal: avg('active_kcal'), sleep_hours: avg('sleep_hours'), resting_hr: avg('resting_hr'), hrv_ms: avg('hrv_ms') };
+  const a = { steps: avg('steps'), exercise_min: avg('exercise_min'), active_kcal: avg('active_kcal'), resting_hr: avg('resting_hr'), hrv_ms: avg('hrv_ms') };
   if (a.steps !== null) avgBits.push(`${fmtInt(a.steps)} steps`);
   if (a.exercise_min !== null) avgBits.push(`${fmtInt(a.exercise_min)} exercise min`);
   if (a.active_kcal !== null) avgBits.push(`${fmtInt(a.active_kcal)} active kcal`);
-  if (a.sleep_hours !== null) avgBits.push(`${fmtDec(a.sleep_hours, 1)} h sleep`);
   if (a.resting_hr !== null) avgBits.push(`resting heart rate ${fmtInt(a.resting_hr)}`);
   if (a.hrv_ms !== null) avgBits.push(`HRV ${fmtInt(a.hrv_ms)} ms`);
   if (avgBits.length) lines.push(`  Last 7 days, average per day with data: ${avgBits.join(', ')}.`);

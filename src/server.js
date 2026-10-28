@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
+import { readFileSync } from 'node:fs';
 import { connect, migrate, close as closeDb } from './db.js';
 import { validTime, validDate } from './time.js';
 import * as auth from './auth.js';
@@ -39,6 +40,15 @@ import * as passkeys from './passkeys.js';
 import { conditionalGet, publicFile } from './static.js';
 
 const PUBLIC = './public';
+// The version of the web app being served: the service worker's cache name. Every reply carries it and
+// /version answers it alone, so an open copy of the app can tell when it is behind (app.js).
+const LIVE_BUILD = (() => {
+  try {
+    return readFileSync(`${PUBLIC}/sw.js`, 'utf8').match(/oath-v\d+/)?.[0] || '';
+  } catch {
+    return '';
+  }
+})();
 const v = { validTime, validDate };
 const app = new Hono();
 
@@ -50,6 +60,7 @@ app.use('*', async (c, next) => {
   // The camera (the barcode scanner) and the microphone (voice notes to the coach) are the app's own;
   // no frame or other site gets them.
   c.header('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=()');
+  if (LIVE_BUILD) c.header('X-Oath-Build', LIVE_BUILD);
 });
 
 // A failed Shortcuts or Health Auto Export request is noted on the setup list so Daniel can see what
@@ -92,6 +103,10 @@ const idParam = (c) => {
 };
 
 app.get('/healthz', (c) => c.text('ok'));
+app.get('/version', (c) => {
+  c.header('Cache-Control', 'no-store');
+  return c.json({ build: LIVE_BUILD });
+});
 
 // ---------- Session ----------
 app.get('/api/session', async (c) => {

@@ -13,7 +13,6 @@ export const AUTO_LABELS = {
   exercise_min: { name: 'Exercise minutes', unit: 'min exercise' },
   active_kcal: { name: 'Active energy, kcal', unit: 'kcal' },
   stand_hours: { name: 'Stand hours', unit: 'stand hours' },
-  sleep_hours: { name: 'Sleep, hours', unit: 'h sleep' },
   distance_km: { name: 'Walking and running, km', unit: 'km' },
   mindful_min: { name: 'Mindful minutes', unit: 'mindful min' },
   flights: { name: 'Flights climbed', unit: 'flights' },
@@ -64,15 +63,6 @@ function tile(ic, cls, label, value, unit, goal, display) {
   </div>`;
 }
 
-function sleepStages(s) {
-  if (!s) return '';
-  const parts = [['deep', 'Deep'], ['core', 'Core'], ['rem', 'REM'], ['awake', 'Awake']].filter(([k]) => s[k]);
-  const total = parts.reduce((n, [k]) => n + s[k], 0);
-  if (!total) return '';
-  return `<div class="stages">${parts.map(([k]) => `<i class="st-${k}" style="flex:${s[k]}"></i>`).join('')}</div>
-    <div class="stages-legend">${parts.map(([k, l]) => `<span class="st-${k}">${l} ${fmtHours(s[k])}</span>`).join('')}</div>`;
-}
-
 function healthSetup(connected) {
   const tab = state.healthSetup || 'shortcut';
   const url = `${location.origin}/api/shortcut/health`;
@@ -86,7 +76,7 @@ function healthSetup(connected) {
       <li>Open <b>Automations</b>, <b>New Automation</b>, <b>REST API</b>, and name it Oath.</li>
       <li>URL: ${urlField}</li>
       <li>Under <b>HTTP Headers</b>, add <b>Authorization</b> with your key as the value.</li>
-      <li>Data Type <b>Health Metrics</b>: Step Count, Active Energy, Apple Exercise Time, Apple Stand Hour, Sleep Analysis, Walking + Running Distance, Resting Heart Rate, Heart Rate Variability, Body Mass, Mindful Minutes.</li>
+      <li>Data Type <b>Health Metrics</b>: Step Count, Active Energy, Apple Exercise Time, Apple Stand Hour, Walking + Running Distance, Resting Heart Rate, Heart Rate Variability, Body Mass, Mindful Minutes.</li>
       <li>Export Format <b>JSON</b>, Version <b>2</b>, Date Range <b>Default</b>, Summarize Data <b>on</b>, Time Grouping <b>Hours</b>. Sync every hour, save and switch it on.</li>
       <li>Make a second one the same, with Data Type <b>Workouts</b> (route data off).</li>
       <li>Tap <b>Manual Export</b> once. This page then says "Synced just now".</li>
@@ -96,11 +86,10 @@ function healthSetup(connected) {
       <li>In Shortcuts, tap +, name it <b>Send Health to Oath</b>.</li>
       <li>Add <b>Find Health Samples</b>: Type Steps, Start Date is Today. Then <b>Calculate Statistics</b>: Sum.</li>
       <li>Do the same for <b>Exercise Minutes</b> and <b>Active Energy</b>.</li>
-      <li>Add <b>Find Health Samples</b>: Type Sleep Analysis, Start Date is in the last 1 day, Value is not In Bed, Value is not Awake. Then <b>Get Details of Health Samples</b>: Duration, and <b>Calculate Statistics</b>: Sum.</li>
       <li>Add <b>Get Contents of URL</b>: ${urlField}
-        Under Show More, Method <b>POST</b>, header <b>Authorization</b> with your key as the value, JSON body with <b>steps</b>, <b>exercise_min</b>, <b>active_kcal</b> (numbers) and <b>sleep_hours</b> (text), each set to its result.</li>
+        Under Show More, Method <b>POST</b>, header <b>Authorization</b> with your key as the value, JSON body with <b>steps</b>, <b>exercise_min</b> and <b>active_kcal</b> (numbers), each set to its result.</li>
       <li>Run it once. Apple Health turns green in Today's setup list when it lands.</li>
-      <li>In <b>Automation</b>, tap +, <b>Time of Day</b>, <b>Run Immediately</b>, pick this shortcut. Make four: <b>08:00</b> (last night's sleep), <b>12:00</b>, <b>17:00</b>, <b>20:30</b>.</li>
+      <li>In <b>Automation</b>, tap +, <b>Time of Day</b>, <b>Run Immediately</b>, pick this shortcut. Make three: <b>12:00</b>, <b>17:00</b>, <b>20:30</b>.</li>
     </ol>`;
   // One disclosure holds the steps; the hero above it is only a title and a label.
   return `<div class="card setup${connected ? ' quiet' : ''}">
@@ -120,17 +109,13 @@ function healthSection(h) {
   if (!h.connected) return `<section class="section" id="health"><div class="gh"><h2>Apple Health</h2></div>${healthSetup(false)}</section>`;
   const days = h.days || [];
   const todayRow = days.find((d) => d.date === h.today) || {};
-  const lastNight = todayRow.sleep_hours !== null && todayRow.sleep_hours !== undefined ? todayRow : [...days].reverse().find((d) => d.sleep_hours);
   const g = h.goals || {};
   // One letter per day on the axis (today in bold); the full day in tooltips and for screen readers.
   const labels = days.map((d) => shortDay(d.date));
   const titles = days.map((d, i) => (i === days.length - 1 ? 'Today' : fmtDay(d.date)));
   const steps = days.map((d) => d.steps);
-  const sleep = days.map((d) => d.sleep_hours);
   const withSteps = steps.filter((v) => v !== null && v !== undefined);
   const avgSteps = withSteps.length ? withSteps.reduce((a, b) => a + b, 0) / withSteps.length : null;
-  const withSleep = sleep.filter((v) => v);
-  const avgSleep = withSleep.length ? withSleep.reduce((a, b) => a + b, 0) / withSleep.length : null;
   const workouts = (h.workouts || []).slice(0, 6).map((w) => `<div class="li li-plain">
       <span class="li-ic">${icon('dumbbell')}</span>
       <span class="li-body"><span class="li-title">${esc(w.type)}</span><span class="li-sub">${fmtDay(w.date || (w.start || '').slice(0, 10))}${w.kcal ? `, ${fmtInt(w.kcal)} kcal` : ''}${w.distance_km ? `, ${fmtDec(w.distance_km)} km` : ''}${w.avg_hr ? `, ${Math.round(w.avg_hr)} bpm` : ''}</span></span>
@@ -157,16 +142,10 @@ function healthSection(h) {
       ${tile('steps', 'c-move', 'Steps', todayRow.steps, '', g.steps, fmtInt)}
       ${tile('timer', 'c-day', 'Exercise', todayRow.exercise_min, ' min', g.exercise_min, (v) => Math.round(v))}
       ${tile('flame', 'c-hp', 'Active energy', todayRow.active_kcal, ' kcal', g.active_kcal, fmtInt)}
-      ${tile('moon', 'c-sleep', 'Sleep', lastNight?.sleep_hours, '', g.sleep_hours, fmtHours)}
     </div>
     <div class="card chart-card">
       <div class="cc-head"><span>${icon('steps')}Steps</span><span class="faint small">${avgSteps === null ? '' : `Average ${fmtInt(avgSteps)} a day`}</span></div>
       ${barChart(steps, { goal: g.steps, labels, titles, cls: 'c-move', unit: ' steps', label: `Steps, last ${days.length} days` })}
-    </div>
-    <div class="card chart-card">
-      <div class="cc-head"><span>${icon('moon')}Sleep</span><span class="faint small">${avgSleep === null ? '' : `Average ${fmtHours(avgSleep)}`}</span></div>
-      ${barChart(sleep, { goal: g.sleep_hours, labels, titles, cls: 'c-sleep', label: `Sleep, last ${days.length} nights`, fmt: fmtHours })}
-      ${lastNight?.sleep ? `<p class="stages-label">Last night${lastNight.date ? `, ${fmtDay(lastNight.date)}` : ''}</p>${sleepStages(lastNight.sleep)}` : ''}
     </div>
     ${autos ? `<div class="gh sub"><h3>Habits Health ticks off</h3></div><div class="group">${autos}</div>` : ''}
     ${workouts ? `<div class="gh sub"><h3>Workouts</h3></div><div class="group">${workouts}</div>` : ''}
@@ -177,7 +156,6 @@ function healthSection(h) {
         <label class="field"><span>Steps</span><input class="input" name="steps" inputmode="numeric" value="${esc(g.steps)}"></label>
         <label class="field"><span>Exercise, min</span><input class="input" name="exercise_min" inputmode="numeric" value="${esc(g.exercise_min)}"></label>
         <label class="field"><span>Active energy, kcal</span><input class="input" name="active_kcal" inputmode="numeric" value="${esc(g.active_kcal)}"></label>
-        <label class="field"><span>Sleep, hours</span><input class="input" name="sleep_hours" inputmode="decimal" value="${esc(g.sleep_hours)}"></label>
         <label class="field"><span>Stand hours</span><input class="input" name="stand_hours" inputmode="numeric" value="${esc(g.stand_hours)}"></label>
         <div class="form-actions" style="align-self:end"><button class="btn primary" type="submit">Save targets</button></div>
       </form>

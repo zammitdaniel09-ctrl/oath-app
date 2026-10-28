@@ -34,7 +34,7 @@ export const state = {
 
 // Set by the modules that own them: onUnauthed (app.js) shows the way in, busy (motion.js) says a drag
 // or swipe is under way, idle (app.js) draws a screen that was left stale.
-export const hooks = { onUnauthed: () => {}, busy: () => false, idle: () => {} };
+export const hooks = { onUnauthed: () => {}, busy: () => false, idle: () => {}, onBuild: () => {} };
 
 export const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 export const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
@@ -68,6 +68,7 @@ export async function api(method, path, body) {
     noteTrouble({ kind: 'offline', method, path });
     throw new ApiError('You are offline. Try again when you have a connection.', 0);
   }
+  hooks.onBuild(res.headers.get('x-oath-build'));
   let data = null;
   try { data = await res.json(); } catch { /* empty body */ }
   if (res.status === 401 && !['/api/login', '/api/setup', '/api/password', '/api/passkey/login'].includes(path)) {

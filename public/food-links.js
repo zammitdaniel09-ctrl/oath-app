@@ -107,7 +107,7 @@ function linkBlock(l, name) {
 // ---------- Cards ----------
 
 function loadingCard() {
-  return `<section class="card fcard fl-card" aria-busy="true">${head('Food and sleep')}
+  return `<section class="card fcard fl-card" aria-busy="true">${head('Food and your body')}
     <div class="fl-wait"><i></i><i></i><i class="short"></i></div><p class="sr" role="status">Loading how your food lines up with Apple Health</p></section>`;
 }
 
@@ -121,24 +121,21 @@ function errorCard(L) {
 function connectCard() {
   const li = (ic, text) => `<li><span class="fl-unlock-ic">${icon(ic)}</span><span>${text}</span></li>`;
   return `<section class="card fcard fl-card fl-connect">${head('Food and your body')}
-    <p class="fl-lead">Connect Apple Health and this tab lines up what you eat with how you sleep, train and recover, using your own days.</p>
+    <p class="fl-lead">Connect Apple Health and this tab lines up what you eat with how you train and recover, using your own days.</p>
     <ul class="fl-unlock">
-      ${li('moon', 'Late meals and caffeine against that night’s sleep')}
       ${li('dumbbell', 'What you eat on training days against what you burn')}
       ${li('heart', 'Alcohol against your heart the next morning')}
     </ul>
     <a class="btn tinted fl-cta" href="#/health">${icon('heart')}Connect Apple Health</a></section>`;
 }
 
-// Insights 1 and 2: late eating and caffeine after 14:00, against that night's sleep.
-export function linksSleepCard(L) {
+// The group's first place: loading, an error, or what connecting Apple Health would show. Nothing once
+// the links are in; the cards below carry them.
+export function linksStateCard(L) {
   if (!L) return loadingCard();
   if (L.error) return errorCard(L);
   if (!L.health) return connectCard();
-  return `<section class="card fcard fl-card">${head('Food and sleep', `<span>Last ${L.days} days</span>`)}
-    ${linkBlock(link(L, 'late-sleep'), 'Late eating')}
-    ${linkBlock(link(L, 'caffeine-sleep'), 'Caffeine after 14:00')}
-    ${L.links.some((l) => l.key.endsWith('-sleep') && l.state === 'ok') ? '<p class="fl-foot">Each dot is a night: the food that day and the sleep after it. Caffeine counts from 40 mg, about half an espresso. A pattern in your days, not proof of what causes what.</p>' : ''}</section>`;
+  return '';
 }
 
 // Insight 3: training days against rest days, as paired bars.

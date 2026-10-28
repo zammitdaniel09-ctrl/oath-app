@@ -14,7 +14,7 @@ import { initTagDb, tagPanel, tagMore, rowTag, rowTags, loadTags, viewTags, tags
 import { richHtml } from './rich.js';
 // Real burn: the Body tab's cards and the diary tile.
 import { burnCard, weightCard, burnTile, loadEnergy, energyClick, energySubmit } from './food-energy.js';
-import { wantLinks, linksSleepCard, linksTrainingCard, linksAlcoholCard, linksWindowCard } from './food-links.js';
+import { wantLinks, linksStateCard, linksTrainingCard, linksAlcoholCard, linksWindowCard } from './food-links.js';
 import { initScan, scanClick, scanMissBody, scanMissTitle } from './scan.js';
 // One-tap logging, water, what is left today, per-meal copy and add, swipe to remove.
 import {
@@ -1602,7 +1602,7 @@ const LAZY = {
   advice: [adviceCard, 240, true], weekdays: [weekdayCard, 220], caffeine: [caffeineCard, 220], split: [splitCard, 300], compare: [compareCard, 330],
   weight: [() => weightCard(f().energy), 470],
   // Food and your body (food-links.js): drawn from the links, not the period.
-  lsleep: [() => linksSleepCard(f().links), 420],
+  lstate: [() => linksStateCard(f().links), 240],
   lfuel: [() => linksTrainingCard(f().links), 330], lalcohol: [() => linksAlcoholCard(f().links), 300], lwindow: [() => linksWindowCard(f().links), 280],
 };
 
@@ -1614,7 +1614,7 @@ const TAB_CARDS = {
   nutrients: [(h) => microCard(h), 'nlabel', 'sources'],
   foods: [(h) => gradeCard(h), 'rank', 'advice'],
   timing: [(h) => timingCard(h), 'weekdays', 'caffeine', 'split', 'compare'],
-  body: [(h) => burnCard(f().energy), 'weight', 'lsleep', 'lfuel', 'lalcohol', 'lwindow'],
+  body: [(h) => burnCard(f().energy), 'weight', 'lstate', 'lfuel', 'lalcohol', 'lwindow'],
 };
 const TAB_KEY = 'oath.trendsTab';
 function trendTab() {

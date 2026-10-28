@@ -1328,7 +1328,7 @@ function viewSettings() {
   const connections = settingsCard('link', 'Your data', `
     <div class="group flush">
       ${state.setup ? setupRows(state.setup) : `
-      <a class="li li-plain li-nav" href="#/health?section=health"><span class="li-body"><span class="li-title">Apple Health</span><span class="li-sub">Steps, workouts, sleep, heart</span></span>${icon('chevron', 'chev')}</a>
+      <a class="li li-plain li-nav" href="#/health?section=health"><span class="li-body"><span class="li-title">Apple Health</span><span class="li-sub">Steps, workouts, heart</span></span>${icon('chevron', 'chev')}</a>
       <a class="li li-plain li-nav" href="#/health?section=calendars"><span class="li-body"><span class="li-title">Calendars and VLE deadlines</span><span class="li-sub">Google, iCloud, Outlook, UM VLE</span></span>${icon('chevron', 'chev')}</a>`}
       <a class="li li-plain li-nav" href="#/health?section=business"><span class="li-body"><span class="li-title">Business sites</span><span class="li-sub">GoldenStraddler, Exposed FX Journal</span></span>${icon('chevron', 'chev')}</a>
       <a class="li li-plain li-nav" href="#/mail"><span class="li-body"><span class="li-title">Gmail</span><span class="li-sub">Important email, sorted by the AI</span></span>${icon('chevron', 'chev')}</a>
@@ -2729,12 +2729,16 @@ document.addEventListener('visibilitychange', () => {
     resumeFresh();
     return;
   }
-  newerBuild().then((n) => { if (n) reloadWhenQuiet(); });
+  checkBuild();
   if (document.querySelector('.tabbar') && canRedraw()) go();
 });
 
 // A page restored from the back-forward cache comes back without a visibility change.
-window.addEventListener('pageshow', (e) => { if (e.persisted && lockEl()) resumeFresh(); });
+window.addEventListener('pageshow', (e) => {
+  if (!e.persisted) return;
+  if (lockEl()) resumeFresh();
+  else checkBuild();
+});
 
 window.addEventListener('hashchange', (e) => {
   // Behind the lock screen a new address (a tapped notification) waits: unlocking opens it.
@@ -2768,54 +2772,124 @@ motion.initMotion({
 
 // ---------- Boot ----------
 
-// This copy of the app. sw.js carries the same name, and test/syntax.test.js keeps the two in step.
-const BUILD = 'oath-v28';
-const RELOADED = 'oath.reloadedFor';
+// ---------- Staying on the newest version ----------
+// An iPhone keeps the app open in memory for days and only resumes it, and the service worker's handover
+// never reaches that open copy. So the app checks the live version itself: on every server reply (each
+// one names it), each time it comes back (before Face ID), every few minutes while open and when the
+// network returns. When it is behind, it reloads at the next quiet moment. If a reload does not bring
+// the new version, the second try first removes the service worker and its caches, which is what
+// reinstalling the app does; if even that fails, a bar asks him to close and reopen the app. Tries are
+// counted per version and forgotten after ten minutes, so one bad moment never blocks an update. Only a
+// newer version is ever loaded, never an older one.
 
-// The version the server has now, when it differs from this one: sw.js names it. An iPhone that only
-// ever resumes the app never loads a new version on its own (the service worker's handover does not
-// reach the open page), so the app asks each time it comes back. Once per version: if a reload did not
-// bring it, it is not tried again.
-async function newerBuild() {
+// This copy of the app. sw.js carries the same name, and test/syntax.test.js keeps the two in step.
+const BUILD = 'oath-v29';
+const UPDATE_KEY = 'oath.update';
+const buildNo = (b) => Number(/^oath-v(\d+)$/.exec(String(b || ''))?.[1] || 0);
+let updating = false;
+
+const readTries = () => {
+  try { return JSON.parse(localStorage.getItem(UPDATE_KEY) || 'null'); } catch { return null; }
+};
+const writeTries = (t) => {
   try {
-    const res = await fetch('/sw.js', { cache: 'no-store', signal: AbortSignal.timeout(1500) });
-    const live = (await res.text()).match(/oath-v\d+/)?.[0];
-    let tried = null;
-    try { tried = sessionStorage.getItem(RELOADED); } catch { /* storage unavailable */ }
-    if (!live || live === BUILD || tried === live) return null;
-    try { sessionStorage.setItem(RELOADED, live); } catch { /* storage unavailable */ }
-    return live;
+    if (t) localStorage.setItem(UPDATE_KEY, JSON.stringify(t));
+    else localStorage.removeItem(UPDATE_KEY);
+  } catch { /* storage unavailable */ }
+};
+
+// A reply or a check named the live version.
+function sawBuild(live) {
+  if (!buildNo(live)) return;
+  if (buildNo(live) <= buildNo(BUILD)) {
+    if (readTries()) writeTries(null);
+    return;
+  }
+  updateTo(live);
+}
+hooks.onBuild = sawBuild;
+
+function updateTo(live) {
+  if (updating) return;
+  let t = readTries();
+  if (!t || t.build !== live || Date.now() - t.at > 10 * 60000) t = { build: live, n: 0, at: Date.now() };
+  if (t.n >= 2) {
+    updateBar();
+    return;
+  }
+  t.n += 1;
+  t.at = Date.now();
+  writeTries(t);
+  updating = true;
+  const hard = t.n === 2;
+  whenQuiet(() => (hard ? freshInstall() : location.reload()));
+}
+
+// Nothing he is doing is lost: not while he types, has a sheet open, records, waits on the coach or Face ID
+// is asking. The lock screen, waiting for a tap, is the best moment of all.
+function quietNow() {
+  const lock = lockEl();
+  if (lock) return ['idle', 'error', 'offline'].includes(lock.dataset.state);
+  return !state.sheet && !state.sending && !recording() && !document.documentElement.classList.contains('kb-open')
+    && !document.activeElement?.matches?.(TEXT_FIELDS);
+}
+function whenQuiet(run) {
+  const tick = () => (quietNow() ? run() : setTimeout(tick, 1000));
+  tick();
+}
+
+// What reinstalling does: the service worker and every cache go, and the app loads from the server.
+async function freshInstall() {
+  try {
+    for (const r of (await navigator.serviceWorker?.getRegistrations?.()) || []) await r.unregister();
+  } catch { /* none */ }
+  try {
+    for (const k of await caches.keys()) await caches.delete(k);
+  } catch { /* none */ }
+  location.replace(`/?fresh=${Date.now()}${location.hash}`);
+}
+
+function updateBar() {
+  if (document.querySelector('.update-bar')) return;
+  const bar = document.createElement('div');
+  bar.className = 'update-bar';
+  bar.setAttribute('role', 'status');
+  bar.innerHTML = '<span>A new version of Oath is ready. Close the app fully and open it again.</span><button type="button" class="btn chrome small">Try again</button>';
+  bar.querySelector('button').addEventListener('click', () => {
+    writeTries(null);
+    freshInstall();
+  });
+  document.body.append(bar);
+}
+
+// Asks the server which version is live. Resolves to it, or null without a connection.
+async function checkBuild() {
+  try {
+    const res = await fetch('/version', { cache: 'no-store', signal: AbortSignal.timeout(2500) });
+    const { build } = await res.json();
+    sawBuild(build);
+    return build;
   } catch {
     return null;
   }
 }
 
-// Back to the lock screen: a newer version loads first and asks for Face ID itself, so the prompt is never
+// Back to the lock screen: a newer version loads first and asks for Face ID itself, so a prompt is never
 // cut off; otherwise Face ID starts as before.
 async function resumeFresh() {
-  if (await newerBuild()) {
-    // The new service worker reloads the app as it takes over; when it is already in charge, the app
-    // reloads itself.
-    setTimeout(() => location.reload(), 2500);
-    return;
-  }
-  resumeLock();
+  if (lockEl()) setLock('idle');
+  await checkBuild();
+  if (!updating) resumeLock();
 }
 
-// Switches to a new version at the next quiet moment: never while the lock screen is up, while he is
-// typing, has a sheet open or is recording, so nothing he is doing is lost.
-let reloading = false;
-function reloadWhenQuiet() {
-  if (reloading) return;
-  reloading = true;
-  const swap = () => (lockEl() || state.sheet || recording() || document.documentElement.classList.contains('kb-open') ? setTimeout(swap, 1000) : location.reload());
-  swap();
-}
+setInterval(() => { if (document.visibilityState === 'visible') checkBuild(); }, 5 * 60000);
+window.addEventListener('online', () => checkBuild());
 
 function watchForUpdates() {
+  // After a fresh install the address carries ?fresh=; it comes off.
+  if (location.search.includes('fresh=')) history.replaceState(null, '', `/${location.hash}`);
   if (!('serviceWorker' in navigator)) return;
-  const hadController = Boolean(navigator.serviceWorker.controller);
-  navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController) reloadWhenQuiet(); });
+  navigator.serviceWorker.addEventListener('controllerchange', () => checkBuild());
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 

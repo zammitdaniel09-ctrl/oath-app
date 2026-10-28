@@ -98,6 +98,16 @@ test('the app may use its own camera, and nothing else may', async () => {
   assert.match(res.headers.get('permissions-policy'), /microphone=\(self\)/);
 });
 
+test('every reply names the live version of the app, and /version answers it alone, never cached', async () => {
+  const live = fs.readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8').match(/oath-v\d+/)[0];
+  const res = await app.request('/healthz');
+  assert.equal(res.headers.get('x-oath-build'), live);
+  const v = await app.request('/version');
+  assert.equal(v.status, 200);
+  assert.equal(v.headers.get('cache-control'), 'no-store');
+  assert.deepEqual(await v.json(), { build: live });
+});
+
 test('a scanned code no database knows, then its label photographed with the code as a hint, is found by the next scan', async () => {
   const code = '5000000001248';
   assert.equal((await get(`/api/food/barcode/${code}`)).item, null);

@@ -391,16 +391,16 @@ function weekTile(t) {
   return tile('#/plan', 'ov-week', 'today', 'This week', `${val}<span class="wk" role="img" aria-label="${esc(spoken)}" data-enter="week" data-kind="dots">${dots}</span>${sub(note)}`);
 }
 
-// Steps and sleep for the last seven days from Apple Health, today live.
+// Steps for the last seven days from Apple Health, today live.
 function healthTiles(t, hist) {
   const h = t.health;
   if (!h) return '';
   if (!h.connected) {
     return `<a class="card ov-tile ov-connect" href="#/health?section=health">
       <span class="connect-ic">${icon('heart')}</span>
-      <span><b>Connect Apple Health</b><span class="li-sub">Steps, sleep and workouts</span></span>${icon('chevron', 'chev')}</a>`;
+      <span><b>Connect Apple Health</b><span class="li-sub">Steps and workouts</span></span>${icon('chevron', 'chev')}</a>`;
   }
-  const days = hist?.days?.length ? hist.days.slice(-7) : [{ date: t.today, steps: h.steps, sleep_hours: h.sleep_hours }];
+  const days = hist?.days?.length ? hist.days.slice(-7) : [{ date: t.today, steps: h.steps }];
   const goals = h.goals || {};
   const series = (k) => days.map((d) => (d.date === t.today ? num(h[k]) : num(d[k])));
   const avgOf = (vals) => {
@@ -411,17 +411,10 @@ function healthTiles(t, hist) {
   const labels = days.map((d) => dayLetter(d.date));
   const steps = series('steps');
   const stepsAvg = avgOf(steps);
-  const sleep = series('sleep_hours');
-  const sleepAvg = avgOf(sleep);
-  const stepsTile = tile('#/health', 'ov-steps', 'steps', 'Steps',
+  return tile('#/health', 'ov-steps', 'steps', 'Steps',
     `${num(h.steps) !== null ? big(tn('steps-t', h.steps)) : big('<span class="na">–</span>')}
     ${columns(steps, { key: 'steps', label: 'Steps, last 7 days', titles, labels, fmt: fmtInt, ref: goals.steps || null, refLabel: 'goal', cls: 'c-move' })}
     ${sub(stepsAvg === null ? 'No days before today' : `Average ${fmtInt(stepsAvg)}`)}`);
-  const sleepTile = tile('#/health', 'ov-sleep', 'moon', 'Sleep',
-    `${num(h.sleep_hours) !== null ? big(esc(fmtHours(h.sleep_hours))) : big('<span class="na">–</span>', 'no reading')}
-    ${columns(sleep, { key: 'sleep', label: 'Sleep, last 7 nights', titles, labels, fmt: (v) => fmtHours(v), ref: goals.sleep_hours || null, refLabel: 'goal', refText: `${fmtN(goals.sleep_hours, goals.sleep_hours % 1 ? 1 : 0)}h`, cls: 'c-sleep' })}
-    ${sub(sleepAvg === null ? 'No nights before this one' : `Average ${fmtHours(sleepAvg)}`)}`);
-  return stepsTile + sleepTile;
 }
 
 // The overview under the hero. next: the calendar tile, shown on the phone (the full schedule sits in

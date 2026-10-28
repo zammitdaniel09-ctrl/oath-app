@@ -444,7 +444,8 @@ export async function foodBodyLinks({ days = 90 } = {}) {
 // One line for the coach: the clearest link, only when one is clear. '' otherwise.
 export async function foodLinksForCoach() {
   const r = await foodBodyLinks({ days: 90 });
-  const clear = r.links.filter((l) => l.state === 'ok' && l.strength === 'clear').sort((a, b) => a.p - b.p)[0];
+  // Sleep is not shown anywhere, so the coach is not told about it either.
+  const clear = r.links.filter((l) => l.state === 'ok' && l.strength === 'clear' && !l.key.endsWith('-sleep')).sort((a, b) => a.p - b.p)[0];
   if (!clear) return '';
   return `Food and body, the clearest link in his own last ${r.days} days of food and Apple Health (a pattern, not proof of cause; p = ${clear.p}): "${clear.text}"`;
 }
