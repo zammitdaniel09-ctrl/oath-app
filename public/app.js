@@ -2783,7 +2783,7 @@ motion.initMotion({
 // newer version is ever loaded, never an older one.
 
 // This copy of the app. sw.js carries the same name, and test/syntax.test.js keeps the two in step.
-const BUILD = 'oath-v29';
+const BUILD = 'oath-v30';
 const UPDATE_KEY = 'oath.update';
 const buildNo = (b) => Number(/^oath-v(\d+)$/.exec(String(b || ''))?.[1] || 0);
 let updating = false;

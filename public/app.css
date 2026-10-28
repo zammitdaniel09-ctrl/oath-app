@@ -2087,6 +2087,16 @@ body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(s
 @media (max-width: 899px) {
   html.kb-open { --tabbar: 0px; }
   html.kb-open .tabbar { visibility: hidden; opacity: 0; pointer-events: none; transform: translateY(16px); transition: none; }
+  /* The chats fill the screen, so the composer always sits at its foot: above the tab bar, or right on
+     the keyboard while typing (iOS slides the screen up until the composer meets the keys). A short chat
+     no longer leaves it floating halfway up with empty space under it. Messages gather just above the
+     composer; the greeting of an empty chat sits in the middle. */
+  .page:has(> .fchat-page), .page:has(> .cchat-page) { display: flex; flex-direction: column; min-height: 100dvh; }
+  .fchat-page, .cchat-page { flex: 1 0 auto; display: flex; flex-direction: column; }
+  .fchat-page > .chat, .cchat-page > .chat { flex: 1 0 auto; align-content: end; }
+  .fchat-page > .chat:has(> .fc-hello:only-child), .cchat-page > .chat:has(> .empty-state:only-child) { align-content: center; }
+  html.kb-open .page:has(> .fchat-page), html.kb-open .page:has(> .cchat-page) { padding-bottom: 10px; }
+  html.kb-open .composer-dock { bottom: 10px; }
 }
 @media (min-width: 900px) {
   :root { --tabbar: 0px; --pad: 22px; --pad-sm: 16px; }
