@@ -340,25 +340,26 @@ test('the bulk upsert skips a bad record instead of failing the seed, and keeps 
 // ---------- Search ----------
 
 test('"burger king fries" finds Burger King\'s fries, with a large portion', async () => {
+  // Burger King Malta's own leaflet (data/foods/brands) comes before the US record from USDA.
   const [first] = await food.searchFoods('burger king fries');
   assert.equal(first.brand, 'Burger King');
-  assert.equal(first.name, 'French fries');
+  assert.equal(first.name, 'Fries');
   assert.equal(first.kind, 'product');
-  assert.equal(first.market, 'US');
-  assert.ok(first.portions.some((p) => /large/i.test(p.label)), first.portions.map((p) => p.label).join(', '));
-  assert.ok(first.units.some((u) => u.unit === 'p:1 large serving'));
+  assert.equal(first.market, 'Malta');
+  assert.ok(first.units.some((u) => u.unit === 'p:large fries'), first.units.map((u) => u.unit).join(', '));
   // Large fries from Burger King: filler words are dropped, the size picks the portion.
   const [big] = await food.searchFoods('large fries from Burger King');
   assert.equal(big.key, first.key);
-  assert.deepEqual(big.portionHint, { unit: 'p:1 large serving', label: '1 large serving' });
-  // And the numbers are the chain's own, with the new nutrients.
-  near(big.nutrients.kcal, 280);
-  assert.ok(big.nutrients.potassium > 300);
+  assert.deepEqual(big.portionHint, { unit: 'p:large fries', label: 'large fries' });
+  // The US record from USDA is still there, with its own numbers and the newer nutrients.
+  const us = (await food.searchFoods('burger king french fries')).find((x) => x.market === 'US');
+  near(us.nutrients.kcal, 280);
+  assert.ok(us.nutrients.potassium > 300);
   // Other chains and sizes.
   const mc = await food.searchFoods("mcdonald's big mac");
   assert.ok(mc[0].brand === "McDonald's" && /big mac/i.test(mc[0].name), `${mc[0].brand} ${mc[0].name}`);
   const small = await food.searchFoods('small burger king fries');
-  assert.equal(small[0].portionHint.label, '1 small serving');
+  assert.equal(small[0].portionHint.label, 'small fries');
 });
 
 test('chain products keep a clean name, a brand and the original USDA wording as an alias', async () => {

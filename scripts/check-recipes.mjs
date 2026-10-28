@@ -17,22 +17,28 @@ const only = args.filter((a) => !a.startsWith('--'));
 
 const catalogue = JSON.parse(fs.readFileSync(path.join(repo, 'data/foods/usda-foods.json'), 'utf8')).items;
 const holders = JSON.parse(fs.readFileSync(path.join(repo, 'data/foods/placeholders.json'), 'utf8')).items;
-const items = new Map([...catalogue, ...holders].map((i) => [i.key, i]));
+// The UK and French tables and the branded files, when present, can be used too.
+const more = ['data/foods/cofid.json', 'data/foods/ciqual.json', ...(fs.existsSync(path.join(repo, 'data/foods/brands')) ? fs.readdirSync(path.join(repo, 'data/foods/brands')).filter((f) => f.endsWith('.json')).map((f) => `data/foods/brands/${f}`) : [])]
+  .map((f) => path.join(repo, f)).filter((f) => fs.existsSync(f)).flatMap((f) => JSON.parse(fs.readFileSync(f, 'utf8')).items || []);
+const items = new Map([...catalogue, ...holders, ...more].map((i) => [i.key, i]));
 const reqs = new Set(JSON.parse(fs.readFileSync(path.join(repo, 'data/recipe-requirements.json'), 'utf8')).items.map((r) => r.key));
 
 const TYPES = ['base', 'variant', 'component', 'template'];
-const dir = path.join(repo, 'data/recipes');
-const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json') && (!only.length || only.some((o) => f.includes(o)))).sort();
+// data/recipes-next holds recipes waiting to be checked before they move into the library; they are
+// checked together with the library, so keys and sub-recipes resolve across both.
+const dirs = [path.join(repo, 'data/recipes'), path.join(repo, 'data/recipes-next')].filter((d) => fs.existsSync(d));
+const all = dirs.flatMap((d) => fs.readdirSync(d).filter((f) => f.endsWith('.json')).map((f) => ({ d, f })));
+const files = all.map((x) => x.f).filter((f) => !only.length || only.some((o) => f.includes(o))).sort();
 const recipes = new Map();
 const errors = [];
 const warnings = [];
 const err = (k, m) => errors.push(`${k}: ${m}`);
 const warn = (k, m) => warnings.push(`${k}: ${m}`);
 
-for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.json'))) {
+for (const { d, f: file } of all) {
   let data;
   try {
-    data = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
+    data = JSON.parse(fs.readFileSync(path.join(d, file), 'utf8'));
   } catch (e) {
     err(file, `not valid JSON (${e.message})`);
     continue;

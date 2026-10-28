@@ -24,6 +24,9 @@ A food and drink diary in its own tab. It never touches HP and sets no targets.
 ### Data and credits
 
 - Generic foods: [USDA FoodData Central](https://fdc.nal.usda.gov/) (SR Legacy, April 2018, and Foundation Foods, April 2026), public domain (CC0). Refuse shares from USDA SR28. Built into `data/foods/usda-foods.json` by `scripts/build-usda.mjs` from the requirement maps in `data/foods/map`.
+- UK foods: McCance and Widdowson's Composition of Foods Integrated Dataset (CoFID), Office for Health Improvement and Disparities. Contains public sector information licensed under the [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/). Built into `data/foods/cofid.json` by `scripts/build-cofid.mjs`.
+- French and Mediterranean foods: [Ciqual](https://ciqual.anses.fr/), ANSES, under the Licence Ouverte / Etalab. Built into `data/foods/ciqual.json` by `scripts/build-ciqual.mjs`.
+- Brands and chains: `data/foods/brands/*.json`, values as the brand or chain publishes them, each record with the URL it was read from. Checked by `node scripts/check-brands.mjs`.
 - Products: [Open Food Facts](https://world.openfoodfacts.org/), © Open Food Facts contributors, under the [Open Database License](https://opendatacommons.org/licenses/odbl/1-0/). Looked up by barcode or name when needed and cached in the database (never committed to the repo), within their rate limits.
 - Recipes in `data/recipes` are original to Oath, AI-written and not kitchen-tested; their nutrition is worked out from the ingredient records. Check them with `node scripts/check-recipes.mjs`.
 - The catalogue, requirement lists and recipes are seeded at boot when the data files change. Re-running the seed updates rows in place and never overwrites your own edits.

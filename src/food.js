@@ -269,6 +269,9 @@ const SOURCE_TEXT = {
   you: 'Entered by you',
   estimate: 'Generic estimate',
   web: 'Published values found on the web',
+  cofid: 'UK composition of foods (CoFID)',
+  ciqual: 'French composition table (Ciqual, ANSES)',
+  brand: 'Published by the brand',
 };
 
 const n = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
@@ -611,7 +614,8 @@ export async function searchFoods(q, { limit = 30, kind = null, liquid = null } 
   const all = typing ? sql`and name_norm like ${`${core[0]}%`}` : core.reduce((acc, w) => sql`${acc} and search like ${`%${w}%`}`, sql``);
   const sized = sizes.length ? sizes.reduce((acc, w) => sql`${acc} and search like ${`%${w}%`}`, sql`true`) : sql`false`;
   const max = Math.min(Number(limit) || 30, 80);
-  // The bulk USDA records (keys fdc-<id>) rank four places lower than a hand-picked or imported record, so an
+  // The bulk records (the rest of USDA, keys fdc-<id>, and the UK and French tables, cofid-... and ciqual-...)
+  // rank four places lower than a hand-picked or imported record, so an
   // exact name in the bulk file (the survey's "Grapes") ties with a hand-picked record that has the name
   // inside it ("Red grapes") and loses the tie, while a bulk exact name still beats a hand-picked record
   // that only has the words somewhere ("Milk chocolate" for "cola").
@@ -628,8 +632,8 @@ export async function searchFoods(q, { limit = 30, kind = null, liquid = null } 
           when name_norm like ${`%${query}%`} then 4
           when brand_norm <> '' and brand_norm || ' ' || name_norm like ${`%${query}%`} then 4
           when name_norm like ${`${core[0]} %`} then 5
-          else 6 end) + (case when key like 'fdc-%' then 4 else 0 end),
-        ${sized} desc, (kind = 'generic') desc, (market = 'Malta') desc, uses desc, (key like 'fdc-%'), length(name), name) as ord
+          else 6 end) + (case when key like 'fdc-%' or key like 'cofid-%' or key like 'ciqual-%' then 4 else 0 end),
+        ${sized} desc, (kind = 'generic') desc, (market = 'Malta') desc, uses desc, (key like 'fdc-%' or key like 'cofid-%' or key like 'ciqual-%'), length(name), name) as ord
       from food_items
       where hidden = false ${all}
         ${kind ? sql`and kind = ${kind}` : sql``}

@@ -32,6 +32,8 @@ let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
 const SLOTS = [['breakfast', 'Breakfast'], ['lunch', 'Lunch'], ['dinner', 'Dinner'], ['snacks', 'Snacks'], ['drinks', 'Drinks']];
 const SLOT = Object.fromEntries(SLOTS);
 const KIND = { generic: 'Generic', product: 'Product', custom: 'Yours', label: 'From your label', estimate: 'Estimate' };
+// Generic foods from a table other than USDA say which in search results.
+const SOURCE_TAG = { cofid: 'UK table', ciqual: 'French table' };
 const STRIP = ['protein', 'carbs', 'fat', 'sugars', 'fibre', 'salt'];
 const FAMILIES = {
   'breakfast-fruit-oats': 'Fruit, oats and yogurt', 'breakfast-eggs': 'Eggs and hot breakfasts', sandwiches: 'Sandwiches and wraps',
@@ -865,7 +867,7 @@ function resultRow(it) {
   const per = it.nutrients?.kcal === null || it.nutrients?.kcal === undefined ? 'energy unknown' : `${round(it.nutrients.kcal, 0)} kcal / 100 ${it.liquid && it.density ? 'g' : it.basis}`;
   return `<button class="li li-plain fr" data-action="food-pick" data-key="${esc(it.key)}">${gradeDot(itemGrade(it))}
     <span class="li-body"><span class="li-title">${esc(it.name)}${it.brand ? ` <small class="faint">${esc(it.brand)}</small>` : ''}</span>
-    <span class="li-sub">${it.pack ? `${esc(amountText(1, 'pack', it))} · ` : ''}${it.state ? `${esc(it.state.replace(/-/g, ' '))} · ` : ''}${per}${it.kind !== 'generic' ? ` ${kindTag(it)}` : ''}</span></span>${icon('chevron', 'chev')}</button>`;
+    <span class="li-sub">${it.pack ? `${esc(amountText(1, 'pack', it))} · ` : ''}${it.state ? `${esc(it.state.replace(/-/g, ' '))} · ` : ''}${per}${it.kind !== 'generic' ? ` ${kindTag(it)}` : SOURCE_TAG[it.source] ? ` <span class="tag ftag">${SOURCE_TAG[it.source]}</span>` : ''}</span></span>${icon('chevron', 'chev')}</button>`;
 }
 
 function resultsHtml(s) {

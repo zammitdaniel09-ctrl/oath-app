@@ -6,8 +6,11 @@ import { fileURLToPath } from 'node:url';
 import { norm, unitsFor } from '../public/nutrition.js';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+// The UK and French tables and the branded files, when present, can be used too.
+const more = ['data/foods/cofid.json', 'data/foods/ciqual.json', ...(fs.existsSync(path.join(repo, 'data/foods/brands')) ? fs.readdirSync(path.join(repo, 'data/foods/brands')).filter((f) => f.endsWith('.json')).map((f) => `data/foods/brands/${f}`) : [])]
+  .map((f) => path.join(repo, f)).filter((f) => fs.existsSync(f)).flatMap((f) => JSON.parse(fs.readFileSync(f, 'utf8')).items || []);
 const items = [...JSON.parse(fs.readFileSync(path.join(repo, 'data/foods/usda-foods.json'), 'utf8')).items,
-  ...JSON.parse(fs.readFileSync(path.join(repo, 'data/foods/placeholders.json'), 'utf8')).items];
+  ...JSON.parse(fs.readFileSync(path.join(repo, 'data/foods/placeholders.json'), 'utf8')).items, ...more];
 const words = norm(process.argv[2] || '').split(' ').filter(Boolean);
 const limit = Number(process.argv[3] || 25);
 const hits = items.filter((i) => words.every((w) => norm(`${i.key} ${i.name} ${(i.aliases || []).join(' ')}`).includes(w))).slice(0, limit);

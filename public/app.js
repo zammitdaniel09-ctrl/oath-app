@@ -1315,6 +1315,9 @@ function viewSettings() {
   const src = (name, what, licence, href = '') => `<${href ? `a href="${href}"` : 'div'} class="li li-plain${href ? ' li-nav' : ''}"><span class="li-body"><span class="li-title">${name}</span><span class="li-sub">${what}${licence ? ` · ${licence}` : ''}</span></span>${href ? icon('chevron', 'chev') : ''}</${href ? 'a' : 'div'}>`;
   const sources = settingsCard('food', 'Data sources', `<div class="group flush">
       ${src('USDA FoodData Central', 'Generic foods and their nutrients', 'public domain')}
+      ${src('CoFID (McCance and Widdowson)', 'UK foods and their nutrients', 'Office for Health Improvement and Disparities, Open Government Licence v3.0')}
+      ${src('Ciqual', 'French and Mediterranean foods and their nutrients', 'ANSES, Licence Ouverte / Etalab')}
+      ${src('Brands and chains', 'Products and menus with the values their makers publish', 'each record links its source')}
       ${src('Open Food Facts', 'Packaged products', '© Open Food Facts contributors, ODbL')}
       ${src('Your daily needs', 'Energy: Katch-McArdle or Mifflin-St Jeor × activity; protein: ISSN position stand; vitamins and minerals: EFSA dietary reference values', '', '#/settings?section=body')}
       ${src('EU reference intakes', 'The % RI until your body is set', 'Regulation (EU) 1169/2011, Annex XIII')}

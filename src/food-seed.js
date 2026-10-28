@@ -20,6 +20,9 @@ function seedFiles() {
     path.join(DATA, 'recipe-requirements.json'),
     path.join(DATA, 'foods/usda-foods.json'),
     path.join(DATA, 'foods/usda-all.json'),
+    path.join(DATA, 'foods/cofid.json'),
+    path.join(DATA, 'foods/ciqual.json'),
+    ...jsonIn(path.join(DATA, 'foods/brands')),
     path.join(DATA, 'foods/placeholders.json'),
     ...jsonIn(path.join(DATA, 'foods/map')),
     ...jsonIn(path.join(DATA, 'recipes')),
@@ -118,6 +121,23 @@ export async function seedFood({ force = false, log = () => {} } = {}) {
     counts.rejected = r.rejected.length;
     counts.items += r.saved;
     if (r.rejected.length) log(`food seed: ${r.rejected.length} USDA records skipped, first: ${r.rejected[0].key} ${r.rejected[0].error}`);
+  }
+  // The UK and French composition tables (CoFID, Ciqual) and branded products and chain menus with their
+  // published values (data/foods/brands). Each file stands alone: a record that fails validation is skipped
+  // and counted, and a file that cannot be read is logged, never fatal.
+  const extra = [['cofid', path.join(DATA, 'foods/cofid.json')], ['ciqual', path.join(DATA, 'foods/ciqual.json')],
+    ...jsonIn(path.join(DATA, 'foods/brands')).map((f) => [`brands/${path.basename(f, '.json')}`, f])];
+  for (const [name, file] of extra) {
+    if (!fs.existsSync(file)) continue;
+    try {
+      const r = await upsertItems(readJson(file).items || [], sql, { batch: SEED_BATCH });
+      counts.sources = { ...(counts.sources || {}), [name]: r.saved };
+      counts.items += r.saved;
+      counts.rejected += r.rejected.length;
+      if (r.rejected.length) log(`food seed: ${name}: ${r.rejected.length} records skipped, first: ${r.rejected[0].key} ${r.rejected[0].error}`);
+    } catch (e) {
+      log(`food seed: ${name} could not be read: ${e.message}`);
+    }
   }
   log(`food seed: ${counts.items} catalogue records in ${((Date.now() - started) / 1000).toFixed(1)} s`);
 
