@@ -42,7 +42,8 @@ export async function commitDay({ focusKind, focusId, intention }) {
 
 export async function startFocus({ kind, id, minutes }) {
   const { today } = await localNow();
-  const [running] = await db()`select id, title from focus_sessions where ended_at is null`;
+  // Only today's block counts: one left running from an earlier day is closed by the engine.
+  const [running] = await db()`select id, title from focus_sessions where ended_at is null and date = ${today}`;
   if (running) throw new RuleError(`Finish or stop the block on ${running.title} first.`, 409);
   const t = await buildToday();
   const item = findItem(t, kind, id);
@@ -55,8 +56,15 @@ export async function startFocus({ kind, id, minutes }) {
 }
 
 export async function finishFocus(id, outcome) {
+  const { today } = await localNow();
   const [s] = await db()`select * from focus_sessions where id = ${id}`;
   if (!s || s.ended_at) throw new RuleError('That focus block is already over.', 409);
+  // A block from an earlier day closes at its planned end and ticks nothing off today.
+  if (s.date < today) {
+    await db()`update focus_sessions set ended_at = started_at + minutes * interval '1 minute', outcome = 'expired'
+               where id = ${id} and ended_at is null`;
+    throw new RuleError('That focus block was from an earlier day, so it has closed. Nothing was ticked off.', 409);
+  }
   const elapsed = Math.max(1, Math.round((nowUTC().toMillis() - new Date(s.started_at).getTime()) / 60000));
   let result = outcome === 'done' ? 'done' : 'stopped';
   let reaction;
@@ -81,8 +89,9 @@ export async function finishFocus(id, outcome) {
 
 // Ticking an item off directly also closes any focus block running on it.
 export async function closeFocusFor(kind, id) {
+  const { today } = await localNow();
   await db()`update focus_sessions set ended_at = ${ts()}, outcome = 'done'
-             where ended_at is null and kind = ${kind} and ref_id = ${id}`;
+             where ended_at is null and kind = ${kind} and ref_id = ${id} and date = ${today}`;
 }
 
 // ---------- Dodges ----------
@@ -152,7 +161,10 @@ export async function reactionAfterDone(kind, id, extra = {}) {
   }
   const hadWork = t.progress.total > 0;
   if (!open.length && hadWork) {
-    return { text: `Clean sweep. Everything due today is done. Keep it clean to midnight for +${t.settings.cleanBonus} HP.`, big: true };
+    // The bonus is only promised when midnight will pay it (no miss, minimum or rest, and room under
+    // max HP), and at the amount it will pay.
+    if (t.bonusDue) return { text: `Clean sweep. Everything due today is done. Keep it clean to midnight for +${t.bonusDue} HP.`, big: true };
+    return { text: 'Everything due today is done, Boss.', big: true };
   }
   if (kind === 'habit' && MILESTONES.includes(item.streak)) {
     return { text: `${item.title}: ${item.streak} days straight. Do not break it now.${t.next ? ` Next: ${t.next.title}.` : ''}`, big: true };

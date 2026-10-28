@@ -323,6 +323,7 @@ export function viewGoal() {
     return ctx.shell(`${pageHead('Edit goal')}<div class="narrow"><div class="card">${goalForm(g)}</div></div>`);
   }
   const closed = g.status !== 'active';
+  // The new value can be +N or -N, which the iPhone's decimal pad cannot type, so it opens the full keyboard.
   const head = `<header class="goal-head">
     <a class="back" href="${goalsHref()}">${icon('back')}Goals</a>
     <h1 class="goal-h">${esc(g.title)}</h1>
@@ -341,7 +342,7 @@ export function viewGoal() {
     </div>` : ''}
     ${g.measure === 'number' && !closed ? `<form class="inline-form log-form" data-form="goal-log" data-id="${g.id}">
       <label class="sr" for="goal-log">New value</label>
-      <input id="goal-log" class="input" name="value" inputmode="decimal" autocomplete="off" placeholder="New total, or +${g.unit ? `N ${esc(g.unit)}` : 'N'}" required>
+      <input id="goal-log" class="input" name="value" type="text" inputmode="text" pattern="\\s*[+\\-−]?\\s*([0-9]+([.,][0-9]*)?|[.,][0-9]+)\\s*" title="A number like 84.2, or +2 or -1.5 to change it by that much" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="New total, or +${g.unit ? `N ${esc(g.unit)}` : 'N'}" required>
       <button class="btn primary" type="submit">Update</button></form>
       <p class="note">Now at ${g.currentValue ?? g.startValue ?? 0}${g.unit ? ` ${esc(g.unit)}` : ''}, aiming for ${g.targetValue}${g.unit ? ` ${esc(g.unit)}` : ''}.</p>` : ''}
   </header>`;

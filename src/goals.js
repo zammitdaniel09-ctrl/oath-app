@@ -30,17 +30,27 @@ function daysBetween(a, b) {
 }
 
 const fmtNum = (n) => (Number.isInteger(n) ? String(n) : String(Math.round(n * 10) / 10));
+// Sums of decimals pick up float noise (80.2 + 0.1 is 80.30000000000001); a logged value never needs more
+// than six places.
+const tidy = (n) => (n === null || n === undefined ? n : Math.round(n * 1e6) / 1e6);
 
 // Early on, show what is done; past halfway, show what is left (Koo & Fishbach 2012).
 function progressLabel(g, pct, parts) {
   if (pct === null) return 'No steps yet. Break it down in the map.';
   if (g.measure === 'number') {
     const unit = g.unit ? ` ${g.unit}` : '';
-    const gained = (g.current_value ?? g.start_value ?? 0) - (g.start_value ?? 0);
-    const left = (g.target_value ?? 0) - (g.current_value ?? g.start_value ?? 0);
+    const start = g.start_value ?? 0;
+    const target = g.target_value ?? 0;
+    const cur = g.current_value ?? start;
+    const gained = cur - start;
+    // A goal can go down (90 kg to 80 kg): what is left is measured towards the target, either way.
+    const left = (target - cur) * Math.sign(target - start);
     return pct < 50 ? `${gained > 0 ? '+' : ''}${fmtNum(gained)}${unit} since you started` : left <= 0 ? 'Target reached' : `${fmtNum(left)}${unit} to go`;
   }
-  return pct < 50 ? `${parts.done} of ${parts.total} steps done` : parts.total - parts.done <= 0 ? 'Every step done' : `${fmtNum(parts.total - parts.done)} ${parts.total - parts.done === 1 ? 'step' : 'steps'} to go`;
+  // A step counts once it is fully done, so a habit part way to strong is not a fraction of a step.
+  const done = Math.floor(parts.done + 1e-9);
+  const left = parts.total - done;
+  return pct < 50 ? `${done} of ${parts.total} steps done` : left <= 0 ? 'Every step done' : `${left} ${left === 1 ? 'step' : 'steps'} to go`;
 }
 
 async function goalContext(goalIds) {
@@ -53,7 +63,7 @@ async function goalContext(goalIds) {
   return { tasks, habits, stats };
 }
 
-function computeProgress(g, ctx) {
+export function computeProgress(g, ctx) {
   if (g.measure === 'number' && g.target_value !== null && g.target_value !== g.start_value) {
     const start = g.start_value ?? 0;
     const cur = g.current_value ?? start;
@@ -67,7 +77,7 @@ function computeProgress(g, ctx) {
   if (!total) return { pct: null, label: progressLabel(g, null) };
   const done = tasks.filter((t) => t.done_at).length + habits.reduce((n, h) => n + (ctx.stats.get(h.id)?.strength ?? 0) / 100, 0);
   const pct = Math.round((done / total) * 100);
-  return { pct, label: progressLabel(g, pct, { done: Math.round(done * 10) / 10, total }) };
+  return { pct, label: progressLabel(g, pct, { done, total }) };
 }
 
 // Pace: where the goal should be by now if progress were even from the day it was set to its date.
@@ -94,7 +104,7 @@ function shapeGoal(g, ctx, today) {
     unit: g.unit,
     startValue: g.start_value,
     targetValue: g.target_value,
-    currentValue: g.current_value,
+    currentValue: tidy(g.current_value), // values logged before rounding may still carry the noise
     targetDate: g.target_date,
     daysLeft: g.target_date ? daysBetween(today, g.target_date) : null,
     status: g.status,
@@ -165,7 +175,7 @@ export async function getGoal(id) {
     tree: buildTree(nodes, { tasks: taskMap, habits: habitMap }),
     tasks: ctx.tasks.map((t) => ({ id: t.id, title: t.title, done: Boolean(t.done_at), dueDate: t.due_date, deadline: t.deadline, hard: t.hard })),
     habits: ctx.habits.map((h) => ({ id: h.id, title: h.name, strength: ctx.stats.get(h.id)?.strength ?? 0, cue: h.cue })),
-    logs,
+    logs: logs.map((l) => ({ ...l, value: tidy(l.value) })),
   };
 }
 
@@ -221,15 +231,20 @@ export async function setGoalStatus(id, status) {
   return { ok: true };
 }
 
-// "42" sets the current value; "+3" or "-1" adds to it.
-export async function logGoal(id, raw, note = '') {
-  const g = await getGoalRow(id);
-  if (g.measure !== 'number') throw new RuleError('This goal is measured by steps, not a number.');
-  const s = String(raw ?? '').trim().replace(',', '.');
+// "42" sets the current value; "+3" or "-1" adds to it. A typographic minus or a space after the sign,
+// as a phone keyboard may give, reads the same.
+export function nextGoalValue(current, raw) {
+  const s = String(raw ?? '').trim().replace(',', '.').replace(/^−/, '-').replace(/^([+-])\s+/, '$1');
   const delta = /^[+-]/.test(s);
   const n = Number(s);
   if (!s || !Number.isFinite(n)) throw new RuleError('Type a number, or +N to add to it.');
-  const value = delta ? (g.current_value ?? g.start_value ?? 0) + n : n;
+  return tidy(delta ? (current ?? 0) + n : n);
+}
+
+export async function logGoal(id, raw, note = '') {
+  const g = await getGoalRow(id);
+  if (g.measure !== 'number') throw new RuleError('This goal is measured by steps, not a number.');
+  const value = nextGoalValue(g.current_value ?? g.start_value, raw);
   await db()`update goals set current_value = ${value} where id = ${id}`;
   await db()`insert into goal_logs (goal_id, value, note, at) values (${id}, ${value}, ${text(note, 200)}, ${ts()})`;
   await logEvent('goal_logged', { id, title: g.title, value });

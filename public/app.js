@@ -3,7 +3,7 @@ import {
   $app, state, hooks, esc, ApiError, api, toast, react, act, form2obj, fmtClock, fmtDay, left, fmtMin,
   DAY_NAMES, scheduleText, CHECK, isStandalone, isIOS, haptic, fx, RING_MS, bar, strengthChip, localToday, localNowHM,
   icon, drawRings, pageHead, iconLink, fmtInt, fmtDec, ago, miniRing, keyBlock, rememberKey, safeColor,
-  urgency, URGENCY, brandMark, emptyState, reduced, canRedraw, redrawIfIdle, confirmSheet, reportProblem,
+  urgency, URGENCY, brandMark, emptyState, reduced, canRedraw, redrawIfIdle, confirmSheet, reportProblem, addDays, closeConfirm,
 } from './ui.js';
 import { soundsOn, setSounds } from './sound.js';
 import * as motion from './motion.js';
@@ -68,6 +68,10 @@ function shell(inner) {
 }
 
 function skeleton(title) {
+  if (state.loadFailed === state.route) {
+    return `${pageHead(title)}<div class="card load-failed"><p>${esc(state.loadFailedMsg || 'This did not load.')}</p>
+      <button type="button" class="btn tinted" data-action="reload-route">Try again</button></div>`;
+  }
   return `${pageHead(title)}<div class="skeleton"><i></i><i></i><i class="short"></i></div>`;
 }
 
@@ -132,8 +136,10 @@ function habitRow(i, t) {
     meta = `<span class="good">${how}</span> at ${fmtClock(i.keptAt)}${i.flexible ? `. ${flexLine}` : ''}${streakText(i) ? `. ${streakText(i)}` : ''}`;
     if (i.canUndo) actions = `<button class="btn tinted small" data-action="undo" data-id="${i.id}">Undo</button>`;
   } else if (i.status === 'met') {
-    meta = `<span class="good">Week done</span>. ${flexLine}. Log more if you like.`;
-    actions = `<button class="btn tinted small" data-action="keep" data-id="${i.id}">Log today</button>`;
+    meta = `<span class="good">Week done</span>. ${flexLine}.${i.closedToday ? '' : ' Log more if you like.'}`;
+    if (!i.closedToday) actions = `<button class="btn tinted small" data-action="keep" data-id="${i.id}">Log today</button>`;
+  } else if (i.status === 'closed') {
+    meta = `Closed until tomorrow. ${flexLine}, today's log-by time was ${dueLabel(i.deadline)}.`;
   } else if (i.status === 'missed') {
     meta = `<span class="bad">Missed at ${dueLabel(i.deadline)}, minus ${i.missHpLost ?? i.penalty} HP${i.missRepeat ? ' (second in a row)' : ''}</span>. Keep it next time for +${t.settings.comebackBonus} HP.`;
     actions = pardonControls(i.missId, t);
@@ -163,6 +169,22 @@ function pardonControls(missId, t) {
   }
   if (t.game.pardonsLeft <= 0) return '<span class="faint small">No pardons left this month</span>';
   return `<button class="btn tinted small" data-action="pardon" data-id="${missId}">Use a pardon (${t.game.pardonsLeft} left)</button>`;
+}
+
+// Misses that can still be pardoned but have no row of their own today: one due at midnight, a weekly
+// habit settled on Sunday, yesterday evening's. Without this they could only be pardoned through the coach.
+function recentMisses(t) {
+  if (!t.game.pardonsLeft) return '';
+  const shown = new Set([...t.items.map((i) => i.missId), ...t.tasks.map((k) => k.missId)].filter(Boolean));
+  const rest = (t.pardonable || []).filter((p) => !shown.has(p.id));
+  if (!rest.length) return '';
+  const when = (d) => (d === addDays(t.today, -1) ? 'Yesterday' : d === t.today ? 'Today' : fmtDay(d));
+  return `<section class="section"><div class="gh"><h2>Recent misses</h2><span class="gh-count">Pardonable</span></div>
+    <div class="group">${rest.map((p) => `<div class="li missed">
+      <span class="chk">${CHECK}</span>
+      <span class="li-body"><span class="li-title">${esc(p.title)}</span><span class="li-sub"><span class="bad">Missed ${when(p.date)}${p.hpLost ? `, minus ${p.hpLost} HP` : ''}</span></span></span>
+      <span class="li-side"></span>
+      <div class="li-actions">${pardonControls(p.id, t)}</div></div>`).join('')}</div></section>`;
 }
 
 function taskRow(k, t) {
@@ -195,8 +217,10 @@ function taskRow(k, t) {
     meta = `<span class="good">Done</span> at ${fmtClock(k.doneAt)}`;
     if (k.canUndo) actions = `<button class="btn tinted small" data-action="task-undo" data-id="${k.id}">Undo</button>`;
   } else if (k.status === 'missed') {
-    meta = `<span class="bad">Missed, minus ${k.penalty} HP.</span> You can still do it.`;
-    actions = `<button class="btn tinted small" data-action="task-done" data-id="${k.id}">Mark done</button>${pardonControls(k.missId, t)}`;
+    // What the miss really cost: the daily cap or a death that day can make it less than the penalty.
+    const lost = k.missHpLost ?? k.penalty;
+    meta = `<span class="bad">Missed${lost ? `, minus ${lost} HP` : ''}.</span> You can still do it${k.canDelete ? ', or drop it' : ''}.`;
+    actions = `<button class="btn tinted small" data-action="task-done" data-id="${k.id}">Mark done</button>${pardonControls(k.missId, t)}${k.canDelete ? `<button class="btn tinted small" data-action="delete-task" data-id="${k.id}">Drop</button>` : ''}`;
   } else if (k.status === 'pardoned') {
     meta = 'Pardoned.';
     actions = `<button class="btn tinted small" data-action="task-done" data-id="${k.id}">Mark done</button>`;
@@ -310,9 +334,12 @@ function nowPanel(t) {
   const n = t.next;
   if (!n) {
     if (!t.progress.total) return '';
+    // "Secured" only when nothing was missed; otherwise it is just over for today.
+    const missed = t.progress.total - t.progress.done - t.progress.open > 0;
     return `<section class="card now secured">
-      <p class="eyebrow">${icon('check')}Day secured</p>
-      <h2 class="now-title">Everything due today is done.</h2>
+      <p class="eyebrow">${icon('check')}${missed ? 'Nothing left today' : 'Day secured'}</p>
+      <h2 class="now-title">${missed ? 'Everything else due today is done, Boss.' : 'Everything due today is done.'}</h2>
+      ${!missed && t.bonusDue > 0 ? `<p class="now-meta">Keep it clean to midnight for +${t.bonusDue} HP.</p>` : ''}
     </section>`;
   }
   const l = n.dueAt ? left(n.dueAt) : null;
@@ -331,6 +358,7 @@ function nowPanel(t) {
   const durs = DURATIONS.map((d) => `<button type="button" class="${state.focusMinutes === d ? 'on' : ''}" data-action="dur" data-min="${d}" aria-pressed="${state.focusMinutes === d}">${d}</button>`).join('');
   let label = 'Up next';
   if (n.isFocus) label = 'Your one thing';
+  else if (n.missedLast && n.flexible) label = `Missed last week, hit ${n.weekTarget} for +${t.settings.comebackBonus} HP on Sunday`;
   else if (n.missedLast) label = `Missed last time, keep it for +${t.settings.comebackBonus} HP`;
   const sub = [];
   if (n.cue) sub.push(`After ${esc(n.cue)}`);
@@ -339,7 +367,8 @@ function nowPanel(t) {
   // The card takes the colour of its countdown, and says how much of the day is left to win.
   const p = t.progress;
   const heat = n.dueAt ? ` u-${urgency(n.dueAt)}" data-due="${n.dueAt}` : ' u-calm';
-  const toGo = p.total - p.done;
+  // What is still open; a miss is not "to go".
+  const toGo = p.open;
   return `<section class="card now${n.isFocus ? ' is-focus' : ''}${n.missedLast ? ' relapse' : ''}${heat}" data-next="${n.kind}:${n.id}">
     <div class="now-top"><p class="eyebrow">${icon(n.isFocus ? 'focus' : 'bolt')}${label}</p>${l ? `<span class="now-left ${l.cls}" data-left="${n.dueAt}">${l.text}</span>` : ''}</div>
     <h2 class="now-title">${esc(n.title)}</h2>
@@ -381,11 +410,18 @@ const schedAt = (r) => (r.kind !== 'event' && r.kind !== 'deadline' && r.time ==
 function scheduleRows(t, now) {
   const events = t.calendar || [];
   const rows = [
-    ...events.filter((e) => !e.allDay).map((e) => ({
-      time: e.time, title: e.title, kind: e.deadline ? 'deadline' : 'event', color: e.color, done: Boolean(e.done),
-      sub: [e.done ? 'Done' : '', e.endTime && e.endTime !== e.time ? `until ${e.endTime}` : '', e.location, e.feed].filter(Boolean).join(', '),
-      past: (e.endTime || e.time) < now,
-    })),
+    // A VLE deadline already has its task among the rows below (with its time and HP), so it is not listed
+    // twice. Past is judged on the real end, so an event running past midnight stays on until it ends, and
+    // one that began last night is listed from the start of today.
+    ...events.filter((e) => !e.allDay && !e.deadline).map((e) => {
+      const before = e.start.slice(0, 10) < t.today;
+      const endMs = Date.parse(e.end || e.start);
+      return {
+        time: before ? '00:00' : e.time, title: e.title, kind: 'event', color: e.color, done: Boolean(e.done),
+        sub: [e.done ? 'Done' : '', e.endTime && e.endTime !== e.time ? `until ${e.endTime}` : '', e.location, e.feed].filter(Boolean).join(', '),
+        past: Number.isFinite(endMs) ? endMs <= Date.now() : (e.endTime || e.time) < now,
+      };
+    }),
     ...t.items.filter((i) => !i.flexible && i.status !== 'met' && i.deadline !== '00:00').map((i) => ({
       time: i.deadline, title: i.title, kind: `due ${i.status}`, sub: i.status === 'open' ? `Habit due${i.heavy ? `, ${i.penalty} HP` : ''}` : i.status === 'kept' ? 'Kept' : i.status,
       past: i.status !== 'open',
@@ -657,6 +693,7 @@ function viewToday() {
       ${section('Habits', normal, normal.map((i) => habitRow(i, t)).join(''))}
       ${section('This week', flex, flex.map((i) => habitRow(i, t)).join(''), `${flex.filter((i) => i.status === 'met').length} of ${flex.length} met`)}
       ${tasksHtml}
+      ${recentMisses(t)}
       ${closeDayCard(t)}
     </div>
     <aside>
@@ -814,16 +851,17 @@ function habitCard(h, p) {
   </div>`;
 }
 
+// Rest days are booked in advance: today can be neither booked nor cancelled, so neither is offered.
 function restCard(p) {
   const list = p.restDays.map((d) => `<div class="li li-plain">
-    <span class="li-body"><span class="li-title">${fmtDay(d.date, { weekday: 'long', day: 'numeric', month: 'long' })}</span>${d.reason ? `<span class="li-sub">${esc(d.reason)}</span>` : ''}</span>
-    <button class="btn tinted small" data-action="rest-cancel" data-date="${d.date}">Cancel</button></div>`).join('');
+    <span class="li-body"><span class="li-title">${fmtDay(d.date, { weekday: 'long', day: 'numeric', month: 'long' })}</span><span class="li-sub">${d.date === p.today ? 'Today, resting' : ''}${d.reason ? `${d.date === p.today ? '. ' : ''}${esc(d.reason)}` : ''}</span></span>
+    ${d.date === p.today ? '' : `<button class="btn tinted small" data-action="rest-cancel" data-date="${d.date}">Cancel</button>`}</div>`).join('');
   return `<section class="section"><div class="gh"><h2>Rest days</h2><span class="gh-count">${p.settings.restDaysPerMonth} a month</span></div>
     <div class="card">
       ${list ? `<div class="group flush">${list}</div>` : ''}
       <form class="rest-form" data-form="rest">
         <label class="sr" for="rest-date">Date</label>
-        <input id="rest-date" class="input" type="date" name="date" min="${p.today}" required>
+        <input id="rest-date" class="input" type="date" name="date" min="${addDays(p.today, 1)}" required>
         <input class="input" name="reason" maxlength="200" placeholder="Reason" autocomplete="off">
         <button class="btn primary" type="submit">Book</button>
       </form>
@@ -969,6 +1007,8 @@ const BRIEFS = [['morning', 'sun', 'Morning brief'], ['midday', 'clock', 'Midday
 function viewCoach() {
   const c = state.coach;
   if (!c) return shell(skeleton('Coach'));
+  // A reply landing while he types a follow-up keeps the keyboard up and the caret where it was.
+  const typing = document.activeElement?.id === 'coach-text' ? document.activeElement.selectionStart : null;
   const msgs = c.messages.map((m, i, all) => coachMessage(m, i === all.length - 1)).join('');
   const ask = state.query.get('ask') || '';
   const empty = emptyState({ icon: 'coach', title: 'Talk to your coach' });
@@ -1000,6 +1040,13 @@ function viewCoach() {
       </div></div>`);
   // The chat ends at the composer, so the newest message sits just above it.
   motion.chatToEnd();
+  const box = typing !== null ? document.getElementById('coach-text') : null;
+  if (box) {
+    box.focus({ preventScroll: true });
+    box.setSelectionRange(typing, typing);
+    box.style.height = 'auto';
+    box.style.height = `${Math.min(140, box.scrollHeight)}px`;
+  }
 }
 
 // ---------- Review ----------
@@ -1444,6 +1491,9 @@ function forgetMemory() {
 
 function showLock({ auto = true, offline = false } = {}) {
   if (lockEl()) return;
+  closeConfirm();
+  // A voice note being recorded stops with the lock (nothing is sent), and so does playback.
+  leaveChat();
   abortFaceId();
   forgetMemory();
   document.body.classList.remove('sheet-open');
@@ -1460,7 +1510,7 @@ function showLock({ auto = true, offline = false } = {}) {
     <details class="recover"><summary>Lost Face ID?</summary>
       <form data-form="login">
         <label class="field"><span>Password</span><input class="input" type="password" name="password" autocomplete="current-password" required></label>
-        <label class="field"><span>Recovery code (SETUP_CODE in Railway)</span><input class="input" name="recovery" autocomplete="off" required></label>
+        <label class="field"><span>Recovery code (SETUP_CODE in Railway)</span><input class="input" name="recovery" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required></label>
         <div class="form-actions"><button class="btn primary big wide" type="submit">Open with password</button></div>
       </form>
       <p class="note bad" id="gate-error" role="alert" hidden></p></details>
@@ -1572,6 +1622,8 @@ async function faceIdLogin({ auto = false } = {}) {
     let text = 'Face ID could not start. Tap to try again.';
     if (err.status === 0) { phase = 'offline'; text = LOCK_TEXT.offline(); }
     else if (err.status === 429) { phase = 'error'; text = err.message; }
+    // A key the server no longer knows says so, instead of "try again" forever.
+    else if (err.status === 401 && err.message) { phase = 'error'; text = err.message; }
     else if (err.status) { phase = 'error'; text = LOCK_TEXT.error(); }
     else if (err.name === 'NotAllowedError') text = auto && quick ? 'Tap to unlock.' : 'Face ID was cancelled. Tap to try again.';
     if (lockEl()) setLock(phase, text); else gateError(text);
@@ -1739,7 +1791,12 @@ async function load(route) {
   if (route === 'mail') await loadMail();
   // Plan holds the goals too, as its third segment.
   if (route === 'plan') [state.plan] = await Promise.all([api('GET', '/api/plan'), loadGoals()]);
-  if (route === 'coach') state.coach = await api('GET', '/api/coach');
+  if (route === 'coach') {
+    // Coming back to the app mid-send keeps the chat as it is: a voice note being transcribed or a message
+    // waiting for its reply exists only on this phone until the answer lands.
+    if (state.coach && (state.sending || recording() || state.coach.messages.some((m) => !m.id && m.hearing))) return;
+    state.coach = await api('GET', '/api/coach');
+  }
   if (route === 'review') {
     // The season (HP over 30 days, the longest streaks) heads the review.
     const [r, season] = await Promise.all([api('GET', '/api/review'), api('GET', '/api/season').catch(() => null)]);
@@ -1816,9 +1873,15 @@ async function go({ top = false, native = false } = {}) {
   }, { native });
   try {
     await load(state.route);
+    state.loadFailed = null;
     render();
   } catch (err) {
-    if (err.status !== 401) toast(err.message, true);
+    if (err.status === 401) return;
+    toast(err.message, true);
+    // A first load that failed would leave the skeleton up for good: it becomes a Try again card.
+    state.loadFailed = state.route;
+    state.loadFailedMsg = err.status === 0 ? 'No connection. Try again when you are back online.' : 'This did not load.';
+    render();
   }
 }
 
@@ -1964,6 +2027,7 @@ async function faceIdAdd(el) {
     await api('POST', '/api/passkey/register', { response: credentialJSON(cred), device: deviceName() });
     toast('Face ID is on. Next time, log in with your face.');
     await load('settings');
+    rememberLockMode(state.settings?.faceIdLock !== false && (state.passkeys || []).length > 0);
     render();
   } catch (err) {
     const msg = err.name === 'NotAllowedError' ? 'Face ID setup was cancelled.'
@@ -2061,7 +2125,7 @@ async function keepHabit(el, id, minimum = false) {
 // The coach may have changed tasks, habits or settings: reload what it touched, in the background.
 // A message of his on screen at once, with the coach writing under it.
 function coachShow(msg) {
-  state.coach.messages.push(msg);
+  state.coach?.messages.push(msg);
   state.sending = true;
   if (state.query.has('ask')) history.replaceState(null, '', '#/coach');
   state.query = new URLSearchParams();
@@ -2072,18 +2136,48 @@ function coachShow(msg) {
 // The kept copy replaces it, holding on to what this phone already shows (thumbnails, a local recording).
 async function sendCoach({ text = '', media = [], msg }) {
   state.sending = true;
-  const r = await act(() => api('POST', '/api/coach', { text, media }));
+  let r = null;
+  let caught = false;
+  try {
+    r = await api('POST', '/api/coach', { text, media });
+  } catch (err) {
+    if (err.status === 0) caught = await coachCaughtUp(msg, text);
+    else if (err.status !== 401) toast(err.message, true);
+  }
   state.sending = false;
   if (r) {
     const mine = msg.media || [];
     Object.assign(msg, { id: r.sent.id, at: r.sent.at, text: r.sent.text, media: r.sent.media ? r.sent.media.map((x, i) => ({ ...mine[i], ...x })) : null });
-    state.coach.messages.push(r.reply);
-  } else {
+    state.coach?.messages.push(r.reply);
+  } else if (!caught) {
     msg.notSent = true;
   }
   render();
-  if (r) fx('receive');
-  await coachChangedThings(r?.reply);
+  if (r || caught) fx('receive');
+  await coachChangedThings(r ? r.reply : caught ? { actions: [{ ok: true }] } : null);
+}
+
+// The connection dropped mid-send (the phone locked, the signal went). The server usually carries on and
+// keeps the reply, so before calling it "Not sent" (and inviting a resend that would log or add twice),
+// the chat asks the server a few times for what it has.
+async function coachCaughtUp(msg, text) {
+  toast('The connection dropped. Checking whether the coach got it.');
+  const since = Date.parse(msg.at) - 120000;
+  for (let i = 0; i < 6; i += 1) {
+    await new Promise((done) => setTimeout(done, 5000));
+    let c;
+    try {
+      c = await api('GET', '/api/coach');
+    } catch {
+      continue;
+    }
+    const mine = c.messages.findIndex((m) => m.role === 'user' && Date.parse(m.at) >= since && (!text || m.text === text));
+    if (mine >= 0 && c.messages.slice(mine + 1).some((m) => m.role === 'assistant')) {
+      state.coach = c;
+      return true;
+    }
+  }
+  return false;
 }
 
 async function coachChangedThings(reply) {
@@ -2092,6 +2186,8 @@ async function coachChangedThings(reply) {
   state.goals = null;
   state.dash = null;
   state.cal?.chunks.clear();
+  // Food the coach logged shows in Today's ring and food tile too.
+  loadFoodToday();
   await fetchToday().catch(() => { state.today = null; });
   if (!['today', 'coach'].includes(state.route)) await load(state.route).catch(() => {});
 }
@@ -2115,8 +2211,10 @@ async function afterTick(reaction, current = false) {
     }
   }
   const tail = open === 0 ? ' Everything due today is done.' : open ? ` ${open} to go.` : '';
-  // The server's reaction may already say the day is done; it is said once.
-  if (reaction?.text) react({ ...reaction, text: reaction.text.includes(tail.trim()) ? reaction.text : `${reaction.text}${tail}` });
+  // The server's reaction may already say how much is left ("5 left today") or that the day is done; it
+  // is said once.
+  const said = (t) => t.includes(tail.trim()) || /\b\d+ (?:left|to go)\b|nothing (?:left|else)|everything due today/i.test(t);
+  if (reaction?.text) react({ ...reaction, text: said(reaction.text) ? reaction.text : `${reaction.text}${tail}` });
   else if (tail) toast(tail.trim());
 }
 
@@ -2176,9 +2274,7 @@ async function layoutClick(a, el) {
   return false;
 }
 
-$app.addEventListener('click', async (e) => {
-  const el = e.target.closest('[data-action]');
-  if (!el) return;
+async function handleAction(e, el) {
   const id = Number(el.dataset.id);
   const a = el.dataset.action;
   if (await goalsClick(a, el)) return;
@@ -2334,6 +2430,10 @@ $app.addEventListener('click', async (e) => {
   } else if (a === 'restore-habit') {
     const r = await act(() => api('POST', `/api/habits/${id}/restore`, {}));
     if (r) { state.removed = null; toast(`Kept ${r.name}.`); await go(); }
+  } else if (a === 'reload-route') {
+    state.loadFailed = null;
+    render();
+    await go();
   } else if (a === 'delete-task') {
     if (!await confirmSheet('Delete this task?')) return;
     if (await act(() => api('DELETE', `/api/tasks/${id}`), 'Deleted.')) { state.sheet = null; await go(); }
@@ -2343,7 +2443,8 @@ $app.addEventListener('click', async (e) => {
     const r = await act(() => api('POST', `/api/briefs/${el.dataset.kind}`, {}));
     el.disabled = false;
     if (r) {
-      state.coach.messages.push({ role: 'assistant', text: r.text, at: new Date().toISOString() });
+      // The brief as the server kept it in the chat, so it has an id (Report a problem) and matches a reload.
+      if (state.coach) state.coach.messages.push(r.message || { role: 'assistant', text: r.text, at: new Date().toISOString() });
       render();
       fx('receive');
       state.today = null;
@@ -2394,6 +2495,9 @@ $app.addEventListener('click', async (e) => {
     if (!await confirmSheet('Remove Face ID here?', 'The password keeps working.', 'Remove')) return;
     if (await act(() => api('DELETE', `/api/passkeys/${encodeURIComponent(el.dataset.id)}`), 'Face ID removed for that device.')) {
       await load('settings');
+      // With the last key gone the app no longer opens with Face ID only; a phone that still thought so would
+      // lock itself behind a Face ID the server no longer knows.
+      rememberLockMode(state.settings?.faceIdLock !== false && (state.passkeys || []).length > 0);
       render();
     }
   } else if (a === 'push-on') {
@@ -2408,6 +2512,23 @@ $app.addEventListener('click', async (e) => {
     wipePhone();
     renderLogin(null, { auto: false });
   }
+}
+
+// A second tap on something still being handled (a double tap, an impatient re-tap while the server
+// answers) is dropped, so nothing is logged, ticked, sent or deleted twice.
+$app.addEventListener('click', async (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  if (el.dataset.busy) {
+    e.preventDefault();
+    return;
+  }
+  el.dataset.busy = '1';
+  try {
+    await handleAction(e, el);
+  } finally {
+    delete el.dataset.busy;
+  }
 });
 
 $app.addEventListener('change', (e) => {
@@ -2415,6 +2536,13 @@ $app.addEventListener('change', (e) => {
   if (d) state.decisions[d.dataset.decide] = d.value;
   if (e.target.matches('[data-mail-setting]')) mailChange(e.target);
   if (e.target.matches('[data-coach-photo]')) stagePhotos(e.target);
+  // A new habit's deadline follows how often it is: due by 21:00 on fixed days, loggable until the end of
+  // the day for "times a week". Only the untouched default moves.
+  if (e.target.name === 'freq' && e.target.closest('form[data-form="new-habit"]')) {
+    const dl = e.target.form.elements.namedItem('deadline');
+    if (dl && e.target.value === 'weekly' && dl.value === '21:00') dl.value = '23:59';
+    else if (dl && e.target.value === 'fixed' && dl.value === '23:59') dl.value = '21:00';
+  }
 });
 
 // Live preview of what quick add understood: the date, time, estimate and goal.
@@ -2550,6 +2678,9 @@ $app.addEventListener('submit', async (e) => {
       const r = await act(() => api('POST', '/api/coach', { text }));
       if (!r) {
         if (here()) { state.sheet = null; render(); }
+        // What he typed comes back, so a failed send costs nothing to try again.
+        const box = $app.querySelector('form[data-form="ask-coach"] [name="text"]');
+        if (box && !box.value) box.value = text;
         return;
       }
       await coachChangedThings(r.reply);
@@ -2725,6 +2856,8 @@ let hiddenAt = 0;
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {
     hiddenAt = Date.now();
+    // iOS cuts the microphone off in the background; a half-made voice note is dropped, never sent half done.
+    if (recording()) leaveChat();
     return;
   }
   const away = hiddenAt ? Date.now() - hiddenAt : 0;
@@ -2774,13 +2907,18 @@ motion.initMotion({
     state.sheet = { kind: 'dodge', ref: { kind: k === 'h' ? 'habit' : 'task', id: Number(id) } };
     render();
   },
-  canPull: () => state.route === 'today' && Boolean(state.today) && !state.sheet && !state.foodSheet && !document.querySelector('.gate'),
+  canPull: () => state.route === 'today' && !state.sheet && !state.foodSheet && !document.querySelector('.gate'),
   refresh: () => refreshToday().catch((err) => { if (err.status !== 401) toast(err.message, true); }),
 });
 
 // The sidebar arrives at 900px and the two-column layouts at 1240px.
 // A gate (the lock screen) is not a view: turning the iPad must not swap it for the app.
-['(min-width: 900px)', '(min-width: 1240px)'].forEach((q) => window.matchMedia(q).addEventListener('change', () => { if (!document.querySelector('.gate')) render(); }));
+// Turning a phone or iPad with a form half typed waits for a quiet moment (hooks.idle draws it), so the
+// text and the keyboard are not thrown away.
+['(min-width: 900px)', '(min-width: 1240px)'].forEach((q) => window.matchMedia(q).addEventListener('change', () => {
+  if (document.querySelector('.gate')) return;
+  if (canRedraw()) render(); else state.stale = state.route;
+}));
 
 // ---------- Boot ----------
 
@@ -2795,7 +2933,7 @@ motion.initMotion({
 // newer version is ever loaded, never an older one.
 
 // This copy of the app. sw.js carries the same name, and test/syntax.test.js keeps the two in step.
-const BUILD = 'oath-v32';
+const BUILD = 'oath-v33';
 const UPDATE_KEY = 'oath.update';
 const buildNo = (b) => Number(/^oath-v(\d+)$/.exec(String(b || ''))?.[1] || 0);
 let updating = false;
@@ -2840,10 +2978,14 @@ function updateTo(live) {
 // Nothing he is doing is lost: not while he types, has a sheet open, records, waits on the coach or Face ID
 // is asking. The lock screen, waiting for a tap, is the best moment of all.
 function quietNow() {
+  const typing = document.activeElement?.matches?.(TEXT_FIELDS);
   const lock = lockEl();
-  if (lock) return ['idle', 'error', 'offline'].includes(lock.dataset.state);
-  return !state.sheet && !state.sending && !recording() && !document.documentElement.classList.contains('kb-open')
-    && !document.activeElement?.matches?.(TEXT_FIELDS);
+  // On the lock screen: not while Face ID is asking, nor while he types in the recovery form.
+  if (lock) return ['idle', 'error', 'offline'].includes(lock.dataset.state) && !typing;
+  // In the app: not with any sheet, a confirm or a half-filled form open, mid-swipe, while sending, recording
+  // or typing (canRedraw covers the sheets, forms, fingers and focus).
+  return canRedraw() && !state.sending && !recording() && !document.body.classList.contains('confirm-open')
+    && !document.documentElement.classList.contains('kb-open') && !typing;
 }
 function whenQuiet(run) {
   const tick = () => (quietNow() ? run() : setTimeout(tick, 1000));
@@ -2894,7 +3036,14 @@ async function resumeFresh() {
   if (!updating) resumeLock();
 }
 
-setInterval(() => { if (document.visibilityState === 'visible') checkBuild(); }, 5 * 60000);
+setInterval(() => {
+  if (document.visibilityState !== 'visible') return;
+  checkBuild();
+  // With Face ID only, the server locks a session left alone for 15 minutes. Only Today asks it anything
+  // while he reads, so a long read on Food or a long review form would end in a lock and a lost save; while
+  // the app is open on screen, it says it is still here. A screen that is off asks nothing and locks as before.
+  if (!lockEl() && !document.querySelector('.gate')) api('GET', '/api/session').catch(() => {});
+}, 5 * 60000);
 window.addEventListener('online', () => checkBuild());
 
 function watchForUpdates() {

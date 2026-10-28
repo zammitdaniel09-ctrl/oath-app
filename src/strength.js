@@ -4,7 +4,7 @@
 // finding that a single missed day does not slow habit formation (Lally et al. 2010).
 import { db } from './db.js';
 import { addDays } from './time.js';
-import { rulesOn, isActive, isScheduled, isFlexible, weekStartOf, weekDates, weekTargetFor, previousOccurrence } from './rules.js';
+import { rulesOn, isActive, isScheduled, isFlexible, weekStartOf, weekDates, weekTargetFor } from './rules.js';
 
 export async function restSet(tx = db()) {
   const rows = await tx`select date from rest_days`;
@@ -39,10 +39,12 @@ export async function habitStats(habits, asOf, tz, { heatDays = 84 } = {}) {
       const perWeek = Math.max(1, rulesOn(h, asOf).days.length);
       const m = 0.2 ** (1 / ((perWeek * 30) / 7));
       for (let d = startScan; d <= asOf; d = addDays(d, 1, tz)) {
-        if (!isScheduled(h, d, tz, rest)) continue;
+        // Judged by the record, not today's rules, so changing the days never rewrites the past: the
+        // engine records a miss for every scheduled day it judges, so a day with neither a keep nor a
+        // miss was not due then (or is today, still open).
         const done = compBy.get(key(d));
         const miss = missBy.get(key(d));
-        if (d === asOf && !done && !miss) continue; // today is still open
+        if (!done && !miss) continue;
         const value = done ? (done.minimum ? 0.5 : 1) : miss?.pardoned_at ? 1 : 0;
         score = score * m + value * (1 - m);
       }
@@ -61,15 +63,14 @@ export async function habitStats(habits, asOf, tz, { heatDays = 84 } = {}) {
       }
     }
 
-    // Last 14 days, for the honest "kept X of Y" line.
+    // Last 14 days, for the honest "kept X of Y" line, judged by the record like the score.
     let kept14 = 0;
     let sched14 = 0;
-    for (let i = 13; i >= 0; i -= 1) {
+    for (let i = 13; i >= 0 && !flexibleNow; i -= 1) {
       const d = addDays(asOf, -i, tz);
-      if (!isScheduled(h, d, tz, rest)) continue;
       const done = compBy.get(key(d));
       const miss = missBy.get(key(d));
-      if (d === asOf && !done && !miss) continue;
+      if (!done && !miss) continue;
       sched14 += 1;
       if (done || miss?.pardoned_at) kept14 += 1;
     }
@@ -101,7 +102,12 @@ export async function habitStats(habits, asOf, tz, { heatDays = 84 } = {}) {
       weekDone = weekDates(w, tz).filter((d) => d <= asOf && compBy.get(key(d))).length;
     }
 
-    const prev = flexibleNow ? addDays(weekStartOf(asOf, tz), -1, tz) : previousOccurrence(h, asOf, tz, rest);
+    // A fixed habit's last judged day (its newest keep or miss), as the engine charges a repeat.
+    const lastJudged = () => {
+      for (let i = 1, d = addDays(asOf, -1, tz); i <= 28; i += 1, d = addDays(d, -1, tz)) if (compBy.get(key(d)) || missBy.get(key(d))) return d;
+      return null;
+    };
+    const prev = flexibleNow ? addDays(weekStartOf(asOf, tz), -1, tz) : lastJudged();
     const prevMiss = prev ? missBy.get(key(prev)) : null;
 
     out.set(h.id, {

@@ -17,18 +17,35 @@ function relyingParty(c) {
   return { rpID: host.replace(/:\d+$/, ''), origin: `${proto}//${host}` };
 }
 
-// Challenges live for five minutes and are good for one use.
+// Challenges live for five minutes and are good for one use. They are kept in the database as well as in
+// memory: the phone prepares one ahead of time, and a deploy that restarts the server in between would
+// otherwise turn a good Face ID scan into "did not go through".
 const challenges = new Map();
-function remember(challenge, kind) {
+let tableReady = null;
+const ensureTable = () => (tableReady ||= db().unsafe(`create table if not exists passkey_challenges (
+  challenge text primary key, kind text not null, expires timestamptz not null)`).catch((err) => { tableReady = null; throw err; }));
+async function remember(challenge, kind) {
   const now = Date.now();
   for (const [k, v] of challenges) if (v.expires < now) challenges.delete(k);
   if (challenges.size > 50) challenges.delete(challenges.keys().next().value);
   challenges.set(challenge, { kind, expires: now + 5 * 60000 });
+  try {
+    await ensureTable();
+    await db()`delete from passkey_challenges where expires < now()`;
+    await db()`insert into passkey_challenges (challenge, kind, expires) values (${challenge}, ${kind}, ${new Date(now + 5 * 60000)})
+      on conflict (challenge) do nothing`;
+  } catch { /* memory alone still works until a restart */ }
 }
-const take = (kind) => (challenge) => {
+const take = (kind) => async (challenge) => {
   const c = challenges.get(challenge);
   challenges.delete(challenge);
-  return Boolean(c && c.kind === kind && c.expires >= Date.now());
+  let stored = null;
+  try {
+    await ensureTable();
+    [stored] = await db()`delete from passkey_challenges where challenge = ${challenge} returning kind, expires`;
+  } catch { /* fall back to memory */ }
+  const found = c || (stored && { kind: stored.kind, expires: new Date(stored.expires).getTime() });
+  return Boolean(found && found.kind === kind && found.expires >= Date.now());
 };
 
 export async function passkeyCount() {
@@ -61,7 +78,7 @@ export async function registrationOptions(c) {
     excludeCredentials: existing.map((k) => ({ id: k.id, transports: k.transports })),
     authenticatorSelection: { residentKey: 'required', userVerification: 'required' },
   });
-  remember(options.challenge, 'register');
+  await remember(options.challenge, 'register');
   return options;
 }
 
@@ -88,7 +105,7 @@ export async function registerPasskey(c, { response, device } = {}) {
 export async function loginOptions(c) {
   const { rpID } = relyingParty(c);
   const options = await generateAuthenticationOptions({ rpID, userVerification: 'required', allowCredentials: [] });
-  remember(options.challenge, 'login');
+  await remember(options.challenge, 'login');
   return options;
 }
 

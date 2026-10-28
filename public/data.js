@@ -272,10 +272,16 @@ export function viewHealth() {
       <div><div id="sec-health">${healthSection(d.health)}</div></div>
       <aside><div id="sec-business">${businessSection(d.business)}</div><div id="sec-calendars">${calendarSection(d)}</div></aside>
     </div>`);
-  // Links like #/health?section=calendars land on that section.
+  // Links like #/health?section=calendars land on that section, once per visit: a redraw after a tap or a
+  // return from Shortcuts leaves him where he scrolled.
   const section = state.query?.get('section');
-  if (section) document.getElementById(`sec-${section}`)?.scrollIntoView({ block: 'start' });
+  if (section && scrolledTo !== location.hash) {
+    scrolledTo = location.hash;
+    document.getElementById(`sec-${section}`)?.scrollIntoView({ block: 'start' });
+  }
 }
+let scrolledTo = '';
+window.addEventListener('hashchange', () => { if (!location.hash.startsWith('#/health')) scrolledTo = ''; });
 
 // ---------- Events ----------
 

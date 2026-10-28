@@ -9,7 +9,7 @@
 // - Reminders are few, cue-based and fade once a habit is strong (Stawarz et al. 2015).
 import { db, getKV, setKV, logEvent } from './db.js';
 import { nowUTC, isoDate, addDays, weekday, deadlineAt, dueOn, deadlineText } from './time.js';
-import { rulesOn, isActive, isFlexible, isScheduled, weekStartOf, weekDates, weekTargetFor, previousOccurrence } from './rules.js';
+import { rulesOn, isActive, isFlexible, isScheduled, weekStartOf, weekDates, weekTargetFor } from './rules.js';
 import { restSet, habitStats } from './strength.js';
 
 export { rulesOn, isScheduled, isFlexible, isActive, weekStartOf } from './rules.js';
@@ -115,7 +115,7 @@ export async function deathSince(tx, m) {
   return (await tx`select 1 from events where type = 'death' and at > ${m.created_at} limit 1`).length > 0;
 }
 
-async function applyMiss(tx, game, s, { kind, refId, date, title, hpLost: fullCost, repeat = false }, notes) {
+async function applyMiss(tx, game, s, { kind, refId, date, title, hpLost: fullCost, repeat = false, weekly = false }, notes) {
   const hpLost = await dayCost(tx, s, date, fullCost);
   const inserted = await tx`
     insert into misses (kind, ref_id, date, title, hp_lost, repeat, created_at)
@@ -141,7 +141,9 @@ async function applyMiss(tx, game, s, { kind, refId, date, title, hpLost: fullCo
       url: '/#/coach',
     });
   } else {
-    const comeback = kind === 'habit' ? ` Keep it next time for +${s.comebackBonus} HP.` : '';
+    // An X-a-week habit's comeback is paid when next week is settled, not on a single log.
+    let comeback = '';
+    if (kind === 'habit') comeback = weekly ? ` Meet next week's target for +${s.comebackBonus} HP.` : ` Keep it next time for +${s.comebackBonus} HP.`;
     notes.push({
       title: repeat ? `Missed twice in a row: ${title}` : `Missed: ${title}`,
       body: repeat
@@ -159,10 +161,21 @@ async function unpardonedMiss(tx, habitId, date) {
   return Boolean(m && !m.pardoned_at);
 }
 
+// The day a habit was last judged before this one: its newest keep or miss in the last four weeks.
+// Judged by the record, not today's rules, so after a change of days an older miss never passes for
+// the one just before (a kept day on a dropped weekday still sits in between).
+export async function lastJudged(tx, habitId, date, tz) {
+  const [r] = await tx`select max(d) as d from (
+      select date as d from completions where habit_id = ${habitId} and date < ${date} and date >= ${addDays(date, -28, tz)}
+      union all
+      select date from misses where kind = 'habit' and ref_id = ${habitId} and date < ${date} and date >= ${addDays(date, -28, tz)}) x`;
+  return r?.d || null;
+}
+
 // What a fixed-day miss costs: the habit's penalty, or more if the previous occurrence was missed too.
-async function habitMissCost(tx, s, h, date, tz, rest) {
+async function habitMissCost(tx, s, h, date, tz) {
   const r = rulesOn(h, date);
-  const repeat = await unpardonedMiss(tx, h.id, previousOccurrence(h, date, tz, rest));
+  const repeat = await unpardonedMiss(tx, h.id, await lastJudged(tx, h.id, date, tz));
   return { hpLost: repeat ? Math.round(r.penalty * s.repeatMultiplier) : r.penalty, repeat };
 }
 
@@ -193,7 +206,7 @@ async function closeWeek(tx, game, s, sunday, tz, notes, rest, habits) {
       const r = rulesOn(h, sunday);
       const base = Math.ceil((r.penalty * (target - done)) / target);
       const hpLost = prevMissed ? Math.round(base * s.repeatMultiplier) : base;
-      await applyMiss(tx, game, s, { kind: 'habit', refId: h.id, date: sunday, title: `${h.name}: ${done} of ${target} this week`, hpLost, repeat: prevMissed }, notes);
+      await applyMiss(tx, game, s, { kind: 'habit', refId: h.id, date: sunday, title: `${h.name}: ${done} of ${target} this week`, hpLost, repeat: prevMissed, weekly: true }, notes);
     } else if (prevMissed) {
       const bonus = Math.max(0, Math.min(s.comebackBonus, s.maxHp - game.hp));
       game.hp += bonus;
@@ -201,6 +214,14 @@ async function closeWeek(tx, game, s, sunday, tz, notes, rest, habits) {
       notes.push({ title: `Back on track: ${h.name}`, body: `${done} of ${target} this week after last week's miss. +${bonus} HP.`, tag: `comeback-${h.id}` });
     }
   }
+}
+
+// The clean-day bonus: a day with something to do, no unpardoned miss, no minimum version and no
+// rest, capped so HP never passes the maximum. Today's screen uses the same rule, so it only
+// promises what midnight will pay.
+export function cleanBonusFor(s, hp, { hadWork, missed, usedMinimum, isRest }) {
+  const clean = hadWork && missed === 0 && !usedMinimum && !isRest;
+  return { clean, bonus: clean ? Math.max(0, Math.min(s.cleanBonus, s.maxHp - hp)) : 0 };
 }
 
 async function finalizeDay(tx, game, s, date, tz, notes, rest) {
@@ -224,8 +245,7 @@ async function finalizeDay(tx, game, s, date, tz, notes, rest) {
   const isRest = rest.has(date);
   const kept = scheduledDone.length + flexDone + tasksDone;
   const hadWork = kept + missRows.length > 0;
-  const clean = hadWork && missed === 0 && !usedMinimum && !isRest;
-  const bonus = clean ? Math.max(0, Math.min(s.cleanBonus, s.maxHp - game.hp)) : 0;
+  const { clean, bonus } = cleanBonusFor(s, game.hp, { hadWork, missed, usedMinimum, isRest });
   game.hp += bonus;
   await tx`insert into days (date, hp_end, kept, missed, pardoned, clean, bonus, rest)
            values (${date}, ${game.hp}, ${kept}, ${missed}, ${pardoned}, ${clean}, ${bonus}, ${isRest})
@@ -250,6 +270,11 @@ export async function tick() {
     }
 
     await checkHardTasks(tx, game, s, local, tz, notes);
+
+    // A focus block never finished belongs to its own day: it closes at its planned end and can
+    // tick nothing off later.
+    await tx`update focus_sessions set ended_at = started_at + minutes * interval '1 minute', outcome = 'expired'
+             where ended_at is null and date < ${today}`;
 
     // Close every past day that has not been judged yet (also catches up after downtime).
     let d = addDays(game.lastFinalized, 1, tz);
@@ -354,6 +379,7 @@ async function dueReminders(s, local, today, tz) {
 export async function openItemsToday(today, tz) {
   const s = await getSettings();
   const rest = await restSet();
+  const now = nowUTC();
   const items = [];
   const habits = (await db()`select * from habits`).filter((h) => isActive(h, today));
   const done = new Set((await db()`select habit_id from completions where date = ${today}`).map((r) => r.habit_id));
@@ -372,6 +398,8 @@ export async function openItemsToday(today, tz) {
       items.push(base);
       continue;
     }
+    // Past its log-by time an X-a-week habit is closed until tomorrow (the week is settled on Sunday).
+    if (now >= base.due) continue;
     const remainingDays = weekDates(weekStartOf(today, tz), tz).filter((d) => d >= today && !rest.has(d)).length;
     const needed = st.weekTarget - st.weekDone;
     if (needed > 0 && needed >= remainingDays) {
@@ -407,7 +435,7 @@ export async function completeHabit(id, opts = {}) {
   if (minimum && !r.minimum) throw new RuleError('This habit has no minimum version. Set one in Plan; it applies from tomorrow.');
   const [miss] = await db()`select id from misses where kind = 'habit' and ref_id = ${id} and date = ${today}`;
   if (miss || local >= dueOn(today, r.deadline, tz)) {
-    throw new RuleError(flexible ? `Locked. Log it before ${deadlineText(r.deadline)}.` : `Locked. The deadline passed at ${deadlineText(r.deadline)}.`, 409);
+    throw new RuleError(flexible ? `Closed until tomorrow. Today's log-by time was ${deadlineText(r.deadline)}.` : `Locked. The deadline passed at ${deadlineText(r.deadline)}.`, 409);
   }
   const rows = await db()`insert into completions (habit_id, date, note, minimum, completed_at)
                           values (${id}, ${today}, ${String(note).slice(0, 500)}, ${minimum}, ${ts()})
@@ -417,7 +445,7 @@ export async function completeHabit(id, opts = {}) {
 
   // Comeback: kept on the first scheduled day after an unpardoned miss.
   let comeback = 0;
-  if (!flexible && (await unpardonedMiss(db(), id, previousOccurrence(h, today, tz, rest)))) {
+  if (!flexible && (await unpardonedMiss(db(), id, await lastJudged(db(), id, today, tz)))) {
     comeback = await withGame(async (tx, game) => {
       const bonus = Math.max(0, Math.min(s.comebackBonus, s.maxHp - game.hp));
       game.hp += bonus;
@@ -579,9 +607,12 @@ export async function createHabit(input, { validTime }) {
   return { habit: h, startsToday };
 }
 
+// Due today: a fixed habit scheduled today, or an active X-a-week habit (it can be logged any day).
+const dueToday = (h, today, tz, rest) => isScheduled(h, today, tz, rest) || (isFlexible(h, today) && isActive(h, today));
+
 export async function habitOpenToday(h, today, tz) {
   const rest = await restSet();
-  if (!isScheduled(h, today, tz, rest) && !(isFlexible(h, today) && isActive(h, today))) return false;
+  if (!dueToday(h, today, tz, rest)) return false;
   const [c] = await db()`select 1 from completions where habit_id = ${h.id} and date = ${today}`;
   const [m] = await db()`select 1 from misses where kind = 'habit' and ref_id = ${h.id} and date = ${today}`;
   return !c && !m;
@@ -620,7 +651,12 @@ export async function updateHabit(id, input, { validTime }) {
     // No moving the goalposts on a live obligation: rule changes start tomorrow. A new minimum
     // version always waits a day, so it has to be declared in advance.
     const minimumChanged = next.minimum !== current.minimum;
-    if ((await habitOpenToday(h, today, tz)) || minimumChanged) {
+    // Nor can a change make it due today when it was not (adding today's weekday after the
+    // deadline would be charged at once).
+    const rest = await restSet();
+    const nextHabit = { ...h, ...next, next_rules: null, next_rules_from: null };
+    const newlyDue = !dueToday(h, today, tz, rest) && dueToday(nextHabit, today, tz, rest);
+    if ((await habitOpenToday(h, today, tz)) || minimumChanged || newlyDue) {
       effective = addDays(today, 1, tz);
       await db()`update habits set next_rules = ${db().json(next)}, next_rules_from = ${effective} where id = ${id}`;
     } else {
@@ -664,10 +700,13 @@ export async function restoreHabit(id) {
 
 // ---------- Tasks ----------
 
+// A hard task saved after its deadline would be charged on the next tick, seconds later.
+const PASSED = 'That time has already passed, Boss. Pick a later time or another day.';
+
 export async function createTask(input, { validTime, validDate }, createdBy = 'you') {
   const title = text(input.title, 200);
   if (!title) throw new RuleError('Give the task a title.');
-  const { today } = await localNow();
+  const { local, today, tz } = await localNow();
   const due = validDate(input.due_date) ? input.due_date : null;
   const deadline = validTime(input.deadline) ? input.deadline : null;
   // Voice capture never creates a penalty: a misheard sentence must not cost HP.
@@ -676,6 +715,7 @@ export async function createTask(input, { validTime, validDate }, createdBy = 'y
   const firstStep = text(input.first_step, 200);
   if (wantsHard && firstStep.length < 3) throw new RuleError('A hard task needs a first step: the very first physical action.');
   if (due && due < today) throw new RuleError('The due date is in the past.');
+  if (wantsHard && local >= dueOn(due, deadline || '23:59', tz)) throw new RuleError(PASSED);
   const estimate = input.estimate_min ? clampInt(input.estimate_min, 5, 600, null) : null;
   const goalId = await validGoalId(input.goal_id);
   const [t] = await db()`
@@ -688,7 +728,7 @@ export async function createTask(input, { validTime, validDate }, createdBy = 'y
 }
 
 export async function updateTask(id, input, { validTime, validDate }, actor = 'you') {
-  const { today } = await localNow();
+  const { local, today, tz } = await localNow();
   const [t] = await db()`select * from tasks where id = ${id} and deleted_at is null`;
   if (!t) throw new RuleError('That task does not exist.', 404);
   const locked = t.hard && t.due_date && t.due_date <= today;
@@ -715,6 +755,8 @@ export async function updateTask(id, input, { validTime, validDate }, actor = 'y
     if (input.hard !== undefined) hard = Boolean(input.hard);
     if (hard && !due) throw new RuleError('A hard task needs a due date.');
     if (hard && firstStep.length < 3) throw new RuleError('A hard task needs a first step: the very first physical action.');
+    // Making it hard, or moving it earlier, must not land on a moment already gone.
+    if (hard && !same && local >= dueOn(due, deadline || '23:59', tz)) throw new RuleError(PASSED);
   }
   await db()`update tasks set title = ${title}, notes = ${notes}, due_date = ${due}, deadline = ${deadline}, hard = ${hard},
              first_step = ${firstStep}, estimate_min = ${estimate}, goal_id = ${goalId} where id = ${id}`;
@@ -730,9 +772,13 @@ export async function completeTask(id) {
 }
 
 export async function undoTask(id) {
-  const { s } = await localNow();
+  const { s, local, tz } = await localNow();
   const [t] = await db()`select * from tasks where id = ${id} and deleted_at is null`;
   if (!t || !t.done_at) throw new RuleError('Nothing to undo.');
+  // Like a habit, a hard task locks at its deadline, so an undo can never turn into a charge.
+  if (t.hard && t.due_date && local >= dueOn(t.due_date, t.deadline || '23:59', tz)) {
+    throw new RuleError('Locked. The deadline has passed.', 409);
+  }
   const ageMin = (nowUTC().toMillis() - new Date(t.done_at).getTime()) / 60000;
   if (t.hard && ageMin > s.undoMinutes) throw new RuleError(`Undo is only possible within ${s.undoMinutes} minutes.`, 409);
   await db()`update tasks set done_at = null where id = ${id}`;
@@ -744,12 +790,16 @@ export async function deleteTask(id) {
   const { today } = await localNow();
   const [t] = await db()`select * from tasks where id = ${id} and deleted_at is null`;
   if (!t) throw new RuleError('That task does not exist.', 404);
+  let charged = false;
   if (t.hard && t.due_date && t.due_date <= today && !t.done_at) {
-    throw new RuleError('Hard tasks cannot be deleted once they are due. Do it or take the hit.', 409);
+    // Once the miss for its due date is on the books there is nothing left to dodge, so it can go.
+    // No HP comes back (that is what a pardon is for), and a deleted task is never charged again.
+    charged = (await db()`select 1 from misses where kind = 'task' and ref_id = ${id} and date = ${t.due_date}`).length > 0;
+    if (!charged) throw new RuleError('Hard tasks cannot be deleted once they are due. Do it or take the hit.', 409);
   }
   await db()`update tasks set deleted_at = ${ts()} where id = ${id}`;
   await db()`update nodes set kind = 'idea', ref_id = null where kind = 'task' and ref_id = ${id}`;
-  await logEvent('task_deleted', { id, title: t.title });
+  await logEvent('task_deleted', { id, title: t.title, afterMiss: charged });
   return { ok: true };
 }
 
@@ -758,10 +808,11 @@ export async function triageTask(id, action) {
   const { today, tz } = await localNow();
   const [t] = await db()`select * from tasks where id = ${id} and deleted_at is null and done_at is null`;
   if (!t) throw new RuleError('That task does not exist.', 404);
+  // Dropping follows the delete rule, so a hard task whose miss has been charged can go too.
+  if (action === 'drop') return deleteTask(id);
   if (t.hard) throw new RuleError('Hard tasks are not triaged. Do it or take the hit.', 409);
   const nextMonday = addDays(today, 8 - weekday(today, tz), tz);
   const dates = { today, tomorrow: addDays(today, 1, tz), week: nextMonday, someday: null };
-  if (action === 'drop') return deleteTask(id);
   if (!(action in dates)) throw new RuleError('Unknown choice.');
   await db()`update tasks set due_date = ${dates[action]}, created_at = ${action === 'someday' ? ts() : t.created_at} where id = ${id}`;
   await logEvent('task_triaged', { id, title: t.title, action });

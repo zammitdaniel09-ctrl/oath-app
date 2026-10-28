@@ -390,6 +390,8 @@ export async function finishRecording() {
     return;
   }
   msg.text = up.transcript;
+  // The transcript shows under the note at once, not only when the coach has answered.
+  ctx.render();
   await ctx.send({ text: '', media: [up.id], msg });
 }
 

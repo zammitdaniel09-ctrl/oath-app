@@ -110,7 +110,8 @@ test('the morning oath, focus blocks, dodges, reactions and closing the day', as
   const k = await call('POST', `/api/habits/${read.id}/keep`, {});
   assert.match(k.data.reaction.text, /Read done\. 1 left today\. Next: VAT return by 17:00\./);
   const v = await call('POST', `/api/tasks/${vat.id}/done`, {});
-  assert.match(v.data.reaction.text, /Clean sweep/);
+  // At full HP there is no bonus to promise, so it just says the day is done.
+  assert.equal(v.data.reaction.text, 'Everything due today is done, Boss.');
   assert.equal(v.data.reaction.big, true);
 
   assert.equal((await call('POST', '/api/reflection', { rating: 6 })).status, 400);

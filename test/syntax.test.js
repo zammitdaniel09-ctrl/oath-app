@@ -28,3 +28,22 @@ test('the app and its service worker carry the same version', () => {
   assert.ok(sw, 'sw.js names its cache');
   assert.equal(app, sw);
 });
+
+// Offline, the app opens from the service worker's cache: every script it loads at start must be in the
+// shell list, or a missing one leaves a black screen with no lock and no cached day.
+test('every script the app loads at start is in the offline shell', () => {
+  const sw = fs.readFileSync(new URL('sw.js', dir), 'utf8');
+  const shell = new Set([...sw.matchAll(/'(\/[^']+\.js)'/g)].map((m) => m[1]));
+  const seen = new Set();
+  const walk = (file) => {
+    if (seen.has(file)) return;
+    seen.add(file);
+    const src = fs.readFileSync(new URL(file, dir), 'utf8');
+    // Static imports only: a dynamic import() loads later and online.
+    for (const m of src.matchAll(/^\s*import\s[^;]*?from\s+'\.\/([^']+\.js)'/gm)) walk(m[1]);
+    for (const m of src.matchAll(/^\s*import\s+'\.\/([^']+\.js)'/gm)) walk(m[1]);
+  };
+  walk('app.js');
+  const missing = [...seen].map((f) => `/${f}`).filter((f) => !shell.has(f));
+  assert.deepEqual(missing, []);
+});

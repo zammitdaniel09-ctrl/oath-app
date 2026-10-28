@@ -5,7 +5,7 @@
 // after), so a swipe is a spring on the compositor and the redraw after it is invisible.
 import {
   $app, state, esc, api, act, toast, icon, pageHead, safeColor, localToday, localNowHM, haptic, form2obj, fmtDay,
-  reduced, shortDay, addDays, confirmSheet, ago,
+  reduced, shortDay, addDays, confirmSheet, ago, canRedraw,
 } from './ui.js';
 import { spring } from './motion.js';
 
@@ -49,7 +49,7 @@ const saveView = (v) => { try { localStorage.setItem(VIEW_KEY, v); } catch { /* 
 
 function cal() {
   if (!state.cal) {
-    state.cal = { view: savedView() || (MQ_WIDE.matches ? 'span' : 'day'), date: null, chunks: new Map(), inflight: new Map(), ready: false, scrolled: false, sliding: false, lastQuery: null };
+    state.cal = { view: savedView() || (MQ_WIDE.matches ? 'span' : 'day'), date: null, today: null, syncedTo: null, chunks: new Map(), inflight: new Map(), ready: false, scrolled: false, sliding: false, lastQuery: null };
   }
   return state.cal;
 }
@@ -73,6 +73,7 @@ function loadChunk(k) {
     api('GET', `/api/calendar/markers?from=${from}&to=${to}`).catch(() => ({ markers: [] })),
   ]).then(([e, m]) => {
     c.chunks.set(k, { events: e.events, markers: m.markers, at: Date.now() });
+    if (e.syncedTo !== undefined) c.syncedTo = e.syncedTo;
     // Keep the nearest few chunks only.
     const here = chunkOf(c.date || localToday());
     if (c.chunks.size > 14) [...c.chunks.keys()].sort((a, b) => Math.abs(b - here) - Math.abs(a - here)).slice(0, c.chunks.size - 14).forEach((x) => c.chunks.delete(x));
@@ -112,7 +113,8 @@ function windowOf(c, pages) {
       b = b > addDays(monday(day), 7 * (pages + 1) - 1) ? b : addDays(monday(day), 7 * (pages + 1) - 1);
     }
   }
-  return [a, b];
+  // One day more: a deadline at 00:00 the day after the last one shown flags that last day at midnight.
+  return [a, addDays(b, 1)];
 }
 
 const prefetch = () => {
@@ -131,6 +133,11 @@ function evSpan(e) {
   return [a, b];
 }
 
+// A VLE deadline at 00:00 is the end of the day before (its task is due then, at midnight), so it flags
+// that day at midnight instead of the top of its own.
+const atMidnight = (e) => e.deadline && !e.allDay && e.time === '00:00';
+const deadlineMark = (e, min) => ({ ev: e, min, title: e.title, color: e.color, key: `e:${e.id}`, done: e.done });
+
 function dayInfo(d) {
   const ch = cal().chunks.get(chunkOf(d));
   const timed = [];
@@ -138,10 +145,14 @@ function dayInfo(d) {
   const marks = [];
   for (const e of ch?.events || []) {
     const [a, b] = evSpan(e);
-    if (a > d || b < d) continue;
+    if (a > d || b < d || atMidnight(e)) continue;
     if (e.allDay) allDay.push({ ev: e });
-    else if (e.deadline) marks.push({ ev: e, min: minutesOf(e.time), title: e.title, color: e.color, key: `e:${e.id}`, done: false });
+    else if (e.deadline) marks.push(deadlineMark(e, minutesOf(e.time)));
     else timed.push(e);
+  }
+  const next = addDays(d, 1);
+  for (const e of cal().chunks.get(chunkOf(next))?.events || []) {
+    if (atMidnight(e) && e.start.slice(0, 10) === next) marks.push(deadlineMark(e, 1440));
   }
   for (const m of ch?.markers || []) {
     if (m.date !== d) continue;
@@ -364,7 +375,7 @@ function monthDayHtml(c) {
     ...info.marks.map((mk) => ({
       min: mk.min,
       html: mk.ev
-        ? row({ time: mk.ev.time, title: mk.title, sub: 'Deadline', cls: 'deadline', action: 'cal-event', attr: `data-id="${esc(mk.ev.id)}"` })
+        ? row({ time: mk.ev.time, title: mk.title, sub: 'Deadline', cls: 'deadline', action: 'cal-event', attr: `data-id="${esc(mk.ev.id)}"`, done: mk.done })
         : row({ time: mk.min >= 1440 ? '00:00' : hm(mk.min), title: mk.title, sub: `${mk.kind === 'habit' ? 'Habit' : 'Task'} due${mk.hard ? ', hard' : ''}`, cls: 'due', action: 'cal-mark', attr: `data-key="${esc(mk.key)}"`, done: mk.done }),
     })),
   ].sort((a, b) => a.min - b.min).map((x) => x.html);
@@ -447,6 +458,14 @@ async function syncNow() {
   }
 }
 
+// Past the last day the feeds are read up to only Oath's own events show, so a quiet line says why it is empty.
+function horizonHtml(c) {
+  if (!c.syncedTo || !c.feeds?.length) return '';
+  const last = c.view === 'month' ? addDays(addMonths(firstOf(c.date), 1), -1) : addDays(gridStart(c, c.date), gridDays(c) - 1);
+  if (last <= c.syncedTo) return '';
+  return `<p class="cal-horizon">Your calendars are synced up to ${esc(fmtDay(c.syncedTo, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }))}.</p>`;
+}
+
 function topHtml(c) {
   const today = localToday();
   const names = [['day', 'Day'], ['span', cols() === 7 ? 'Week' : '3 days'], ['month', 'Month']];
@@ -458,7 +477,7 @@ function topHtml(c) {
         <button type="button" class="icon-btn cal-step" data-action="cal-prev" aria-label="Previous">${icon('back')}</button>
         <button type="button" class="icon-btn cal-step" data-action="cal-next" aria-label="Next">${icon('chevron')}</button>
       </div>${seg}</div>
-    ${syncHtml(c)}
+    ${syncHtml(c)}${horizonHtml(c)}
     ${c.view === 'month' || (c.view === 'span' && cols() === 7) ? '' : stripHtml(c)}</div>`;
 }
 
@@ -503,9 +522,25 @@ function scrollToNow(c) {
   window.scrollTo({ top: Math.max(0, rect.top + window.scrollY + (min / 1440) * rect.height - stick - 8) });
 }
 
-// The red line and its label creep down the day without a redraw.
+// Left on today, the page follows the day when it turns: past midnight, or back from the background.
+function followToday(c) {
+  const today = localToday();
+  if (c.today && c.today !== today && c.date === c.today) {
+    c.date = today;
+    c.scrolled = false;
+  }
+  c.today = today;
+}
+
+// The red line and its label creep down the day without a redraw; at midnight the page redraws for the new day.
 setInterval(() => {
   if (state.route !== 'calendar') return;
+  const c = cal();
+  if (c.today && c.today !== localToday() && !c.sliding && canRedraw()) {
+    followToday(c);
+    ensure(...windowOf(c, 0)).then(() => { if (state.route === 'calendar' && canRedraw()) ctx.render(); }).catch(() => {});
+    return;
+  }
   const min = minutesOf(localNowHM());
   $app.querySelectorAll('.cal-now').forEach((el) => { el.style.top = `${((min / 1440) * 100).toFixed(3)}%`; });
   $app.querySelectorAll('.cal-nowlbl').forEach((el) => { el.style.top = `${((min / 1440) * 100).toFixed(3)}%`; el.textContent = hm(min); });
@@ -525,6 +560,8 @@ function sheetWrap(title, body, cls = '') {
 function whenLine(e) {
   if (e.allDay) return e.end > e.start ? `${shortDay(e.start)} to ${shortDay(e.end)}` : longDay(e.start);
   const sd = e.start.slice(0, 10);
+  // A deadline is a moment, and one at 00:00 is the end of the day before, as its task has it.
+  if (e.deadline) return atMidnight(e) ? `${longDay(addDays(sd, -1))}<br>Due by midnight` : `${longDay(sd)}<br>Due by ${e.time}`;
   const ed = e.end.slice(0, 10);
   return `${longDay(sd)}<br>${e.time} to ${ed === sd ? '' : `${shortDay(ed)} `}${e.endTime}`;
 }
@@ -553,22 +590,28 @@ function eventSheet(s) {
 
 function markSheet(s) {
   const m = findMark(s.key);
-  if (m) {
-    const what = m.kind === 'habit' ? 'Habit' : 'Task';
-    const due = m.time ? (m.midnight ? 'by midnight' : `by ${m.time}`) : 'today';
-    const status = m.done ? (m.kind === 'habit' ? 'Kept' : 'Done') : 'Still open';
-    return sheetWrap(what, `<div class="cal-d"><div class="cal-d-top"><span class="cal-d-feed mark ${m.kind}${m.hard ? ' hard' : ''}"><i></i>${what} due ${due}</span><h3 class="cal-d-title">${esc(m.title)}</h3></div>
-      <p class="cal-d-when">${longDay(m.date)}</p><p class="cal-d-row"><span>Status</span>${status}</p>
-      <div class="sheet-actions"><a class="btn tinted" href="#/${m.kind === 'habit' ? 'plan' : 'today'}">${icon('chevron')}Open ${m.kind === 'habit' ? 'Plan' : 'Today'}</a></div></div>`);
-  }
-  // A deadline from a feed: its event.
-  const id = s.key.replace(/^e:/, '');
-  return s.key.startsWith('e:') && findEvent(id) ? eventSheet({ id }) : '';
+  if (!m) return '';
+  const today = localToday();
+  const habit = m.kind === 'habit';
+  const what = habit ? 'Habit' : 'Task';
+  // Without a time it is due that whole day, which is only "today" when it is today.
+  let due = m.date === today ? 'today' : shortDay(m.date);
+  if (m.time) due = m.midnight ? 'by midnight' : `by ${m.time}`;
+  // A day gone by is settled: a habit not kept then was missed, a task not done is overdue.
+  const overdue = !habit && m.date === today && m.time && !m.midnight && localNowHM() >= m.time;
+  let status = 'Still open';
+  if (m.done) status = habit ? 'Kept' : 'Done';
+  else if (m.date < today) status = habit ? 'Missed' : 'Overdue';
+  else if (overdue) status = 'Overdue';
+  return sheetWrap(what, `<div class="cal-d"><div class="cal-d-top"><span class="cal-d-feed mark ${m.kind}${m.hard ? ' hard' : ''}"><i></i>${what} due ${due}</span><h3 class="cal-d-title">${esc(m.title)}</h3></div>
+    <p class="cal-d-when">${longDay(m.date)}</p><p class="cal-d-row"><span>Status</span>${status}</p>
+    <div class="sheet-actions"><a class="btn tinted" href="#/${habit ? 'plan' : 'today'}">${icon('chevron')}Open ${habit ? 'Plan' : 'Today'}</a></div></div>`);
 }
 
+// The next full hour, at the latest 23:00 so a new event still starts today.
 function nextHour() {
   const [h, m] = localNowHM().split(':').map(Number);
-  return hm(Math.min(22 * 60, (h + (m > 0 ? 1 : 0)) * 60));
+  return hm(Math.min(23 * 60, (h + (m > 0 ? 1 : 0)) * 60));
 }
 
 function formSheet(s) {
@@ -731,7 +774,8 @@ function openForm(e) {
   const today = localToday();
   const date = e ? e.start.slice(0, 10) : c.date;
   const start = e && !e.allDay ? e.time : date === today ? nextHour() : '09:00';
-  const end = e && !e.allDay ? e.endTime : hm(Math.min(1439, minutesOf(start) + 60));
+  // hm wraps past midnight, and an end before the start is the next day (the server reads it so too).
+  const end = e && !e.allDay ? e.endTime : hm(minutesOf(start) + 60);
   state.calSheet = {
     kind: 'form', id: e ? e.ownId : null,
     draft: {
@@ -831,10 +875,13 @@ export async function calendarClick(a, el) {
       state.calSheet = { kind: 'event', id: el.dataset.id };
       ctx.render();
       return true;
-    case 'cal-mark':
-      state.calSheet = { kind: 'mark', key: el.dataset.key };
+    case 'cal-mark': {
+      // A VLE deadline's flag opens its event, where Mark done can find it.
+      const key = el.dataset.key || '';
+      state.calSheet = key.startsWith('e:') ? { kind: 'event', id: key.slice(2) } : { kind: 'mark', key };
       ctx.render();
       return true;
+    }
     case 'cal-new':
       openForm(null);
       return true;
@@ -876,7 +923,7 @@ export async function calendarClick(a, el) {
     case 'cal-dur': {
       const form = el.closest('form');
       const start = form?.elements.start.value;
-      if (/^\d\d:\d\d$/.test(start || '')) form.elements.end.value = hm(Math.min(1439, minutesOf(start) + Number(el.dataset.min)));
+      if (/^\d\d:\d\d$/.test(start || '')) form.elements.end.value = hm(minutesOf(start) + Number(el.dataset.min));
       else toast('Set the start first.', true);
       return true;
     }
@@ -910,9 +957,12 @@ export async function calendarSubmit(kind, form) {
   const allDay = f.all_day === 'on';
   if (!allDay && !f.start) { toast('Set a start time, or tick All day.', true); return true; }
   const body = { title: f.title, date: f.date, all_day: allDay, location: f.location || '', notes: f.notes || '' };
-  if (allDay) body.end_date = f.end_date && f.end_date >= f.date ? f.end_date : f.date;
-  else { body.start = f.start; if (f.end) body.end = f.end; }
   const id = form.dataset.id;
+  const was = state.calSheet?.kind === 'form' ? state.calSheet.draft : null;
+  // An all-day event moved with its last day left alone keeps its length: the server shifts the last day.
+  const keepSpan = id && allDay && was?.all_day && f.end_date === was.end_date && f.date !== was.date;
+  if (allDay && !keepSpan) body.end_date = f.end_date && f.end_date >= f.date ? f.end_date : f.date;
+  else if (!allDay) { body.start = f.start; if (f.end) body.end = f.end; }
   const r = await act(() => (id ? api('PATCH', `/api/calendar/events/${id}`, body) : api('POST', '/api/calendar/events', body)));
   if (!r) return true;
   haptic();
@@ -938,6 +988,7 @@ export async function loadCalendar() {
     if (VIEWS.includes(v)) c.view = v;
   }
   if (!c.date) c.date = localToday();
+  followToday(c);
   await Promise.all([ensure(...windowOf(c, 0), { fresh: true }), loadFeeds()]);
   c.ready = true;
   prefetch();

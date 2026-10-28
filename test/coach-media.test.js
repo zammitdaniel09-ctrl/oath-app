@@ -125,6 +125,29 @@ test('a photo alone is a message; only the last three photos are shown to the co
   assert.equal((await post('/api/coach', {})).status, 400);
 });
 
+test('every photo of his newest message is shown, even the four the app allows at once', async () => {
+  const ids = [];
+  for (let i = 0; i < 4; i += 1) ids.push((await post('/api/coach/media', { kind: 'photo', data: JPEG, mime: 'image/jpeg' })).data.id);
+  const c = scripted([says('Four pages of notes, Boss.')]);
+  coach.setCoachClient(c);
+  const r = await post('/api/coach', { text: 'Turn these into tasks', media: ids });
+  assert.equal(r.status, 200, JSON.stringify(r.data));
+  const msgs = c.requests[0].messages;
+  assert.equal(msgs.at(-1).content.filter((b) => b.type === 'image').length, 4, 'all four of this message');
+  assert.equal(msgs.at(-1).content.at(-1).text, 'Turn these into tasks');
+  // The older limit still holds: no earlier photo comes back with them.
+  assert.equal(msgs.flatMap((m) => (Array.isArray(m.content) ? m.content : [])).filter((b) => b.type === 'image').length, 4);
+
+  // One photo next: it is shown, with the last few before it.
+  const one = await post('/api/coach/media', { kind: 'photo', data: JPEG, mime: 'image/jpeg' });
+  const c2 = scripted([says('Got it.')]);
+  coach.setCoachClient(c2);
+  await post('/api/coach', { text: 'And this one', media: [one.data.id] });
+  const all = c2.requests[0].messages.flatMap((m) => (Array.isArray(m.content) ? m.content : [])).filter((b) => b.type === 'image');
+  assert.equal(all.length, 3);
+  assert.equal(c2.requests[0].messages.at(-1).content[0].type, 'image');
+});
+
 test('voice notes: a clear message without a key; with one, transcribed with his names and sent as the transcript', async () => {
   const off = await post('/api/coach/media', { kind: 'voice', data: AUDIO, mime: 'audio/mp4', duration_ms: 4200 });
   assert.equal(off.status, 503);

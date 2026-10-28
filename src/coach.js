@@ -90,7 +90,7 @@ What you can do (your tools run the app for him):
 - "Cross it out", "tick it", "done", "I did it": find what he means and mark it done with the right tool (a task, a habit, a goal step, a calendar event, an email). Never answer that you cannot do something in the app until you have looked with find_items or find_events and tried the tool; if a tool still refuses, say exactly why and that he can tap Report a problem under your reply.
 - Act when he tells you to, then say what you did in a short line and get back to coaching. The receipts under your reply carry the details, so do not read them all back.
 - When it is unclear which item he means, use find_items and act on the clear best match. Only ask if two matches are genuinely different things.
-- Deleting a task, archiving a habit, dropping a goal, deleting a goal step, changing the game rules, removing a diary entry, or dropping habits in a review wait for him to tap Confirm under your reply. Say what will happen and that it needs his tap. Never say it is done.
+- Deleting a task, archiving a habit, dropping a goal, deleting a goal step, changing the game rules, changing his time zone, removing a diary entry, or dropping habits in a review wait for him to tap Confirm under your reply. Say what will happen and that it needs his tap. Never say it is done.
 - Every tool follows the app's rules. If one refuses (a locked deadline, the undo window, no pardons left, the non-negotiable limit), tell him why in one line and offer the nearest thing that works. Do not try to get around it.
 - Ids are per kind: task #12, habit #3, goal #2, step #40, miss #7. The current data below shows most of them; find_items finds the rest.
 
@@ -117,6 +117,45 @@ const WRITING_TOKENS = 4000;
 // Server-side fallback reruns a request the model declines on another model, inside the same call.
 const ask = (c, params, opts) => c.beta.messages.create({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' }, opts);
 
+// Prompt caching for the chat. The tools and the persona are the same on every request, so each gets a
+// cache point (tools are sent first, then the system blocks); the current data changes every time and
+// goes after them. Inside one tool loop the conversation so far is cached too, so each round after the
+// first reads its history and photos back instead of paying for them again. Three points of the four
+// the API allows.
+const CACHE = { type: 'ephemeral' };
+
+const coachSystem = (snapshot) => [
+  { type: 'text', text: PERSONA, cache_control: CACHE },
+  { type: 'text', text: `Current data:\n${snapshot}` },
+];
+
+// A message's content as blocks: plain text becomes one text block.
+const asBlocks = (content) => (typeof content === 'string' ? [{ type: 'text', text: content }] : content);
+
+// What went wrong with a call to Claude, in words he can act on: the key, the credit, a busy service,
+// no connection, or a fault of our own.
+function apiTrouble(err) {
+  const s = Number(err?.status) || 0;
+  const said = `${err?.type || ''} ${err?.message || ''}`;
+  const again = 'Try again, and tap Report a problem if it keeps happening';
+  if (s === 402 || /billing|credit balance/i.test(said)) return { what: 'the Anthropic account is out of credit', fix: 'Top it up in the Anthropic console' };
+  if (s === 401 || s === 403) return { what: 'the API key was refused', fix: 'Check ANTHROPIC_API_KEY in the app\'s variables on Railway' };
+  if (s === 429 || s >= 500) return { what: 'the AI service is busy right now', fix: 'Try again in a moment' };
+  if (!s && err instanceof Anthropic.APIError) return { what: 'the AI service could not be reached', fix: 'Check the connection and try again' };
+  if (!s) return { what: 'something went wrong on the server', fix: again };
+  return { what: `the AI service answered with error ${s}`, fix: again };
+}
+
+// What a reply that stopped early had already done. The receipts and Confirm buttons under it carry the
+// detail, so this only says which of them there are.
+function soFar(lead, ctx) {
+  const got = [
+    ctx.actions.some((a) => a.ok) && 'the ticked lines below went through',
+    ctx.pending.length && `${ctx.pending.length === 1 ? 'one thing waits' : 'some things wait'} for your Confirm tap`,
+  ].filter(Boolean).join(', and ');
+  return `${lead}, Boss: ${got}.`;
+}
+
 // One request on the coach's client, model and refusal fallback, for server code that needs its own
 // request shape (the food filler's web search).
 export function claudeCall(params, { timeout } = {}) {
@@ -127,16 +166,28 @@ export function claudeCall(params, { timeout } = {}) {
 
 // Runs the tool loop and returns { text, refused }. Text is gathered from every round, because the
 // model may speak before a tool call. A reply cut off by the token limit is never returned: briefs
-// fall back to plain numbers instead of sending half a sentence.
-async function complete({ system, messages, maxTokens = CHAT_TOKENS, effort = 'medium', tools = TOOL_DEFS, ctx = { actions: [], pending: [] } }) {
+// fall back to plain numbers instead of sending half a sentence. cache marks the last tool and the newest
+// message as cache points (the caller marks its own system blocks).
+async function complete({ system, messages, maxTokens = CHAT_TOKENS, effort = 'medium', tools = TOOL_DEFS, cache = false, ctx = { actions: [], pending: [] } }) {
   const c = anthropic();
   const convo = [...messages];
   const said = [];
   let budget = maxTokens;
   let retried = false;
+  const offered = cache && tools.length ? [...tools.slice(0, -1), { ...tools[tools.length - 1], cache_control: CACHE }] : tools;
   for (let i = 0; i < 12; i += 1) {
-    const params = { model: MODEL(), max_tokens: budget, system, messages: convo, output_config: { effort } };
-    if (tools.length) params.tools = tools;
+    // Only the newest message carries the moving cache point; earlier rounds go without, so the count
+    // never passes the API's limit however long the loop runs. It stays in block form afterwards, so
+    // the next round repeats it exactly and reads it back.
+    let sent = convo;
+    if (cache && convo.length) {
+      const last = convo[convo.length - 1];
+      const content = asBlocks(last.content);
+      convo[convo.length - 1] = { ...last, content };
+      sent = [...convo.slice(0, -1), { ...last, content: [...content.slice(0, -1), { ...content[content.length - 1], cache_control: CACHE }] }];
+    }
+    const params = { model: MODEL(), max_tokens: budget, system, messages: sent, output_config: { effort } };
+    if (offered.length) params.tools = offered;
     const res = await ask(c, params);
     if (res.stop_reason === 'refusal') {
       console.warn('coach declined', res.stop_details?.category || 'no category');
@@ -224,12 +275,21 @@ export async function coachHistory(limit = 60) {
   return rows.reverse();
 }
 
-// What a reply did is part of what it said, so the coach remembers its own actions.
-const spoken = (m) => (m.actions?.length ? `${m.text}\n[${m.actions.map((a) => (a.ok ? a.text : `failed: ${a.text}`)).join('; ')}]` : m.text);
+// What a reply did is part of what it said, so the coach remembers its own actions and what it asked
+// him to confirm.
+const ASKED = { open: 'waiting for his tap', running: 'running', done: 'he confirmed it', cancelled: 'he cancelled it', expired: 'expired untapped', failed: 'it failed' };
+function spoken(m) {
+  const did = [
+    ...(m.actions || []).map((a) => (a.ok ? a.text : `failed: ${a.text}`)),
+    ...(m.pending || []).map((p) => `asked him to confirm: ${p.summary} (${ASKED[p.status] || p.status})`),
+  ];
+  return did.length ? `${m.text}\n[${did.join('; ')}]` : m.text;
+}
 
-// The coach looks at the last few photos of the conversation itself; older ones are only mentioned, so a
-// long chat does not resend every picture.
+// The coach looks at every photo of his newest message and the last few of the conversation; older ones
+// are only mentioned, so a long chat does not resend every picture.
 const PHOTOS_SEEN = 3;
+const photosOf = (m) => (m?.media || []).filter((x) => x.kind === 'photo').map((x) => x.id);
 
 // One of his messages as the coach reads it: its photos, a note that it was spoken, and the words.
 function heard(m, images) {
@@ -264,27 +324,40 @@ export async function chatWith({ text: userText = '', media = [] } = {}) {
   let reply;
   let failed = false;
   const ctx = { actions: [], pending: [] };
+  // Whether this reply's tools already changed something (or set something up for his Confirm tap).
+  const did = () => ctx.actions.some((a) => a.ok) || ctx.pending.length > 0;
   if (!aiEnabled()) {
     reply = 'The coach is offline. Add ANTHROPIC_API_KEY to the app\'s variables on Railway and it comes alive.';
     failed = true;
   } else {
     try {
       // Failed replies stay visible in the chat but are never fed back to the model as its own words.
-      const rows = (await coachHistory(20)).filter((m) => !m.failed);
-      const seen = rows.filter((m) => m.role === 'user').flatMap((m) => (m.media || []).filter((x) => x.kind === 'photo').map((x) => x.id)).slice(-PHOTOS_SEEN);
+      // Anything newer than his message (a brief written meanwhile) waits for the next turn, so the
+      // conversation still ends with him.
+      const rows = (await coachHistory(20)).filter((m) => !m.failed && Number(m.id) <= Number(sent.id));
+      const mine = rows.find((m) => Number(m.id) === Number(sent.id));
+      const seen = [...new Set([...rows.filter((m) => m.role === 'user').flatMap(photosOf).slice(-PHOTOS_SEEN), ...photosOf(mine)])];
       const images = await photoData(seen);
       const history = rows.map((m) => ({ role: m.role, content: m.role === 'user' ? heard(m, images) : spoken(m) }));
       // The API needs the conversation to start with the user.
       while (history.length && history[0].role !== 'user') history.shift();
-      const system = `${PERSONA}\n\nCurrent data:\n${await coachSnapshot()}`;
-      const r = await complete({ system, messages: history, ctx });
-      // Actions taken count as an answer even if no words came back with them.
-      reply = r.text || (r.refused ? 'I can\'t help with that one. Ask it another way.' : ctx.actions.length || ctx.pending.length ? 'Done.' : 'No answer came back. Try again.');
+      const r = await complete({ system: coachSystem(await coachSnapshot()), messages: history, ctx, cache: true });
+      if (r.refused && did()) {
+        // Declined part-way: what went through is said plainly, never "I can't help" above green receipts.
+        reply = [r.text, `${soFar('I did this much', ctx)} I could not go further than that, so ask for the rest another way.`].filter(Boolean).join('\n\n');
+      } else {
+        // Actions taken count as an answer even if no words came back with them.
+        reply = r.text || (r.refused ? 'I can\'t help with that one. Ask it another way.'
+          : did() ? 'Done.' : ctx.actions.length ? 'That did not go through. The reason is below.' : 'No answer came back. Try again.');
+      }
       failed = !r.text && !ctx.actions.length && !ctx.pending.length;
     } catch (err) {
       console.error('coach error', err.status || '', err.message);
-      reply = `The coach could not answer (${err.status ? `API error ${err.status}` : 'connection problem'}). Check the API key and credit on your Anthropic account.`;
-      failed = true;
+      const { what, fix } = apiTrouble(err);
+      // Cut off after its tools had already done something: it says so and stays in the history, so
+      // the coach knows that work is done and never does it twice.
+      reply = did() ? `${soFar('I did this much before I was cut off', ctx)} The rest did not happen: ${what}. ${fix}.` : `The coach could not answer: ${what}. ${fix}.`;
+      failed = !did();
     }
   }
   const actions = ctx.actions.length ? db().json(ctx.actions) : null;
@@ -365,9 +438,16 @@ export async function generateBrief(kind) {
     }
   }
   if (!text) text = FALLBACKS[kind](t);
-  await db()`insert into briefs (date, kind, text) values (${today}, ${kind}, ${text})
+  // Kept for the Today card, and said in the chat so the coach knows later what it told him. One
+  // transaction: a write that fails leaves neither, so the retry that follows stores it once.
+  const message = await db().begin(async (tx) => {
+    await tx`insert into briefs (date, kind, text) values (${today}, ${kind}, ${text})
              on conflict (date, kind) do update set text = excluded.text, at = now()`;
-  return { text, openCount: openDue(t).length };
+    const [row] = await tx`insert into coach_messages (role, text) values ('assistant', ${text})
+                           returning id, role, text, failed, at, actions`;
+    return row;
+  });
+  return { text, openCount: openDue(t).length, message };
 }
 
 // ---------- The oath and the end of the day ----------

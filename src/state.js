@@ -1,7 +1,7 @@
 // Read models for the UI and the coach.
 import { db } from './db.js';
 import { nowUTC, addDays, deadlineAt, dueOn, weekday } from './time.js';
-import { localNow, getGame, rulesOn, removalDate } from './engine.js';
+import { localNow, getGame, rulesOn, removalDate, cleanBonusFor } from './engine.js';
 import { isActive, isScheduled, isFlexible, weekStartOf, weekDates, weekTargetFor, weekStakes } from './rules.js';
 import { habitStats, restSet } from './strength.js';
 import { listGoals } from './goals.js';
@@ -18,9 +18,11 @@ async function streaksFor(habits, today, tz, seasonStart, rest) {
   if (!habits.length) return new Map();
   const ids = habits.map((h) => h.id);
   const kept = await db()`select habit_id, date from completions where habit_id in ${db()(ids)} and date >= ${seasonStart}`;
-  const pardoned = await db()`select ref_id, date from misses where kind = 'habit' and pardoned_at is not null
-                              and ref_id in ${db()(ids)} and date >= ${seasonStart}`;
+  const misses = await db()`select ref_id, date, pardoned_at from misses where kind = 'habit'
+                            and ref_id in ${db()(ids)} and date >= ${seasonStart}`;
+  const pardoned = misses.filter((m) => m.pardoned_at);
   const good = new Set([...kept.map((r) => `${r.habit_id}:${r.date}`), ...pardoned.map((r) => `${r.ref_id}:${r.date}`)]);
+  const missed = new Set(misses.filter((m) => !m.pardoned_at).map((m) => `${m.ref_id}:${m.date}`));
   const out = new Map();
   for (const h of habits) {
     let streak = 0;
@@ -36,12 +38,13 @@ async function streaksFor(habits, today, tz, seasonStart, rest) {
         else if (w !== weekStartOf(today, tz)) break;
       }
     } else {
+      // Judged by the record, not today's rules: the engine records a miss for every scheduled day it
+      // judges, so a day with neither a keep nor a miss was not due then (a weekday added later), and a
+      // kept day still counts after its weekday is dropped. Today breaks the streak once it is missed.
       let d = today;
       for (let i = 0; i < 500 && d >= floor; i += 1) {
-        if (isScheduled(h, d, tz, rest)) {
-          if (good.has(`${h.id}:${d}`)) streak += 1;
-          else if (d !== today) break;
-        }
+        if (good.has(`${h.id}:${d}`)) streak += 1;
+        else if (missed.has(`${h.id}:${d}`)) break;
         d = addDays(d, -1, tz);
       }
     }
@@ -51,6 +54,13 @@ async function streaksFor(habits, today, tz, seasonStart, rest) {
 }
 
 const minutesUntil = (iso) => (iso ? (new Date(iso).getTime() - nowUTC().toMillis()) / 60000 : Infinity);
+
+// Judged days from a date on. kept, pardoned and minimum (completions that were the minimum version)
+// tell a day that was kept but not clean from one with nothing due.
+const recentDays = (from) => db()`
+  select d.date, d.hp_end, d.clean, d.kept, d.missed, d.pardoned, d.bonus, d.rest,
+         (select count(*)::int from completions c where c.date = d.date and c.minimum) as minimum
+  from days d where d.date >= ${from} order by d.date`;
 
 export async function buildToday() {
   const { s, local, today, tz } = await localNow();
@@ -110,12 +120,16 @@ export async function buildToday() {
     };
     if (isFlexible(h, today)) {
       const needed = (st.weekTarget || 0) - (st.weekDone || 0);
+      // Past the log-by time nothing more can be logged today: an unmet week is closed until tomorrow,
+      // off the open list and Up next, with nothing at stake today (the week is settled on Sunday).
+      const closedToday = !c && local >= due;
       Object.assign(item, {
         flexible: true,
         weekDone: st.weekDone || 0,
         weekTarget: st.weekTarget || 0,
         mustToday: !c && needed > 0 && needed >= remainingDays,
-        status: c ? 'kept' : needed <= 0 ? 'met' : 'open',
+        closedToday,
+        status: c ? 'kept' : needed <= 0 ? 'met' : closedToday ? 'closed' : 'open',
         penalty: Math.ceil((r.penalty * Math.max(1, needed)) / Math.max(1, st.weekTarget || 1)),
       });
     }
@@ -135,6 +149,8 @@ export async function buildToday() {
     const m = taskMissById.get(t.id);
     const due = t.due_date ? dueOn(t.due_date, t.deadline || '23:59', tz) : null;
     const ageMin = t.done_at ? (nowUTC().toMillis() - new Date(t.done_at).getTime()) / 60000 : Infinity;
+    // A hard task's undo locks at its deadline, like a habit's.
+    const pastDue = Boolean(t.hard && due && local >= due);
     return {
       kind: 'task',
       id: t.id,
@@ -152,8 +168,12 @@ export async function buildToday() {
       overdue: Boolean(t.due_date && t.due_date < today && !t.done_at),
       status: t.done_at ? 'done' : m ? (m.pardoned_at ? 'pardoned' : 'missed') : 'open',
       doneAt: t.done_at ? new Date(t.done_at).toISOString() : null,
-      canUndo: Boolean(t.done_at) && (!t.hard || ageMin <= s.undoMinutes),
+      canUndo: Boolean(t.done_at) && (!t.hard || ageMin <= s.undoMinutes) && !pastDue,
+      // Once a hard task's miss is charged it can be dropped: no HP back, nothing charged again.
+      canDelete: !(t.hard && t.due_date && t.due_date <= today && !t.done_at) || Boolean(m),
       missId: m ? m.id : null,
+      // What the miss actually cost: less than the penalty when the daily cap or a death cut it.
+      missHpLost: m ? m.hp_lost : null,
       createdBy: t.created_by,
       ageDays: Math.floor((nowUTC().toMillis() - new Date(t.created_at).getTime()) / 86400000),
     };
@@ -172,11 +192,12 @@ export async function buildToday() {
   const recentMisses = await db()`
     select * from misses where created_at > ${nowUTC().minus({ hours: 24 }).toJSDate()} and pardoned_at is null order by created_at desc`;
   const briefs = await db()`select kind, text, at from briefs where date = ${today} order by at desc`;
-  const week = await db()`select date, hp_end, clean, missed, rest from days where date >= ${addDays(today, -13, tz)} order by date`;
+  const week = await recentDays(addDays(today, -13, tz));
 
   // ---------- The daily drive ----------
   const [planRow] = await db()`select * from day_plans where date = ${today}`;
-  const [focusRow] = await db()`select * from focus_sessions where ended_at is null order by id desc limit 1`;
+  // Only today's block: one left running from an earlier day is closed by the engine.
+  const [focusRow] = await db()`select * from focus_sessions where ended_at is null and date = ${today} order by id desc limit 1`;
   const [reflRow] = await db()`select * from reflections where date = ${today}`;
   const [lastNight] = await db()`select tomorrow from reflections where date = ${addDays(today, -1, tz)}`;
   const recentDefer = await db()`select kind, ref_id from deferrals where at > ${nowUTC().minus({ minutes: 60 }).toJSDate()}`;
@@ -188,7 +209,9 @@ export async function buildToday() {
   ];
   const doneDue = items.filter((i) => i.status === 'kept' || i.status === 'pardoned').length
     + tasks.filter((k) => k.dueDate && k.dueDate <= today && (k.status === 'done' || k.status === 'pardoned')).length;
-  const missedToday = items.filter((i) => i.status === 'missed').length
+  // A week that had to be logged today and was not counts against the day, though its HP is
+  // settled on Sunday.
+  const missedToday = items.filter((i) => i.status === 'missed' || (i.status === 'closed' && i.mustToday)).length
     + tasks.filter((k) => k.status === 'missed' && k.dueDate === today).length;
   // What today can still cost: the open penalties, but never more than what is left of the daily
   // loss cap, and nothing once today has already ended a season.
@@ -204,6 +227,24 @@ export async function buildToday() {
     lethal: atStake > 0 && atStake >= game.hp,
     open: openDue.length,
   };
+
+  // The clean-day bonus midnight will pay if everything still open is kept in full: the same rule as
+  // finalizeDay, so the app only promises what will be paid. On Sunday a week that will fall short is
+  // a miss on the day, and a weekly comeback is paid first, so it can use up the room under max HP.
+  const [{ hardDone }] = await db()`select count(*)::int as "hardDone" from tasks where hard and due_date = ${today} and done_at is not null`;
+  const sunday = weekday(today, tz) === 7;
+  const weekLeft = (i) => i.weekTarget - i.weekDone - (i.status === 'open' ? 1 : 0);
+  let hpAtClose = game.hp;
+  for (const i of items) {
+    if (sunday && i.flexible && weekLeft(i) <= 0 && stats.get(i.id)?.missedLast) hpAtClose = Math.min(s.maxHp, hpAtClose + s.comebackBonus);
+  }
+  const { bonus: bonusDue } = cleanBonusFor(s, hpAtClose, {
+    hadWork: items.some((i) => i.status === 'kept') || hardDone > 0 || todaysMisses.length > 0
+      || openDue.some((i) => i.kind === 'habit' || i.heavy),
+    missed: todaysMisses.filter((m) => !m.pardoned_at).length + (sunday ? items.filter((i) => i.flexible && weekLeft(i) > 0).length : 0),
+    usedMinimum: [...comps.values()].some((c) => c.minimum),
+    isRest,
+  });
 
   // Next: soonest deadline first. Something dodged in the last hour steps aside unless it is due
   // within 30 minutes. When nothing is urgent, the oath's one thing goes first, then anything
@@ -280,6 +321,8 @@ export async function buildToday() {
     lastNight: lastNight?.tomorrow || null,
     dodgesToday: dodges,
     progress,
+    // HP the clean-day bonus pays at midnight if everything open is kept in full; 0 when it will not.
+    bonusDue,
     capacity,
     calendar,
     health: healthToday,
@@ -301,7 +344,8 @@ export async function buildPlan() {
                              where h.archived_from is null or h.archived_from > ${today} order by h.sort, h.id`);
   const streaks = await streaksFor(habits, today, tz, game.seasonStart, rest);
   const stats = await habitStats(habits, today, tz, { heatDays: 84 });
-  const tasks = await db()`select t.*, g.title as goal_title from tasks t left join goals g on g.id = t.goal_id
+  const tasks = await db()`select t.*, g.title as goal_title, exists (select 1 from misses m where m.kind = 'task' and m.ref_id = t.id and m.date = t.due_date) as charged
+                           from tasks t left join goals g on g.id = t.goal_id
                            where t.deleted_at is null and t.done_at is null order by t.due_date nulls last, t.deadline nulls last, t.id`;
   const goals = await listGoals();
   const restDays = await db()`select date, reason from rest_days where date >= ${today} order by date`;
@@ -355,6 +399,8 @@ export async function buildPlan() {
       id: t.id, title: t.title, notes: t.notes, dueDate: t.due_date, deadline: t.deadline, hard: t.hard,
       firstStep: t.first_step, estimate: t.estimate_min, goalId: t.goal_id, goalTitle: t.goal_title,
       locked: Boolean(t.hard && t.due_date && t.due_date <= today), createdBy: t.created_by,
+      // A locked hard task can still be dropped once its miss has been charged.
+      canDelete: !(t.hard && t.due_date && t.due_date <= today) || t.charged,
     })),
     goals: goals.map((g) => ({ id: g.id, title: g.title })),
     restDays,
@@ -467,7 +513,7 @@ export async function buildSeason() {
   const streaks = await streaksFor(habits, today, tz, game.seasonStart, rest);
   const thisWeek = weekStartOf(today, tz);
   const lastWeek = addDays(thisWeek, -7, tz);
-  const days = await db()`select date, hp_end, clean, missed, rest from days where date >= ${addDays(today, -29, tz)} order by date`;
+  const days = await recentDays(addDays(today, -29, tz));
   const [review] = await db()`select done_at from weekly_reviews where week_start = ${lastWeek}`;
   const [{ hadLastWeek }] = await db()`select count(*)::int as "hadLastWeek" from days where date >= ${lastWeek} and date < ${thisWeek}
                                      and not rest and kept + missed + pardoned > 0`;
@@ -502,7 +548,7 @@ export async function coachSnapshot() {
   lines.push('Today, habits (strength is a 0-100 habit-strength score that survives misses; streak resets on a miss):');
   if (!t.items.length) lines.push('  none scheduled');
   for (const i of t.items) {
-    const flex = i.flexible ? ` | ${i.weekDone} of ${i.weekTarget} this week${i.mustToday ? ', MUST be done today' : ''}` : ` | due ${i.deadline}`;
+    const flex = i.flexible ? ` | ${i.weekDone} of ${i.weekTarget} this week${i.closedToday ? `, closed until tomorrow (log-by time ${i.deadline} passed)` : i.mustToday ? ', MUST be done today' : ''}` : ` | due ${i.deadline}`;
     lines.push(`  [${i.status}${i.keptMinimum ? ', minimum version' : ''}] habit #${i.id} ${i.title}${flex} | ${i.heavy ? 'NON-NEGOTIABLE' : 'normal'} | penalty ${i.penalty} HP | strength ${i.strength}% | streak ${i.streak}${i.cue ? ` | cue: "${i.cue}"` : ''}${i.minimum ? ` | minimum: "${i.minimum}"` : ''}${i.missedLast ? ' | MISSED LAST TIME' : ''}${i.lastPlan ? ` | his if-then plan: "${i.lastPlan}"` : ''}`);
   }
   lines.push('Today, tasks:');

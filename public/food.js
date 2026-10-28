@@ -79,10 +79,24 @@ async function foodPost(op, data, preview = {}) {
     return await api('POST', PATHS[op], body);
   } catch (err) {
     if (err.status !== 0) throw err;
-    store.set(QUEUE, [...queue().filter((x) => x.id !== body.id), { id: body.id, op, data: body, preview: { date: f().day?.date || localToday(), ...preview }, at: Date.now() }]);
+    // A waiting entry keeps the day and time it was eaten, not the moment it syncs. A past day's entry
+    // goes in at noon, as it does online; a copy names its own day.
+    if (op !== 'repeat') {
+      const today = localToday();
+      body.date ||= today;
+      if (body.date === today) body.time ||= localNowHM();
+    }
+    store.set(QUEUE, [...queue().filter((x) => x.id !== body.id), { id: body.id, op, data: body, preview: { date: body.date || localToday(), ...preview }, at: Date.now() }]);
     return { queued: true };
   }
 }
+
+// The diary's day when it shows a past one: what is logged from it goes to that day, not today.
+function pastDay() {
+  const d = f().day;
+  return state.route === 'food' && !state.param && d && !d.today ? d.date : null;
+}
+const dated = () => (pastDay() ? { date: pastDay() } : {});
 
 let flushing = false;
 export async function flushFood() {
@@ -96,7 +110,11 @@ export async function flushFood() {
     const failed = r.results.filter((x) => !x.ok);
     if (failed.length) toast(`${failed.length} offline ${failed.length === 1 ? 'entry' : 'entries'} could not be saved: ${failed[0].error}`, true);
     else toast(`Synced ${handled.size} offline ${handled.size === 1 ? 'entry' : 'entries'}.`);
-    if (state.route === 'food') await refresh();
+    // In the background: the screen redraws when it is quiet, never under a half-filled sheet.
+    if (state.route === 'food') {
+      await loadFood();
+      redrawIfIdle('food', ctx.render);
+    }
   } catch { /* still offline */ } finally {
     flushing = false;
   }
@@ -113,8 +131,9 @@ async function loadDay() {
     f().offline = false;
     if (f().day.today) store.set('oath.foodDay', f().day);
   } catch (err) {
+    // Offline, the phone's copy stands in only for the day it is: after midnight yesterday's is not today.
     const c = err.status === 0 ? store.get('oath.foodDay', null) : null;
-    if (!c || (d && c.date !== d)) throw err;
+    if (!c || c.date !== (d || localToday())) throw err;
     f().day = c;
     f().offline = true;
   }
@@ -238,6 +257,10 @@ export function loadFoodToday() {
     redrawIfIdle('today', ctx.render);
   }).catch(() => {});
 }
+
+// The skips, swaps and scale chosen on a recipe's page go with that recipe only; one logged from elsewhere
+// (What to eat next) goes as written.
+const optsFor = (recipe) => (recipe && F.recipe?.key === recipe.key ? F.opts : {});
 
 // ---------- Small pieces ----------
 
@@ -605,12 +628,13 @@ function unitOptions(item, selected) {
   }).join('');
 }
 
-// A sensible first amount: what he logged last time, a pack for packaged drinks, a "medium" for fruit.
+// A sensible first amount: what he logged last time, a pack for packaged drinks (one can of a
+// multipack), a "medium" for fruit.
 function defaults(item) {
   const units = unitsFor(item);
   const has = (u) => units.some((x) => x.unit === u);
   if (item.last && has(item.last.unit)) return { qty: item.last.qty, unit: item.last.unit };
-  if (item.liquid && item.pack?.unit === 'ml') return { qty: 1, unit: 'pack' };
+  if (item.liquid && item.pack?.unit === 'ml') return item.pack.count > 1 && has('each') ? { qty: 1, unit: 'each' } : { qty: 1, unit: 'pack' };
   if (item.liquid && has('ml')) return { qty: 250, unit: 'ml' };
   if (item.serving) return { qty: 1, unit: 'serving' };
   const medium = units.find((u) => u.unit.startsWith('p:') && /\bmedium\b/i.test(u.label));
@@ -798,13 +822,14 @@ function macroCols(t, fl) {
 // energy came from; under it protein, carbs and fat against theirs; then six vitamins and minerals on
 // the eased scale, the energy by Nutri-Score, water from drinks, and the rest in a strip.
 function daySummary(d) {
-  const t = d.total;
   const has = d.entries.length > 0;
+  // A past day with nothing logged is unknown, never zero: its ring and macros say "–".
+  const t = has || d.today ? d.total : N.unknown();
   const fl = new Set(d.entries.flatMap((e) => e.filled || []));
   const need = refAt('kcal');
   const kcal = num(t.kcal);
   const floor = Boolean(t.missing?.kcal);
-  const center = `<b>${has ? show(t, 'kcal', { unit: false }) : '0'}</b><small>${need ? `of ${fmtN(need)} kcal` : 'kcal'}</small>`;
+  const center = `<b>${has ? show(t, 'kcal', { unit: false }) : d.today ? '0' : '–'}</b><small>${need ? `of ${fmtN(need)} kcal` : 'kcal'}</small>`;
   let left = '';
   if (need && kcal !== null && has) {
     const diff = need - kcal;
@@ -951,7 +976,7 @@ function customBody(s) {
       <label class="field"><span>Items inside</span><input class="input" name="pack_count" inputmode="numeric" value="${esc(d.pack?.count || '')}" placeholder="1"></label>
       <label class="field"><span>Serving size (g or ml)</span><input class="input" name="serving_size" inputmode="decimal" value="${esc(d.serving?.size || '')}"></label>
       <label class="field"><span>Serving name</span><input class="input" name="serving_label" value="${esc(d.serving?.label || '')}" placeholder="1 scoop"></label></div>
-    <div class="form-actions"><button class="btn primary" type="submit">Save and log</button></div></form>`;
+    <div class="form-actions"><button class="btn primary" type="submit">Save</button></div></form>`;
 }
 
 // The review for a photographed plate or a typed meal. Each food is matched to a record with an
@@ -1158,24 +1183,27 @@ function recipeEditBody(s) {
 function sheetHtml() {
   const s = state.foodSheet;
   if (!s) return '';
+  // On a past day a sheet that logs names the day it logs to.
+  const past = s.pick ? null : pastDay();
+  const on = (title) => (past ? `${title} · ${shortDay(past)}` : title);
   switch (s.kind) {
-    case 'search': return sheetWrap(s.pick ? 'Choose a food' : s.slot ? `Add to ${SLOT[s.slot].toLowerCase()}` : s.drinks ? 'Drinks' : 'Search', searchBody(s), 'tall');
+    case 'search': return sheetWrap(s.pick ? 'Choose a food' : on(s.slot ? `Add to ${SLOT[s.slot].toLowerCase()}` : s.drinks ? 'Drinks' : 'Search'), searchBody(s), 'tall');
     case 'usual': return usualSheet(s, sheetWrap);
-    case 'food': return sheetWrap(s.item.name, foodBody(s), 'tall');
-    case 'quick': return sheetWrap('Quick add', quickBody(s));
+    case 'food': return sheetWrap(on(s.item.name), foodBody(s), 'tall');
+    case 'quick': return sheetWrap(on('Quick add'), quickBody(s));
     case 'custom': return sheetWrap(s.fromLabel ? 'Check the label' : 'A food of your own', customBody(s), 'tall');
     case 'photo': {
       const title = s.busy ? 'Reading the photo' : s.result?.kind === 'meal' ? 'On the plate' : s.result?.kind === 'product' ? 'Found it' : 'From the photo';
-      return sheetWrap(title, photoBody(s), 'tall');
+      return sheetWrap(on(title), photoBody(s), 'tall');
     }
     case 'scan-miss': return sheetWrap(scanMissTitle(s), scanMissBody(s));
     case 'entry': return sheetWrap(s.entry.name, entryBody(s), 'tall');
     case 'daynut': return sheetWrap(f().day?.today ? 'Today' : dateLabel(f().day), dayNutBody(), 'tall');
-    case 'builder': return sheetWrap(s.mealId ? s.name || 'Saved meal' : `New ${(BUILDERS[s.mode] || BUILDERS.meal).title.toLowerCase()}`, builderBody(s), 'tall');
+    case 'builder': return sheetWrap(on(s.mealId ? s.name || 'Saved meal' : `New ${(BUILDERS[s.mode] || BUILDERS.meal).title.toLowerCase()}`), builderBody(s), 'tall');
     case 'plan': return sheetWrap('Plan for later', planBody(s));
-    case 'batch-log': return sheetWrap(s.batch.name, batchLogBody(s));
+    case 'batch-log': return sheetWrap(on(s.batch.name), batchLogBody(s));
     case 'cook': return sheetWrap('Cook a batch', cookBody(s));
-    case 'recipe-log': return sheetWrap('Log it', recipeLogBody(s));
+    case 'recipe-log': return sheetWrap(on('Log it'), recipeLogBody(s));
     case 'rich': return sheetWrap(richTitle(s), richBody(s), 'tall');
     case 'recipe-edit': return sheetWrap(s.draft.key ? 'Edit recipe' : s.draft.imported ? 'Imported recipe' : 'New recipe', recipeEditBody(s), 'tall');
     case 'recipe-import': return sheetWrap('Import from a link', importBody(s));
@@ -1586,7 +1614,7 @@ function caffeineCard(h) {
   }
   const unknown = caffeineUnknown.some(Boolean);
   const spoken = caffeine.map((v, i) => (v > 0 ? `${i}:00 ${fmtN(v)} mg` : '')).filter(Boolean).join(', ') || 'no caffeine logged';
-  const side = `<span><i class="fk fk-caf"></i><b>${show(ch, 'caffeine', { unit: false })}</b> mg</span><span><i class="fk fk-drink"></i><b>${fmtN(ch.drinksMl ?? 0)}</b> ml</span>`;
+  const side = `<span><i class="fk fk-caf"></i><b>${show(ch, 'caffeine', { unit: false })}</b> mg</span><span><i class="fk fk-drink"></i><b>${fmtN(ch.drinksMl)}</b> ml</span>`;
   return `<section class="card fcard">${cardHead(`Caffeine, ${ch.today ? 'today' : esc(shortDay(ch.date))}`, side)}
     <div class="fc-plot"><svg class="fx-svg" width="100%" height="${height}" role="img" aria-label="${esc(`Caffeine by hour: ${spoken}`)}"><defs>${hatchDef(hatch, 'caf')}</defs>
       <line x1="0" x2="100%" y1="${mid + 1}" y2="${mid + 1}" class="fx-base"/>${marks}${now}</svg></div>
@@ -1760,7 +1788,7 @@ async function logReviewed(items, slot) {
     let r = null;
     if (m.mode === 'match') {
       // The matched record's gaps, estimated per 100, go back with the line so the server keeps them.
-      const body = { key: it.match.key, qty: Number(it.qty), unit: it.unit, slot, estimate: !it.edited, id: it.logId, ...(it.fill ? { fill: it.fill } : {}) };
+      const body = { key: it.match.key, qty: Number(it.qty), unit: it.unit, slot, estimate: !it.edited, id: it.logId, ...(it.fill ? { fill: it.fill } : {}), ...dated() };
       r = await act(() => foodPost('log', body, { name: it.match.name, amount: amountText(it.qty, it.unit, it.match), kcal: m.line.nutrients.kcal }));
     } else if (m.mode === 'rough') {
       // Not in the catalogue: the estimate per 100 and its weight go in the diary as a quick add
@@ -1770,7 +1798,7 @@ async function logReviewed(items, slot) {
       const amount = roughAmount(g);
       const drink = it.fill?.basis === 'ml' || g.unit === 'ml';
       const weight = num(g.weight) ?? (['g', 'ml'].includes(g.unit) ? num(g.amount) : null);
-      const body = { name, amount, slot, estimate: true, id: it.logId, ...(drink ? { ml: weight } : { grams: weight }) };
+      const body = { name, amount, slot, estimate: true, id: it.logId, ...(drink ? { ml: weight } : { grams: weight }), ...dated() };
       if (it.fill && weight) body.fill = it.fill;
       else Object.assign(body, { kcal: round(g.kcal, 0), protein: g.protein, carbs: g.carbs, sugars: g.sugars, fat: g.fat, fibre: g.fibre, salt: g.salt });
       r = await act(() => foodPost('quick', body, { name, amount, kcal: g.kcal }));
@@ -1924,6 +1952,10 @@ export async function foodClick(a, el) {
         s.results = r.items;
         ctx.render();
         if (!r.items.length) toast('Open Food Facts has nothing for that either. Take a photo of the label or add it yourself.');
+      } else if (state.foodSheet === s) {
+        // It failed (the toast says why): the results go back to what they were.
+        const again = document.getElementById('food-results');
+        if (again) again.innerHTML = resultsHtml(s);
       }
       return true;
     }
@@ -1957,7 +1989,7 @@ export async function foodClick(a, el) {
         return true;
       }
       const l = line(item, d.qty, d.unit);
-      const r = await act(() => foodPost('log', { key: item.key, qty: d.qty, unit: d.unit, slot: slotNow(item.liquid) }, { name: item.name, amount: amountText(d.qty, d.unit, item), kcal: l.nutrients?.kcal }));
+      const r = await act(() => foodPost('log', { key: item.key, qty: d.qty, unit: d.unit, slot: slotNow(item.liquid), ...dated() }, { name: item.name, amount: amountText(d.qty, d.unit, item), kcal: l.nutrients?.kcal }));
       if (r) await afterLog(r, item.name);
       return true;
     }
@@ -1974,7 +2006,12 @@ export async function foodClick(a, el) {
       const r = await act(() => api('DELETE', `/api/food/log/${enc(id)}`));
       if (r) {
         F.undo = { id, name: r.entry?.name || 'the entry' };
-        setTimeout(() => { if (F.undo?.id === id) { F.undo = null; if (state.route === 'food') ctx.render(); } }, 10000);
+        // The banner goes in place: a full redraw then would close a half-filled sheet and its keyboard.
+        setTimeout(() => {
+          if (F.undo?.id !== id) return;
+          F.undo = null;
+          document.querySelector('.food-undo')?.remove();
+        }, 10000);
         state.foodSheet = null;
         await refresh();
       }
@@ -1990,13 +2027,6 @@ export async function foodClick(a, el) {
       if (u && await act(() => api('POST', `/api/food/log/${enc(u.id)}/restore`, {}), 'Back in the diary.')) await refresh();
       return true;
     }
-    case 'food-repeat': {
-      const y = new Date(`${localToday()}T12:00:00Z`);
-      y.setUTCDate(y.getUTCDate() - 1);
-      const r = await act(() => api('POST', '/api/food/repeat', { from: y.toISOString().slice(0, 10) }), (x) => `Copied ${x.entries.length} entries from yesterday.`);
-      if (r) await refresh();
-      return true;
-    }
     case 'food-builder':
       openSheet({ kind: 'builder', mode: el.dataset.mode, lines: [], share: 1, name: '' });
       return true;
@@ -2008,6 +2038,7 @@ export async function foodClick(a, el) {
       return true;
     case 'food-bl-drop':
       s.lines.splice(Number(el.dataset.index), 1);
+      s.dirty = true;
       ctx.render();
       return true;
     case 'food-bl-share':
@@ -2025,6 +2056,7 @@ export async function foodClick(a, el) {
       if (r) {
         s.mealId = r.id;
         s.name = r.name;
+        s.dirty = false; // the stored meal is what is on screen now
         f().meals = null;
         ctx.render();
       }
@@ -2101,7 +2133,7 @@ export async function foodClick(a, el) {
       ctx.render();
       return true;
     case 'food-plan-eat': {
-      const r = await act(() => api('POST', `/api/food/plans/${el.dataset.id}/eat`, { id: uuid() }), 'Logged as eaten.');
+      const r = await act(() => api('POST', `/api/food/plans/${el.dataset.id}/eat`, { id: uuid(), ...dated() }), 'Logged as eaten.');
       if (r) await refresh();
       return true;
     }
@@ -2113,9 +2145,12 @@ export async function foodClick(a, el) {
       if (b) openSheet({ kind: 'batch-log', batch: b });
       return true;
     }
-    case 'food-batch-done':
+    case 'food-batch-done': {
+      const name = (F.batches || []).find((x) => x.id === Number(el.dataset.id))?.name || 'this batch';
+      if (!await confirmSheet(`Mark ${name} as finished?`, 'It comes off the list, so no more can be logged from it. What you already logged stays.', 'Mark finished', { danger: false })) return true;
       if (await act(() => api('POST', `/api/food/batches/${el.dataset.id}/finish`, {}), 'Batch finished.')) await refresh();
       return true;
+    }
     // Recipes
     case 'food-recipe-type':
       F.filter.type = el.dataset.type;
@@ -2229,6 +2264,7 @@ async function finishPick(s, qty, unit) {
       const l = { ref: 'item', item: s.item, qty: Number(qty), unit, group: p.group };
       if (p.purpose === 'builder') b.lines.push(l);
       else b.lines[p.index] = { ...l, group: b.lines[p.index].group };
+      b.dirty = true; // a saved meal changed on screen logs as it now is
     });
   } else if (p.purpose === 'recipe-line') {
     backToBuilder(s, (b) => b.draft.lines.push({ ref: 'item', ref_key: s.item.key, item: s.item, name: s.item.name, qty: Number(qty), unit, label: s.item.name.split(',')[0].toLowerCase() }));
@@ -2266,12 +2302,12 @@ export async function foodSubmit(kind, form) {
         await finishPick(s, o.qty, o.unit);
         return true;
       }
-      const r = await act(() => foodPost('log', { key: s.item.key, qty: Number(o.qty), unit: o.unit, slot: o.slot, ...(s.fill ? { fill: s.fill } : {}) }, { name: s.item.name, amount: amountText(o.qty, o.unit, s.item), kcal: l.nutrients.kcal }));
+      const r = await act(() => foodPost('log', { key: s.item.key, qty: Number(o.qty), unit: o.unit, slot: o.slot, ...(s.fill ? { fill: s.fill } : {}), ...dated() }, { name: s.item.name, amount: amountText(o.qty, o.unit, s.item), kcal: l.nutrients.kcal }));
       if (r) await afterLog(r, s.item.name, { nutrients: l.nutrients });
       return true;
     }
     case 'food-quick': {
-      const r = await act(() => foodPost('quick', o, { name: o.name || 'Quick add', amount: o.ml ? `${o.ml} ml` : '', kcal: Number(o.kcal) }));
+      const r = await act(() => foodPost('quick', { ...o, ...dated() }, { name: o.name || 'Quick add', amount: o.ml ? `${o.ml} ml` : '', kcal: Number(o.kcal) }));
       if (r) await afterLog(r, o.name || 'it', { nutrients: { kcal: Number(o.kcal) } });
       return true;
     }
@@ -2314,7 +2350,7 @@ export async function foodSubmit(kind, form) {
       const bad = rows.find((x) => x.error);
       if (bad) { toast(bad.error, true); return true; }
       const kc = scale(total(rows.map((x) => x.nutrients)), factor, 1).kcal;
-      const data = s.mealId ? { meal_id: s.mealId, factor, slot: o.slot, name } : { lines: builderLines(s), factor, slot: o.slot, name };
+      const data = { ...(s.mealId ? { meal_id: s.mealId } : { lines: builderLines(s) }), factor, slot: o.slot, name, ...dated() };
       // An edited saved meal logs what is on screen, not the stored version.
       if (s.mealId && s.dirty) Object.assign(data, { meal_id: undefined, lines: builderLines(s) });
       const r = await act(() => foodPost('meal', data, { name, amount: `${s.lines.length} items`, kcal: kc }));
@@ -2328,19 +2364,19 @@ export async function foodSubmit(kind, form) {
       return true;
     }
     case 'food-batch-log': {
-      const r = await act(() => foodPost('batch', { batch_id: s.batch.id, qty: Number(o.qty), unit: o.unit, slot: o.slot }, { name: s.batch.name, amount: `${o.qty} ${o.unit}` }));
+      const r = await act(() => foodPost('batch', { batch_id: s.batch.id, qty: Number(o.qty), unit: o.unit, slot: o.slot, ...dated() }, { name: s.batch.name, amount: `${o.qty} ${o.unit}` }));
       if (r) await afterLog(r, s.batch.name);
       return true;
     }
     case 'food-cook': {
       const F = f();
-      const r = await act(() => api('POST', '/api/food/batches', { key: s.recipe.key, final_weight: o.final_weight || null, servings: Number(o.servings) || null, cooked_on: o.cooked_on, ...F.opts }), 'Batch saved.');
+      const r = await act(() => api('POST', '/api/food/batches', { key: s.recipe.key, final_weight: o.final_weight || null, servings: Number(o.servings) || null, cooked_on: o.cooked_on, ...optsFor(s.recipe) }), 'Batch saved.');
       if (r) closeSheet();
       return true;
     }
     case 'food-recipe-log': {
       const F = f();
-      const r = await act(() => foodPost('recipe', { key: s.recipe.key, qty: Number(o.qty), unit: o.unit, slot: o.slot, ...F.opts }, { name: s.recipe.name, amount: amountText(o.qty, o.unit) }));
+      const r = await act(() => foodPost('recipe', { key: s.recipe.key, qty: Number(o.qty), unit: o.unit, slot: o.slot, ...optsFor(s.recipe), ...dated() }, { name: s.recipe.name, amount: amountText(o.qty, o.unit) }));
       if (r) await afterLog(r, s.recipe.name);
       return true;
     }

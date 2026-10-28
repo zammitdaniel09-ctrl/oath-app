@@ -106,6 +106,13 @@ export function complete(n, keys = NUTRIENTS.filter((x) => x.core).map((x) => x.
 
 // ---------- Amounts ----------
 
+// USDA names its portions with US size notes ("1 medium (7" to 7-7/8" long)"); on screen the note goes
+// and the weight says it better. Only the words shown change: the unit keeps its full name.
+export function portionName(label) {
+  const s = String(label || '');
+  return s.replace(/\s*\([^)]*(?:["″]|\binch(?:es)?\b|\bdia(?:meter)?\.?)[^)]*\)/gi, '').replace(/\s{2,}/g, ' ').trim() || s;
+}
+
 // The ways an amount of this record can be given. Only sourced weights appear: no scoop without a
 // weight on a label, no ml for a solid without a sourced density, no whole weight without a refuse share.
 export function unitsFor(item) {
@@ -113,7 +120,11 @@ export function unitsFor(item) {
   const out = [{ unit: basis, label: basis === 'ml' ? 'ml' : 'grams' }];
   if (num(item.density)) out.push(basis === 'ml' ? { unit: 'g', label: 'grams' } : { unit: 'ml', label: 'ml' });
   if (num(item.edible) && item.edible < 1) out.push({ unit: 'whole', label: `g weighed whole (${item.refuse || 'with inedible parts'})` });
-  for (const p of item.portions || []) out.push({ unit: `p:${p.label}`, label: p.label, g: num(p.g), ml: num(p.ml) });
+  for (const p of item.portions || []) {
+    const name = portionName(p.label);
+    const weight = num(p.g) ? ` · ${round(p.g, 0)} g` : num(p.ml) ? ` · ${round(p.ml, 0)} ml` : '';
+    out.push({ unit: `p:${p.label}`, label: name === p.label || /\d\s*(g|ml)\b/.test(name) ? name : `${name}${weight}`, g: num(p.g), ml: num(p.ml) });
+  }
   if (item.serving && num(item.serving.size)) out.push({ unit: 'serving', label: item.serving.label || `serving (${item.serving.size} ${item.serving.unit})` });
   if (item.pack && num(item.pack.size)) {
     out.push({ unit: 'pack', label: item.pack.label || `pack (${item.pack.size} ${item.pack.unit})` });
@@ -190,8 +201,8 @@ export function amountText(qty, unit, item = {}) {
   if (unit === 'whole') return `${q} g whole`;
   if (unit === 'prepared') return `${q} ml made up`;
   if (unit?.startsWith('p:')) {
-    const label = unit.slice(2).replace(/^1\s+/, '');
-    return q === 1 ? unit.slice(2) : `${q} × ${label}`;
+    const name = portionName(unit.slice(2));
+    return q === 1 ? name : `${q} × ${name.replace(/^1\s+/, '')}`;
   }
   if (unit === 'serving') return `${q} ${q === 1 ? 'serving' : 'servings'}`;
   if (unit === 'pack') return q === 1 ? (item.pack?.label || '1 pack') : q === 0.5 ? 'half a pack' : `${q} packs`;

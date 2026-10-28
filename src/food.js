@@ -11,6 +11,7 @@ import { nowUTC, addDays, validDate, validTime } from './time.js';
 import { localNow, RuleError } from './engine.js';
 import {
   KEYS, NUTRIENT, NUTRIENTS, norm, scale, total, complete, line, recipeTotals, shareOf, batchPortion, batchLeft, unknown, round, amountText, unitsFor, resolve, show,
+  portionName,
 } from '../public/nutrition.js';
 // Grades come from the shared maths when it has them; read through the namespace so the
 // diary still works on a build without them.
@@ -645,7 +646,12 @@ export async function searchFoods(q, { limit = 30, kind = null, liquid = null } 
       limit ${max}) h
     join food_items f on f.id = h.id
     order by h.ord`;
-  return rows.map((r) => {
+  // A bulk record that says the same as a hand-picked one in the list (the survey's "Banana", raw, next to
+  // the curated banana) is left out, so two rows nothing tells apart never show. Everything else stays.
+  const bulk = (r) => /^(fdc|cofid|ciqual)-/.test(r.key) || ['cofid', 'ciqual'].includes(r.source);
+  const twin = (r) => `${r.name_norm}|${norm(r.state || '')}|${r.brand_norm || ''}`;
+  const curated = new Set(rows.filter((r) => !bulk(r)).map(twin));
+  return rows.filter((r) => !bulk(r) || !curated.has(twin(r))).map((r) => {
     const item = shapeItem(r);
     if (!sizes.length) return item;
     const hit = (r.portions || []).find((p) => norm(p.label).split(' ').includes(sizes[0]));
@@ -731,7 +737,8 @@ const shapeEntry = (r) => ({
   brand: r.brand,
   qty: r.qty,
   unit: r.unit,
-  amountText: r.amount_text,
+  // Entries logged before portion names lost their US size notes are shown without them too.
+  amountText: portionName(r.amount_text),
   grams: r.grams,
   ml: r.ml,
   share: r.share,
@@ -982,7 +989,10 @@ export async function editEntry(id, input) {
     if (!SLOTS.includes(input.slot)) throw new RuleError('Unknown meal.');
     patch.slot = input.slot;
   }
-  if (input.qty !== undefined || input.unit !== undefined) {
+  // Only a new amount is worked out again: moving an entry to another meal keeps its numbers and its "~".
+  const qtyNew = input.qty !== undefined && input.qty !== null && Number(input.qty) !== Number(e.qty);
+  const unitNew = input.unit !== undefined && input.unit !== null && input.unit !== e.unit;
+  if (qtyNew || unitNew) {
     const qty = input.qty ?? e.qty;
     const unit = input.unit ?? e.unit;
     if (e.kind === 'item') {

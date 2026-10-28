@@ -157,9 +157,15 @@ async function logRow(i) {
   const r = await act(() => D.foodPost(x.log.op, body, { name: x.name, amount: x.amountText, kcal: x.adds?.kcal ?? undefined }));
   if (!r) return;
   F.nextUndo = { id, name: x.name, queued: Boolean(r.queued), until: Date.now() + UNDO_MS };
-  // Off the list at once (and off the offline copy); the next ranking from the server replaces it.
-  F.next = { ...F.next, items: F.next.items.filter((_, j) => j !== i) };
-  store.set(CACHE, F.next);
+  // Off the list at once (and off the offline copy); the next ranking from the server replaces it. By
+  // what it is, not where it was: another Log may have landed first and the list moved up.
+  const same = (y) => y.kind === x.kind && (y.key ?? null) === (x.key ?? null) && (y.mealId ?? null) === (x.mealId ?? null);
+  if (F.next?.items) {
+    F.next = { ...F.next, items: F.next.items.filter((y) => !same(y)) };
+    store.set(CACHE, F.next);
+    // The rows' positions follow at once, so a tap before the diary reloads hits the row it shows.
+    if (state.route === 'food' && !state.param) patchCard();
+  }
   setTimeout(() => {
     if (F.nextUndo?.id !== id) return;
     F.nextUndo = null;

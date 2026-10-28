@@ -1,9 +1,10 @@
 // Photos and voice notes in the coach chat. Each is uploaded on its own first (a photo as soon as it is
 // picked, a voice note when he taps send), kept here, and then sent with a message by its id. A voice
 // note is transcribed on upload by ElevenLabs Scribe, primed with the names of his habits, tasks, goals
-// and events so they come out spelled his way; the coach reads the transcript. The coach sees the most
-// recent photos of the conversation itself (coach.js). Nothing is kept that was never sent: an upload
-// left without a message is cleared after a day.
+// and events so they come out spelled his way; the coach reads the transcript. The coach sees every photo
+// of his newest message and the most recent ones before it (coach.js). Telegram photos for the coach
+// come in the same way (telegram.js). Nothing is kept that was never sent: an upload left without a
+// message is cleared after a day.
 import { Hono } from 'hono';
 import { db, logEvent } from './db.js';
 import { RuleError } from './engine.js';

@@ -2,7 +2,7 @@
 // when, Done and Not important on each; everything else below, grouped by kind. Before Gmail is
 // connected the screen walks through making an app password and pasting it in. The password goes to
 // the server once and never comes back.
-import { state, esc, api, act, toast, icon, pageHead, ago, confirmSheet, haptic, fmtDay } from './ui.js';
+import { state, esc, api, act, toast, icon, pageHead, ago, confirmSheet, haptic, fmtDay, tz } from './ui.js';
 
 let ctx = { shell: () => {}, render: () => {} };
 export function initMail(c) {
@@ -45,7 +45,9 @@ const when = (iso) => {
   const d = new Date(iso);
   const mins = (Date.now() - d.getTime()) / 60000;
   if (mins < 60 * 20) return ago(iso);
-  return fmtDay(iso.slice(0, 10), { weekday: 'short', day: 'numeric', month: 'short' });
+  // The day it arrived in his time zone: an email at 00:30 in Malta is still 22:30 the day before in UTC.
+  const day = new Intl.DateTimeFormat('en-CA', { timeZone: tz() }).format(d);
+  return fmtDay(day, { weekday: 'short', day: 'numeric', month: 'short' });
 };
 
 function dueChip(due) {
@@ -124,9 +126,10 @@ export function viewMail() {
   const a = data.account;
   if (!a.connected) return ctx.shell(`${head}${setupHtml()}`);
   const reading = state.mailReading && !a.lastSync;
-  const status = a.error
-    ? `<div class="banner warn"><span>${esc(a.error)}</span><button class="btn tinted small" data-action="mail-reconnect">Reconnect</button></div>`
-    : `<p class="ml-status">${reading ? 'Reading your inbox for the first time…' : `Checked ${esc(ago(a.lastSync))} · every 5 minutes`}</p>`;
+  // Only a refused app password needs reconnecting; any other failure clears on the next check by itself.
+  let status = `<p class="ml-status">${reading ? 'Reading your inbox for the first time…' : `Checked ${esc(ago(a.lastSync))} · every 5 minutes`}</p>`;
+  if (a.error && a.authFailed) status = `<div class="banner warn"><span>${esc(a.error)}</span><button class="btn tinted small" data-action="mail-reconnect">Reconnect</button></div>`;
+  else if (a.error) status = '<p class="ml-status">The last check of Gmail failed. Oath tries again in a few minutes.</p>';
   const imp = data.important;
   const important = `<section class="section"><div class="gh"><h2>Important</h2><span class="gh-count">${imp.length}</span></div>
     ${imp.length ? `<div class="ml-cards">${imp.map(importantCard).join('')}</div>` : `<div class="card ml-empty"><p>${reading ? 'Nothing sorted yet.' : 'Nothing important waiting.'}</p></div>`}</section>`;
@@ -211,11 +214,12 @@ export async function mailChange(el) {
   return true;
 }
 
-// The chip under Today's rings when something important is waiting, or Gmail needs reconnecting.
+// The chip under Today's rings when something important is waiting, or Gmail refused the app password.
+// A check that failed for any other reason retries by itself, so Today does not mention it.
 export function mailChip(t) {
   const x = t?.mail;
   if (!x) return '';
-  if (x.error) return `<a class="tchip warn" href="#/mail">Gmail needs reconnecting${icon('chevron', 'chev')}</a>`;
+  if (x.error && x.authFailed) return `<a class="tchip warn" href="#/mail">Gmail needs reconnecting${icon('chevron', 'chev')}</a>`;
   if (!x.important) return '';
   return `<a class="tchip act" href="#/mail">${x.important} important ${x.important === 1 ? 'email' : 'emails'}${icon('chevron', 'chev')}</a>`;
 }

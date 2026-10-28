@@ -1,8 +1,8 @@
 // Faster logging on the diary: "Usually now" chips under the capture bar (one tap logs what he
-// usually has at this time, at his usual amount), one-tap water, copy or add per meal, and swipe an
+// usually has at this time, at his usual amount), one-tap water, copy or add per meal, Repeat yesterday, and swipe an
 // entry to remove it. Every log goes through the offline queue with an id made here, so a tap lands
 // once, and each one can be undone.
-import { $app, state, esc, api, act, toast, icon, haptic, localToday, num, fmtDay } from './ui.js';
+import { $app, state, esc, api, act, toast, icon, haptic, localToday, num, fmtDay, addDays } from './ui.js';
 import { norm, line, round } from './nutrition.js';
 import * as N from './nutrition.js';
 
@@ -93,14 +93,15 @@ const find = (key) => {
   return u ? [...(u.combos || []), ...(u.now || [])].find((p) => p.key === key) || null : null;
 };
 
-// The Undo banner after a log: removing what was just logged takes it out again.
+// The Undo banner after a log: removing what was just logged takes it out again. When its time is up it
+// goes in place: a full redraw then would close a half-filled sheet and its keyboard.
 function offerUndo(ids, name, verb) {
   const token = {};
   F().undo = { kind: 'log', ids, name, verb, token };
   setTimeout(() => {
     if (F().undo?.token !== token) return;
     F().undo = null;
-    if (state.route === 'food') D.render();
+    document.querySelector('.food-undo')?.remove();
   }, 10000);
 }
 
@@ -218,7 +219,7 @@ export function waterHtml(d) {
     <div class="fwater-row"><span class="fwater-bar" role="img" aria-label="${esc(`Water from drinks: ${ml === null ? 'none logged' : `${fmt(ml)} ml`}, reference ${fmt(wref)} ml`)}"><i style="width:${Math.min(100, wp || 0).toFixed(1)}%" data-grow="fwater:${d.date}"></i></span>${add}</div></div>`;
 }
 
-// ---------- Per meal: add on today, copy a past day's meal to today ----------
+// ---------- Per meal: add on today, copy a past day's meal (or all of yesterday) to today ----------
 
 export function slotAction(d, slot) {
   const word = D.SLOT[slot].toLowerCase();
@@ -251,6 +252,22 @@ async function copySlot(slot) {
   offerUndo(r.queued ? [id] : (r.entries || []).map((e) => e.id), `${word} to today`, 'Copied');
   state.foodToday = null;
   D.render();
+}
+
+// "Repeat yesterday" on today: the whole of yesterday copied in the same way, with an id so a copy sent
+// again (or replayed after being offline) lands once, and the same Undo.
+async function repeatYesterday() {
+  const id = D.uuid();
+  const today = localToday();
+  const r = await act(() => D.foodPost('repeat', { from: addDays(today, -1), to: today, id }, { date: today, name: 'Yesterday\'s food', amount: 'copied to today' }));
+  if (!r) return;
+  haptic('log-food');
+  const n = r.entries?.length || 0;
+  if (r.queued) toast('Yesterday\'s food is saved on this phone. It goes into today when you are back online.');
+  else toast(r.duplicate ? 'Yesterday is already copied to today.' : `Copied ${n} ${n === 1 ? 'entry' : 'entries'} from yesterday.`);
+  offerUndo(r.queued ? [id] : (r.entries || []).map((e) => e.id), 'yesterday to today', 'Copied');
+  state.foodToday = null;
+  await D.refresh().catch(() => D.render());
 }
 
 // ---------- Undo a log ----------
@@ -300,6 +317,9 @@ export async function usualClick(a, el) {
       return true;
     case 'food-slot-copy':
       await copySlot(el.dataset.slot);
+      return true;
+    case 'food-repeat':
+      await repeatYesterday();
       return true;
     case 'food-slot-add': {
       // Search with this meal chosen for whatever is picked next.

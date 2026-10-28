@@ -79,11 +79,13 @@ export function clientIp(c) {
   return (forwarded || c.env?.incoming?.socket?.remoteAddress || 'unknown').slice(0, 64);
 }
 
-// Why this address may not try a password now, or null when it may.
-function lockedOut(ip) {
+// Why this address may not try a password now, or null when it may. A phone that already holds a session
+// of his (locked behind Face ID, say) is spared the backstop, so strangers spraying the login cannot keep
+// his own recovery shut.
+function lockedOut(ip, known = false) {
   const now = clock();
   allFailures = allFailures.filter((t) => now - t < ALL_WINDOW_MS);
-  if (allFailures.length >= ALL_MAX) return 'Too many attempts. Try again in an hour.';
+  if (allFailures.length >= ALL_MAX && !known) return 'Too many attempts. Try again in an hour.';
   if (now < (byAddress.get(ip)?.until || 0)) return 'Too many attempts. Try again in 15 minutes.';
   return null;
 }
@@ -127,9 +129,17 @@ export async function setup(c, { code, password }) {
   return { ok: true };
 }
 
+// Whether the request carries a session this server issued, whatever its lock state.
+async function knownSession(c) {
+  const token = getCookie(c, COOKIE);
+  if (!token) return false;
+  const [row] = await db()`select 1 as ok from sessions where token_hash = ${sha256(token)}`.catch(() => []);
+  return Boolean(row);
+}
+
 export async function login(c, { password, recovery }) {
   const ip = clientIp(c);
-  const locked = lockedOut(ip);
+  const locked = lockedOut(ip, await knownSession(c));
   if (locked) return { error: locked, status: 429 };
   const rows = await db()`select password_hash from owner where id = 1`;
   if (!rows.length) return { error: 'Setup has not been done yet.', status: 409 };
@@ -137,10 +147,16 @@ export async function login(c, { password, recovery }) {
   // SETUP_CODE in Railway, for the day Face ID is lost.
   if (await faceIdOnly()) {
     const expected = process.env.SETUP_CODE || '';
-    const given = Buffer.from(String(recovery || ''));
-    if (!expected || given.length !== Buffer.byteLength(expected) || !crypto.timingSafeEqual(given, Buffer.from(expected))) {
+    // Without SETUP_CODE in Railway there is no recovery code to match; that is not his mistake, so it is
+    // not counted against him.
+    if (!expected) return { error: 'The recovery code is not set on the server: add SETUP_CODE in Railway.', status: 503 };
+    // Pasted or typed on a phone, a code picks up stray spaces.
+    const given = Buffer.from(String(recovery || '').trim());
+    if (given.length !== Buffer.byteLength(expected) || !crypto.timingSafeEqual(given, Buffer.from(expected))) {
       recordFailure(ip);
-      return { error: 'Oath opens with Face ID only. Without Face ID, use your password with the recovery code.', status: 403 };
+      return given.length
+        ? { error: 'That recovery code is not right. It is SETUP_CODE in Railway, exactly as written there.', status: 403 }
+        : { error: 'Oath opens with Face ID only. Without Face ID, use your password with the recovery code.', status: 403 };
     }
   }
   if (typeof password !== 'string' || !(await verifyPassword(password, rows[0].password_hash))) {

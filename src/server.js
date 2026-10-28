@@ -317,6 +317,8 @@ api.post('/coach', async (c) => {
 });
 // The coach's destructive actions wait here until Daniel confirms or cancels them.
 api.post('/coach/pending/:id', async (c) => c.json(await resolvePending(idParam(c), Boolean((await body(c)).confirm))));
+// A brief asked for from the Briefs sheet: { text, openCount, message }, where message is the brief as
+// it was kept in the coach chat (the same row GET /coach lists).
 api.post('/briefs/:kind', async (c) => {
   const kind = c.req.param('kind');
   if (!['morning', 'midday', 'evening'].includes(kind)) throw new engine.RuleError('Unknown brief.');

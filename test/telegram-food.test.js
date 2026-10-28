@@ -1,6 +1,7 @@
 // Food by photo in Telegram: a photo from the linked chat is read like the app's camera and answered with
 // buttons; "Log it" logs exactly once however often it is tapped; Cancel, expiry, a product's portion
-// buttons, the caption as a hint, and chats that are not linked. Against a real Postgres, with Telegram's
+// buttons, the caption as a hint, a caption that sends the photo to the coach instead, and chats that are
+// not linked. Against a real Postgres, with Telegram's
 // API (and its file downloads) stood in for by a scripted fetch, and Claude by a scripted client.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -255,7 +256,40 @@ test('a label goes to the app to be checked; anything unclear is asked about', a
   assert.equal(buttonsOf(lastText()).filter((b) => b.callback_data).length, 0, 'nothing to log from here');
   coach.setCoachClient(scripted([said(reading({ kind: 'unclear', summary: 'A blurry shape', question: 'Is that a pastizz or a qassata?' }))]));
   await tg.handleUpdate(photoMessage());
-  assert.equal(lastText().text, 'Is that a pastizz or a qassata?');
+  // Never a dead end: a photo that is not food can come back with a caption for the coach.
+  assert.equal(lastText().text, 'Is that a pastizz or a qassata?\n\nPhotos here are read as food. If it is something else, send it again with a caption saying what to do with it, like "add these to my calendar", and the coach will take it.');
+  assert.equal(tg.forCoach('add these to my calendar'), true, 'the example in the hint works');
+});
+
+test('a photo whose caption asks for tasks or events goes to the coach, which sees it and acts on it', async () => {
+  const claude = scripted([
+    { stop_reason: 'tool_use', content: [{ type: 'tool_use', id: 'p1', name: 'add_task', input: { title: 'Revise chapter 3' } }] },
+    { stop_reason: 'end_turn', content: [{ type: 'text', text: 'Added it from your timetable, Boss.' }] },
+  ]);
+  coach.setCoachClient(claude);
+  calls = [];
+  downloads = [];
+  await tg.handleUpdate(photoMessage({ caption: 'Add these deadlines as tasks' }));
+  assert.deepEqual(sent('getFile').map((c) => c.body.file_id), ['large'], 'the largest size, as for food');
+  assert.equal(downloads.length, 1);
+  assert.equal(claude.requests.length, 2, 'the coach and its tool loop, not the food reader');
+  const mine = claude.requests[0].messages.at(-1);
+  assert.equal(mine.role, 'user');
+  assert.equal(mine.content[0].type, 'image');
+  assert.equal(mine.content[0].source.media_type, 'image/jpeg');
+  assert.equal(mine.content[0].source.data, JPEG.toString('base64'));
+  assert.equal(mine.content.at(-1).text, 'Add these deadlines as tasks');
+  assert.equal(lastText().text, 'Added it from your timetable, Boss.\n\n✓ Added task "Revise chapter 3"');
+  // Kept in the coach chat with its photo, as if sent from the app.
+  const [m] = await dbmod.db()`select m.text, (select count(*)::int from coach_media x where x.message_id = m.id and x.kind = 'photo') as photos
+    from coach_messages m where m.role = 'user' order by m.id desc limit 1`;
+  assert.deepEqual({ ...m }, { text: 'Add these deadlines as tasks', photos: 1 });
+  // Only a caption that plainly is not about food goes there.
+  assert.equal(tg.forCoach('Put the exam dates in my calendar'), true);
+  assert.equal(tg.forCoach('lunch meeting, log it'), false, 'a food word keeps it with the food reader');
+  assert.equal(tg.forCoach('brown rice, not white'), false);
+  assert.equal(tg.forCoach(''), false);
+  assert.equal(tg.forCoach(undefined), false);
 });
 
 test('the caption goes to the reading as the typed hint', async () => {
@@ -275,13 +309,15 @@ test('the caption goes to the reading as the typed hint', async () => {
   assert.ok(idFrom(lastText()));
 });
 
-test('a photo from a chat that is not linked is ignored, and its taps are refused', async () => {
+test('a photo from a chat that is not linked is never read, only answered with how to link, and its taps are refused', async () => {
   const claude = scripted([]);
   coach.setCoachClient(claude);
   calls = [];
   downloads = [];
   await tg.handleUpdate(photoMessage({ chat: { id: 777 } }));
-  assert.equal(calls.length, 0, 'not even a reply');
+  assert.deepEqual(calls.map((c) => c.method), ['sendMessage'], 'one answer, nothing fetched');
+  assert.equal(calls[0].body.chat_id, 777);
+  assert.match(calls[0].body.text, /not linked to this chat\. To link it, open Oath, go to Settings, Telegram/);
   assert.equal(downloads.length, 0);
   assert.equal(claude.requests.length, 0);
   // A tap from elsewhere on a real result: private, and nothing logged.
@@ -292,11 +328,12 @@ test('a photo from a chat that is not linked is ignored, and its taps are refuse
   await tg.handleUpdate(tap(`food:log:${id}`, 777));
   assert.equal(sent('answerCallbackQuery')[0].body.text, 'This bot is private.');
   assert.equal((await entries(id)).length, 0);
-  // Before any chat is linked, a photo is ignored too.
+  // Before any chat is linked, the same.
   await dbmod.setKV('telegram', { botUsername: 'oath_test_bot' });
   calls = [];
   await tg.handleUpdate(photoMessage());
-  assert.equal(calls.length, 0);
+  assert.deepEqual(calls.map((c) => c.method), ['sendMessage']);
+  assert.match(calls[0].body.text, /not linked to this chat/);
   await dbmod.setKV('telegram', { chatId: CHAT, botUsername: 'oath_test_bot', secret: 'webhook-secret-for-tests-0123456789abcdef' });
 });
 

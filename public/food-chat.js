@@ -464,6 +464,11 @@ function render() {
   if (inChat()) D.render();
 }
 
+function patchHead() {
+  const el = document.querySelector('.fc-head');
+  if (inChat() && el) el.outerHTML = headHtml();
+}
+
 // The chat opens in place from the diary, drawn at once so a tap on the bar can bring the keyboard up.
 export function openChat({ focus = false } = {}) {
   if (!inChat()) {
@@ -472,7 +477,9 @@ export function openChat({ focus = false } = {}) {
     state.param2 = null;
     state.query = new URLSearchParams();
     state.foodSheet = null;
-    if (!D.f().chatDay) loadChatDay().then(render).catch(() => {});
+    // Today's numbers are asked for every time the chat opens (the diary may have changed since); they
+    // land in the header in place, so the keyboard stays up.
+    loadChatDay().then(patchHead).catch(() => {});
   }
   D.render();
   if (focus) document.getElementById('fchat-text')?.focus({ preventScroll: true });

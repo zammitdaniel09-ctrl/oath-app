@@ -17,7 +17,7 @@ import { Hono } from 'hono';
 import { DateTime, IANAZone, Zone } from 'luxon';
 import { db, logEvent, getKV, setKV } from './db.js';
 import { nowUTC, addDays, deadlineAt, validTime, validDate } from './time.js';
-import { localNow, createTask, updateTask, isScheduled, rulesOn, RuleError } from './engine.js';
+import { localNow, createTask, updateTask, completeTask, undoTask, isScheduled, rulesOn, RuleError } from './engine.js';
 import { restSet } from './strength.js';
 
 const v = { validTime, validDate };
@@ -28,7 +28,9 @@ const KINDS = ['calendar', 'deadlines'];
 const FETCH_TIMEOUT_MS = 15000;
 const MAX_BYTES = 10 * 1024 * 1024;
 const MAX_REDIRECTS = 5;
-const WINDOW_AFTER_DAYS = 60; // events are kept from yesterday to 60 days ahead
+// Events are kept from yesterday to about six months ahead. MAX_PER_EVENT and MAX_PER_FEED still bound
+// what one feed can store (a daily event is 182 rows), so a longer window cannot run away.
+const WINDOW_AFTER_DAYS = 180;
 const KEEP_PAST_DAYS = 120; // older events left over from earlier syncs are pruned
 const MAX_PER_EVENT = 400; // occurrences of one recurring event inside the window
 const MAX_PER_FEED = 5000;
@@ -78,6 +80,9 @@ create table if not exists cal_events (
   primary key (feed_id, uid, start_at)
 );
 alter table cal_events add column if not exists busy boolean not null default true;
+-- The occurrence's original start (ISO), part of the key a deadline's task is made under. A moved
+-- occurrence of a series keeps it while its start_at changes.
+alter table cal_events add column if not exists orig_start text;
 create index if not exists cal_events_start_idx on cal_events (start_at);
 alter table tasks add column if not exists ext_uid text;
 create unique index if not exists tasks_ext_uid_idx on tasks (ext_uid) where ext_uid is not null;
@@ -1270,6 +1275,15 @@ function syncWindow(local) {
   return { from: startToday.minus({ days: 1 }), to: startToday.plus({ days: WINDOW_AFTER_DAYS + 1 }) };
 }
 
+// The last local date every synced feed has been read up to, or null with none. Past it the calendar
+// shows only Oath's own events, so the page can say so instead of looking empty.
+export async function syncedThrough() {
+  const { tz } = await localNow();
+  const [r] = await db()`select min(last_sync) as at from cal_feeds`.catch(ignoreMissingTables([]));
+  if (!r?.at) return null;
+  return syncWindow(DateTime.fromJSDate(r.at, { zone: tz })).to.minus({ days: 1 }).toISODate();
+}
+
 // Fetch (unless a parsed calendar is passed), expand, and replace the feed's events in the window
 // in one transaction. Records last_sync, last_error and event_count. Throws a RuleError on failure.
 export async function syncFeed(id, { cal = null } = {}) {
@@ -1290,7 +1304,7 @@ export async function syncFeed(id, { cal = null } = {}) {
         seen.add(key);
         rows.push({
           feed_id: feed.id, uid: o.uid, start_at: o.start.toJSDate(), end_at: o.end.toJSDate(), all_day: o.allDay,
-          title: o.title || 'Untitled event', location: o.location, busy: o.busy,
+          title: o.title || 'Untitled event', location: o.location, busy: o.busy, orig_start: o.origStart,
         });
       }
       await db().begin(async (tx) => {
@@ -1300,7 +1314,7 @@ export async function syncFeed(id, { cal = null } = {}) {
                  and coalesce(end_at, start_at) < ${from.minus({ days: KEEP_PAST_DAYS }).toJSDate()}`;
         for (let i = 0; i < rows.length; i += 500) {
           const chunk = rows.slice(i, i + 500);
-          await tx`insert into cal_events ${tx(chunk, 'feed_id', 'uid', 'start_at', 'end_at', 'all_day', 'title', 'location', 'busy')}
+          await tx`insert into cal_events ${tx(chunk, 'feed_id', 'uid', 'start_at', 'end_at', 'all_day', 'title', 'location', 'busy', 'orig_start')}
                    on conflict do nothing`;
         }
         await tx`update cal_feeds set last_sync = ${ts()}, last_error = null, event_count = ${rows.length} where id = ${feed.id}`;
@@ -1375,6 +1389,10 @@ function deadlineTask(o) {
 
 const ISO_TAIL = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 
+// The ext_uid of the task a deadline becomes: feed, event UID and the occurrence's original start in UTC.
+// Rows synced before orig_start was stored fall back to their start, which is the same for a one-off event.
+const deadlineKey = (r) => `cal:${r.feed_id}:${r.uid}:${r.orig_start || new Date(r.start_at).toISOString()}`;
+
 async function syncDeadlineTasks(feed, occs, today, tz) {
   const existing = await db()`select id, ext_uid, due_date, deadline, done_at, deleted_at from tasks where ext_uid like 'cal:%'`;
   const feedIds = new Set((await db()`select id from cal_feeds`).map((r) => r.id));
@@ -1384,10 +1402,12 @@ async function syncDeadlineTasks(feed, occs, today, tz) {
   for (const o of occs) {
     if (isOpeningEvent(o.title)) continue;
     const local = o.allDay ? o.start : o.start.setZone(tz);
-    const due = local.toISODate();
-    if (due < today) continue;
     const deadline = o.allDay ? null : local.toFormat('HH:mm');
-    const key = `cal:${feed.id}:${o.uid}:${o.origStart}`;
+    // The VLE's "Fri 00:00" is the end of Thursday, and Oath reads a 00:00 deadline as the end of its date,
+    // so the task is due on the day before at 00:00: the same moment, not a day late.
+    const due = deadline === '00:00' ? local.minus({ days: 1 }).toISODate() : local.toISODate();
+    if (due < today) continue;
+    const key = deadlineKey({ feed_id: feed.id, uid: o.uid, orig_start: o.origStart });
     try {
       let t = existing.find((x) => x.ext_uid === key);
       if (!t && !o.recurring) {
@@ -1446,13 +1466,15 @@ const ignoreMissingTables = (fallback) => (err) => {
   throw err;
 };
 
+const feedEventId = (r) => `${r.feed_id}:${r.uid}:${new Date(r.start_at).getTime()}`;
+
 function toEvent(r, tz) {
   const allDay = r.all_day;
   const s = DateTime.fromJSDate(r.start_at, { zone: allDay ? 'utc' : tz });
   let e = r.end_at ? DateTime.fromJSDate(r.end_at, { zone: allDay ? 'utc' : tz }) : s;
   if (allDay) e = e.minus({ days: 1 }) < s ? s : e.minus({ days: 1 }); // all-day end is the last day, inclusive
   return {
-    id: `${r.feed_id}:${r.uid}:${new Date(r.start_at).getTime()}`,
+    id: feedEventId(r),
     feedId: r.feed_id,
     feed: r.feed,
     color: r.color,
@@ -1539,17 +1561,19 @@ function composeOwn(input, cur, tz, today) {
   }
   const start = given(input.start) ? hhmm(input.start) : cur && !cur.allDay ? cur.start : '';
   if (!validTime(start)) throw new RuleError(given(input.start) ? 'The start must look like 18:00.' : 'Say what time it starts.');
+  const startAt = deadlineAt(date, start, tz);
   let minutes = cur && !cur.allDay ? cur.duration : OATH_DEFAULT_MIN;
   if (given(input.end)) {
     const end = hhmm(input.end);
     if (!validTime(end)) throw new RuleError('The end must look like 19:00.');
-    minutes = minutesOf(end) - minutesOf(start);
-    if (minutes <= 0) throw new RuleError('The end must be after the start.');
+    if (end === start) throw new RuleError('The end must be after the start.');
+    // An end before the start is on the next day: 22:00 to 01:00 runs past midnight.
+    minutes = Math.round(deadlineAt(end < start ? addDays(date, 1, tz) : date, end, tz).diff(startAt, 'minutes').minutes);
+    if (!(minutes > 0)) throw new RuleError('The end must be after the start.'); // only inside a clock change
   } else if (given(input.duration)) {
     minutes = Math.round(Number(input.duration));
     if (!(minutes >= 5 && minutes <= OATH_MAX_MIN)) throw new RuleError('The length must be between 5 minutes and 24 hours.');
   }
-  const startAt = deadlineAt(date, start, tz);
   out.start_at = startAt.toJSDate();
   out.end_at = startAt.plus({ minutes }).toJSDate();
   return out;
@@ -1744,12 +1768,28 @@ export async function eventsBetween(fromISO, toISO) {
     const e = (r.end_at || r.start_at).getTime();
     return s < toMs && (e > fromMs || s >= fromMs);
   };
-  const events = [...rows.filter(inRange).map((r) => toEvent(r, tz)), ...own.filter(inRange).map((r) => toOwnEvent(r, tz))]
+  const feedRows = rows.filter(inRange);
+  const events = [...feedRows.map((r) => toEvent(r, tz)), ...own.filter(inRange).map((r) => toOwnEvent(r, tz))]
     .sort((a, b) => sortKey(a) - sortKey(b) || a.title.localeCompare(b.title));
   const ids = events.map((e) => e.id);
   const marks = ids.length ? await db()`select event_id from event_marks where event_id = any(${ids})`.catch(ignoreMissingTables([])) : [];
   const done = new Set(marks.map((m) => m.event_id));
-  return events.map((e) => ({ ...e, done: done.has(e.id) }));
+  // A VLE deadline that became a task is done exactly when that task is, wherever it was ticked.
+  const keys = new Map(feedRows.filter((r) => r.kind === 'deadlines').map((r) => [deadlineKey(r), feedEventId(r)]));
+  const linked = keys.size ? await db()`select ext_uid, done_at from tasks where ext_uid = any(${[...keys.keys()]}) and deleted_at is null` : [];
+  const taskDone = new Map(linked.map((t) => [keys.get(t.ext_uid), Boolean(t.done_at)]));
+  return events.map((e) => ({ ...e, done: taskDone.has(e.id) ? taskDone.get(e.id) : done.has(e.id) }));
+}
+
+// The live task a VLE deadline became (see deadlineKey), or null.
+async function deadlineTaskOf(id) {
+  const m = /^(\d+):(.+):(\d+)$/.exec(String(id || ''));
+  if (!m) return null;
+  const [r] = await db()`select e.feed_id, e.uid, e.start_at, e.orig_start from cal_events e join cal_feeds f on f.id = e.feed_id
+    where f.kind = 'deadlines' and e.feed_id = ${Number(m[1])} and e.uid = ${m[2]} and e.start_at = ${new Date(Number(m[3]))}`;
+  if (!r) return null;
+  const [t] = await db()`select id, done_at from tasks where ext_uid = ${deadlineKey(r)} and deleted_at is null`;
+  return t || null;
 }
 
 // One event by the id the app shows: oath:<id> for his own, <feed>:<uid>:<start ms> for the others.
@@ -1772,7 +1812,12 @@ export async function eventById(id) {
 export async function markEventDone(id, done = true) {
   const ev = await eventById(id);
   if (!ev) throw new RuleError('That event is not on the calendar any more.', 404);
-  if (done) {
+  const task = ev.deadline ? await deadlineTaskOf(ev.id) : null;
+  if (task) {
+    // The deadline and its task are one piece of work, so crossing it off here ticks the task (and back).
+    if (done && !task.done_at) await completeTask(task.id);
+    else if (!done && task.done_at) await undoTask(task.id);
+  } else if (done) {
     await db()`insert into event_marks (event_id, title, date, done_at) values (${ev.id}, ${ev.title}, ${String(ev.start).slice(0, 10)}, ${nowUTC().toJSDate()})
       on conflict (event_id) do update set done_at = excluded.done_at, title = excluded.title`;
   } else {
@@ -1879,7 +1924,7 @@ async function rangeOf(c) {
 
 calendarApi.get('/calendar/events', async (c) => {
   const { from, to } = await rangeOf(c);
-  return c.json({ from, to, events: await eventsBetween(from, to) });
+  return c.json({ from, to, events: await eventsBetween(from, to), syncedTo: await syncedThrough() });
 });
 // Oath's own events. Feed events stay read-only: their ids are not numbers, so they cannot be reached here.
 calendarApi.post('/calendar/events', async (c) => c.json({ event: await createOathEvent(await jsonBody(c)) }));

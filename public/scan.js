@@ -336,8 +336,12 @@ function onLayerClick(e) {
   else if (what === 'torch') torch(run, b);
   else if (what === 'start') start(run);
   else if (what === 'photo') {
-    // The diary's own photo button, so the photo goes the usual way (a label, a packet or a plate).
-    const input = $app.querySelector('input[data-food-photo]');
+    // The screen's own photo button, so the photo goes the usual way (a label, a packet or a plate): in the
+    // food chat its camera; else the search sheet's, or the diary's camera, which reads it in the chat
+    // (not while choosing a food for a builder or recipe, which the chat would leave behind).
+    const cam = $app.querySelector('input[data-chat-photo][capture]');
+    const inChat = state.route === 'food' && state.param === 'chat';
+    const input = (inChat ? cam : null) || $app.querySelector('input[data-food-photo]:not([data-barcode])') || (run.from?.pick ? null : cam);
     closeScanner();
     if (input) input.click();
     else toast('Open Food to snap a photo.', true);

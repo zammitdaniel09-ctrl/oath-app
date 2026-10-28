@@ -1,11 +1,13 @@
 // Regression tests for the October fixes: push topics Apple accepts, the coach's handling of cut-off,
-// empty and declined replies, stale hard tasks in briefs, and weekly reviews of thin weeks.
+// empty and declined replies (and of calls that fail after its tools ran), API errors named by cause,
+// stale hard tasks in briefs, briefs in the coach's history, and weekly reviews of thin weeks.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import EmbeddedPostgres from 'embedded-postgres';
+import Anthropic from '@anthropic-ai/sdk';
 import { DateTime } from 'luxon';
 // Parallel checkouts run the suite at once with OATH_PORT_SHIFT set apart.
 const SHIFT = Number(process.env.OATH_PORT_SHIFT || 0);
@@ -61,7 +63,8 @@ after(async () => {
   await pg.stop().catch((err) => { if (process.platform !== 'win32') throw err; });
 });
 
-// A stand-in for the Anthropic client that replays scripted responses and records each request.
+// A stand-in for the Anthropic client that replays scripted responses and records each request. An
+// error in the script is thrown, as the SDK throws a failed call.
 function scripted(responses) {
   const requests = [];
   return {
@@ -72,11 +75,24 @@ function scripted(responses) {
           requests.push(params);
           const next = responses.shift();
           if (!next) throw new Error('no scripted response left');
+          if (next instanceof Error) throw next;
           return next;
         },
       },
     },
   };
+}
+const failure = (status, message, extra = {}) => Object.assign(new Error(`${status} ${message}`), { status, ...extra });
+const tool = (id, name, input) => ({ type: 'tool_use', id, name, input });
+// The coach's console.error lines, kept out of the test output.
+async function quietly(step) {
+  const real = console.error;
+  console.error = () => {};
+  try {
+    return await step();
+  } finally {
+    console.error = real;
+  }
 }
 const reply = (stop_reason, content, extra = {}) => ({ stop_reason, content, ...extra });
 const words = (text) => ({ type: 'text', text });
@@ -147,12 +163,82 @@ test('coach: a declined or empty reply is shown but never fed back as the coach\
   assert.ok(!sent.some((t) => /can't help with that one/.test(t)));
 });
 
+test('coach: a reply cut off after its tools ran stays in the history with what it did, so nothing is done twice', async () => {
+  const c = scripted([
+    reply('tool_use', [tool('a1', 'add_task', { title: 'Pack the gym bag' }), tool('a2', 'add_task', { title: 'Book the dentist' })]),
+    failure(529, 'Overloaded'),
+  ]);
+  coach.setCoachClient(c);
+  const r = await quietly(() => call('POST', '/api/coach', { text: 'Add pack the gym bag and book the dentist, then plan my week' }));
+  assert.equal(r.status, 200, JSON.stringify(r.data));
+  assert.equal(r.data.reply.failed, false, 'it did something, so it is not a failed reply');
+  assert.equal(r.data.reply.text, 'I did this much before I was cut off, Boss: the ticked lines below went through. The rest did not happen: the AI service is busy right now. Try again in a moment.');
+  assert.deepEqual(r.data.reply.actions, [{ ok: true, text: 'Added task "Pack the gym bag"' }, { ok: true, text: 'Added task "Book the dentist"' }]);
+
+  // The next turn hears what went through, so the coach carries on instead of adding them again.
+  const next = scripted([reply('end_turn', [words('Both are in. Now the week.')])]);
+  coach.setCoachClient(next);
+  await call('POST', '/api/coach', { text: 'Carry on' });
+  const cut = next.requests[0].messages.find((m) => m.role === 'assistant' && String(m.content).startsWith('I did this much before I was cut off'));
+  assert.ok(cut, 'the cut-off reply is in the history');
+  assert.match(cut.content, /\n\[Added task "Pack the gym bag"; Added task "Book the dentist"\]$/);
+  assert.equal((await dbmod.db()`select 1 from tasks where title in ('Pack the gym bag', 'Book the dentist')`).length, 2);
+
+  // A Confirm still waiting counts as done work too, and the history says what it waits for.
+  const { data: task } = await call('POST', '/api/tasks', { title: 'Old flyer' });
+  coach.setCoachClient(scripted([reply('tool_use', [tool('d1', 'delete_task', { task_id: task.id })]), failure(500, 'api_error')]));
+  const waiting = await quietly(() => call('POST', '/api/coach', { text: 'Delete the old flyer and tidy the rest' }));
+  assert.equal(waiting.data.reply.failed, false);
+  assert.match(waiting.data.reply.text, /^I did this much before I was cut off, Boss: one thing waits for your Confirm tap\. The rest did not happen/);
+  assert.equal(waiting.data.reply.pending[0].summary, 'Delete task "Old flyer"');
+  const after = scripted([reply('end_turn', [words('Tap Confirm for the flyer.')])]);
+  coach.setCoachClient(after);
+  await call('POST', '/api/coach', { text: 'And?' });
+  assert.ok(after.requests[0].messages.some((m) => /\[asked him to confirm: Delete task "Old flyer" \(waiting for his tap\)\]$/.test(String(m.content))));
+});
+
+test('coach: a failed call says what went wrong: the key, the credit, a busy service or the connection', async () => {
+  const cases = [
+    [failure(401, 'invalid x-api-key', { type: 'authentication_error' }), 'The coach could not answer: the API key was refused. Check ANTHROPIC_API_KEY in the app\'s variables on Railway.'],
+    [failure(403, 'forbidden', { type: 'permission_error' }), /the API key was refused/],
+    [failure(400, 'Your credit balance is too low to access the Anthropic API.', { type: 'invalid_request_error' }), 'The coach could not answer: the Anthropic account is out of credit. Top it up in the Anthropic console.'],
+    [failure(402, 'billing', { type: 'billing_error' }), /out of credit/],
+    [failure(429, 'rate limited'), 'The coach could not answer: the AI service is busy right now. Try again in a moment.'],
+    [failure(500, 'api_error'), /busy right now/],
+    [failure(529, 'Overloaded'), /busy right now/],
+    [new Anthropic.APIConnectionError({ message: 'Connection error.' }), 'The coach could not answer: the AI service could not be reached. Check the connection and try again.'],
+  ];
+  for (const [err, said] of cases) {
+    coach.setCoachClient(scripted([err]));
+    const r = await quietly(() => call('POST', '/api/coach', { text: 'Hello' }));
+    assert.equal(r.data.reply.failed, true, err.message);
+    if (typeof said === 'string') assert.equal(r.data.reply.text, said);
+    else assert.match(r.data.reply.text, said);
+    if (!/credit/.test(String(said))) assert.ok(!/credit/.test(r.data.reply.text), `only a billing error mentions credit: ${r.data.reply.text}`);
+  }
+});
+
+test('coach: declined after its tools ran, it says what went through instead of "I can\'t help"', async () => {
+  coach.setCoachClient(scripted([
+    reply('tool_use', [tool('w1', 'add_task', { title: 'Water the plants' })]),
+    reply('refusal', [], { stop_details: { category: 'general_harms' } }),
+  ]));
+  const r = await call('POST', '/api/coach', { text: 'Add water the plants, and something odd' });
+  assert.equal(r.data.reply.failed, false);
+  assert.ok(!/can't help/.test(r.data.reply.text), r.data.reply.text);
+  assert.equal(r.data.reply.text, 'I did this much, Boss: the ticked lines below went through. I could not go further than that, so ask for the rest another way.');
+  assert.deepEqual(r.data.reply.actions, [{ ok: true, text: 'Added task "Water the plants"' }]);
+});
+
 test('briefs: a cut-off reply falls back to plain numbers instead of half a sentence', async () => {
   const c = scripted([reply('max_tokens', [words('Yesterday you')]), reply('max_tokens', [words('Yesterday you missed')])]);
   coach.setCoachClient(c);
   const { text } = await coach.generateBrief('morning');
   assert.ok(!text.startsWith('Yesterday you missed'), text);
   assert.equal(c.requests[0].output_config.effort, 'low');
+  // A brief is one call written hours apart from the next, so nothing in it is marked for caching.
+  assert.equal(typeof c.requests[0].system, 'string');
+  assert.ok(!JSON.stringify(c.requests[0]).includes('cache_control'));
   delete process.env.ANTHROPIC_API_KEY;
 });
 
@@ -183,6 +269,38 @@ test('weekly review: no strongest or weakest when habits are tied, and thin habi
   assert.ok(!/Strongest|Weakest/.test(text), text);
   assert.match(text, /Too early to rank/);
   assert.match(text, /Adjust: Study\./);
+});
+
+test('briefs join the coach chat once each, still show on Today, and the coach hears them as its own words', async () => {
+  const count = async () => (await dbmod.db()`select count(*)::int as n from coach_messages`)[0].n;
+  const before = await count();
+  const b = await call('POST', '/api/briefs/evening', {});
+  assert.equal(b.status, 200, JSON.stringify(b.data));
+  // The old fields stay; the kept chat message comes with them.
+  assert.equal(typeof b.data.text, 'string');
+  assert.equal(typeof b.data.openCount, 'number');
+  assert.equal(b.data.message.role, 'assistant');
+  assert.equal(b.data.message.text, b.data.text);
+  assert.equal(b.data.message.failed, false);
+  assert.equal(await count(), before + 1, 'stored once');
+  const hist = (await call('GET', '/api/coach')).data.messages;
+  assert.equal(hist.at(-1).id, b.data.message.id);
+  assert.equal(hist.at(-1).text, b.data.text);
+  // The Today card reads the briefs table as before.
+  assert.equal((await today()).data.briefs.find((x) => x.kind === 'evening').text, b.data.text);
+  // A scheduled brief takes the same path: one more row, and the card shows the newest.
+  const scheduled = await coach.generateBrief('evening');
+  assert.equal(await count(), before + 2);
+  assert.equal(scheduled.message.text, scheduled.text);
+
+  process.env.ANTHROPIC_API_KEY = 'test';
+  const c = scripted([reply('end_turn', [words('That was the evening check, Boss.')])]);
+  coach.setCoachClient(c);
+  await call('POST', '/api/coach', { text: 'What did you just send me?' });
+  const mine = c.requests[0].messages;
+  assert.ok(mine.some((m) => m.role === 'assistant' && m.content === scheduled.text), 'the brief is in the history');
+  assert.equal(mine.at(-1).role, 'user', 'the conversation still ends with him');
+  delete process.env.ANTHROPIC_API_KEY;
 });
 
 // Raw request with no cookie, the way Shortcuts and Health Auto Export call Oath.

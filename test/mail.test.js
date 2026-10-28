@@ -73,6 +73,7 @@ function fakeClient(acct) {
   return {
     get mailbox() { return selected ? { path: 'INBOX', uidValidity: inbox.validity } : false; },
     async connect() {
+      if (inbox.down) throw new Error('Socket timeout');
       if (acct.password !== inbox.password) {
         const err = new Error('Invalid credentials (Failure)');
         err.authenticationFailed = true;
@@ -140,7 +141,7 @@ test('connecting checks the app password with Gmail and never shows it again', a
   // The inbox is empty, so the read that follows a connection finds nothing to sort.
   coach.setCoachClient(scripted([]));
   const acct = await post('/api/mail/connect', { address: ' Someone@Gmail.com ', password: 'abcd efgh ijkl mnop' });
-  assert.deepEqual(Object.keys(acct).sort(), ['address', 'connected', 'connectedAt', 'error', 'lastSync', 'notify', 'star']);
+  assert.deepEqual(Object.keys(acct).sort(), ['address', 'authFailed', 'connected', 'connectedAt', 'error', 'lastSync', 'notify', 'star']);
   assert.equal(acct.address, 'someone@gmail.com');
   assert.equal(acct.star, true);
   await mail.syncMail();
@@ -235,7 +236,7 @@ test('done and moving between important and not, the coach is told only about im
   assert.match(text, /from Dr Borg, "Thesis draft": Wants the chapter 2 draft by Friday\. \| to do: Send the chapter 2 draft \| due 2026-11-06/);
   assert.ok(!/Maria|sign-in/.test(text));
   const badge = await mail.mailBadge();
-  assert.deepEqual(badge, { important: 1, error: false });
+  assert.deepEqual(badge, { important: 1, error: false, authFailed: false });
 });
 
 test('a refused or broken sorting still files every message, and turning stars off stops starring', async () => {
@@ -251,12 +252,28 @@ test('a refused or broken sorting still files every message, and turning stars o
   assert.deepEqual(inbox.flagsAdded, []);
 });
 
+test('a check that fails for any other reason does not ask for a reconnect, and the next pass clears it', async () => {
+  inbox.down = true;
+  await assert.rejects(mail.syncMail());
+  let view = await get('/api/mail');
+  assert.match(view.account.error, /Could not reach Gmail/);
+  assert.equal(view.account.authFailed, false);
+  assert.deepEqual(await mail.mailBadge(), { important: 1, error: true, authFailed: false });
+  inbox.down = false;
+  coach.setCoachClient(scripted([]));
+  await mail.syncMail();
+  view = await get('/api/mail');
+  assert.deepEqual([view.account.error, view.account.authFailed], [null, false]);
+});
+
 test('a password Gmail stops accepting is shown as the account error, and disconnecting can forget the mail', async () => {
   const before = inbox.password;
   inbox.password = 'qwertyuiopasdfgh';
   await assert.rejects(mail.syncMail());
   const view = await get('/api/mail');
   assert.match(view.account.error, /did not accept/);
+  assert.equal(view.account.authFailed, true, 'only this one asks for a reconnect');
+  assert.deepEqual(await mail.mailBadge(), { important: 1, error: true, authFailed: true });
   inbox.password = before;
   await post('/api/mail/disconnect', { forget: true });
   const gone = await get('/api/mail');

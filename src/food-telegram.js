@@ -17,6 +17,7 @@ const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 const kcalText = (v) => new Intl.NumberFormat('en-GB', { maximumFractionDigits: 0 }).format(round(v, 0));
 const SLOT = { breakfast: 'breakfast', lunch: 'lunch', dinner: 'dinner', snacks: 'a snack', drinks: 'drinks' };
+const NOT_FOOD_HINT = 'Photos here are read as food. If it is something else, send it again with a caption saying what to do with it, like "add these to my calendar", and the coach will take it.';
 
 // The photo in a message: the largest size Telegram made of a photo, or an image sent as a file.
 export function photoIn(m) {
@@ -54,6 +55,17 @@ function mediaType(buf) {
   if (buf.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'image/png';
   if (buf.subarray(0, 4).toString('latin1') === 'RIFF' && buf.subarray(8, 12).toString('latin1') === 'WEBP') return 'image/webp';
   return null;
+}
+
+// A photo from the chat as { bytes, type }, checked the way Claude needs it. Shared with the coach's
+// own photo messages (telegram.js). `h` carries telegram.js's call and the bot token.
+export async function photoBytes(photo, h) {
+  const file = await h.call('getFile', { file_id: photo.fileId });
+  const bytes = await download(h.token, String(file?.file_path || ''), Math.max(photo.size, Number(file?.file_size) || 0));
+  const type = mediaType(bytes);
+  if (!type) throw new RuleError('I can read JPEG, PNG and WebP photos. Send it as a photo rather than a file and it will work.');
+  if (bytes.length > 4.5 * 1024 * 1024) throw new RuleError('That image is too big for me to read. Send it as a photo rather than a file and Telegram will shrink it.');
+  return { bytes, type };
 }
 
 // One result waiting for a tap; expired ones are cleared as new ones arrive.
@@ -145,11 +157,7 @@ export async function foodPhoto(message, photo, h) {
   await h.call('sendChatAction', { chat_id: chatId, action: 'typing' }).catch(() => {});
   let result;
   try {
-    const file = await h.call('getFile', { file_id: photo.fileId });
-    const bytes = await download(h.token, String(file?.file_path || ''), Math.max(photo.size, Number(file?.file_size) || 0));
-    const type = mediaType(bytes);
-    if (!type) throw new RuleError('I can read JPEG, PNG and WebP photos. Send it as a photo rather than a file and it will work.');
-    if (bytes.length > 4.5 * 1024 * 1024) throw new RuleError('That image is too big for me to read. Send it as a photo rather than a file and Telegram will shrink it.');
+    const { bytes, type } = await photoBytes(photo, h);
     // The caption is the typed hint, as "What did you eat?" would give it.
     result = await readFoodPhoto({ image: bytes.toString('base64'), media_type: type, note: String(message.caption || '').trim() });
   } catch (err) {
@@ -209,7 +217,9 @@ export async function foodPhoto(message, photo, h) {
     return;
   }
 
-  await send(esc(result.question || 'What is it?'));
+  // Unclear, or not food at all: photos here are read as food, so the way to the coach is a caption
+  // that says what to do with it (telegram.js sends those to the coach).
+  await send(`${esc(result.question || 'What is it?')}\n\n${esc(NOT_FOOD_HINT)}`);
 }
 
 // "Log it", a portion, or "Cancel" under a photo's answer. The buttons go once it is handled.

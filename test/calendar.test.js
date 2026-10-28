@@ -353,9 +353,9 @@ test('Google feed: fetched (gzip) from its secret address, stored inside the win
   const r = await addGoogle();
   assert.equal(r.feed.name, 'Daniel');
   assert.equal(r.feed.kind, 'calendar');
-  assert.equal(r.events, 25);
+  assert.equal(r.events, 31);
   assert.equal(r.created, 0);
-  assert.equal(r.feed.eventCount, 25);
+  assert.equal(r.feed.eventCount, 31);
   assert.equal(r.feed.lastError, null);
   assert.equal(r.feed.lastSync, clock.toUTC().toISO());
   assert.match(r.feed.color, /^#[0-9a-f]{6}$/);
@@ -386,7 +386,8 @@ test('Google feed: fetched (gzip) from its secret address, stored inside the win
   assert.deepEqual(moved.map((e) => [e.title, e.time, e.endTime, e.location]), [['CPS1011 Lecture (moved)', '14:00', '16:00', 'Room 5']]);
   assert.deepEqual(await cal.eventsForDate('2026-10-28'), []); // cancelled occurrence
   assert.equal((await cal.eventsForDate('2026-10-26'))[0].start, '2026-10-26T09:00:00+01:00');
-  assert.deepEqual(await cal.eventsForDate('2026-12-28'), []); // beyond the 60-day window
+  assert.deepEqual(titles(await cal.eventsForDate('2026-12-28')), ['CPS1011 Lecture']); // inside the 180-day window
+  assert.deepEqual(await cal.eventsForDate('2027-01-04'), []); // the series ends with December
 
   const [{ n }] = await sql()`select count(*)::int as n from cal_events where start_at < '2026-10-10'`;
   assert.equal(n, 0);
@@ -394,7 +395,7 @@ test('Google feed: fetched (gzip) from its secret address, stored inside the win
   assert.equal(range.length, 7);
   assert.deepEqual(range.map((e) => e.start).slice(-2), ['2026-10-13', '2026-10-13T19:00:00+02:00']);
 
-  // Two weeks later the window has moved on: late December appears, nothing duplicates.
+  // Two weeks later the window has moved on: late December is still there, nothing duplicates.
   setLocal('2026-11-01T09:00');
   const again = await cal.syncFeed(r.feed.id);
   assert.equal(again.ok, true);
@@ -512,6 +513,103 @@ test('Moodle deadlines feed: tasks once, re-sync does not duplicate, a moved dea
   assert.equal(await cal.busyMinutes('2026-10-16'), 0); // zero-length deadlines are never busy
 });
 
+// A Moodle-style feed of deadlines, each { uid, start (UTC, as Moodle writes it), title }.
+const vleFeed = (events) => ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Moodle Pty Ltd//NONSGML Moodle Version 2024//EN',
+  ...events.flatMap((e) => ['BEGIN:VEVENT', `UID:${e.uid}`, 'DTSTAMP:20261101T000000Z', `DTSTART:${e.start}`, `DTEND:${e.start}`,
+    `SUMMARY:${e.title}`, 'CATEGORIES:CPS1011-SEM1-A-2627', 'END:VEVENT']),
+  'END:VCALENDAR', ''].join('\r\n');
+
+test('a VLE deadline at 00:00 is the end of the day before: its task is due then, and older tasks move there', async () => {
+  await reset('2026-11-02T09:00');
+  const { dueOn, validTime, validDate } = await import('../src/time.js');
+  // Moodle says Fri 6 Nov 00:00 (23:00 UTC the day before, on winter time). A task an older version made
+  // for it is due on Friday at 00:00, which Oath reads as the end of Friday: a day late.
+  const old = await engine.createTask({ title: 'Essay (CPS1011)', due_date: '2026-11-06', deadline: '00:00' }, { validTime, validDate }, 'vle');
+  await sql()`update tasks set ext_uid = 'cal:1:essay@vle:2026-11-05T23:00:00.000Z' where id = ${old.id}`;
+  serve('/vle/calendar/export_execute.php', { body: vleFeed([
+    { uid: 'essay@vle', start: '20261105T230000Z', title: 'Essay is due' },
+    { uid: 'quiz@vle', start: '20261109T230000Z', title: 'Quiz 3 closes' },
+  ]) });
+  const r = await cal.addFeed({ url: `${base}/vle/calendar/export_execute.php?authtoken=x` });
+  assert.deepEqual([r.created, r.updated], [1, 1]);
+  const list = await tasks();
+  assert.deepEqual(list.map((t) => [t.title, t.due_date, t.deadline]), [
+    ['Essay (CPS1011)', '2026-11-05', '00:00'], // moved back to Thursday, at midnight
+    ['Quiz 3 (CPS1011)', '2026-11-09', '00:00'],
+  ]);
+  // The task falls due at the very moment the VLE closes, and the flag is that same moment.
+  const essay = (await cal.eventsForDate('2026-11-06')).find((e) => e.deadline);
+  assert.deepEqual([essay.title, essay.time], ['Essay is due', '00:00']);
+  assert.equal(dueOn(list[0].due_date, list[0].deadline, ZONE).toMillis(), DateTime.fromISO(essay.start).toMillis());
+  assert.equal(dueOn(list[1].due_date, list[1].deadline, ZONE).toUTC().toISO(), '2026-11-09T23:00:00.000Z');
+  // Syncing again changes nothing.
+  assert.deepEqual(Object.values(await cal.syncFeed(r.feed.id)).slice(-2), [0, 0]);
+  // Once Friday has begun the deadline has passed, and the task is left alone.
+  setLocal('2026-11-06T08:00');
+  assert.deepEqual(Object.values(await cal.syncFeed(r.feed.id)).slice(-2), [0, 0]);
+  assert.equal((await tasks())[0].due_date, '2026-11-05');
+});
+
+test('a VLE deadline is done when its task is, and crossing it off on the calendar ticks the task', async () => {
+  await reset();
+  serve('/vle/calendar/export_execute.php', { body: fixture('moodle.ics') });
+  await cal.addFeed({ url: `${base}/vle/calendar/export_execute.php?authtoken=x` });
+  const assignment = (await tasks()).find((t) => t.title.startsWith('Assignment 1'));
+  assert.equal(assignment.ext_uid, 'cal:1:5501@www.um.edu.mt:2026-10-20T21:59:00.000Z');
+  const flag = async () => (await cal.eventsForDate('2026-10-20')).find((e) => e.deadline);
+  const doneAt = async () => (await sql()`select done_at from tasks where id = ${assignment.id}`)[0].done_at;
+  assert.equal((await flag()).done, false);
+
+  // Ticked on Today: done on the calendar too, and back.
+  await engine.completeTask(assignment.id);
+  assert.equal((await flag()).done, true);
+  assert.equal((await call('GET', '/api/calendar/events?from=2026-10-20&to=2026-10-20')).data.events[0].done, true);
+  await engine.undoTask(assignment.id);
+  assert.equal((await flag()).done, false);
+
+  // Crossed off on the calendar: the task is ticked, and putting it back reopens the task.
+  assert.equal((await cal.markEventDone((await flag()).id, true)).done, true);
+  assert.ok(await doneAt());
+  assert.equal((await flag()).done, true);
+  await cal.markEventDone((await flag()).id, false);
+  assert.equal(await doneAt(), null);
+  assert.equal((await flag()).done, false);
+  assert.equal((await sql()`select count(*)::int as n from event_marks`)[0].n, 0, 'the task holds the state');
+
+  // A deadline with no task ("Quiz 2 opens" is not one) is crossed off with a mark of its own.
+  const opens = (await cal.eventsForDate('2026-10-14')).find((e) => e.title === 'Quiz 2 opens');
+  await cal.markEventDone(opens.id, true);
+  assert.equal((await cal.eventsForDate('2026-10-14')).find((e) => e.title === 'Quiz 2 opens').done, true);
+
+  // The key holds for rows synced before the original start was stored.
+  await sql()`update cal_events set orig_start = null`;
+  await engine.completeTask(assignment.id);
+  assert.equal((await flag()).done, true);
+});
+
+test('the window reaches 180 days ahead, and the API says how far the calendars are synced', async () => {
+  await reset();
+  assert.equal(await cal.syncedThrough(), null, 'with no calendars there is nothing to say');
+  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Test//EN',
+    'BEGIN:VEVENT', 'UID:inside@test', 'DTSTAMP:20261001T000000Z', 'DTSTART;TZID=Europe/Malta:20270410T090000',
+    'DTEND;TZID=Europe/Malta:20270410T100000', 'SUMMARY:Last day inside', 'END:VEVENT',
+    'BEGIN:VEVENT', 'UID:outside@test', 'DTSTAMP:20261001T000000Z', 'DTSTART;TZID=Europe/Malta:20270411T090000',
+    'DTEND;TZID=Europe/Malta:20270411T100000', 'SUMMARY:First day outside', 'END:VEVENT',
+    'END:VCALENDAR', ''].join('\r\n');
+  serve('/far.ics', { body: ics });
+  const r = await cal.addFeed({ url: `${base}/far.ics` });
+  assert.equal(r.events, 1);
+  assert.equal(await cal.syncedThrough(), '2027-04-10'); // Monday 12 October plus 180 days
+  assert.deepEqual(titles(await cal.eventsForDate('2027-04-10')), ['Last day inside']);
+  assert.deepEqual(await cal.eventsForDate('2027-04-11'), []);
+  assert.equal((await call('GET', '/api/calendar/events?from=2027-04-01&to=2027-04-20')).data.syncedTo, '2027-04-10');
+  // The next day's sync reaches one day further.
+  setLocal('2026-10-13T08:00');
+  await cal.syncFeed(r.feed.id);
+  assert.equal(await cal.syncedThrough(), '2027-04-11');
+  assert.deepEqual(titles(await cal.eventsForDate('2027-04-11')), ['First day outside']);
+});
+
 test('webcal:// links become https://', async () => {
   await reset();
   assert.equal(cal.normalizeFeedUrl('webcal://p52-caldav.icloud.com/published/2/MTIzNDU2'), 'https://p52-caldav.icloud.com/published/2/MTIzNDU2');
@@ -614,7 +712,7 @@ test('sync all: a failing feed is recorded and never stops the others; 15-minute
   assert.equal(feeds[0].lastError, null);
   assert.match(feeds[1].lastError, /error 500/);
   assert.equal(feeds[1].lastSync, firstSync); // last good sync
-  assert.equal(feeds[1].eventCount, 19);
+  assert.equal(feeds[1].eventCount, 28);
   assert.deepEqual(titles(await cal.eventsForDate('2026-10-13')), ['Team sync', 'Focus time']); // old events kept
 
   // Ten minutes later: the healthy feed is fresh and skipped, the failing one is retried.
@@ -670,7 +768,7 @@ test('coach text: today and tomorrow, with VLE deadlines marked', async () => {
   ].join('\n'));
   setLocal('2026-10-15T08:00');
   assert.match(await cal.calendarForCoach(), /all day, until Sat 17 Oct: Field trip, Gozo/);
-  setLocal('2026-12-20T08:00'); // beyond everything synced
+  setLocal('2027-01-10T08:00'); // after every event in the feeds
   assert.equal(await cal.calendarForCoach(), '');
 });
 
@@ -686,13 +784,14 @@ test('API routes: list, add, events, sync and delete', async () => {
   assert.equal(added.status, 200, JSON.stringify(added.data));
   assert.equal(added.data.feed.name, 'Uni timetable');
   assert.equal(added.data.feed.color, '#123abc');
-  assert.equal(added.data.events, 25);
+  assert.equal(added.data.events, 31);
   assert.deepEqual(Object.keys(added.data.feed).sort(), ['color', 'createdAt', 'eventCount', 'host', 'id', 'kind', 'lastError', 'lastSync', 'name', 'url']);
 
   const ev = await call('GET', '/api/calendar/events?from=2026-10-12&to=2026-10-13');
   assert.equal(ev.status, 200);
   assert.equal(ev.data.from, '2026-10-12');
   assert.equal(ev.data.events.length, 7);
+  assert.equal(ev.data.syncedTo, '2027-04-10'); // 180 days on from the sync
   assert.deepEqual(Object.keys(ev.data.events[0]).sort(), ['allDay', 'busy', 'color', 'deadline', 'done', 'end', 'endTime', 'feed', 'feedId', 'id', 'location', 'start', 'time', 'title']);
   assert.equal((await call('GET', '/api/calendar/events')).data.events.length, 5); // defaults to today
   assert.match((await call('GET', '/api/calendar/events?from=2026-10-01&to=2026-12-31')).data.error, /at most 62 days/);
@@ -702,7 +801,7 @@ test('API routes: list, add, events, sync and delete', async () => {
 
   const synced = await call('POST', '/api/calendar/sync', {});
   assert.equal(synced.status, 200);
-  assert.deepEqual(synced.data.results, [{ id: 1, ok: true, events: 25, created: 0, updated: 0 }]);
+  assert.deepEqual(synced.data.results, [{ id: 1, ok: true, events: 31, created: 0, updated: 0 }]);
   assert.equal(synced.data.feeds.length, 1);
 
   assert.deepEqual(await call('DELETE', '/api/calendar/feeds/1'), { status: 200, data: { ok: true } });

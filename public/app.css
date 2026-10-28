@@ -1084,6 +1084,7 @@ button.tchip:active, a.tchip:active { transform: scale(0.96); transition: backgr
 .wk-day.missed .wk-dot { background: rgba(225, 6, 0, 0.2); color: var(--merlot-hi); box-shadow: inset 0 0 0 1.5px var(--merlot-hi); }
 .wk-day.rest .wk-dot { background: repeating-linear-gradient(45deg, var(--line-strong) 0 1.5px, transparent 1.5px 4px); box-shadow: inset 0 0 0 1.5px var(--line-ctl); }
 .wk-day.quiet .wk-dot { background: var(--fill-2); box-shadow: none; }
+.wk-day.kept .wk-dot { background: rgba(63, 240, 185, 0.14); box-shadow: inset 0 0 0 1.5px rgba(63, 240, 185, 0.55); }
 .wk-day.none .wk-dot { box-shadow: inset 0 0 0 1px var(--line); }
 .wk-day.future .wk-dot { box-shadow: inset 0 0 0 1.5px var(--line); }
 .wk-day.today .wk-dot { box-shadow: none; }
@@ -1529,6 +1530,8 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 
 /* The composer and its quick replies stay at the foot of the chat; the chat fades out beneath them
    instead of meeting a hard edge. */
+.load-failed { display: grid; justify-items: start; gap: 12px; margin-top: 16px; }
+.load-failed p { margin: 0; color: var(--text-2); }
 .tl-row.done .tl-title, .tl-chip.done, .nx-row.done b, .nx-chip.done { text-decoration: line-through; text-decoration-thickness: 2px; }
 .nx-row.done, .tl-chip.done, .nx-chip.done { opacity: 0.62; }
 .nx-row.done .nx-bar { opacity: 0.5; }
@@ -1965,8 +1968,11 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .toast.big { font-size: 1.0625rem; font-weight: 650; padding: 15px 20px; }
 .toast.link { pointer-events: auto; cursor: pointer; text-decoration: underline; text-decoration-color: var(--line-ctl); text-underline-offset: 3px; }
 /* An error toast says it can be reported; the whole toast is the button. */
-.toast.bad.link { text-decoration: none; }
+.toast.bad.link { text-decoration: none; pointer-events: none; }
 .toast-report { margin-left: 6px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.toast.bad.link .toast-report { position: relative; pointer-events: auto; }
+.toast.bad.link .toast-report::before { content: ''; position: absolute; inset: -12px -14px; }
+body:has(.fchat-page, .cchat-page) .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 72px); }
 body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px); }
 
 .gate {
@@ -2105,7 +2111,7 @@ body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(s
 }
 /* Fields on a phone are at least 16 px: iOS zooms the whole page into anything smaller when it is tapped. */
 @media (pointer: coarse) {
-  .input.mono, .copy-row .input { font-size: 1rem; }
+  .input.mono, .copy-row .input, .amount-row.small .input, .fc-amount .input { font-size: 1rem; }
 }
 @media (min-width: 900px) {
   :root { --tabbar: 0px; --pad: 22px; --pad-sm: 16px; }
@@ -2115,6 +2121,7 @@ body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(s
   .lt-title { font-size: 2.5rem; }
   .gh h2 { font-size: 1.3125rem; }
   .tabbar {
+    overflow-y: auto; overscroll-behavior: contain;
     top: 0; left: 0; right: auto; bottom: 0; width: var(--side); height: 100dvh; padding: calc(env(safe-area-inset-top) + 24px) 14px 24px calc(env(safe-area-inset-left) + 14px);
     display: flex; flex-direction: column; gap: 2px; border-radius: 0; background: var(--card); box-shadow: 1px 0 0 var(--line);
     -webkit-backdrop-filter: none; backdrop-filter: none;

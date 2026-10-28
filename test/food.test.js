@@ -644,3 +644,69 @@ test('history: gaps stay gaps, averages use logged days only, incomplete days ar
   assert.equal((await call('GET', '/api/food/history?date=nope')).status, 400);
   setLocal('2026-11-02T12:30');
 });
+
+test('an entry made offline before midnight and synced after it keeps the day and time it was eaten', async () => {
+  setLocal('2026-11-04T00:20');
+  const a = id();
+  const q = id();
+  const r = await post('/api/food/sync', { ops: [
+    { id: a, op: 'log', data: { id: a, key: 'banana-raw', qty: 100, unit: 'g', slot: 'snacks', date: '2026-11-03', time: '23:40' } },
+    { id: q, op: 'quick', data: { id: q, name: 'Late toast', kcal: 150, slot: 'snacks', date: '2026-11-03', time: '23:45' } },
+  ] });
+  assert.ok(r.results.every((x) => x.ok), JSON.stringify(r.results));
+  const local = (e) => DateTime.fromJSDate(new Date(e.at), { zone: ZONE }).toFormat('yyyy-MM-dd HH:mm');
+  assert.equal(r.results[0].entry.date, '2026-11-03');
+  assert.equal(local(r.results[0].entry), '2026-11-03 23:40');
+  assert.equal(local(r.results[1].entry), '2026-11-03 23:45');
+  assert.ok(!(await day()).entries.some((e) => [a, q].includes(e.id)), 'nothing lands on the day it synced');
+  assert.ok((await day('2026-11-03')).entries.some((e) => e.id === a));
+  setLocal('2026-11-02T12:30');
+});
+
+test('moving an entry to another meal keeps its numbers and its estimate; a new amount is worked out again', async () => {
+  const food = await post('/api/food/items', { name: 'Zzqx move test bake', nutrients: { kcal: 300, protein: 10 } });
+  const fill = { kcal: 300, protein: 10, carbs: 40, sugars: 10, fat: 12, fibre: 2, salt: 0.5 };
+  const logged = (await post('/api/food/log', { id: id(), key: food.key, qty: 100, unit: 'g', slot: 'lunch', estimate: true, fill })).entry;
+  assert.equal(logged.estimate, true);
+  assert.ok(logged.filled.includes('carbs'));
+  // The sheet sends the amount on screen with the new meal, unchanged.
+  const moved = ok(await call('PATCH', `/api/food/log/${logged.id}`, { slot: 'dinner', qty: 100, unit: 'g' })).entry;
+  assert.equal(moved.slot, 'dinner');
+  assert.equal(moved.estimate, true, 'still marked as an estimate');
+  assert.deepEqual(moved.filled, logged.filled);
+  assert.deepEqual(moved.nutrients, logged.nutrients);
+  const more = ok(await call('PATCH', `/api/food/log/${logged.id}`, { slot: 'dinner', qty: 200, unit: 'g' })).entry;
+  near(more.nutrients.kcal, 600);
+  near(more.nutrients.carbs, 80, 1e-4);
+  assert.equal(more.slot, 'dinner');
+});
+
+test('Open Food Facts failing is a plain 502 that says so, not a server error', async () => {
+  off.setOffFetch(async () => { throw new TypeError('fetch failed'); });
+  const down = await call('GET', '/api/food/off-search?q=zzqx%20cola');
+  assert.equal(down.status, 502);
+  assert.match(down.data.error, /Open Food Facts could not be reached/);
+  off.setOffFetch(async () => ({ ok: false, status: 503, json: async () => ({}) }));
+  const busy = await call('GET', '/api/food/barcode/4000000000017');
+  assert.equal(busy.status, 502);
+  assert.match(busy.data.error, /Open Food Facts .*error 503/);
+  off.setOffFetch(async () => ({ ok: false, status: 429, json: async () => ({}) }));
+  const slow = await call('GET', '/api/food/off-search?q=zzqx');
+  assert.equal(slow.status, 502);
+  assert.match(slow.data.error, /slow down/);
+  // A failure is not kept as a miss: the code is asked for again next time.
+  let asked = 0;
+  off.setOffFetch(async (url) => { asked += 1; return fakeOff(url); });
+  assert.equal((await get('/api/food/barcode/4000000000017')).item, null);
+  assert.equal(asked, 1);
+  off.setOffFetch(fakeOff);
+});
+
+test('search leaves out a bulk record that says the same as a hand-picked one, and keeps the rest', async () => {
+  const [bulk] = await dbmod.db()`select name_norm, state from food_items where key = 'fdc-2709224'`;
+  assert.deepEqual(bulk, { name_norm: 'banana', state: 'raw' }, 'the survey has its own raw banana');
+  const list = await search('banana');
+  assert.equal(list[0].key, 'banana-raw');
+  assert.ok(!list.some((x) => x.key === 'fdc-2709224'), 'two rows nothing tells apart never show');
+  assert.ok(list.some((x) => x.key.startsWith('fdc-')), 'other bulk records stay');
+});

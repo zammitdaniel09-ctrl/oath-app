@@ -231,18 +231,32 @@ test('five wrong passwords lock that address for 15 minutes, nobody else, and ne
   assert.equal((await call('POST', '/api/login', owner, attacker)).status, 200, 'free again after 15');
 });
 
-test('fifty failures in an hour from anywhere stop password logins for everyone, but not Face ID', async () => {
+test('fifty failures in an hour from anywhere stop password logins for strangers, but not Face ID or his own phone', async () => {
   later(61);
+  // Strangers carry no session of his.
+  const stranger = async (...args) => {
+    const saved = cookie;
+    cookie = '';
+    try {
+      return await call(...args);
+    } finally {
+      cookie = saved;
+    }
+  };
   // Ten addresses with five bad tries each: every one locks itself, and together they hit the ceiling.
   for (let n = 1; n <= 10; n += 1) {
-    for (let i = 0; i < 5; i += 1) assert.equal((await call('POST', '/api/login', { password: 'x', recovery: 'nope' }, `198.18.0.${n}`)).status, 403);
+    for (let i = 0; i < 5; i += 1) assert.equal((await stranger('POST', '/api/login', { password: 'x', recovery: 'nope' }, `198.18.0.${n}`)).status, 403);
   }
-  const blocked = await call('POST', '/api/login', owner, '198.51.100.20');
+  const blocked = await stranger('POST', '/api/login', owner, '198.51.100.20');
   assert.equal(blocked.status, 429);
   assert.match(blocked.data.error, /in an hour/);
   assert.equal((await faceIdLogin(14, '198.51.100.20')).status, 200, 'Face ID is not affected');
+  // His phone holds a session, so the strangers cannot keep his own recovery shut.
+  assert.equal((await call('POST', '/api/login', owner, '198.51.100.21')).status, 200, 'a phone with his session is spared');
   later(61);
-  assert.equal((await call('POST', '/api/login', owner, '198.51.100.20')).status, 200, 'the hour has passed');
+  assert.equal((await stranger('POST', '/api/login', owner, '198.51.100.20')).status, 200, 'the hour has passed');
+  // His phone logs in again, as the tests after this one expect an open session.
+  assert.equal((await call('POST', '/api/login', owner, '198.51.100.20')).status, 200);
 });
 
 test('turning the lock off makes the password work alone and stops locking', async () => {

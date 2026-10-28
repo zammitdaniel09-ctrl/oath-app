@@ -88,11 +88,15 @@ function publicAccount(a) {
   return {
     connected: true, address: a.address, star: a.star !== false, notify: a.notify !== false,
     connectedAt: a.connectedAt || null, lastSync: a.lastSync || null, error: a.error || null,
+    // Only a refused login needs him to reconnect; a timeout or a dropped connection clears on the next pass.
+    authFailed: Boolean(a.error && a.authFailed),
   };
 }
 
+const isAuthError = (err) => Boolean(err?.authenticationFailed || /auth|credential|password|login/i.test(String(err?.responseText || err?.message || '')));
+
 function loginError(err) {
-  if (err?.authenticationFailed || /auth|credential|password|login/i.test(String(err?.responseText || err?.message || ''))) {
+  if (isAuthError(err)) {
     return new RuleError('Gmail did not accept that address and app password. Check both, or make a new app password.', 400);
   }
   return new RuleError(`Could not reach Gmail: ${err?.message || 'no answer'}. Try again in a minute.`, 502);
@@ -117,7 +121,7 @@ export async function connectMail({ address, password, star = true, notify = tru
   const same = before?.address === addr;
   await setKV(KEY, {
     ...(same ? before : {}), address: addr, password: pass, star: Boolean(star), notify: Boolean(notify),
-    connectedAt: same && before.connectedAt ? before.connectedAt : nowUTC().toISO(), error: null,
+    connectedAt: same && before.connectedAt ? before.connectedAt : nowUTC().toISO(), error: null, authFailed: false,
   });
   await logEvent('mail_connected', { address: addr });
   return publicAccount(await account());
@@ -331,7 +335,7 @@ async function syncPass() {
       }
       result.sorted = await sortPending();
       result.starred = await starPending(client, validity, acct);
-      await setKV(KEY, { ...(await account()), uidValidity: validity, lastUid, lastSync: nowUTC().toISO(), error: null });
+      await setKV(KEY, { ...(await account()), uidValidity: validity, lastUid, lastSync: nowUTC().toISO(), error: null, authFailed: false });
     } finally {
       lock.release();
     }
@@ -339,7 +343,7 @@ async function syncPass() {
   } catch (err) {
     try { client.close(); } catch { /* already closed */ }
     const now = await account();
-    if (now?.password) await setKV(KEY, { ...now, error: loginError(err).message, lastSync: nowUTC().toISO() });
+    if (now?.password) await setKV(KEY, { ...now, error: loginError(err).message, authFailed: isAuthError(err), lastSync: nowUTC().toISO() });
     throw err;
   }
   result.pushed = await pushPending(acct);
@@ -409,7 +413,7 @@ export async function mailBadge() {
   const acct = await account();
   if (!acct?.password) return null;
   const [{ n }] = await db()`select count(*)::int as n from mail_messages where important and done_at is null`;
-  return { important: n, error: Boolean(acct.error) };
+  return { important: n, error: Boolean(acct.error), authFailed: Boolean(acct.error && acct.authFailed) };
 }
 
 export async function mailForCoach() {

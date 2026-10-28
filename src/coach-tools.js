@@ -78,9 +78,14 @@ async function findItems({ query = '', kind = 'all', include_closed = false }) {
     for (const g of rows) out.push(`goal #${g.id} "${g.title}"${g.status === 'active' ? '' : `, ${g.status}`}`);
   }
   if (kind === 'all' || kind === 'step') {
-    const rows = await db()`select n.id, n.text, n.kind, n.parent_id, g.title from nodes n join goals g on g.id = n.goal_id
+    // A step that is a task says whether it is ticked, so toggle_goal_step is never a blind flip.
+    const rows = await db()`select n.id, n.text, n.kind, n.parent_id, g.title, t.done_at from nodes n join goals g on g.id = n.goal_id
+      left join tasks t on n.kind = 'task' and t.id = n.ref_id
       where n.text ilike ${like} and g.status = 'active' order by g.id, n.sort limit 25`;
-    for (const n of rows) out.push(`step #${n.id} "${n.text}" in goal "${n.title}"${n.kind !== 'idea' ? ` (a ${n.kind})` : ''}${n.parent_id ? `, under step #${n.parent_id}` : ''}`);
+    for (const n of rows) {
+      const kind = n.kind === 'task' ? ` (a task, ${n.done_at ? 'ticked' : 'not ticked'})` : n.kind !== 'idea' ? ` (a ${n.kind})` : '';
+      out.push(`step #${n.id} "${n.text}" in goal "${n.title}"${kind}${n.parent_id ? `, under step #${n.parent_id}` : ''}`);
+    }
   }
   if (kind === 'all' || kind === 'miss') {
     const rows = await db()`select id, title, date, hp_lost, pardoned_at, created_at from misses
@@ -247,6 +252,10 @@ async function findEvents({ query = '', from, to }) {
   return lines.length ? lines.join('\n') : 'Nothing on his calendar in that time.';
 }
 
+// What update_schedule may change, and how its Confirm line names each.
+const SCHEDULE_KEYS = ['morningTime', 'middayTime', 'eveningTime', 'dayEnd', 'timezone', 'alerts'];
+const SCHEDULE_NAMES = { morningTime: 'morning brief at', middayTime: 'midday check at', eveningTime: 'evening check at', dayEnd: 'day end at', alerts: 'alerts' };
+
 // ---------- The tools ----------
 // run returns the receipt shown under the coach's reply (or several, see receiptsOf). confirm, when
 // present, returns the line Daniel confirms; the tool then waits instead of acting.
@@ -412,7 +421,9 @@ const TOOLS = {
     async run({ outcome }) {
       const [s] = await db()`select id, title from focus_sessions where ended_at is null order by id desc limit 1`;
       if (!s) throw new RuleError('No focus block is running.');
-      await (await drive()).finishFocus(s.id, outcome);
+      const r = await (await drive()).finishFocus(s.id, outcome);
+      // "late": the block ended but ticking the item failed (a deadline passed, say); the reason is in reaction.
+      if (r.outcome === 'late') return { receipts: [{ ok: false, text: `Focus ended, but "${s.title}" was not ticked: ${r.reaction?.text || 'it could not be marked done'}` }] };
       return `Focus ${outcome === 'done' ? 'finished' : 'stopped'}: ${s.title}`;
     },
   },
@@ -548,13 +559,17 @@ const TOOLS = {
     },
   },
   toggle_goal_step: {
-    description: 'Tick or untick a goal step that is a task.',
-    properties: { step_id: I() },
+    description: 'Tick or untick a goal step that is a task. Give done (true ticks it, false unticks it) whenever you know which he means; a step already that way is left alone.',
+    properties: { step_id: I(), done: B('true to tick it, false to untick it; leave out only to flip it') },
     required: ['step_id'],
-    async run({ step_id: id }) {
+    async run({ step_id: id, done }) {
       const n = await nodeRow(id);
-      await goals.toggleNodeTask(Number(id));
-      return `Toggled "${n.text}"`;
+      if (typeof done === 'boolean' && n.kind === 'task' && n.ref_id) {
+        const [t] = await db()`select done_at from tasks where id = ${n.ref_id}`;
+        if (t && Boolean(t.done_at) === done) return `"${n.text}" was already ${done ? 'ticked' : 'unticked'}, so nothing changed`;
+      }
+      const r = await goals.toggleNodeTask(Number(id));
+      return `${r.done ? 'Ticked' : 'Unticked'} "${n.text}"`;
     },
   },
   delete_goal_step: {
@@ -570,10 +585,19 @@ const TOOLS = {
   },
 
   update_schedule: {
-    description: 'Change when briefs arrive, when his day ends, his time zone or where alerts go (smart: one channel per alert; both: everywhere; push: app only).',
+    description: 'Change when briefs arrive, when his day ends, his time zone or where alerts go (smart: one channel per alert; both: everywhere; push: app only). A new time zone needs Daniel\'s confirmation in the app.',
     properties: { morningTime: TIME, middayTime: TIME, eveningTime: TIME, dayEnd: TIME, timezone: S('IANA zone, e.g. Europe/Malta'), alerts: E(['smart', 'both', 'push']) },
+    // A zone ahead of his can start tomorrow at once and judge today's open habits as missed, so a new
+    // zone (and whatever comes with it) waits for his tap. Bad values are refused now, not after it.
+    async confirm(input) {
+      const patch = pick(input, SCHEDULE_KEYS);
+      (await settings()).cleanPatch(patch);
+      if (patch.timezone === undefined || patch.timezone === (await engine.getSettings()).timezone) return null;
+      const rest = Object.entries(patch).filter(([k]) => k !== 'timezone').map(([k, x]) => `${SCHEDULE_NAMES[k]} ${x}`);
+      return `Change your time zone to ${patch.timezone}${rest.length ? `, with ${rest.join(', ')}` : ''}`;
+    },
     async run(input) {
-      const patch = pick(input, ['morningTime', 'middayTime', 'eveningTime', 'dayEnd', 'timezone', 'alerts']);
+      const patch = pick(input, SCHEDULE_KEYS);
       if (!Object.keys(patch).length) throw new RuleError('Say what to change.');
       await (await settings()).applySettings(patch);
       return `Settings saved: ${Object.entries(patch).map(([k, x]) => `${k} ${x}`).join(', ')}`;

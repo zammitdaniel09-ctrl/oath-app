@@ -370,9 +370,12 @@ function weekTile(t) {
     if (d.rest) return { date, s: 'rest', label: 'Rest day' };
     if (d.clean) return { date, s: 'clean', label: 'Clean' };
     if (d.missed > 0) return { date, s: 'missed', label: `${d.missed} missed` };
+    if (d.pardoned > 0) return { date, s: 'kept', label: 'Pardoned' };
+    if (d.minimum > 0) return { date, s: 'kept', label: 'Kept with the minimum' };
+    if (d.kept > 0) return { date, s: 'kept', label: 'Kept' };
     return { date, s: 'quiet', label: 'Nothing due' };
   });
-  const closed = cells.filter((c) => ['clean', 'missed', 'quiet'].includes(c.s));
+  const closed = cells.filter((c) => ['clean', 'kept', 'missed', 'quiet'].includes(c.s));
   const clean = cells.filter((c) => c.s === 'clean').length;
   // Clean days in a row up to yesterday; rest days neither break nor add to it.
   let run = 0;

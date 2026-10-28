@@ -153,7 +153,7 @@ test('API: add, change and delete Oath events, with the defaults a quick phrase 
     [{ date: '2026-11-03', start: '18:00' }, /title/],
     [{ title: 'X', date: '3 November' }, /date must look like/],
     [{ title: 'X', start: '25:00' }, /start must look like/],
-    [{ title: 'X', start: '18:00', end: '17:00' }, /end must be after/],
+    [{ title: 'X', start: '18:00', end: '18:00' }, /end must be after/],
     [{ title: 'X', start: '18:00', duration: 2 }, /between 5 minutes and 24 hours/],
     [{ title: 'X', date: '2026-11-03', end_date: '2026-11-01' }, /last day/],
   ]) {
@@ -187,6 +187,32 @@ test('API: add, change and delete Oath events, with the defaults a quick phrase 
   assert.deepEqual([gone.status, gone.data.ok, gone.data.event.title], [200, true, 'Call']);
   assert.equal((await call('DELETE', `/api/calendar/events/${hour.ownId}`)).status, 404);
   assert.equal((await call('GET', '/api/calendar/events?from=2026-11-02&to=2026-11-02')).data.events.length, 0);
+});
+
+test('an end before the start is the next day, so events can run past midnight and be edited', async () => {
+  await reset();
+  const late = (await call('POST', '/api/calendar/events', { title: 'Night shift', date: '2026-11-03', start: '22:00', end: '01:30' })).data.event;
+  assert.deepEqual([late.start, late.end, late.time, late.endTime], ['2026-11-03T22:00:00+01:00', '2026-11-04T01:30:00+01:00', '22:00', '01:30']);
+  const film = (await call('POST', '/api/calendar/events', { title: 'Film', date: '2026-11-03', start: '22:30', end: '00:00' })).data.event;
+  assert.equal(film.end, '2026-11-04T00:00:00+01:00');
+
+  // Saved again as the form sends it, with its start and end, and with a new end.
+  const same = await call('PATCH', `/api/calendar/events/${late.ownId}`, { title: 'Night shift', date: '2026-11-03', all_day: false, start: '22:00', end: '01:30' });
+  assert.equal(same.status, 200, same.raw);
+  assert.equal(same.data.event.end, '2026-11-04T01:30:00+01:00');
+  assert.equal((await call('PATCH', `/api/calendar/events/${late.ownId}`, { end: '02:00' })).data.event.end, '2026-11-04T02:00:00+01:00');
+  // A moved start keeps the length across midnight.
+  const moved = (await call('PATCH', `/api/calendar/events/${late.ownId}`, { start: '23:00' })).data.event;
+  assert.deepEqual([moved.time, moved.endTime, moved.end], ['23:00', '03:00', '2026-11-04T03:00:00+01:00']);
+  // It shows on both days and is busy time on each side of midnight.
+  assert.ok((await day('2026-11-04')).some((e) => e.title === 'Night shift'));
+  assert.equal(await cal.busyMinutes('2026-11-03', '22:00', '23:59'), 89);
+  assert.equal(await cal.busyMinutes('2026-11-04', '00:00', '06:00'), 180);
+
+  // All-day events are as before: moved without a last day, they keep their length.
+  const trip = (await call('POST', '/api/calendar/events', { title: 'Trip', date: '2026-11-06', end_date: '2026-11-08' })).data.event;
+  const later = (await call('PATCH', `/api/calendar/events/${trip.ownId}`, { title: 'Trip', date: '2026-11-10', all_day: true, location: '', notes: '' })).data.event;
+  assert.deepEqual([later.start, later.end], ['2026-11-10', '2026-11-12']);
 });
 
 test('the API needs the login; the calendar page can ask for a month of events', async () => {

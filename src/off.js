@@ -4,6 +4,7 @@
 // Their limits are 15 product reads and 10 searches a minute per IP, with a User-Agent that names the
 // app. Calls queue behind a spacer so Oath never goes over, and a product is fetched once and kept.
 import { db, getKV, setKV, logEvent } from './db.js';
+import { RuleError } from './engine.js';
 import { upsertItem, shapeItem, itemByKey } from './food.js';
 import { NUTRIENT } from '../public/nutrition.js';
 import { barcodeVariants } from '../public/barcode.js';
@@ -53,13 +54,23 @@ function slot(kind) {
   return run;
 }
 
+// A failure on their side is said plainly, as a 502, never as Oath's own error.
 async function getJson(kind, url) {
   await slot(kind);
-  const res = await fetcher(url, { headers: { 'User-Agent': userAgent(), Accept: 'application/json' }, signal: AbortSignal.timeout(15000) });
+  let res;
+  try {
+    res = await fetcher(url, { headers: { 'User-Agent': userAgent(), Accept: 'application/json' }, signal: AbortSignal.timeout(15000) });
+  } catch {
+    throw new RuleError('Open Food Facts could not be reached. Try again in a minute.', 502);
+  }
   if (res.status === 404) return null;
-  if (res.status === 429) throw new Error('Open Food Facts asked us to slow down. Try again in a minute.');
-  if (!res.ok) throw new Error(`Open Food Facts answered ${res.status}.`);
-  return res.json();
+  if (res.status === 429) throw new RuleError('Open Food Facts asked us to slow down. Try again in a minute.', 502);
+  if (!res.ok) throw new RuleError(`Open Food Facts is not answering properly (error ${res.status}). Try again later.`, 502);
+  try {
+    return await res.json();
+  } catch {
+    throw new RuleError('Open Food Facts sent an answer that could not be read. Try again later.', 502);
+  }
 }
 
 // ---------- Mapping ----------

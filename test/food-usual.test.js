@@ -327,8 +327,18 @@ test('copy one meal of a past day to today: same times of day, once, and undone 
   ok(await call('DELETE', `/api/food/log/${copy.id}`));
   d = await get(`/api/food/day?date=${today}`);
   assert.equal(d.entries.filter((e) => e.slot === 'lunch').length, lunchBefore);
-  // A whole day still copies with no id, as "Repeat yesterday" does.
+  // A whole day still copies with no id.
   const all = await post('/api/food/repeat', { from: '2027-03-09' });
   assert.equal(all.entries.length, 4, 'porridge, milk, stew and the canteen lunch');
   assert.equal((await call('POST', '/api/food/repeat', { from, id: 'bad id!' })).status, 400);
+  // "Repeat yesterday" sends an id like a meal's copy: sent twice, or replayed from the queue, it lands once.
+  const count = async () => (await get(`/api/food/day?date=${today}`)).entries.length;
+  const before = await count();
+  const yid = id();
+  const y = await post('/api/food/repeat', { from: '2027-03-09', to: today, id: yid });
+  assert.equal(y.entries.length, 4);
+  const y2 = await post('/api/food/sync', { ops: [{ id: yid, op: 'repeat', data: { from: '2027-03-09', to: today, id: yid } }] });
+  assert.equal(y2.results[0].duplicate, true);
+  assert.deepEqual(y2.results[0].entries.map((e) => e.id), y.entries.map((e) => e.id));
+  assert.equal(await count(), before + 4);
 });

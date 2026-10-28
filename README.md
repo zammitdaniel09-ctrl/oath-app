@@ -39,7 +39,7 @@ Variables on the app service:
 | Variable | Purpose |
 |---|---|
 | `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` |
-| `SETUP_CODE` | One-time code for the first password setup at `/setup?code=...` |
+| `SETUP_CODE` | Code for the first password setup at `/setup?code=...`. Keep it: with Face ID only on, it is also the recovery code for logging in without Face ID |
 | `ANTHROPIC_API_KEY` | Turns on the AI coach. Optional; without it briefs use plain numbers. |
 | `COACH_MODEL` | Optional, defaults to `claude-sonnet-5-5` |
 

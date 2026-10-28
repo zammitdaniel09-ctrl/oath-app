@@ -73,6 +73,8 @@ export async function api(method, path, body) {
   try { data = await res.json(); } catch { /* empty body */ }
   if (res.status === 401 && !['/api/login', '/api/setup', '/api/password', '/api/passkey/login'].includes(path)) {
     hooks.onUnauthed();
+    // A save caught by the lock is not lost silently: he is told to unlock and do it again.
+    if (method !== 'GET') toast('Oath locked before that was saved. Unlock and do it again.', true);
     throw new ApiError('Log in first.', 401);
   }
   if (!res.ok) {
@@ -200,6 +202,8 @@ export function redrawIfIdle(route, draw) {
 // the backdrop or Escape. It sits in a layer of its own outside #app, so a redraw underneath leaves it be.
 const DRAWER = 'cubic-bezier(0.32, 0.72, 0, 1)';
 let askClose = null;
+// The lock screen closes an open confirm as Cancel, so it never sits over the lock with the app inert.
+export const closeConfirm = () => askClose?.(false);
 export function confirmSheet(title, text = '', yes = 'Delete', { note = null, danger = true } = {}) {
   askClose?.(false);
   return new Promise((resolve) => {
@@ -293,8 +297,10 @@ export function addDays(date, n) {
   return d.toISOString().slice(0, 10);
 }
 
+// Today's date from the clock, in his time zone (the server's "today" is the same calendar date). Not the
+// date Today last loaded: an app resumed after midnight would still be on yesterday.
 export function localToday() {
-  return state.today?.today || new Intl.DateTimeFormat('en-CA', { timeZone: tz() }).format(new Date());
+  return new Intl.DateTimeFormat('en-CA', { timeZone: tz() }).format(new Date());
 }
 
 export function localNowHM() {

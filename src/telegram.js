@@ -4,11 +4,12 @@ import { db, getKV, setKV, logEvent } from './db.js';
 import { buildToday } from './state.js';
 import { completeHabit, completeTask, RuleError } from './engine.js';
 import { reactionAfterDone, finishFocus, closeFocusFor } from './drive.js';
-import { chat, resolvePending } from './coach.js';
+import { chat, chatWith, resolvePending } from './coach.js';
+import { saveMedia } from './coach-media.js';
 import { captureTask, doneByText } from './capture.js';
 import { deadlineText } from './time.js';
 import { telegramHtml } from '../public/rich.js';
-import { photoIn, foodPhoto, foodCallback } from './food-telegram.js';
+import { photoIn, photoBytes, foodPhoto, foodCallback } from './food-telegram.js';
 
 const token = () => process.env.TELEGRAM_BOT_TOKEN;
 export const telegramEnabled = () => Boolean(token());
@@ -236,6 +237,43 @@ async function sendHp(chatId) {
   await call('sendMessage', { chat_id: chatId, text: `${g.hp} HP. Season ${g.season}, ${g.deaths} ${g.deaths === 1 ? 'death' : 'deaths'}, ${g.pardonsLeft} pardons left this month.` });
 }
 
+// The coach's reply in the chat: its words, then what it did, with buttons for anything waiting for a yes.
+async function sendReply(chatId, reply) {
+  const done = (reply.actions || []).map((a) => `${a.ok ? '✓' : '✗'} ${a.text}`).join('\n');
+  const keyboard = (reply.pending || []).map((p) => [
+    { text: `Confirm: ${p.summary}`.slice(0, 60), callback_data: `cy:${p.id}` },
+    { text: 'Cancel', callback_data: `cn:${p.id}` },
+  ]);
+  await call('sendMessage', {
+    chat_id: chatId, text: done ? `${md(reply.text)}\n\n${esc(done)}` : md(reply.text), parse_mode: 'HTML',
+    reply_markup: keyboard.length ? { inline_keyboard: keyboard } : undefined,
+  });
+}
+
+// Photos are read as food unless the caption plainly asks for something else: events, tasks, a
+// timetable, a reminder. Any food word keeps it with the food reader.
+const NOT_FOOD = /\b(calendar|events?|tasks?|to-?dos?|schedule|timetable|remind(ers?)?|meetings?|appointments?|deadlines?|exams?|lectures?|class(es)?|habits?|goals?)\b/i;
+const FOOD = /\b(eat|ate|eaten|eating|food|meal|breakfast|lunch|dinner|snacks?|drink|drank|kcal|calories|protein|portion|label)\b/i;
+export const forCoach = (caption) => NOT_FOOD.test(String(caption || '')) && !FOOD.test(String(caption || ''));
+
+// A photo for the coach: uploaded as the app's coach chat uploads one and sent with its caption, so
+// the coach sees it and can act on it with its tools.
+async function coachPhoto(message, photo) {
+  const chatId = message.chat.id;
+  await call('sendChatAction', { chat_id: chatId, action: 'typing' }).catch(() => {});
+  let reply;
+  try {
+    const { bytes, type } = await photoBytes(photo, { call, token: token() });
+    const up = await saveMedia({ kind: 'photo', data: bytes.toString('base64'), mime: type });
+    ({ reply } = await chatWith({ text: String(message.caption || ''), media: [up.id] }));
+  } catch (err) {
+    if (!(err instanceof RuleError)) console.error('telegram coach photo failed', err);
+    await call('sendMessage', { chat_id: chatId, text: err instanceof RuleError ? err.message : 'That did not work. Try it in the app.' });
+    return;
+  }
+  await sendReply(chatId, reply);
+}
+
 async function markDone(kind, id, focusId) {
   if (focusId) {
     try {
@@ -271,17 +309,19 @@ export async function handleUpdate(u) {
         await sendToday(chatId);
         return;
       }
-      if (s.chatId !== chatId) {
-        await call('sendMessage', {
-          chat_id: chatId,
-          text: 'This bot belongs to an Oath app and is not linked to this chat. To link it, open Oath, go to Settings, Telegram and tap Connect Telegram, then tap Start here. A link works for 30 minutes.',
-        });
-        return;
-      }
     }
-    if (!s.chatId || chatId !== s.chatId) return;
-    // A photo of food: read like the app's camera, logged only from the buttons under the answer.
+    // Anything from a chat that is not the linked one gets the answer /start gets, never silence.
+    if (!s.chatId || chatId !== s.chatId) {
+      await call('sendMessage', {
+        chat_id: chatId,
+        text: 'This bot belongs to an Oath app and is not linked to this chat. To link it, open Oath, go to Settings, Telegram and tap Connect Telegram, then tap Start here. A link works for 30 minutes.',
+      });
+      return;
+    }
+    // A photo of food: read like the app's camera, logged only from the buttons under the answer. One
+    // whose caption asks for something else (events, tasks) goes to the coach instead.
     const photo = photoIn(u.message);
+    if (photo && forCoach(u.message.caption)) return coachPhoto(u.message, photo);
     if (photo) return foodPhoto(u.message, photo, { call, token: token(), open: openButton });
     if (text === '/today' || text === '/start') return sendToday(chatId);
     if (text === '/next') return sendNext(chatId);
@@ -305,21 +345,11 @@ export async function handleUpdate(u) {
       return;
     }
     if (!text) {
-      await call('sendMessage', { chat_id: chatId, text: 'Text and food photos only for now.' });
+      await call('sendMessage', { chat_id: chatId, text: 'Text and photos only for now.' });
       return;
     }
     await call('sendChatAction', { chat_id: chatId, action: 'typing' }).catch(() => {});
-    const reply = await chat(text);
-    // What the coach did shows under its words; actions waiting for a yes get buttons.
-    const done = (reply.actions || []).map((a) => `${a.ok ? '✓' : '✗'} ${a.text}`).join('\n');
-    const keyboard = (reply.pending || []).map((p) => [
-      { text: `Confirm: ${p.summary}`.slice(0, 60), callback_data: `cy:${p.id}` },
-      { text: 'Cancel', callback_data: `cn:${p.id}` },
-    ]);
-    await call('sendMessage', {
-      chat_id: chatId, text: done ? `${md(reply.text)}\n\n${esc(done)}` : md(reply.text), parse_mode: 'HTML',
-      reply_markup: keyboard.length ? { inline_keyboard: keyboard } : undefined,
-    });
+    await sendReply(chatId, await chat(text));
     return;
   }
 

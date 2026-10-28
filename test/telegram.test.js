@@ -1,5 +1,5 @@
 // Telegram: a chat that has blocked the bot (or is gone) is unlinked once instead of failing on every
-// brief, and the webhook secret is compared in constant time. Against a real Postgres, with Telegram's
+// brief, a chat that is not linked is told how to link, and the webhook secret is compared in constant time. Against a real Postgres, with Telegram's
 // API stood in for by a scripted fetch.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -149,6 +149,26 @@ test('the push path, which every brief takes, unlinks a blocked chat without an 
   });
   assert.equal(out.error.length, 0, out.error.join('\n'));
   assert.equal(out.warn.length, 1);
+});
+
+test('a message from a chat that is not linked gets the way to link it, never silence', async () => {
+  await link();
+  answer = () => ({ ok: true, result: {} });
+  calls = [];
+  await tg.handleUpdate({ update_id: 900001, message: { message_id: 1, chat: { id: 777 }, text: 'hello?' } });
+  assert.deepEqual(calls.map((c) => c.method), ['sendMessage']);
+  assert.equal(calls[0].body.chat_id, 777);
+  assert.match(calls[0].body.text, /not linked to this chat\. To link it, open Oath, go to Settings, Telegram and tap Connect Telegram/);
+  // Before any chat is linked, a command gets the same answer.
+  await dbmod.setKV('telegram', { botUsername: 'oath_test_bot', secret: SECRET });
+  calls = [];
+  await tg.handleUpdate({ update_id: 900002, message: { message_id: 2, chat: { id: 4242 }, text: '/today' } });
+  assert.deepEqual(calls.map((c) => c.method), ['sendMessage']);
+  assert.match(calls[0].body.text, /not linked to this chat/);
+  // A delivery Telegram repeats is answered once.
+  calls = [];
+  await tg.handleUpdate({ update_id: 900002, message: { message_id: 2, chat: { id: 4242 }, text: '/today' } });
+  assert.equal(calls.length, 0);
 });
 
 // ---------- The webhook secret ----------
