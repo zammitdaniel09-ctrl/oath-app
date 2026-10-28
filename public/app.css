@@ -1302,6 +1302,7 @@ button.hcard-ring:active { transform: scale(0.92); transition: transform var(--t
 .confirm-title { font-size: 1.25rem; font-weight: 720; letter-spacing: -0.02em; overflow-wrap: anywhere; }
 .confirm-text { overflow-wrap: anywhere; }
 .confirm-actions { display: grid; gap: 10px; margin-top: 14px; }
+.confirm-note { width: 100%; min-height: 84px; margin-top: 12px; resize: none; }
 
 /* ---------- Coach ---------- */
 
@@ -1424,6 +1425,9 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .msg.user:has(+ .msg.user) { border-bottom-right-radius: 22px; }
 .msg.assistant:has(+ .msg.assistant) { border-bottom-left-radius: 22px; }
 .msg time { display: block; margin-top: 6px; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.04em; color: var(--text-3); }
+/* Report a problem: a quiet text button under a coach reply. */
+.msg-report { display: inline-block; margin-top: 6px; padding: 4px 0; border: 0; background: none; font: inherit; font-size: 0.75rem; font-weight: 600; color: var(--text-3); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.msg-report:active { color: var(--text-2); }
 .msg.user time { color: #ffd9d4; font-weight: 500; }
 /* The coach thinking: three chrome dots lifting in a wave. */
 .typing { display: flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 18px; }
@@ -1435,6 +1439,7 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 
 /* The composer and its quick replies stay at the foot of the chat; the chat fades out beneath them
    instead of meeting a hard edge. */
+.tl-row.done .tl-title { text-decoration: line-through; }
 .composer-dock { position: sticky; bottom: calc(var(--tabbar) + env(safe-area-inset-bottom) + 10px); z-index: 15; margin-top: 18px; }
 .composer-dock::before {
   content: ''; position: absolute; inset: -22px calc(-1 * var(--gutter)) -10px; z-index: -1; pointer-events: none;
@@ -1864,6 +1869,9 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .toast.bad { background: rgba(48, 12, 17, 0.97); color: #ffd6d9; box-shadow: inset 0 0 0 1px rgba(255, 45, 85, 0.6), 0 20px 50px rgba(0, 0, 0, 0.7); }
 .toast.big { font-size: 1.0625rem; font-weight: 650; padding: 15px 20px; }
 .toast.link { pointer-events: auto; cursor: pointer; text-decoration: underline; text-decoration-color: var(--line-ctl); text-underline-offset: 3px; }
+/* An error toast says it can be reported; the whole toast is the button. */
+.toast.bad.link { text-decoration: none; }
+.toast-report { margin-left: 6px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px); }
 
 .gate {

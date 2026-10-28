@@ -96,6 +96,14 @@ create table if not exists oath_events (
   updated_at timestamptz not null
 );
 create index if not exists oath_events_start_idx on oath_events (start_at);
+-- Events he has crossed off (his own and those from his other calendars), by the event's id as the app
+-- shows it (feed:uid:start or oath:id). The feeds stay untouched; the mark lives only in Oath.
+create table if not exists event_marks (
+  event_id text primary key,
+  title text not null default '',
+  date text not null default '',
+  done_at timestamptz not null
+);
 `;
 
 export async function migrateCalendar() {
@@ -1736,8 +1744,42 @@ export async function eventsBetween(fromISO, toISO) {
     const e = (r.end_at || r.start_at).getTime();
     return s < toMs && (e > fromMs || s >= fromMs);
   };
-  return [...rows.filter(inRange).map((r) => toEvent(r, tz)), ...own.filter(inRange).map((r) => toOwnEvent(r, tz))]
+  const events = [...rows.filter(inRange).map((r) => toEvent(r, tz)), ...own.filter(inRange).map((r) => toOwnEvent(r, tz))]
     .sort((a, b) => sortKey(a) - sortKey(b) || a.title.localeCompare(b.title));
+  const ids = events.map((e) => e.id);
+  const marks = ids.length ? await db()`select event_id from event_marks where event_id = any(${ids})`.catch(ignoreMissingTables([])) : [];
+  const done = new Set(marks.map((m) => m.event_id));
+  return events.map((e) => ({ ...e, done: done.has(e.id) }));
+}
+
+// One event by the id the app shows: oath:<id> for his own, <feed>:<uid>:<start ms> for the others.
+export async function eventById(id) {
+  const { tz } = await localNow();
+  const s = String(id || '');
+  const own = /^oath:(\d+)$/.exec(s);
+  if (own) {
+    const [r] = await db()`select * from oath_events where id = ${Number(own[1])}`;
+    return r ? toOwnEvent(r, tz) : null;
+  }
+  const m = /^(\d+):(.+):(\d+)$/.exec(s);
+  if (!m) return null;
+  const [r] = await db()`select e.*, f.name as feed, f.color, f.kind from cal_events e join cal_feeds f on f.id = e.feed_id
+    where e.feed_id = ${Number(m[1])} and e.uid = ${m[2]} and e.start_at = ${new Date(Number(m[3]))}`;
+  return r ? toEvent(r, tz) : null;
+}
+
+// Crosses an event off, or back on. Works for every event: the mark is Oath's own, the feed is never changed.
+export async function markEventDone(id, done = true) {
+  const ev = await eventById(id);
+  if (!ev) throw new RuleError('That event is not on the calendar any more.', 404);
+  if (done) {
+    await db()`insert into event_marks (event_id, title, date, done_at) values (${ev.id}, ${ev.title}, ${String(ev.start).slice(0, 10)}, ${nowUTC().toJSDate()})
+      on conflict (event_id) do update set done_at = excluded.done_at, title = excluded.title`;
+  } else {
+    await db()`delete from event_marks where event_id = ${ev.id}`;
+  }
+  await logEvent('event_marked', { id: ev.id, done: Boolean(done) });
+  return { ...ev, done: Boolean(done) };
 }
 
 export async function eventsForDate(date) {
@@ -1843,6 +1885,8 @@ calendarApi.get('/calendar/events', async (c) => {
 calendarApi.post('/calendar/events', async (c) => c.json({ event: await createOathEvent(await jsonBody(c)) }));
 calendarApi.patch('/calendar/events/:id', async (c) => c.json({ event: await updateOathEvent(c.req.param('id'), await jsonBody(c)) }));
 calendarApi.delete('/calendar/events/:id', async (c) => c.json({ ok: true, event: (await deleteOathEvent(c.req.param('id'))).event }));
+// Crossing an event off works for every event, his own and his other calendars' (the mark is Oath's own).
+calendarApi.post('/calendar/events/:id/done', async (c) => c.json({ event: await markEventDone(c.req.param('id'), (await jsonBody(c)).done !== false) }));
 // Habits and tasks falling due in a range, drawn as markers on the calendar page.
 calendarApi.get('/calendar/markers', async (c) => {
   const { from, to } = await rangeOf(c);

@@ -372,7 +372,7 @@ test('Google feed: fetched (gzip) from its secret address, stored inside the win
   assert.deepEqual(mon[0], {
     id: mon[0].id, feedId: 1, feed: 'Daniel', color: r.feed.color, title: 'CPS1011 Lecture',
     start: '2026-10-12T09:00:00+02:00', end: '2026-10-12T11:00:00+02:00', allDay: false, time: '09:00', endTime: '11:00',
-    location: 'Room 202', busy: true, deadline: false,
+    location: 'Room 202', busy: true, deadline: false, done: false,
   });
   const tue = await cal.eventsForDate('2026-10-13');
   assert.deepEqual(titles(tue), ["Mum's birthday", "Kafè ma' Ġorġ"]); // all-day first; the cancelled meeting is gone
@@ -693,7 +693,7 @@ test('API routes: list, add, events, sync and delete', async () => {
   assert.equal(ev.status, 200);
   assert.equal(ev.data.from, '2026-10-12');
   assert.equal(ev.data.events.length, 7);
-  assert.deepEqual(Object.keys(ev.data.events[0]).sort(), ['allDay', 'busy', 'color', 'deadline', 'end', 'endTime', 'feed', 'feedId', 'id', 'location', 'start', 'time', 'title']);
+  assert.deepEqual(Object.keys(ev.data.events[0]).sort(), ['allDay', 'busy', 'color', 'deadline', 'done', 'end', 'endTime', 'feed', 'feedId', 'id', 'location', 'start', 'time', 'title']);
   assert.equal((await call('GET', '/api/calendar/events')).data.events.length, 5); // defaults to today
   assert.match((await call('GET', '/api/calendar/events?from=2026-10-01&to=2026-12-31')).data.error, /at most 62 days/);
   assert.equal((await call('GET', '/api/calendar/events?from=2026-10-01&to=2026-12-01')).status, 200); // 62 days

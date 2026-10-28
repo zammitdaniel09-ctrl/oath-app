@@ -32,6 +32,7 @@ import { foodTake } from './food-take.js';
 import { importApi } from './food-import.js';
 import { mailApi } from './mail.js';
 import { tagApi, retagCatalogue } from './food-tags.js';
+import { problemsApi } from './problems.js';
 import { productByBarcode, searchOff } from './off.js';
 import * as passkeys from './passkeys.js';
 import { conditionalGet, publicFile } from './static.js';
@@ -329,6 +330,7 @@ api.get('/food/take', async (c) => c.json(await foodTake({ view: c.req.query('vi
 // A recipe from a link, as a draft for the editor; nothing is saved until Save.
 api.route('/', importApi);
 api.route('/', tagApi); // the tag database: browse foods by tag (food-tags.js)
+api.route('/', problemsApi); // Report a problem: kept and written to the log (problems.js)
 api.route('/', foodApi);
 // Real burn: his energy use measured from his weight trend and logged food.
 api.route('/', energyApi);

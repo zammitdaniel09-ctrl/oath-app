@@ -3,7 +3,7 @@
 // the meal to log it to, and Log. While a card is open the next message changes it ("make it three
 // eggs", "no toast"), and the card that comes back is the whole meal as it now stands. Nothing is logged
 // until Log. The thread is kept on this phone; anything logged from a sheet while here is said in it too.
-import { state, esc, api, toast, icon, haptic, num, fmtDay, localToday } from './ui.js';
+import { state, esc, api, toast, icon, haptic, num, fmtDay, localToday, reportProblem } from './ui.js';
 import { show, amountText, total, refOf } from './nutrition.js';
 import { chatToEnd } from './motion.js';
 
@@ -327,6 +327,8 @@ function sayHtml(m) {
     acts.push(`<label class="fc-act">Photo of the label<input class="vh" type="file" accept="image/*" capture="environment" data-food-photo${m.barcode ? ` data-barcode="${esc(m.barcode)}"` : ''}></label>`);
   }
   if (m.ask && !m.retry) acts.push(`<button type="button" class="fc-act" data-action="food-search">Search instead</button>`);
+  // When it could not read something or something broke: report it in one tap.
+  if (m.tone === 'bad' || m.ask || m.act === 'label-photo') acts.push(`<button type="button" class="fc-act" data-action="food-chat-report" data-cid="${m.id}">Report a problem</button>`);
   return `<div class="msg assistant fc-say${m.tone === 'bad' ? ' bad' : ''}"><span class="msg-text">${esc(m.text)}</span>${extra}${acts.length ? `<div class="fc-acts">${acts.join('')}</div>` : ''}</div>`;
 }
 
@@ -491,6 +493,14 @@ export async function chatClick(a, el) {
       const box = document.getElementById('fchat-text');
       box?.focus();
       box?.setSelectionRange(box.value.length, box.value.length);
+      return true;
+    }
+    case 'food-chat-report': {
+      // The message it was about and the few before it go with the report (text only, no photos).
+      const msgs = chat().msgs;
+      const at = m ? msgs.indexOf(m) : msgs.length - 1;
+      const thread = msgs.slice(Math.max(0, at - 5), at + 1).map((x) => ({ role: x.role, kind: x.kind || '', text: String(x.text || x.reply || x.title || x.said || '').slice(0, 400), photo: Boolean(x.image || x.thumb) }));
+      await reportProblem('food-chat', { message: m?.text || '', thread });
       return true;
     }
     case 'food-chat-slot':

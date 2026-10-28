@@ -3,7 +3,7 @@ import {
   $app, state, hooks, esc, ApiError, api, toast, react, act, form2obj, fmtClock, fmtDay, left, fmtMin,
   DAY_NAMES, scheduleText, CHECK, isStandalone, isIOS, haptic, fx, RING_MS, bar, strengthChip, localToday, localNowHM,
   icon, drawRings, pageHead, iconLink, fmtInt, fmtDec, ago, miniRing, keyBlock, rememberKey, safeColor,
-  urgency, URGENCY, brandMark, emptyState, reduced, canRedraw, redrawIfIdle, confirmSheet,
+  urgency, URGENCY, brandMark, emptyState, reduced, canRedraw, redrawIfIdle, confirmSheet, reportProblem,
 } from './ui.js';
 import { soundsOn, setSounds } from './sound.js';
 import * as motion from './motion.js';
@@ -377,9 +377,9 @@ function scheduleRows(t, now) {
   const events = t.calendar || [];
   const rows = [
     ...events.filter((e) => !e.allDay).map((e) => ({
-      time: e.time, title: e.title, kind: e.deadline ? 'deadline' : 'event', color: e.color,
-      sub: [e.endTime && e.endTime !== e.time ? `until ${e.endTime}` : '', e.location, e.feed].filter(Boolean).join(', '),
-      past: (e.endTime || e.time) < now,
+      time: e.time, title: e.title, kind: e.deadline ? 'deadline' : 'event', color: e.color, done: Boolean(e.done),
+      sub: [e.done ? 'Done' : '', e.endTime && e.endTime !== e.time ? `until ${e.endTime}` : '', e.location, e.feed].filter(Boolean).join(', '),
+      past: Boolean(e.done) || (e.endTime || e.time) < now,
     })),
     ...t.items.filter((i) => !i.flexible && i.status !== 'met' && i.deadline !== '00:00').map((i) => ({
       time: i.deadline, title: i.title, kind: `due ${i.status}`, sub: i.status === 'open' ? `Habit due${i.heavy ? `, ${i.penalty} HP` : ''}` : i.status === 'kept' ? 'Kept' : i.status,
@@ -408,7 +408,7 @@ function timeline(t) {
       nowPlaced = true;
       marker = `<div class="tl-now"><span>${now}</span></div>`;
     }
-    return `${marker}<div class="tl-row ${r.kind}${r.past ? ' past' : ''}">
+    return `${marker}<div class="tl-row ${r.kind}${r.past ? ' past' : ''}${r.done ? ' done' : ''}">
       <span class="tl-time">${r.time}</span>
       <span class="tl-bar"${safeColor(r.color) ? ` style="--c:${safeColor(r.color)}"` : ''}></span>
       <span class="tl-body"><span class="tl-title">${esc(r.title)}</span>${r.sub ? `<span class="tl-sub">${esc(r.sub)}</span>` : ''}</span>
@@ -930,7 +930,7 @@ function sheetHtml() {
 
 // One message: its words, what it did (receipts), and anything waiting for a Confirm tap.
 const PENDING_DONE = { done: 'Confirmed', cancelled: 'Cancelled', expired: 'Expired. Ask again if you still want it.', failed: 'Did not go through' };
-function coachMessage(m) {
+function coachMessage(m, last = false) {
   const receipts = m.actions?.length
     ? `<ul class="receipts">${m.actions.map((a) => `<li class="${a.ok ? 'ok' : 'no'}">${icon(a.ok ? 'check' : 'close')}<span>${esc(a.text)}</span></li>`).join('')}</ul>`
     : '';
@@ -938,7 +938,10 @@ function coachMessage(m) {
     ? `<div class="confirm-row"><span>${esc(p.summary)}?</span><span class="confirm-btns"><button class="btn chrome small" data-action="coach-confirm" data-id="${p.id}" data-yes="1">Confirm</button><button class="btn tinted small" data-action="coach-confirm" data-id="${p.id}" data-yes="0">Cancel</button></span></div>`
     : `<p class="confirm-done ${p.status}">${esc(p.summary)}: ${PENDING_DONE[p.status] || p.status}${p.status === 'failed' && p.outcome ? `, ${esc(p.outcome)}` : ''}</p>`)).join('');
   const words = m.role === 'assistant' ? `<div class="msg-text rich">${richHtml(m.text)}</div>` : `<span class="msg-text">${esc(m.text)}</span>`;
-  return `<div class="msg ${m.role}">${words}${receipts}${pending}${m.at ? `<time>${fmtClock(m.at)}</time>` : ''}</div>`;
+  const trouble = m.failed || (m.actions || []).some((a) => !a.ok) || (m.pending || []).some((p) => p.status === 'failed');
+  const report = m.role === 'assistant' && (last || trouble)
+    ? `<button type="button" class="msg-report" data-action="coach-report"${m.id ? ` data-id="${m.id}"` : ''}>Report a problem</button>` : '';
+  return `<div class="msg ${m.role}">${words}${receipts}${pending}${m.at ? `<time>${fmtClock(m.at)}</time>` : ''}${report}</div>`;
 }
 
 // The coach thinking: three dots in a bubble of its own.
@@ -953,7 +956,7 @@ const BRIEFS = [['morning', 'sun', 'Morning brief'], ['midday', 'clock', 'Midday
 function viewCoach() {
   const c = state.coach;
   if (!c) return shell(skeleton('Coach'));
-  const msgs = c.messages.map(coachMessage).join('');
+  const msgs = c.messages.map((m, i, all) => coachMessage(m, i === all.length - 1)).join('');
   const ask = state.query.get('ask') || '';
   const empty = emptyState({ icon: 'coach', title: 'Talk to your coach' });
   // Food has a chat of its own: the last chip opens it.
@@ -1310,7 +1313,7 @@ function viewSettings() {
       <a class="li li-plain li-nav" href="#/health?section=business"><span class="li-body"><span class="li-title">Business sites</span><span class="li-sub">GoldenStraddler, Exposed FX Journal</span></span>${icon('chevron', 'chev')}</a>
       <a class="li li-plain li-nav" href="#/mail"><span class="li-body"><span class="li-title">Gmail</span><span class="li-sub">Important email, sorted by the AI</span></span>${icon('chevron', 'chev')}</a>
     </div>
-    <div class="form-actions"><a class="btn tinted" href="/api/export" download>${icon('download')}Download all my data</a></div>`);
+    <div class="form-actions"><a class="btn tinted" href="/api/export" download>${icon('download')}Download all my data</a><button type="button" class="btn tinted" data-action="report-problem">Report a problem</button></div>`);
   // Where the food numbers come from: credits and licences live here, not on the screens.
   const src = (name, what, licence, href = '') => `<${href ? `a href="${href}"` : 'div'} class="li li-plain${href ? ' li-nav' : ''}"><span class="li-body"><span class="li-title">${name}</span><span class="li-sub">${what}${licence ? ` · ${licence}` : ''}</span></span>${href ? icon('chevron', 'chev') : ''}</${href ? 'a' : 'div'}>`;
   const sources = settingsCard('food', 'Data sources', `<div class="group flush">
@@ -2283,6 +2286,15 @@ $app.addEventListener('click', async (e) => {
       fx('receive');
       state.today = null;
     }
+  } else if (a === 'coach-report') {
+    // What the coach said and what he asked go with the report; the server adds the recent conversation.
+    const msgs = state.coach?.messages || [];
+    const at = el.dataset.id ? msgs.findIndex((m) => String(m.id) === el.dataset.id) : msgs.length - 1;
+    const reply = msgs[at];
+    const asked = msgs.slice(0, Math.max(0, at)).reverse().find((m) => m.role === 'user');
+    await reportProblem('coach', { message_id: reply?.id || null, reply: reply?.text?.slice(0, 2000) || '', asked: asked?.text?.slice(0, 1000) || '', actions: reply?.actions || [] });
+  } else if (a === 'report-problem') {
+    await reportProblem('manual', {});
   } else if (a === 'coach-confirm') {
     // Daniel's tap on something the coach asked to do: run it or cancel it, then show the outcome.
     el.disabled = true;

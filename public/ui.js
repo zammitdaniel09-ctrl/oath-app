@@ -45,6 +45,16 @@ export class ApiError extends Error {
   constructor(message, status) { super(message); this.status = status; }
 }
 
+// The last few things that went wrong on this phone (failed requests, script errors), sent with a
+// problem report so the cause can be found. Kept in memory only.
+const trouble = [];
+export function noteTrouble(t) {
+  trouble.push({ at: new Date().toISOString(), ...t });
+  if (trouble.length > 15) trouble.shift();
+}
+window.addEventListener('error', (e) => noteTrouble({ kind: 'script', message: String(e.message || '').slice(0, 300), where: `${String(e.filename || '').split('/').pop()}:${e.lineno || ''}` }));
+window.addEventListener('unhandledrejection', (e) => noteTrouble({ kind: 'promise', message: String(e.reason?.message || e.reason || '').slice(0, 300) }));
+
 export async function api(method, path, body) {
   const opts = { method, credentials: 'same-origin', headers: {} };
   if (method !== 'GET') {
@@ -55,6 +65,7 @@ export async function api(method, path, body) {
   try {
     res = await fetch(path, opts);
   } catch {
+    noteTrouble({ kind: 'offline', method, path });
     throw new ApiError('You are offline. Try again when you have a connection.', 0);
   }
   let data = null;
@@ -63,7 +74,10 @@ export async function api(method, path, body) {
     hooks.onUnauthed();
     throw new ApiError('Log in first.', 401);
   }
-  if (!res.ok) throw new ApiError(data?.error || `Request failed (${res.status}).`, res.status);
+  if (!res.ok) {
+    noteTrouble({ kind: 'api', method, path, status: res.status, message: String(data?.error || '').slice(0, 300) });
+    throw new ApiError(data?.error || `Request failed (${res.status}).`, res.status);
+  }
   return data;
 }
 
@@ -77,7 +91,14 @@ function showToast(t) {
   toastShowing = t;
   $toast.textContent = t.msg;
   $toast.dataset.href = t.href || '';
-  $toast.className = `toast show${t.bad ? ' bad' : ''}${t.big ? ' big' : ''}${t.href ? ' link' : ''}`;
+  $toast.dataset.report = t.bad && !t.href ? t.msg : '';
+  if (t.bad && !t.href) {
+    const r = document.createElement('span');
+    r.className = 'toast-report';
+    r.textContent = 'Report';
+    $toast.append(' ', r);
+  }
+  $toast.className = `toast show${t.bad ? ' bad' : ''}${t.big ? ' big' : ''}${t.href || (t.bad && !t.href) ? ' link' : ''}`;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     $toast.className = 'toast';
@@ -94,6 +115,14 @@ export const fx = (kind) => document.dispatchEvent(new CustomEvent('oath:fx', { 
 // A toast with an href opens it when tapped; every other toast stays out of the way of touches.
 $toast.addEventListener('click', () => {
   const href = $toast.dataset.href;
+  const report = $toast.dataset.report;
+  if (report) {
+    clearTimeout(toastTimer);
+    $toast.className = 'toast';
+    toastShowing = null;
+    reportProblem('error', { error: report });
+    return;
+  }
   if (!href) return;
   clearTimeout(toastTimer);
   $toast.className = 'toast';
@@ -170,7 +199,7 @@ export function redrawIfIdle(route, draw) {
 // the backdrop or Escape. It sits in a layer of its own outside #app, so a redraw underneath leaves it be.
 const DRAWER = 'cubic-bezier(0.32, 0.72, 0, 1)';
 let askClose = null;
-export function confirmSheet(title, text = '', yes = 'Delete') {
+export function confirmSheet(title, text = '', yes = 'Delete', { note = null, danger = true } = {}) {
   askClose?.(false);
   return new Promise((resolve) => {
     const before = document.activeElement;
@@ -180,7 +209,8 @@ export function confirmSheet(title, text = '', yes = 'Delete') {
       <div class="sheet confirm-sheet" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title"${text ? ' aria-describedby="confirm-text"' : ''}>
         <div class="sheet-grab" aria-hidden="true"></div>
         <h2 class="confirm-title" id="confirm-title">${esc(title)}</h2>${text ? `<p class="confirm-text muted" id="confirm-text">${esc(text)}</p>` : ''}
-        <div class="confirm-actions"><button type="button" class="btn danger big wide" data-yes>${esc(yes)}</button><button type="button" class="btn tinted big wide" data-no>Cancel</button></div>
+        ${note !== null ? `<textarea class="input confirm-note" rows="3" maxlength="1000" placeholder="${esc(note)}" aria-label="${esc(note)}"></textarea>` : ''}
+        <div class="confirm-actions"><button type="button" class="btn ${danger ? 'danger' : 'primary'} big wide" data-yes>${esc(yes)}</button><button type="button" class="btn tinted big wide" data-no>Cancel</button></div>
       </div>`;
     const sheet = layer.querySelector('.sheet');
     const backdrop = layer.querySelector('.sheet-backdrop');
@@ -195,7 +225,7 @@ export function confirmSheet(title, text = '', yes = 'Delete') {
         close(false);
       } else if (e.key === 'Tab') {
         e.preventDefault();
-        const buttons = [...layer.querySelectorAll('button')];
+        const buttons = [...layer.querySelectorAll('textarea, button')];
         const at = buttons.indexOf(document.activeElement);
         buttons[(at + (e.shiftKey ? -1 : 1) + buttons.length) % buttons.length].focus();
       }
@@ -204,6 +234,7 @@ export function confirmSheet(title, text = '', yes = 'Delete') {
     function close(ok) {
       if (closed) return;
       closed = true;
+      const said = note !== null ? layer.querySelector('.confirm-note')?.value.trim() || '' : null;
       askClose = null;
       document.removeEventListener('keydown', onKey, true);
       $app.inert = false;
@@ -218,7 +249,7 @@ export function confirmSheet(title, text = '', yes = 'Delete') {
       if (a) a.finished.then(end, end); else end();
       setTimeout(end, 400);
       if (before?.isConnected) before.focus?.({ preventScroll: true });
-      resolve(ok);
+      resolve(ok && note !== null ? { note: said } : ok);
     }
     layer.addEventListener('click', (e) => {
       if (e.target.closest('[data-yes]')) close(true);
@@ -235,7 +266,7 @@ export function confirmSheet(title, text = '', yes = 'Delete') {
         : [{ transform: 'translateY(100%)' }, { transform: 'none' }];
     play(sheet, into, { duration: 320, easing: DRAWER });
     play(backdrop, [{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: 'ease-out' });
-    layer.querySelector('[data-no]').focus({ preventScroll: true });
+    (layer.querySelector('.confirm-note') || layer.querySelector('[data-no]')).focus({ preventScroll: true });
   });
 }
 
@@ -365,6 +396,26 @@ export function miniRing(pct, size = 22) {
     <circle cx="${size / 2}" cy="${size / 2}" r="${r}" class="mring-fill" stroke-width="${sw}" fill="none" stroke-linecap="round"
       stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${(c * (1 - p)).toFixed(2)}" transform="rotate(-90 ${size / 2} ${size / 2})"${p ? '' : ' opacity="0"'}/>
   </svg>`;
+}
+
+
+// ---------- Report a problem ----------
+
+// One tap wherever something refused or broke. The note is optional; what was on screen, the recent
+// failures on this phone and (on the server) the recent coach messages go with it. The server keeps it
+// and writes it to its log, where it is picked up and fixed.
+export async function reportProblem(kind, context = {}) {
+  const r = await confirmSheet('Report a problem', 'What was on screen and what just happened are sent with it, so it can be fixed.', 'Send', { note: 'What went wrong? (optional)', danger: false });
+  if (!r) return;
+  try {
+    const out = await api('POST', '/api/problems', {
+      kind, note: r.note, route: location.hash || '#/',
+      context: { ...context, trouble: trouble.slice(), screen: `${window.innerWidth}x${window.innerHeight}`, ua: navigator.userAgent },
+    });
+    toast(`Sent as problem #${out.id}. Thanks, it will be fixed.`);
+  } catch (err) {
+    toast(err.status === 0 ? 'Sending needs a connection. Try again in a moment.' : err.message, true);
+  }
 }
 
 // ---------- Icons: plain line drawings, 24 px grid ----------

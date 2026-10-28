@@ -114,6 +114,9 @@
   box-shadow: inset 3px 0 0 var(--c, var(--chrome-c));
 }
 .cal-chip.own { --c: var(--merlot); box-shadow: inset 3px 0 0 var(--merlot-hi); }
+/* Crossed off: struck through and quieter, still where it was. */
+.cal-chip.done, .cal-ev.done { opacity: 0.55; }
+.cal-chip.done, .cal-ev.done .cal-ev-t { text-decoration: line-through; }
 .cal-chip.flag::before, .cal-chip.task i, .cal-mk i, .cal-d-feed.mark i {
   content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%;
   background: var(--c, var(--chrome-c)); vertical-align: 1px;

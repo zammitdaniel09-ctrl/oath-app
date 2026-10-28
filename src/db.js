@@ -284,6 +284,8 @@ export async function migrate() {
   await migrateFood();
   const { migrateMail } = await import('./mail.js');
   await migrateMail();
+  const { migrateProblems } = await import('./problems.js');
+  await migrateProblems();
 }
 
 export async function getKV(key, fallback = null) {

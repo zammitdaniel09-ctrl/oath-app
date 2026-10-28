@@ -210,7 +210,7 @@ function eventBlock(it, n) {
   const e = it.ev;
   const mins = it.e - it.s;
   const lane = n > 1 && it.cols > 1;
-  const cls = ['cal-ev', e.own ? 'own' : '', e.busy === false ? 'free' : '', mins < 50 ? 'short' : '', mins < 28 ? 'tiny' : '', lane ? 'lane' : '', n > 1 && it.cols > 2 ? 'dense' : ''].filter(Boolean).join(' ');
+  const cls = ['cal-ev', e.own ? 'own' : '', e.done ? 'done' : '', e.busy === false ? 'free' : '', mins < 50 ? 'short' : '', mins < 28 ? 'tiny' : '', lane ? 'lane' : '', n > 1 && it.cols > 2 ? 'dense' : ''].filter(Boolean).join(' ');
   const sub = `${e.time} to ${e.endTime}`;
   const place = e.location ? `<span class="cal-ev-p">${esc(e.location)}</span>` : '';
   const style = `top:${((it.s / 1440) * 100).toFixed(3)}%;height:${((mins / 1440) * 100).toFixed(3)}%;left:calc(${((it.col / it.cols) * 100).toFixed(3)}% + 1px);width:calc(${((it.span / it.cols) * 100).toFixed(3)}% - 3px)${colorOf(e) ? `;--c:${colorOf(e)}` : ''}`;
@@ -255,7 +255,7 @@ function allDayCell(info) {
   const chips = shown.map((x) => {
     if (x.ev) {
       const e = x.ev;
-      return `<button type="button" class="cal-chip${e.own ? ' own' : ''}${e.deadline ? ' flag' : ''}"${cVar(e.color)} data-action="cal-event" data-id="${esc(e.id)}">${esc(e.title)}</button>`;
+      return `<button type="button" class="cal-chip${e.own ? ' own' : ''}${e.done ? ' done' : ''}${e.deadline ? ' flag' : ''}"${cVar(e.color)} data-action="cal-event" data-id="${esc(e.id)}">${esc(e.title)}</button>`;
     }
     const m = x.m;
     return `<button type="button" class="cal-chip task${m.done ? ' done' : ''}" data-action="cal-mark" data-key="${esc(`${m.kind}:${m.id}:${m.date}`)}"><i></i>${esc(m.title)}</button>`;
@@ -502,13 +502,15 @@ function eventSheet(s) {
     e.location ? `<p class="cal-d-row"><span>Where</span>${esc(e.location)}</p>` : '',
     e.notes ? `<p class="cal-d-row"><span>Notes</span><span class="cal-d-notes">${esc(e.notes)}</span></p>` : '',
     e.own && e.by === 'coach' ? '<p class="cal-d-row"><span>Added by</span>The coach</p>' : '',
+    e.done ? '<p class="cal-d-row"><span>Status</span>Done</p>' : '',
     !e.own ? '<p class="note">From a subscribed calendar</p>' : '',
   ].join('');
-  let actions = '';
+  const doneBtn = `<button class="btn ${e.done ? 'tinted' : 'primary'}" data-action="cal-done" aria-pressed="${e.done ? 'true' : 'false'}">${e.done ? 'Not done' : 'Mark done'}</button>`;
+  let actions = `<div class="sheet-actions">${doneBtn}</div>`;
   if (e.own && s.confirmDelete) {
     actions = `<div class="confirm-row"><span>Delete this event?</span><span class="confirm-btns"><button class="btn danger small" data-action="cal-del-yes">Delete</button><button class="btn tinted small" data-action="cal-del-no">Keep</button></span></div>`;
   } else if (e.own) {
-    actions = `<div class="sheet-actions"><button class="btn tinted" data-action="cal-edit">Edit</button><button class="btn tinted danger-text" data-action="cal-del">${icon('trash')}Delete</button></div>`;
+    actions = `<div class="sheet-actions">${doneBtn}<button class="btn tinted" data-action="cal-edit">Edit</button><button class="btn tinted danger-text" data-action="cal-del">${icon('trash')}Delete</button></div>`;
   }
   return sheetWrap('Event', `<div class="cal-d"><div class="cal-d-top">${feed}<h3 class="cal-d-title">${esc(e.title)}</h3></div>${lines}${actions}</div>`);
 }
@@ -795,6 +797,19 @@ export async function calendarClick(a, el) {
     case 'cal-edit': {
       const e = findEvent(state.calSheet?.id);
       if (e?.own) openForm(e);
+      return true;
+    }
+    case 'cal-done': {
+      const e = findEvent(state.calSheet?.id);
+      if (!e) return true;
+      el.disabled = true;
+      const r = await act(() => api('POST', `/api/calendar/events/${encodeURIComponent(e.id)}/done`, { done: !e.done }));
+      if (r?.event) {
+        haptic();
+        e.done = r.event.done;
+        state.today = null;
+        ctx.render();
+      } else el.disabled = false;
       return true;
     }
     case 'cal-del':

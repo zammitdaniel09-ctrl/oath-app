@@ -7,7 +7,7 @@ import { validTime, validDate, deadlineText, addDays } from './time.js';
 import * as engine from './engine.js';
 import * as goals from './goals.js';
 import { ESTIMATE_KEYS, MICRO_TEXT } from './food.js';
-import { createOathEvent, updateOathEvent, deleteOathEvent, getOathEvent, eventsBetween, eventClashes, cleanDeadlineTitle } from './calendar.js';
+import { createOathEvent, updateOathEvent, deleteOathEvent, getOathEvent, eventsBetween, eventClashes, cleanDeadlineTitle, markEventDone } from './calendar.js';
 
 const v = { validTime, validDate };
 const { RuleError } = engine;
@@ -18,6 +18,7 @@ const review = () => import('./review.js');
 const health = () => import('./health.js');
 const settings = () => import('./settings.js');
 const food = () => import('./food.js');
+const mail = () => import('./mail.js');
 const foodPhoto = () => import('./food-photo.js');
 
 export const PENDING_MINUTES = 30;
@@ -85,6 +86,13 @@ async function findItems({ query = '', kind = 'all', include_closed = false }) {
     const rows = await db()`select id, title, date, hp_lost, pardoned_at, created_at from misses
       where title ilike ${like} and created_at > now() - interval '3 days' order by created_at desc limit 10`;
     for (const m of rows) out.push(`miss #${m.id} "${m.title}" on ${m.date}, -${m.hp_lost} HP${m.pardoned_at ? ', pardoned' : ''}`);
+  }
+  // Today's and tomorrow's calendar events too, so "cross out coaching" finds a session on the calendar.
+  if (kind === 'all' || kind === 'event') {
+    const q = String(query).trim().toLowerCase();
+    const events = (await eventsBetween(today, addDays(today, 1, 'utc')).catch(() => []))
+      .filter((e) => !q || e.title.toLowerCase().includes(q)).slice(0, 15);
+    for (const e of events) out.push(`calendar event "${e.title}", ${whenText(e)} (mark id "${e.id}"${e.own ? `, event #${e.ownId}` : ''})${e.done ? ', crossed off' : ''}`);
   }
   return out.length ? out.join('\n') : 'Nothing matches.';
 }
@@ -212,7 +220,7 @@ async function ownEvent(id) {
     return await getOathEvent(id);
   } catch (err) {
     if (!(err instanceof RuleError)) throw err;
-    throw new RuleError('No event of his own with that id. Use find_events to look it up; events from his other calendars cannot be changed.');
+    throw new RuleError('No event of his own with that id. Use find_events to look it up; events from his other calendars cannot be edited, only crossed off with mark_event_done.');
   }
 }
 
@@ -231,8 +239,9 @@ async function findEvents({ query = '', from, to }) {
   const events = (await eventsBetween(start, end)).filter((e) => !q || `${e.title} ${e.location}`.toLowerCase().includes(q));
   const lines = events.slice(0, 40).map((e) => {
     const where = e.location ? `, ${e.location}` : '';
-    if (e.own) return `event #${e.ownId} "${e.title}", ${whenText(e)}${where} (his own, can be changed)`;
-    return `"${e.deadline ? cleanDeadlineTitle(e.title) : e.title}", ${whenText(e)}${where} (${e.feed}${e.deadline ? ', VLE deadline' : ''}, read-only)`;
+    const done = e.done ? ', crossed off' : '';
+    if (e.own) return `event #${e.ownId} "${e.title}", ${whenText(e)}${where} (his own, can be changed; mark id "${e.id}")${done}`;
+    return `"${e.deadline ? cleanDeadlineTitle(e.title) : e.title}", ${whenText(e)}${where} (${e.feed}${e.deadline ? ', VLE deadline' : ''}, can be crossed off but not edited; mark id "${e.id}")${done}`;
   });
   if (events.length > 40) lines.push(`and ${events.length - 40} more: narrow the dates.`);
   return lines.length ? lines.join('\n') : 'Nothing on his calendar in that time.';
@@ -244,8 +253,8 @@ async function findEvents({ query = '', from, to }) {
 
 const TOOLS = {
   find_items: {
-    description: 'Look up tasks, habits, goals, goal steps and recent misses with their ids. Use it whenever you need an id you do not have, then act on the clear best match instead of asking which one he meant. Ask only if two matches are genuinely different things.',
-    properties: { query: S('Words from the title; empty lists everything'), kind: E(['all', 'task', 'habit', 'goal', 'step', 'miss']), include_closed: B('Include done tasks, archived habits and closed goals') },
+    description: 'Look up tasks, habits, goals, goal steps, recent misses and today\'s and tomorrow\'s calendar events with their ids. Use it whenever you need an id you do not have, then act on the clear best match instead of asking which one he meant. Ask only if two matches are genuinely different things.',
+    properties: { query: S('Words from the title; empty lists everything'), kind: E(['all', 'task', 'habit', 'goal', 'step', 'miss', 'event']), include_closed: B('Include done tasks, archived habits and closed goals') },
     read: true,
     run: findItems,
   },
@@ -780,6 +789,42 @@ const TOOLS = {
       await ownEvent(input.event_id);
       const ev = await updateOathEvent(input.event_id, eventPatch(input, ['title', 'date', 'start', 'end', 'all_day', 'end_date', 'location', 'notes']));
       return { receipts: [{ ok: true, text: `Updated "${ev.title}", ${whenText(ev)}` }], detail: await overlapNote(ev).then((n) => n.trim()) };
+    },
+  },
+  mark_event_done: {
+    description: 'Cross an event off his calendar as done (or back on with done false): any event, his own or from his other calendars, such as a coaching session or a class he has finished. Give the mark id from find_events, or words from the title and the day (default today). The mark lives in Oath; his other calendars are never changed.',
+    properties: { event_id: S('The mark id from find_events, like "3:abc@google.com:1793174400000" or "oath:5"'), title: S('Words from the title, when you have no id'), date: DATE, done: B('false puts it back; default true') },
+    async run(input) {
+      const done = input.done !== false;
+      let id = input.event_id ? String(input.event_id) : '';
+      if (!id) {
+        const { today } = await engine.localNow();
+        const date = input.date || today;
+        if (!validDate(date)) throw new RuleError('Give the day like 2026-10-28.');
+        const q = String(input.title || '').trim().toLowerCase();
+        if (!q) throw new RuleError('Say which event: an id from find_events, or words from its title.');
+        const hits = (await eventsBetween(date, date)).filter((e) => e.title.toLowerCase().includes(q));
+        const exact = hits.filter((e) => e.title.toLowerCase() === q);
+        const pickFrom = exact.length ? exact : hits;
+        if (!pickFrom.length) throw new RuleError(`Nothing called "${input.title}" on his calendar on ${date}. Use find_events to look.`);
+        if (pickFrom.length > 1 && new Set(pickFrom.map((e) => e.title.toLowerCase())).size > 1) {
+          throw new RuleError(`More than one event fits: ${pickFrom.slice(0, 5).map((e) => `"${e.title}" ${e.time || 'all day'} (id "${e.id}")`).join(', ')}. Pick one by id.`);
+        }
+        id = pickFrom[0].id;
+      }
+      const ev = await markEventDone(id, done);
+      return done ? `Crossed off "${ev.title}", ${whenText(ev)}` : `Put "${ev.title}" back on, ${whenText(ev)}`;
+    },
+  },
+  mark_email: {
+    description: 'Act on an important email from the current data (ids look like email #12): mark it done (dealt with), or not important (it leaves the important list and is unstarred in Gmail), or important again.',
+    properties: { email_id: I(), done: B('true when dealt with, false to reopen'), important: B('false when it is not important') },
+    required: ['email_id'],
+    async run(input) {
+      if (input.done === undefined && input.important === undefined) throw new RuleError('Say done or important.');
+      const m = await (await mail()).markMail(input.email_id, pick(input, ['done', 'important']));
+      const what = input.important === false ? 'not important' : input.important === true ? 'important' : input.done === false ? 'open again' : 'done';
+      return `Marked "${m.subject || 'the email'}" ${what}`;
     },
   },
   delete_event: {

@@ -220,7 +220,7 @@ test('own events join the reads: events by day, busy minutes and the coach\'s vi
   assert.equal(await cal.busyMinutes('2026-11-03'), 120, '09:00-10:00 lecture and 09:30-11:00 group make one block of two hours');
   const both = await day('2026-11-03');
   assert.deepEqual(both.map((e) => [e.title, e.own || false]), [['Lecture', false], ['Study group', true]]);
-  assert.deepEqual(Object.keys(both[0]).sort(), ['allDay', 'busy', 'color', 'deadline', 'end', 'endTime', 'feed', 'feedId', 'id', 'location', 'start', 'time', 'title'], 'feed events keep their shape');
+  assert.deepEqual(Object.keys(both[0]).sort(), ['allDay', 'busy', 'color', 'deadline', 'done', 'end', 'endTime', 'feed', 'feedId', 'id', 'location', 'start', 'time', 'title'], 'feed events keep their shape');
   assert.deepEqual((await cal.listFeeds()).map((f) => f.name), ['Uni']);
 });
 
@@ -311,8 +311,8 @@ test('coach: edits an event, finds events with ids, and cannot touch a feed even
   const found = await call('POST', '/api/coach', { text: 'what is on tomorrow?' });
   assert.equal(found.data.reply.actions, null, 'a lookup leaves no receipt');
   const listing = lastResults(find)[0].content;
-  assert.match(listing, /"Lecture", Tue 3 Nov 09:00 to 10:00, Room 4 \(Uni, read-only\)/);
-  assert.match(listing, new RegExp(`event #${gym.ownId} "Gym", Tue 3 Nov 18:00 to 19:00 \\(his own, can be changed\\)`));
+  assert.match(listing, /"Lecture", Tue 3 Nov 09:00 to 10:00, Room 4 \(Uni, can be crossed off but not edited; mark id "\d+:lec1@test:\d+"\)/);
+  assert.match(listing, new RegExp(`event #${gym.ownId} "Gym", Tue 3 Nov 18:00 to 19:00 \\(his own, can be changed; mark id "oath:${gym.ownId}"\\)`));
   const narrowed = turn([use('find_events', { query: 'gym', from: '2026-11-03' })]);
   coach.setCoachClient(narrowed);
   await call('POST', '/api/coach', { text: 'find gym' });
