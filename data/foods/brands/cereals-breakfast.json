@@ -1,0 +1,6647 @@
+{
+  "source": "Breakfast cereals, muesli, granola, porridge oats and cereal bars from official brand pages: kelloggs.co.uk, kelloggs.it, kelloggs.de, nestle-cereals.com (UK and Italy), weetabix.co.uk, alpen.co.uk, jordanscereals.co.uk, dorsetcereals.co.uk and naturevalley.co.uk, per 100 g. Malta availability checked against supermarket.mt shop listings (used for availability only, never for numbers).",
+  "built": "2026-10-28",
+  "items": [
+    {
+      "key": "brand:kelloggs:corn-flakes",
+      "kind": "product",
+      "name": "Kellogg's Corn Flakes",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Corn Flakes",
+        "Cornflakes"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 378,
+        "protein": 7,
+        "carbs": 84,
+        "sugars": 8,
+        "fat": 0.9,
+        "satfat": 0.2,
+        "fibre": 3,
+        "salt": 1.1,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 8.4,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 166,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/kellogg-s-corn-flakes.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1604 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Corn Flakes 375 g, 500 g and 1 kg listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:special-k-original",
+      "kind": "product",
+      "name": "Kellogg's Special K Original",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Special K"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 392,
+        "protein": 8,
+        "carbs": 84,
+        "sugars": 15,
+        "fat": 1.3,
+        "satfat": 0.3,
+        "fibre": 6,
+        "salt": 0.84,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 14,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 8.4,
+        "vite": null,
+        "vitk": null,
+        "b1": 1.8,
+        "b2": 2.3,
+        "b3": 16,
+        "b6": 1.4,
+        "folate": 334,
+        "b12": 2.5
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/special-k-original.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1660 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Special K Original 700 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk",
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:special-k-red-berries",
+      "kind": "product",
+      "name": "Kellogg's Special K Red Berries",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Special K Red Berries",
+        "Special K Frutti Rossi"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 390,
+        "protein": 8,
+        "carbs": 83,
+        "sugars": 16,
+        "fat": 1.4,
+        "satfat": 0.3,
+        "fibre": 6.6,
+        "salt": 0.73,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 13,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 8,
+        "vite": null,
+        "vitk": null,
+        "b1": 1.7,
+        "b2": 2.2,
+        "b3": 15,
+        "b6": 1.3,
+        "folate": 318,
+        "b12": 2.4
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/special-k-cereal-red-berries.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1652 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Special K Red Berries 290 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk",
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:special-k-milk-chocolate",
+      "kind": "product",
+      "name": "Kellogg's Special K Milk Chocolate",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Special K Chocolate"
+      ],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 410,
+        "protein": 7.7,
+        "carbs": 81,
+        "sugars": 21,
+        "fat": 5,
+        "satfat": 2.5,
+        "fibre": 5.3,
+        "salt": 0.67,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 12,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 7,
+        "vite": null,
+        "vitk": null,
+        "b1": 1.5,
+        "b2": 2,
+        "b3": 14,
+        "b6": 1.2,
+        "folate": 280,
+        "b12": 2.2
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/special-k-milk-chocolate.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1735 kJ. Folate is the label's folic acid. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:crunchy-nut-original",
+      "kind": "product",
+      "name": "Kellogg's Crunchy Nut Original",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Crunchy Nut Corn Flakes",
+        "Crunchy Nut"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 398,
+        "protein": 6,
+        "carbs": 82,
+        "sugars": 35,
+        "fat": 4.5,
+        "satfat": 0.7,
+        "fibre": 2.5,
+        "salt": 0.75,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8.3,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 5,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 209,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/crunchy-nut-corn-flakes.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1683 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Crunchy Nut 300 g and 460 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:peanuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:coco-pops-original",
+      "kind": "product",
+      "name": "Kellogg's Coco Pops Original",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Coco Pops",
+        "Choco Pops"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 386,
+        "protein": 6.3,
+        "carbs": 84,
+        "sugars": 17,
+        "fat": 1.9,
+        "satfat": 0.9,
+        "fibre": 3.8,
+        "salt": 0.65,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 8.4,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 166,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/coco-pops-original.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1636 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Coco Pops 330 g and 420 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:coco-pops-chocos",
+      "kind": "product",
+      "name": "Kellogg's Coco Pops Chocos",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Chocos",
+        "Coco Pops Barchette"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 380,
+        "protein": 10,
+        "carbs": 77,
+        "sugars": 22,
+        "fat": 2.2,
+        "satfat": 1,
+        "fibre": 6,
+        "salt": 0.67,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 8.3,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 166,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/coco-pops-chocos.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1608 kJ. Folate is the label's folic acid. The Italian Coco Pops Barchette page (kelloggs.it) shows the same values. Sold in Malta: Kellogg's Chocos 550 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:rice-krispies",
+      "kind": "product",
+      "name": "Kellogg's Rice Krispies",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Rice Krispies"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 389,
+        "protein": 7,
+        "carbs": 86,
+        "sugars": 7.9,
+        "fat": 1.2,
+        "satfat": 0.4,
+        "fibre": 2.9,
+        "salt": 1,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 8.4,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 166,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/rice-krispies.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1649 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Rice Krispies 430 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:frosties",
+      "kind": "product",
+      "name": "Kellogg's Frosties",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Frosties",
+        "Frosted Flakes"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 375,
+        "protein": 4.5,
+        "carbs": 87,
+        "sugars": 37,
+        "fat": 0.6,
+        "satfat": 0.1,
+        "fibre": 2,
+        "salt": 0.83,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 8.4,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 166,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/frosties.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1594 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Frosties 470 g and 750 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:peanuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:all-bran-fibre-plus",
+      "kind": "product",
+      "name": "Kellogg's All-Bran Fibre Plus",
+      "brand": "Kellogg's",
+      "aliases": [
+        "All-Bran",
+        "All Bran Original"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 313,
+        "protein": 12,
+        "carbs": 47,
+        "sugars": 15,
+        "fat": 2.8,
+        "satfat": 0.5,
+        "fibre": 26,
+        "salt": 0.9,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8.8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 6.3,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.69,
+        "b2": 0.88,
+        "b3": 10,
+        "b6": 0.88,
+        "folate": 250,
+        "b12": 1.6
+      },
+      "serving": {
+        "size": 40,
+        "unit": "g",
+        "label": "1 bowl (40 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (40 g)",
+          "g": 40,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/all-bran-original.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1315 kJ. Folate is the label's folic acid. The UK page for All-Bran original is titled All-Bran Fibre Plus. Sold in Malta: Kellogg's All-Bran 500 g and 750 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts",
+          "en:milk",
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:bran-flakes",
+      "kind": "product",
+      "name": "Kellogg's Bran Flakes",
+      "brand": "Kellogg's",
+      "aliases": [
+        "All-Bran Bran Flakes"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 358,
+        "protein": 11,
+        "carbs": 65,
+        "sugars": 14,
+        "fat": 2.2,
+        "satfat": 0.4,
+        "fibre": 17,
+        "salt": 0.66,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 8.4,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 310,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/bran-flakes.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1509 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Bran Flakes 500 g and 750 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:fruit-n-fibre",
+      "kind": "product",
+      "name": "Kellogg's Fruit 'n Fibre",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Fruit and Fibre"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 408,
+        "protein": 9,
+        "carbs": 78,
+        "sugars": 23,
+        "fat": 4.7,
+        "satfat": 3,
+        "fibre": 8.8,
+        "salt": 1.1,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 6.3,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.69,
+        "b2": 0.88,
+        "b3": 10,
+        "b6": 0.88,
+        "folate": 166,
+        "b12": 1.6
+      },
+      "serving": {
+        "size": 40,
+        "unit": "g",
+        "label": "1 bowl (40 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (40 g)",
+          "g": 40,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/fruit-n-fibre.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1723 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Fruit 'n Fibre 500 g and 700 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts",
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:krave-milk-chocolate",
+      "kind": "product",
+      "name": "Kellogg's Krave Milk Chocolate",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Krave"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 441,
+        "protein": 7.2,
+        "carbs": 70,
+        "sugars": 28,
+        "fat": 14,
+        "satfat": 4,
+        "fibre": 3.1,
+        "salt": 0.95,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 166,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/krave-milk-chocolate.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1855 kJ. Folate is the label's folic acid. Vitamin D is not on this label. Sold in Malta: Kellogg's Krave Milk Chocolate 410 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:krave-chocolate-hazelnut",
+      "kind": "product",
+      "name": "Kellogg's Krave Chocolate Hazelnut",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Krave Chocolate Nut"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 450,
+        "protein": 6.9,
+        "carbs": 68,
+        "sugars": 29,
+        "fat": 16,
+        "satfat": 4,
+        "fibre": 3.3,
+        "salt": 1.1,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 166,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/krave-chocolate-hazelnut-product.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1892 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Krave Chocolate Nut 410 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:nutri-grain-apple",
+      "kind": "product",
+      "name": "Kellogg's Nutri-Grain Apple bar",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Nutri Grain apple"
+      ],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 367,
+        "protein": 4.1,
+        "carbs": 67,
+        "sugars": 33,
+        "fat": 8.3,
+        "satfat": 3,
+        "fibre": 3.8,
+        "salt": 0.55,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 544,
+        "iron": 6.4,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.75,
+        "b2": 0.95,
+        "b3": 11,
+        "b6": 0.95,
+        "folate": 136,
+        "b12": 1.7
+      },
+      "serving": {
+        "size": 37,
+        "unit": "g",
+        "label": "1 bar (37 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bar (37 g)",
+          "g": 37,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/nutri-grain-apple.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1546 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Nutri-Grain bars apple 222 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": [
+          "en:nuts",
+          "en:mustard"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:nutri-grain-strawberry",
+      "kind": "product",
+      "name": "Kellogg's Nutri-Grain Strawberry bar",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Nutri Grain strawberry"
+      ],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 367,
+        "protein": 4.2,
+        "carbs": 67,
+        "sugars": 33,
+        "fat": 8.3,
+        "satfat": 3,
+        "fibre": 3.8,
+        "salt": 0.55,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 544,
+        "iron": 6.4,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.75,
+        "b2": 0.95,
+        "b3": 11,
+        "b6": 0.95,
+        "folate": 136,
+        "b12": 1.7
+      },
+      "serving": {
+        "size": 37,
+        "unit": "g",
+        "label": "1 bar (37 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bar (37 g)",
+          "g": 37,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/nutri-grain-strawberry.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1548 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Nutri-Grain strawberry 222 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:coco-pops-snack-bar",
+      "kind": "product",
+      "name": "Kellogg's Coco Pops Snack Bar (cereal and milk bar)",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Coco Pops cereal bar",
+        "Coco Pops milk bar"
+      ],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 411,
+        "protein": 5.7,
+        "carbs": 70,
+        "sugars": 26,
+        "fat": 11,
+        "satfat": 8,
+        "fibre": 4.4,
+        "salt": 0.46,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 800,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 5,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 20,
+        "unit": "g",
+        "label": "1 bar (20 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bar (20 g)",
+          "g": 20,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/coco-pops-cereal-milk-bar.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1729 kJ. Sold in Malta: Kellogg's Coco Pops Cereal Bars 20 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:rice-krispies-squares-totally-chocolatey",
+      "kind": "product",
+      "name": "Kellogg's Rice Krispies Squares Totally Chocolatey",
+      "brand": "Kellogg's",
+      "aliases": [],
+      "market": "UK",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 434,
+        "protein": 4.4,
+        "carbs": 74,
+        "sugars": 35,
+        "fat": 13,
+        "satfat": 10,
+        "fibre": 1.5,
+        "salt": 0.61,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 36,
+        "unit": "g",
+        "label": "1 serving (36 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 serving (36 g)",
+          "g": 36,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.co.uk/en_GB/products/rice-krispies-squares-totally-chocolatey.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.co.uk (UK label), energy 1826 kJ. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:extra-original",
+      "kind": "product",
+      "name": "Kellogg's Extra Original (crunchy oat clusters)",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Kellogg's Extra",
+        "Extra Original"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 479,
+        "protein": 8,
+        "carbs": 59,
+        "sugars": 19,
+        "fat": 22,
+        "satfat": 8.1,
+        "fibre": 6.7,
+        "salt": 0.85,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/extra-original-product.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 2007 kJ. The page lists no vitamin amounts. Sold in Malta: Kellogg's Extra Original 450 g listed on supermarket.mt (Maltese supermarket price listings). This line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:extra-fruit-and-nut",
+      "kind": "product",
+      "name": "Kellogg's Extra Fruit & Nut (Frutta e Frutta Secca)",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Extra Frutta e Frutta Secca",
+        "Extra Fruit and Nut"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 469,
+        "protein": 7.2,
+        "carbs": 57,
+        "sugars": 27,
+        "fat": 22,
+        "satfat": 7.5,
+        "fibre": 7,
+        "salt": 0.64,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/extra-frutta-product.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 1961 kJ. Sold in Malta: Kellogg's Extra Fruit and Nut 400 g and 450 g listed on supermarket.mt (Maltese supermarket price listings). This line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:extra-red-fruits",
+      "kind": "product",
+      "name": "Kellogg's Extra Red Fruits (Frutti Rossi)",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Extra Frutti Rossi",
+        "Extra Red Fruit"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 470,
+        "protein": 7.4,
+        "carbs": 59,
+        "sugars": 22,
+        "fat": 21,
+        "satfat": 8.9,
+        "fibre": 7.6,
+        "salt": 0.84,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/extra-frutti-rossi.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 1967 kJ. Sold in Malta: Kellogg's Extra Red Fruit 400 g listed on supermarket.mt (Maltese supermarket price listings). This line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:extra-milk-chocolate",
+      "kind": "product",
+      "name": "Kellogg's Extra Milk Chocolate (Cioccolato al Latte)",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Extra Cioccolato al Latte"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 472,
+        "protein": 8.1,
+        "carbs": 60,
+        "sugars": 26,
+        "fat": 21,
+        "satfat": 9.8,
+        "fibre": 5.5,
+        "salt": 0.76,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/-product-689845product.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 1979 kJ. Sold in Malta: Kellogg's Extra Milk Chocolate 450 g and 500 g listed on supermarket.mt (Maltese supermarket price listings). This line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:special-k-dark-chocolate",
+      "kind": "product",
+      "name": "Kellogg's Special K Dark Chocolate",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Special K Cioccolato Fondente cereal"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 424,
+        "protein": 8.2,
+        "carbs": 81,
+        "sugars": 17,
+        "fat": 6.1,
+        "satfat": 3.2,
+        "fibre": 6,
+        "salt": 0.64,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 12,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 7,
+        "vite": null,
+        "vitk": null,
+        "b1": 1.5,
+        "b2": 2,
+        "b3": 14,
+        "b6": 1.2,
+        "folate": 280,
+        "b12": 2.2
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/special-k-dark-chocolate.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 1790 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Special K Dark Chocolate Cereal 290 g listed on supermarket.mt (Maltese supermarket price listings). This line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk"
+        ],
+        "traces": [
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:special-k-high-protein-cocoa-hazelnut",
+      "kind": "product",
+      "name": "Kellogg's Special K High Protein (cocoa and hazelnut flavour)",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Special K Protein"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 379,
+        "protein": 21,
+        "carbs": 64,
+        "sugars": 13,
+        "fat": 2.6,
+        "satfat": 0.9,
+        "fibre": 7.6,
+        "salt": 0.23,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 5,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 166,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/special-k-high-protein.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 1602 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Special K Protein Hazelnut 320 g listed on supermarket.mt (Maltese supermarket price listings). This line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk",
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:special-k-protein-bar-coconut-cocoa-cashew",
+      "kind": "product",
+      "name": "Kellogg's Special K Protein bar coconut, cocoa & cashew",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Special K Granola Cocco Cacao Anacardi"
+      ],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 414,
+        "protein": 21,
+        "carbs": 44,
+        "sugars": 17,
+        "fat": 16,
+        "satfat": 4.6,
+        "fibre": 4.8,
+        "salt": 0.69,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 28,
+        "unit": "g",
+        "label": "1 bar (28 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bar (28 g)",
+          "g": 28,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/special-k-high-protein-barretta-con-cocco-cacao-e-anacardi.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 1735 kJ. Sold in Malta: Kellogg's Special K Protein Bars Coconut Cocoa & Cashew 112 g (4 bars) listed on supermarket.mt (Maltese supermarket price listings). This line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts",
+          "en:peanuts",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:special-k-protein-bar-blackcurrant-pumpkin-seed",
+      "kind": "product",
+      "name": "Kellogg's Special K Protein bar blackcurrant & pumpkin seeds",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Special K Granola Ribes Nero Semi di Zucca"
+      ],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 438,
+        "protein": 22,
+        "carbs": 46,
+        "sugars": 18,
+        "fat": 17,
+        "satfat": 2.4,
+        "fibre": 6.3,
+        "salt": 0.5,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 28,
+        "unit": "g",
+        "label": "1 bar (28 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bar (28 g)",
+          "g": 28,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/spk-high-protein-ribes-nero-semi-di-zucca.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 1835 kJ. Sold in Malta: Kellogg's Special K Protein Bars Blackcurrant and Pumpkin Seeds 112 g (4 bars) listed on supermarket.mt (Maltese supermarket price listings). This line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts",
+          "en:peanuts",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:special-k-bar-dark-chocolate",
+      "kind": "product",
+      "name": "Kellogg's Special K Dark Chocolate bar",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Special K Barretta Cioccolato Fondente"
+      ],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 397,
+        "protein": 6.8,
+        "carbs": 67,
+        "sugars": 28,
+        "fat": 9.2,
+        "satfat": 4.7,
+        "fibre": 9.6,
+        "salt": 0.6,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": 15,
+        "b6": 1.3,
+        "folate": 190,
+        "b12": null
+      },
+      "serving": {
+        "size": 21.5,
+        "unit": "g",
+        "label": "1 serving (21.5 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 serving (21.5 g)",
+          "g": 21.5,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/special-k-cioccolato-fondente.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 1672 kJ. Folate is the label's folic acid. Values from the Italian bar; kelloggs.co.uk also lists a Special K dark chocolate bar (27 g) with a different recipe, and Maltese shops may carry either pack. Sold in Malta: Kellogg's Special K Dark Chocolate Bar 126 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:special-k-bar-red-berries",
+      "kind": "product",
+      "name": "Kellogg's Special K Red Berries bar",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Special K Barretta Frutti Rossi"
+      ],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 385,
+        "protein": 6,
+        "carbs": 68,
+        "sugars": 28,
+        "fat": 7.7,
+        "satfat": 4.9,
+        "fibre": 9.9,
+        "salt": 0.58,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": 15,
+        "b6": 1.3,
+        "folate": 190,
+        "b12": null
+      },
+      "serving": {
+        "size": 21.5,
+        "unit": "g",
+        "label": "1 serving (21.5 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 serving (21.5 g)",
+          "g": 21.5,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/special-k-barretta-frutti-rossi-product.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 1622 kJ. Folate is the label's folic acid. Values from the Italian bar; kelloggs.co.uk also lists a Special K Red Berry bar (27 g) with a different recipe, and Maltese shops may carry either pack. Sold in Malta: Kellogg's Special K Red Berries Cereal Bars 126 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:oaties-original",
+      "kind": "product",
+      "name": "Kellogg's Oaties Original",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Oaties"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 380,
+        "protein": 10,
+        "carbs": 71,
+        "sugars": 20,
+        "fat": 4.6,
+        "satfat": 0.8,
+        "fibre": 8.4,
+        "salt": 0.35,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 2.5,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 166,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/kellogg-s-oaties-original-crunch.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 1604 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Oaties Original 360 g listed on supermarket.mt (Maltese supermarket price listings). This line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts",
+          "en:milk",
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:oaties-chocolate",
+      "kind": "product",
+      "name": "Kellogg's Oaties Chocolate",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Oaties Cioccolato"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 380,
+        "protein": 10,
+        "carbs": 70,
+        "sugars": 21,
+        "fat": 4.9,
+        "satfat": 1.2,
+        "fibre": 8.9,
+        "salt": 0.29,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 8,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 2.5,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 13,
+        "b6": 1.2,
+        "folate": 166,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.it/it_IT/products/kellogg-s-oaties-cocoa-crunch.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.it (Italian/EU label), energy 1605 kJ. Folate is the label's folic acid. Sold in Malta: Kellogg's Oaties Chocolate 360 g listed on supermarket.mt (Maltese supermarket price listings). This line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts",
+          "en:milk",
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:kelloggs:smacks",
+      "kind": "product",
+      "name": "Kellogg's Smacks",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Honey Smacks"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 377,
+        "protein": 7.1,
+        "carbs": 81,
+        "sugars": 34,
+        "fat": 1.6,
+        "satfat": 0.3,
+        "fibre": 5,
+        "salt": 0.02,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.de/de_DE/products/smacks-product.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.de (German/EU label), energy 1597 kJ; the page lists no vitamin amounts. Sold in Malta: Kellogg's Smacks 330 g listed on supermarket.mt (Maltese supermarket price listings); this line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:kelloggs:froot-loops",
+      "kind": "product",
+      "name": "Kellogg's Froot Loops",
+      "brand": "Kellogg's",
+      "aliases": [
+        "Fruit Loops"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 386,
+        "protein": 8.1,
+        "carbs": 79,
+        "sugars": 25,
+        "fat": 3.1,
+        "satfat": 0.8,
+        "fibre": 4.7,
+        "salt": 1.2,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.kelloggs.de/de_DE/products/froot-loops-product.html",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on kelloggs.de (German/EU label), energy 1633 kJ; the page lists no vitamin amounts. Sold in Malta: Kellogg's Froot Loops 375 g listed on supermarket.mt (Maltese supermarket price listings); this line is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts",
+          "en:milk",
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:cheerios-multigrain",
+      "kind": "product",
+      "name": "Nestlé Multigrain Cheerios",
+      "brand": "Nestlé",
+      "aliases": [
+        "Cheerios"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 380,
+        "protein": 9.9,
+        "carbs": 69.8,
+        "sugars": 17.7,
+        "fat": 4.8,
+        "satfat": 0.9,
+        "fibre": 9.2,
+        "salt": 0.8,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 537,
+        "iron": 11,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": 40,
+        "vitd": 3.1,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 0.84,
+        "b3": 12,
+        "b6": 0.95,
+        "folate": 177,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/cheerios/multigrain",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1605 kJ. Folate is the label's folic acid. Sold in Malta: Nestlé Cheerios Cereal 390 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:nestle:cheerios-honey",
+      "kind": "product",
+      "name": "Nestlé Honey Cheerios",
+      "brand": "Nestlé",
+      "aliases": [
+        "Honey Nut Cheerios"
+      ],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 378,
+        "protein": 9.3,
+        "carbs": 72,
+        "sugars": 22.4,
+        "fat": 3.9,
+        "satfat": 0.8,
+        "fibre": 8.7,
+        "salt": 0.66,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 537,
+        "iron": 11,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": 44,
+        "vitd": 3.1,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 0.84,
+        "b3": 12,
+        "b6": 0.95,
+        "folate": 177,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/cheerios/honey",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1596 kJ. Folate is the label's folic acid. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:cheerios-honey-cereal-bar",
+      "kind": "product",
+      "name": "Nestlé Honey Cheerios cereal bar",
+      "brand": "Nestlé",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 390,
+        "protein": 8.1,
+        "carbs": 62,
+        "sugars": 20,
+        "fat": 11.5,
+        "satfat": 4.1,
+        "fibre": 7.2,
+        "salt": 0.41,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 1090,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 1.6,
+        "b3": 14,
+        "b6": 1.6,
+        "folate": 200,
+        "b12": null
+      },
+      "serving": {
+        "size": 22,
+        "unit": "g",
+        "label": "1 bar (22 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bar (22 g)",
+          "g": 22,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/cheerios/honey-cereal-bar",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1640 kJ. Folate is the label's folic acid. Sold in Malta: Nestlé Honey Cheerios Cereal Bar 132 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:lion-cereal",
+      "kind": "product",
+      "name": "Nestlé Lion Caramel & Chocolate cereal",
+      "brand": "Nestlé",
+      "aliases": [
+        "Lion cereal"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 406,
+        "protein": 8.1,
+        "carbs": 73.2,
+        "sugars": 24.5,
+        "fat": 7.4,
+        "satfat": 1.1,
+        "fibre": 7,
+        "salt": 0.4,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 492,
+        "iron": 8.4,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 3,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.91,
+        "b2": 1.2,
+        "b3": 14,
+        "b6": 1,
+        "folate": 175,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/lion-cereal/original",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1711 kJ. Folate is the label's folic acid. The per-30 g column on the page reads 513 kJ but 112 kcal in one place and 122 kcal in another; the per-100 g values are used. Sold in Malta: Nestlé Lion Cereal Caramel and Chocolate 400 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:lion-cereal-bar",
+      "kind": "product",
+      "name": "Nestlé Lion cereal bar",
+      "brand": "Nestlé",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 398,
+        "protein": 7.3,
+        "carbs": 62.9,
+        "sugars": 22.3,
+        "fat": 12.3,
+        "satfat": 5.2,
+        "fibre": 6.6,
+        "salt": 0.46,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 1510,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 1.4,
+        "b3": 14,
+        "b6": 1.1,
+        "folate": 175,
+        "b12": null
+      },
+      "serving": {
+        "size": 25,
+        "unit": "g",
+        "label": "1 bar (25 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bar (25 g)",
+          "g": 25,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/lion-cereal/bar",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1673 kJ. Folate is the label's folic acid. Sold in Malta: Nestlé Lion Breakfast Cereal Bars 150 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:nesquik-cereal",
+      "kind": "product",
+      "name": "Nestlé Nesquik cereal",
+      "brand": "Nestlé",
+      "aliases": [
+        "Nesquik cereal"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 375,
+        "protein": 8.6,
+        "carbs": 74.3,
+        "sugars": 22,
+        "fat": 2.9,
+        "satfat": 0.7,
+        "fibre": 8.6,
+        "salt": 0.2,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 501,
+        "iron": 11,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 2.6,
+        "vite": null,
+        "vitk": null,
+        "b1": 1.1,
+        "b2": 1.5,
+        "b3": 16,
+        "b6": 1.5,
+        "folate": 201,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/nesquik-cereal/original",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1586 kJ. Folate is the label's folic acid. Sold in Malta: Nesquik Cereal 375 g and 625 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:nesquik-cereal-bar",
+      "kind": "product",
+      "name": "Nestlé Nesquik cereal bar",
+      "brand": "Nestlé",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 395,
+        "protein": 6.6,
+        "carbs": 66.6,
+        "sugars": 21.7,
+        "fat": 11.5,
+        "satfat": 4.6,
+        "fibre": 5.2,
+        "salt": 0.43,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 1390,
+        "iron": 11,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 1.5,
+        "b3": 14,
+        "b6": 1.6,
+        "folate": 190,
+        "b12": null
+      },
+      "serving": {
+        "size": 25,
+        "unit": "g",
+        "label": "1 bar (25 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bar (25 g)",
+          "g": 25,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/nesquik-cereal/bar",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1662 kJ. Folate is the label's folic acid. Sold in Malta: Nesquik Cereal Bar 25 g and 150 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:shreddies-original",
+      "kind": "product",
+      "name": "Nestlé Shreddies Original",
+      "brand": "Nestlé",
+      "aliases": [
+        "Shreddies"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 364,
+        "protein": 10.8,
+        "carbs": 70.4,
+        "sugars": 12.5,
+        "fat": 1.8,
+        "satfat": 0.3,
+        "fibre": 12,
+        "salt": 0.72,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 7.7,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 0.91,
+        "b3": 11,
+        "b6": 1,
+        "folate": 112,
+        "b12": null
+      },
+      "serving": {
+        "size": 40,
+        "unit": "g",
+        "label": "1 bowl (40 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (40 g)",
+          "g": 40,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/shreddies/original",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label); the page gives energy in kcal only. Folate is the label's folic acid. Sold in Malta: Nestlé Shreddies 460 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:peanuts",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:shreddies-coco",
+      "kind": "product",
+      "name": "Nestlé Coco Shreddies",
+      "brand": "Nestlé",
+      "aliases": [],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 366,
+        "protein": 9.7,
+        "carbs": 71.4,
+        "sugars": 22.2,
+        "fat": 2.2,
+        "satfat": 0.7,
+        "fibre": 11.1,
+        "salt": 0.61,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 7.5,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 0.77,
+        "b3": 9.6,
+        "b6": 0.85,
+        "folate": 93.8,
+        "b12": null
+      },
+      "serving": {
+        "size": 40,
+        "unit": "g",
+        "label": "1 bowl (40 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (40 g)",
+          "g": 40,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/shreddies/coco",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label); the page gives energy in kcal only. Folate is the label's folic acid. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:peanuts",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:shreddies-frosted",
+      "kind": "product",
+      "name": "Nestlé Frosted Shreddies",
+      "brand": "Nestlé",
+      "aliases": [],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 370,
+        "protein": 9.5,
+        "carbs": 74.7,
+        "sugars": 22.4,
+        "fat": 1.5,
+        "satfat": 0.3,
+        "fibre": 9.3,
+        "salt": 0.64,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 6.7,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 0.82,
+        "b3": 9.6,
+        "b6": 0.87,
+        "folate": 97.2,
+        "b12": null
+      },
+      "serving": {
+        "size": 40,
+        "unit": "g",
+        "label": "1 bowl (40 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (40 g)",
+          "g": 40,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/shreddies/frosted",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label); the page gives energy in kcal only. Folate is the label's folic acid. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:peanuts",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:shredded-wheat-original",
+      "kind": "product",
+      "name": "Nestlé Shredded Wheat Original",
+      "brand": "Nestlé",
+      "aliases": [
+        "Shredded Wheat"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 357,
+        "protein": 12.3,
+        "carbs": 64.9,
+        "sugars": 0.7,
+        "fat": 2.2,
+        "satfat": 0.5,
+        "fibre": 14,
+        "salt": 0.05,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/shredded-wheat/original",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1506 kJ. Sold in Malta: Nestlé Shredded Wheat Original Biscuits 360 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:peanuts",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:cookie-crisp",
+      "kind": "product",
+      "name": "Nestlé Cookie Crisp",
+      "brand": "Nestlé",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 393,
+        "protein": 6.7,
+        "carbs": 78,
+        "sugars": 22.4,
+        "fat": 5.2,
+        "satfat": 0.9,
+        "fibre": 6,
+        "salt": 0.66,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 750,
+        "iron": 7.9,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 2.8,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 1.1,
+        "b3": 13,
+        "b6": 1,
+        "folate": 155,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/cookie-crisp/original",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1659 kJ. Folate is the label's folic acid. Sold in Malta: Nestlé Cookie Crisp Cereal 500 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:curiously-cinnamon",
+      "kind": "product",
+      "name": "Nestlé Curiously Cinnamon",
+      "brand": "Nestlé",
+      "aliases": [
+        "Cini Minis",
+        "Cinnamon Grahams"
+      ],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 412,
+        "protein": 6.1,
+        "carbs": 73.4,
+        "sugars": 24,
+        "fat": 9,
+        "satfat": 1,
+        "fibre": 6.4,
+        "salt": 0.8,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 606,
+        "iron": 7,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 3,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.97,
+        "b2": 1.2,
+        "b3": 14,
+        "b6": 1.3,
+        "folate": 170,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/curiously-cinnamon/original",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1736 kJ. Folate is the label's folic acid. UK name of the cinnamon squares sold elsewhere in Europe as Cini Minis. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:curiously-cinnamon-cereal-bar",
+      "kind": "product",
+      "name": "Nestlé Curiously Cinnamon cereal bar",
+      "brand": "Nestlé",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 392,
+        "protein": 8,
+        "carbs": 65.9,
+        "sugars": 20.6,
+        "fat": 10.7,
+        "satfat": 4.4,
+        "fibre": 5,
+        "salt": 0.65,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 1150,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 1.4,
+        "b3": 12,
+        "b6": 1.1,
+        "folate": 170,
+        "b12": null
+      },
+      "serving": {
+        "size": 25,
+        "unit": "g",
+        "label": "1 serving (25 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 serving (25 g)",
+          "g": 25,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/curiously-cinnamon/cereal-bar",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1651 kJ. Folate is the label's folic acid. Sold in Malta: Nestlé Curiously Cinnamon Cereal Bars 150 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:go-free-corn-flakes",
+      "kind": "product",
+      "name": "Nestlé Go Free gluten free Corn Flakes",
+      "brand": "Nestlé",
+      "aliases": [
+        "gluten free corn flakes"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 382,
+        "protein": 7.4,
+        "carbs": 82.9,
+        "sugars": 8.8,
+        "fat": 1.4,
+        "satfat": 0.5,
+        "fibre": 4.2,
+        "salt": 1.33,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 1.3,
+        "b3": 17,
+        "b6": 1.2,
+        "folate": 183,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/go-free/corn-flakes",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1619 kJ. Folate is the label's folic acid. Sold in Malta: Nestlé Go Free Corn Flakes Cereal Gluten Free 375 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [],
+        "traces": [
+          "en:peanuts",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:golden-grahams",
+      "kind": "product",
+      "name": "Nestlé Golden Grahams",
+      "brand": "Nestlé",
+      "aliases": [],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 378,
+        "protein": 6.9,
+        "carbs": 76.8,
+        "sugars": 24.5,
+        "fat": 3.3,
+        "satfat": 0.4,
+        "fibre": 6.5,
+        "salt": 0.97,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 559,
+        "iron": 11,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 1,
+        "b3": 12,
+        "b6": 1.1,
+        "folate": 141,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/golden-grahams",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1599 kJ. Folate is the label's folic acid. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:golden-nuggets",
+      "kind": "product",
+      "name": "Nestlé Golden Nuggets",
+      "brand": "Nestlé",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 374,
+        "protein": 8.7,
+        "carbs": 77.9,
+        "sugars": 22.4,
+        "fat": 1.5,
+        "satfat": 0.3,
+        "fibre": 7,
+        "salt": 0.63,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 491,
+        "iron": 13,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 1.2,
+        "b3": 14,
+        "b6": 1.3,
+        "folate": 200,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/uk/brands/golden-nuggets",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/uk (UK label), energy 1584 kJ. Folate is the label's folic acid. Sold in Malta: Nestlé Golden Nuggets 375 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:fitness-original",
+      "kind": "product",
+      "name": "Nestlé Fitness Original",
+      "brand": "Nestlé",
+      "aliases": [
+        "Fitness cereali integrali"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 368,
+        "protein": 9.8,
+        "carbs": 74.7,
+        "sugars": 8.3,
+        "fat": 1.5,
+        "satfat": 0.6,
+        "fibre": 8.5,
+        "salt": 0.56,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 415,
+        "iron": 7.5,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 1.1,
+        "b3": 8.5,
+        "b6": 0.92,
+        "folate": 102,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/it/cereali/fitness/original",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/it (Italian/EU label), energy 1560 kJ. Folate is the label's folic acid. Sold in Malta: Nestlé Fitness Cereali Integrali 375 g listed on supermarket.mt (Maltese supermarket price listings); Fitness is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:fitness-milk-chocolate",
+      "kind": "product",
+      "name": "Nestlé Fitness Milk Chocolate",
+      "brand": "Nestlé",
+      "aliases": [
+        "Fitness Cioccolato al Latte",
+        "Fitness Chocolate"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 398,
+        "protein": 8.9,
+        "carbs": 71.2,
+        "sugars": 17.1,
+        "fat": 6.8,
+        "satfat": 4,
+        "fibre": 7.6,
+        "salt": 0.49,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": 366,
+        "iron": 7,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": 0.96,
+        "b3": 6.8,
+        "b6": 0.75,
+        "folate": 87.9,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/it/cereali/fitness/cioccolato",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/it (Italian/EU label), energy 1677 kJ. Folate is the label's folic acid. Sold in Malta: Nestlé Fitness Chocolate Cereal 375 g listed on supermarket.mt (Maltese supermarket price listings); Fitness is not sold in the UK, so the Maltese pack is an EU one.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:soybeans"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nestle:fitness-protein",
+      "kind": "product",
+      "name": "Nestlé Fitness Protein (cocoa, no added sugar)",
+      "brand": "Nestlé",
+      "aliases": [],
+      "market": "EU",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 351,
+        "protein": 12.1,
+        "carbs": 64.1,
+        "sugars": 0.8,
+        "fat": 5.1,
+        "satfat": 1.4,
+        "fibre": 12.4,
+        "salt": 0.89,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.nestle-cereals.com/it/cereali/fitness/protein",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on nestle-cereals.com/it (Italian/EU label), energy 1477 kJ. Sweetened with maltitol; carbohydrate as published includes it. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:weetabix:original",
+      "kind": "product",
+      "name": "Weetabix Original",
+      "brand": "Weetabix",
+      "aliases": [
+        "Weetabix"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 362,
+        "protein": 12,
+        "carbs": 69,
+        "sugars": 4.2,
+        "fat": 2,
+        "satfat": 0.6,
+        "fibre": 10,
+        "salt": 0.28,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 12,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.94,
+        "b2": 1.2,
+        "b3": 14,
+        "b6": null,
+        "folate": 170,
+        "b12": null
+      },
+      "serving": {
+        "size": 37.5,
+        "unit": "g",
+        "label": "2 biscuits (37.5 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "2 biscuits (37.5 g)",
+          "g": 37.5,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://weetabix.co.uk/our-products/weetabix/weetabix/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on weetabix.co.uk (UK label), energy 1531 kJ. Folate is the label's folic acid. Sold in Malta: Weetabix Original 430 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:weetabix:banana",
+      "kind": "product",
+      "name": "Weetabix Banana",
+      "brand": "Weetabix",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 361,
+        "protein": 11,
+        "carbs": 70,
+        "sugars": 13,
+        "fat": 1.9,
+        "satfat": 0.4,
+        "fibre": 10,
+        "salt": 0.2,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 12,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.94,
+        "b2": 1.2,
+        "b3": 14,
+        "b6": null,
+        "folate": 170,
+        "b12": null
+      },
+      "serving": {
+        "size": 44,
+        "unit": "g",
+        "label": "2 biscuits (44 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "2 biscuits (44 g)",
+          "g": 44,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://weetabix.co.uk/our-products/weetabix/weetabix-banana/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on weetabix.co.uk (UK label), energy 1527 kJ. Folate is the label's folic acid. Sold in Malta: Weetabix Banana 488 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:weetabix:chocolate",
+      "kind": "product",
+      "name": "Weetabix Chocolate",
+      "brand": "Weetabix",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 366,
+        "protein": 10,
+        "carbs": 68,
+        "sugars": 17,
+        "fat": 3.8,
+        "satfat": 1.6,
+        "fibre": 10,
+        "salt": 0.18,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 12,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.94,
+        "b2": 1.2,
+        "b3": 14,
+        "b6": null,
+        "folate": 170,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "2 biscuits (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "2 biscuits (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://weetabix.co.uk/our-products/weetabix/weetabix-chocolate/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on weetabix.co.uk (UK label), energy 1547 kJ. Folate is the label's folic acid. Sold in Malta: Weetabix Chocolate 500 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:soybeans"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:weetabix:crispy-minis-chocolate-chip",
+      "kind": "product",
+      "name": "Weetabix Crispy Minis Chocolate Chip",
+      "brand": "Weetabix",
+      "aliases": [
+        "Weetabix Minis chocolate"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 386,
+        "protein": 10,
+        "carbs": 70,
+        "sugars": 17,
+        "fat": 5.1,
+        "satfat": 2.3,
+        "fibre": 10,
+        "salt": 0.16,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 12,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 4.3,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.94,
+        "b2": 1.2,
+        "b3": 14,
+        "b6": null,
+        "folate": 170,
+        "b12": null
+      },
+      "serving": {
+        "size": 40,
+        "unit": "g",
+        "label": "1 bowl (40 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (40 g)",
+          "g": 40,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://weetabix.co.uk/our-products/minis/weetabix-minis-chocolate/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on weetabix.co.uk (UK label), energy 1629 kJ. Folate is the label's folic acid. Sold in Malta: Weetabix Minis Chocolate 500 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:soybeans"
+        ],
+        "traces": [
+          "en:peanuts",
+          "en:nuts",
+          "en:milk"
+        ]
+      }
+    },
+    {
+      "key": "brand:weetabix:crispy-minis-fruit-nut",
+      "kind": "product",
+      "name": "Weetabix Crispy Minis Fruit & Nut",
+      "brand": "Weetabix",
+      "aliases": [
+        "Weetabix Minis fruit and nut"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 374,
+        "protein": 11,
+        "carbs": 69,
+        "sugars": 18,
+        "fat": 3.9,
+        "satfat": 0.7,
+        "fibre": 9.6,
+        "salt": 0.17,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 12,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 4.3,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.94,
+        "b2": 1.2,
+        "b3": 14,
+        "b6": null,
+        "folate": 170,
+        "b12": null
+      },
+      "serving": {
+        "size": 40,
+        "unit": "g",
+        "label": "1 bowl (40 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (40 g)",
+          "g": 40,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://weetabix.co.uk/our-products/minis/weetabix-minis-fruit-nut/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on weetabix.co.uk (UK label), energy 1581 kJ. Folate is the label's folic acid. Sold in Malta: Weetabix Minis Fruit and Nut 500 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:peanuts",
+          "en:nuts"
+        ],
+        "traces": [
+          "en:milk"
+        ]
+      }
+    },
+    {
+      "key": "brand:weetabix:oatibix",
+      "kind": "product",
+      "name": "Weetabix Oatibix",
+      "brand": "Weetabix",
+      "aliases": [
+        "Oatibix"
+      ],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 390,
+        "protein": 12,
+        "carbs": 63,
+        "sugars": 4.8,
+        "fat": 8,
+        "satfat": 1.3,
+        "fibre": 8.8,
+        "salt": 0.23,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.94,
+        "b2": 1.2,
+        "b3": 14,
+        "b6": null,
+        "folate": 170,
+        "b12": null
+      },
+      "serving": {
+        "size": 50,
+        "unit": "g",
+        "label": "2 biscuits (50 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "2 biscuits (50 g)",
+          "g": 50,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://weetabix.co.uk/our-products/oatibix/weetabix-oatibix-classic/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on weetabix.co.uk (UK label), energy 1641 kJ. Folate is the label's folic acid. Maltese shops list \"Weetabix Oatibix Wholegrain Oats 600 g\", probably this product, not confirmed. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:weetabix:oatibix-flakes",
+      "kind": "product",
+      "name": "Weetabix Oatibix Flakes",
+      "brand": "Weetabix",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 405,
+        "protein": 11,
+        "carbs": 67,
+        "sugars": 14,
+        "fat": 8.6,
+        "satfat": 1.4,
+        "fibre": 8,
+        "salt": 0.28,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 12,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.94,
+        "b2": 1.2,
+        "b3": 14,
+        "b6": 1.2,
+        "folate": 170,
+        "b12": 2.1
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://weetabix.co.uk/our-products/oatibix/weetabix-oatibix-flakes/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on weetabix.co.uk (UK label), energy 1708 kJ. Folate is the label's folic acid. Sold in Malta: Weetabix Oatibix Flakes 550 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:weetabix:protein",
+      "kind": "product",
+      "name": "Weetabix Protein",
+      "brand": "Weetabix",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 365,
+        "protein": 19,
+        "carbs": 62,
+        "sugars": 4.7,
+        "fat": 2.4,
+        "satfat": 0.4,
+        "fibre": 9.9,
+        "salt": 0.23,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 12,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.94,
+        "b2": 1.2,
+        "b3": 14,
+        "b6": null,
+        "folate": 170,
+        "b12": null
+      },
+      "serving": null,
+      "pack": null,
+      "portions": [],
+      "source": "brand",
+      "source_ref": "https://weetabix.co.uk/our-products/weetabix-protein/weetabix-protein-2/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on weetabix.co.uk (UK label), energy 1545 kJ. Folate is the label's folic acid. The page gives a 2-biscuit serving without its weight, so no portion is set. Its per-serving riboflavin (5.6 mg) is a typo; per 100 g is used. Sold in Malta: Weetabix Protein 440 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:weetabix:protein-crunch-chocolate",
+      "kind": "product",
+      "name": "Weetabix Protein Crunch Chocolate",
+      "brand": "Weetabix",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 375,
+        "protein": 20,
+        "carbs": 64,
+        "sugars": 22,
+        "fat": 2.8,
+        "satfat": 0.7,
+        "fibre": 7.1,
+        "salt": 0.28,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": 13,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": 4.5,
+        "vite": null,
+        "vitk": null,
+        "b1": 0.99,
+        "b2": 1.3,
+        "b3": 14,
+        "b6": 1.3,
+        "folate": 180,
+        "b12": 2.3
+      },
+      "serving": {
+        "size": 30,
+        "unit": "g",
+        "label": "1 bowl (30 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (30 g)",
+          "g": 30,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://weetabix.co.uk/our-products/weetabix-protein/weetabix-protein-crunch-chocolate/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on weetabix.co.uk (UK label), energy 1588 kJ. Folate is the label's folic acid. Sold in Malta: Weetabix Protein Crunch Chocolate 450 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk"
+        ]
+      }
+    },
+    {
+      "key": "brand:alpen:original-muesli",
+      "kind": "product",
+      "name": "Alpen Original Swiss Style Muesli",
+      "brand": "Alpen",
+      "aliases": [
+        "Alpen muesli"
+      ],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 373,
+        "protein": 11,
+        "carbs": 66,
+        "sugars": 21,
+        "fat": 5.5,
+        "satfat": 0.9,
+        "fibre": 7.7,
+        "salt": 0.25,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://alpen.co.uk/our-products/muesli/original/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on alpen.co.uk (UK label), energy 1574 kJ. Sold in Malta: Alpen Original 550 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:alpen:no-added-sugar-muesli",
+      "kind": "product",
+      "name": "Alpen No Added Sugar Swiss Style Muesli",
+      "brand": "Alpen",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 370,
+        "protein": 11,
+        "carbs": 65,
+        "sugars": 18,
+        "fat": 5.5,
+        "satfat": 0.9,
+        "fibre": 8,
+        "salt": 0.28,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://alpen.co.uk/our-products/muesli/no-added-sugar/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on alpen.co.uk (UK label), energy 1560 kJ. Sold in Malta: Alpen No Added Sugar 560 g and 950 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:milk",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:jordans:country-crisp-chunky-nuts",
+      "kind": "product",
+      "name": "Jordans Country Crisp Chunky Nuts",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 486,
+        "protein": 11,
+        "carbs": 59,
+        "sugars": 18,
+        "fat": 19,
+        "satfat": 2.4,
+        "fibre": 6,
+        "salt": 0.03,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/country-crisp-chunky-nuts/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 2040 kJ. Sold in Malta: Jordans Country Crisp Chunky Nuts 450 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:jordans:country-crisp-honey-nut",
+      "kind": "product",
+      "name": "Jordans Country Crisp Honey & Nut",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 455,
+        "protein": 9.4,
+        "carbs": 61,
+        "sugars": 22,
+        "fat": 18,
+        "satfat": 2,
+        "fibre": 5.5,
+        "salt": 0.03,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/country-crisp-honey-and-nut/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1909 kJ. Sold in Malta: Jordans Honey and Nut Cereal 450 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:jordans:country-crisp-strawberries",
+      "kind": "product",
+      "name": "Jordans Country Crisp Strawberries",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 434,
+        "protein": 9.2,
+        "carbs": 67,
+        "sugars": 20,
+        "fat": 13,
+        "satfat": 1.9,
+        "fibre": 5.8,
+        "salt": 0.03,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/country-crisp-strawberries/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1823 kJ. Sold in Malta: Jordans Strawberry 450 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:jordans:country-crisp-chocolate",
+      "kind": "product",
+      "name": "Jordans Country Crisp Chocolate",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 444,
+        "protein": 8.9,
+        "carbs": 66,
+        "sugars": 22,
+        "fat": 15,
+        "satfat": 3.3,
+        "fibre": 5.6,
+        "salt": 0.02,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/country-crisp-chocolate/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1866 kJ. Maltese shops list \"Jordans Dark Chocolate 450 g\", probably this product, not confirmed. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:soybeans"
+        ],
+        "traces": [
+          "en:milk",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:jordans:granola-raisin-almond",
+      "kind": "product",
+      "name": "Jordans Crunchy Oat Granola Raisin & Almond",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 416,
+        "protein": 11,
+        "carbs": 64,
+        "sugars": 21,
+        "fat": 12,
+        "satfat": 1.5,
+        "fibre": 6.2,
+        "salt": 0.03,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": 6.8,
+        "pufa": 3,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/crunchy-oat-granola-raisin-and-almond/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1751 kJ. Sold in Malta: Jordans Crunchy Oat Granola Raisin and Almond 750 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:jordans:granola-fruit-nut",
+      "kind": "product",
+      "name": "Jordans Crunchy Oat Granola Fruit & Nut",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 414,
+        "protein": 10,
+        "carbs": 65,
+        "sugars": 24,
+        "fat": 11,
+        "satfat": 2.7,
+        "fibre": 6.1,
+        "salt": 0.05,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": 5.6,
+        "pufa": 2.5,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/crunchy-oat-granola-fruit-and-nut/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1742 kJ. Sold in Malta: Jordans Crunchy Oats Fruit and Nut 750 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:jordans:granola-tropical-fruits",
+      "kind": "product",
+      "name": "Jordans Crunchy Oat Granola Tropical Fruits",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 426,
+        "protein": 10,
+        "carbs": 65,
+        "sugars": 22,
+        "fat": 13,
+        "satfat": 4.4,
+        "fibre": 6.2,
+        "salt": 0.05,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": 5.4,
+        "pufa": 2.4,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/crunchy-oat-granola-with-tropical-fruits/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1793 kJ. Sold in Malta: Jordans Crunchy Oats Tropical Fruits 750 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:jordans:simply-granola",
+      "kind": "product",
+      "name": "Jordans Simply Granola",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 418,
+        "protein": 11,
+        "carbs": 66,
+        "sugars": 17,
+        "fat": 11,
+        "satfat": 1.5,
+        "fibre": 6.3,
+        "salt": 0.03,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": 6.2,
+        "pufa": 2.8,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/simply-granola/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1759 kJ. Sold in Malta: Jordans Simply Granola 750 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:jordans:super-berry-granola",
+      "kind": "product",
+      "name": "Jordans Super Berry Granola",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 420,
+        "protein": 11,
+        "carbs": 64,
+        "sugars": 18,
+        "fat": 12,
+        "satfat": 1.6,
+        "fibre": 6.7,
+        "salt": 0.03,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": 6.4,
+        "pufa": 3.3,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/super-berry-granola/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1768 kJ. Sold in Malta: Jordans Granola Super Berry 500 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:jordans:super-fruity-granola",
+      "kind": "product",
+      "name": "Jordans Super Fruity Granola",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 415,
+        "protein": 10.7,
+        "carbs": 66,
+        "sugars": 18.8,
+        "fat": 10.6,
+        "satfat": 1.5,
+        "fibre": 6.5,
+        "salt": 0.05,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": 6,
+        "pufa": 2.7,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/super-fruity-granola/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1748 kJ. Sold in Malta: Jordans Granola Superfruity 500 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:jordans:no-added-sugar-granola-apple-berry",
+      "kind": "product",
+      "name": "Jordans No Added Sugar Granola Apple & Berry",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 427,
+        "protein": 8.5,
+        "carbs": 48.9,
+        "sugars": 9.8,
+        "fat": 18,
+        "satfat": 3.5,
+        "fibre": 18,
+        "salt": 0.05,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": 7.8,
+        "pufa": 5.4,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/no-sugar-apple-and-berry/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1783 kJ. The page's per-100 g carbohydrate reads \"4 g\", which does not fit its own per-portion 22 g; carbohydrate here is worked out from the per 45 g portion (22 / 0.45 = 48.9 g). All other values per 100 g as published. Sold in Malta: Jordans No Added Sugar Granola Apple and Berry 425 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:jordans:fruit-nut-muesli",
+      "kind": "product",
+      "name": "Jordans Fruit & Nut Muesli",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 385,
+        "protein": 10.6,
+        "carbs": 61.2,
+        "sugars": 14.6,
+        "fat": 8.8,
+        "satfat": 2.7,
+        "fibre": 9.1,
+        "salt": 0.03,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": 3.2,
+        "pufa": 2.5,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/fruit-and-nut-muesli/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1619 kJ. Sold in Malta: Jordans Fruit Nut Muesli 600 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:jordans:natural-muesli",
+      "kind": "product",
+      "name": "Jordans Natural Muesli (no added sugar)",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 366,
+        "protein": 10,
+        "carbs": 68,
+        "sugars": 10.4,
+        "fat": 3.9,
+        "satfat": 0.6,
+        "fibre": 9.2,
+        "salt": 0.03,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": 1.4,
+        "pufa": 1.6,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/natural-muesli/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1544 kJ. Sold in Malta: Jordans Natural Muesli No Added Sugar 1 kg listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:jordans:chunky-traditional-porridge-oats",
+      "kind": "product",
+      "name": "Jordans Chunky Traditional Porridge Oats",
+      "brand": "Jordans",
+      "aliases": [],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 379,
+        "protein": 12.5,
+        "carbs": 61.9,
+        "sugars": 1,
+        "fat": 7.2,
+        "satfat": 1.3,
+        "fibre": 8.1,
+        "salt": 0.03,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": 2.6,
+        "pufa": 3,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": null,
+      "pack": null,
+      "portions": [],
+      "source": "brand",
+      "source_ref": "https://jordanscereals.co.uk/home/cereal/chunky-traditional-porridge/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on jordanscereals.co.uk (UK label), energy 1596 kJ. Dry oats. The page's per-portion column (1082 kJ) does not match a 45 g bowl of dry oats, so no portion is given. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:dorset-cereals:delicious-fruit-nut-muesli",
+      "kind": "product",
+      "name": "Dorset Cereals Delicious Fruit & Nut Muesli",
+      "brand": "Dorset Cereals",
+      "aliases": [],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 377,
+        "protein": 9.1,
+        "carbs": 64,
+        "sugars": 19,
+        "fat": 7.7,
+        "satfat": 1,
+        "fibre": 7.2,
+        "salt": 0.05,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": null,
+      "pack": null,
+      "portions": [],
+      "source": "brand",
+      "source_ref": "https://dorsetcereals.co.uk/products/fruit-nut-muesli/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on dorsetcereals.co.uk (UK label), energy 1590 kJ. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:dorset-cereals:gloriously-nutty-muesli",
+      "kind": "product",
+      "name": "Dorset Cereals Gloriously Nutty Muesli",
+      "brand": "Dorset Cereals",
+      "aliases": [],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 403,
+        "protein": 11.6,
+        "carbs": 55,
+        "sugars": 8.3,
+        "fat": 13,
+        "satfat": 1.6,
+        "fibre": 9.8,
+        "salt": 0.05,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": null,
+      "pack": null,
+      "portions": [],
+      "source": "brand",
+      "source_ref": "https://dorsetcereals.co.uk/products/gloriously-nutty-muesli/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on dorsetcereals.co.uk (UK label), energy 1690 kJ. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:dorset-cereals:fantastically-fruity-muesli",
+      "kind": "product",
+      "name": "Dorset Cereals Fantastically Fruity Muesli",
+      "brand": "Dorset Cereals",
+      "aliases": [],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 361,
+        "protein": 8.5,
+        "carbs": 69,
+        "sugars": 22,
+        "fat": 4,
+        "satfat": 1.4,
+        "fibre": 7.6,
+        "salt": 0.05,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": null,
+      "pack": null,
+      "portions": [],
+      "source": "brand",
+      "source_ref": "https://dorsetcereals.co.uk/products/fantastically-fruity-muesli/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on dorsetcereals.co.uk (UK label), energy 1525 kJ. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:sulphur-dioxide-and-sulphites"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:dorset-cereals:tasty-toasted-muesli",
+      "kind": "product",
+      "name": "Dorset Cereals Tasty Toasted Muesli",
+      "brand": "Dorset Cereals",
+      "aliases": [],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 375,
+        "protein": 10,
+        "carbs": 62,
+        "sugars": 19,
+        "fat": 7.9,
+        "satfat": 1,
+        "fibre": 7.1,
+        "salt": 0.18,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://dorsetcereals.co.uk/products/tasty-toasted-muesli/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on dorsetcereals.co.uk (UK label), energy 1582 kJ. Allergens taken from the ingredient list (wheat, barley, oats, hazelnuts, almonds); this page does not set them in bold. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:dorset-cereals:honey-granola",
+      "kind": "product",
+      "name": "Dorset Cereals Honey Granola",
+      "brand": "Dorset Cereals",
+      "aliases": [],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 494,
+        "protein": 13,
+        "carbs": 49,
+        "sugars": 13,
+        "fat": 26,
+        "satfat": 2.7,
+        "fibre": 7,
+        "salt": 0.03,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://dorsetcereals.co.uk/products/honey-granola/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on dorsetcereals.co.uk (UK label), energy 2062 kJ. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    },
+    {
+      "key": "brand:dorset-cereals:berry-granola",
+      "kind": "product",
+      "name": "Dorset Cereals Berry Granola",
+      "brand": "Dorset Cereals",
+      "aliases": [],
+      "market": "UK",
+      "category": "Breakfast cereals",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 464,
+        "protein": 10,
+        "carbs": 63,
+        "sugars": 17,
+        "fat": 18,
+        "satfat": 2.1,
+        "fibre": 5.7,
+        "salt": 0.03,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 45,
+        "unit": "g",
+        "label": "1 bowl (45 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bowl (45 g)",
+          "g": 45,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://dorsetcereals.co.uk/products/berry-granola/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on dorsetcereals.co.uk (UK label), energy 1948 kJ. Not confirmed on sale in Malta.",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nature-valley:crunchy-oats-honey",
+      "kind": "product",
+      "name": "Nature Valley Crunchy Oats & Honey bars",
+      "brand": "Nature Valley",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 467,
+        "protein": 8.7,
+        "carbs": 64.3,
+        "sugars": 26.8,
+        "fat": 18.1,
+        "satfat": 2.2,
+        "fibre": 6.4,
+        "salt": 0.85,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 42,
+        "unit": "g",
+        "label": "1 pack of 2 bars (42 g)"
+      },
+      "pack": {
+        "size": 210,
+        "unit": "g",
+        "count": 5,
+        "label": "5 packs of 2 bars (42 g each)"
+      },
+      "portions": [
+        {
+          "label": "1 pack of 2 bars (42 g)",
+          "g": 42,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.naturevalley.co.uk/product/crunchy-oats-honey/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on naturevalley.co.uk (UK label), energy 1960 kJ. Sold in Malta: Nature Valley Crunchy Oats and Honey 42 g, 210 g and 420 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:peanuts",
+          "en:nuts",
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:nature-valley:crunchy-oats-dark-chocolate",
+      "kind": "product",
+      "name": "Nature Valley Crunchy Oats & Dark Chocolate bars",
+      "brand": "Nature Valley",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 473,
+        "protein": 8.7,
+        "carbs": 61.5,
+        "sugars": 26.8,
+        "fat": 19.8,
+        "satfat": 3.4,
+        "fibre": 7,
+        "salt": 0.65,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 42,
+        "unit": "g",
+        "label": "1 pack of 2 bars (42 g)"
+      },
+      "pack": {
+        "size": 210,
+        "unit": "g",
+        "count": 5,
+        "label": "5 packs of 2 bars (42 g each)"
+      },
+      "portions": [
+        {
+          "label": "1 pack of 2 bars (42 g)",
+          "g": 42,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.naturevalley.co.uk/product/crunchy-oats-dark-chocolate/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on naturevalley.co.uk (UK label), energy 1981 kJ. Sold in Malta: Nature Valley Crunchy Oats and Dark Chocolate 210 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten",
+          "en:soybeans"
+        ],
+        "traces": [
+          "en:peanuts",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nature-valley:crunchy-canadian-maple-syrup",
+      "kind": "product",
+      "name": "Nature Valley Crunchy Canadian Maple Syrup bars",
+      "brand": "Nature Valley",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 465,
+        "protein": 8.7,
+        "carbs": 64.3,
+        "sugars": 26.8,
+        "fat": 17.8,
+        "satfat": 2.2,
+        "fibre": 6.4,
+        "salt": 0.78,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 42,
+        "unit": "g",
+        "label": "1 pack of 2 bars (42 g)"
+      },
+      "pack": {
+        "size": 210,
+        "unit": "g",
+        "count": 5,
+        "label": "5 packs of 2 bars (42 g each)"
+      },
+      "portions": [
+        {
+          "label": "1 pack of 2 bars (42 g)",
+          "g": 42,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.naturevalley.co.uk/product/crunchy-canadian-maple-syrup/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on naturevalley.co.uk (UK label), energy 1951 kJ. Sold in Malta: Nature Valley Maple Syrup 210 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:peanuts",
+          "en:nuts",
+          "en:soybeans"
+        ]
+      }
+    },
+    {
+      "key": "brand:nature-valley:crunchy-chocolate-chip",
+      "kind": "product",
+      "name": "Nature Valley Crunchy Chocolate Chip bars",
+      "brand": "Nature Valley",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 472,
+        "protein": 8.4,
+        "carbs": 62,
+        "sugars": 28.1,
+        "fat": 20,
+        "satfat": 3.3,
+        "fibre": 5.3,
+        "salt": 0.66,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 42,
+        "unit": "g",
+        "label": "1 pack of 2 bars (42 g)"
+      },
+      "pack": {
+        "size": 210,
+        "unit": "g",
+        "count": 5,
+        "label": "5 packs of 2 bars (42 g each)"
+      },
+      "portions": [
+        {
+          "label": "1 pack of 2 bars (42 g)",
+          "g": 42,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.naturevalley.co.uk/product/crunchy-chocolate-chip/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on naturevalley.co.uk (UK label), energy 1979 kJ. Sold in Malta: Nature Valley Crunchy Chocolate Chip 42 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:gluten"
+        ],
+        "traces": [
+          "en:milk",
+          "en:soybeans",
+          "en:peanuts",
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nature-valley:protein-peanut-chocolate",
+      "kind": "product",
+      "name": "Nature Valley Protein Peanut & Chocolate bar",
+      "brand": "Nature Valley",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 489,
+        "protein": 25.6,
+        "carbs": 27.5,
+        "sugars": 17.2,
+        "fat": 28.3,
+        "satfat": 7.4,
+        "fibre": 11,
+        "salt": 0.94,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 40,
+        "unit": "g",
+        "label": "1 bar (40 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bar (40 g)",
+          "g": 40,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.naturevalley.co.uk/product/protein-peanut-chocolate/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on naturevalley.co.uk (UK label), energy 2038 kJ. Sold in Malta: Nature Valley Protein Peanut and Chocolate 40 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:peanuts",
+          "en:soybeans",
+          "en:milk"
+        ],
+        "traces": [
+          "en:nuts"
+        ]
+      }
+    },
+    {
+      "key": "brand:nature-valley:protein-salted-caramel-nut",
+      "kind": "product",
+      "name": "Nature Valley Protein Salted Caramel Nut bar",
+      "brand": "Nature Valley",
+      "aliases": [],
+      "market": "Malta",
+      "category": "Snacks",
+      "state": "as-sold",
+      "basis": "g",
+      "liquid": false,
+      "nutrients": {
+        "kcal": 496,
+        "protein": 26,
+        "carbs": 26.3,
+        "sugars": 16.1,
+        "fat": 29.5,
+        "satfat": 7.1,
+        "fibre": 10.8,
+        "salt": 0.89,
+        "caffeine": null,
+        "alcohol": null,
+        "addsugars": null,
+        "mufa": null,
+        "pufa": null,
+        "transfat": null,
+        "chol": null,
+        "potassium": null,
+        "calcium": null,
+        "iron": null,
+        "magnesium": null,
+        "zinc": null,
+        "phosphorus": null,
+        "selenium": null,
+        "vita": null,
+        "vitc": null,
+        "vitd": null,
+        "vite": null,
+        "vitk": null,
+        "b1": null,
+        "b2": null,
+        "b3": null,
+        "b6": null,
+        "folate": null,
+        "b12": null
+      },
+      "serving": {
+        "size": 40,
+        "unit": "g",
+        "label": "1 bar (40 g)"
+      },
+      "pack": null,
+      "portions": [
+        {
+          "label": "1 bar (40 g)",
+          "g": 40,
+          "source": "brand"
+        }
+      ],
+      "source": "brand",
+      "source_ref": "https://www.naturevalley.co.uk/product/protein-salted-caramel-nut/",
+      "source_date": "2026-10-28",
+      "status": "ok",
+      "notes": "Per 100 g as published on naturevalley.co.uk (UK label), energy 2067 kJ. Sold in Malta: Nature Valley Protein Salted Caramel 40 g listed on supermarket.mt (Maltese supermarket price listings).",
+      "facts": {
+        "allergens": [
+          "en:peanuts",
+          "en:soybeans",
+          "en:milk",
+          "en:nuts"
+        ],
+        "traces": []
+      }
+    }
+  ],
+  "gaps": [
+    {
+      "name": "Quaker Oats (porridge oats, Oat So Simple sachets and pots, Cruesli)",
+      "reason": "Sold in Malta (Quaker Oats 1 kg, Oat So Simple sachets and pots, Cruesli on supermarket.mt), but quaker.co.uk refused every request with a bot-protection (Incapsula) block, and no other official Quaker page or PDF was found; retailer and tracker copies are not allowed."
+    },
+    {
+      "name": "Mulino Bianco breakfast cereals and cereal bars",
+      "reason": "No Mulino Bianco cereal, muesli or cereal bar is listed by Maltese shops; its Malta range is biscuits, rusks and snack cakes, which belong in other files."
+    },
+    {
+      "name": "Nestlé Chocapic",
+      "reason": "Not found on nestle-cereals.com UK or Italy and not listed by Maltese shops."
+    },
+    {
+      "name": "Nestlé Fitness granola and Fitness cereal bars (Malta: Fitness Granola Honey/Chocolate, Fitness bars)",
+      "reason": "Listed by Maltese shops but the official Italian and UK Nestlé cereal sites carry no page for these lines."
+    },
+    {
+      "name": "Kellogg's Honey Loops",
+      "reason": "Listed by Maltese shops (330 g) but no current Kellogg's UK, Italian or German page for it was found."
+    },
+    {
+      "name": "Kellogg's Special K Milk Chocolate bar and Special K Juicy Red Berry bar (UK)",
+      "reason": "Their kelloggs.co.uk pages show empty nutrition tables; the Italian Special K bars were used for the Malta-listed bars instead."
+    },
+    {
+      "name": "Weetos and Weetabix Crunchy Bran",
+      "reason": "Listed by Maltese shops, but the weetabix.co.uk product menu has no page for either and no other official page was read this session."
+    },
+    {
+      "name": "Nutrients not published (all records)",
+      "reason": "Mono- and polyunsaturates appear only on Jordans pages; potassium, magnesium, zinc, phosphorus, selenium and vitamins A, E and K appear on no brand page read; vitamins and minerals are given only where the label declares them. Everything else stays null."
+    }
+  ]
+}

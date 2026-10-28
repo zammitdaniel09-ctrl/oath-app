@@ -23,6 +23,8 @@ function seedFiles() {
     path.join(DATA, 'foods/cofid.json'),
     path.join(DATA, 'foods/ciqual.json'),
     ...jsonIn(path.join(DATA, 'foods/brands')),
+    path.join(DATA, 'foods/aliases-mt.json'),
+    ...jsonIn(path.join(DATA, 'foods/reqmap')),
     path.join(DATA, 'foods/placeholders.json'),
     ...jsonIn(path.join(DATA, 'foods/map')),
     ...jsonIn(path.join(DATA, 'recipes')),
@@ -141,9 +143,22 @@ export async function seedFood({ force = false, log = () => {} } = {}) {
   }
   log(`food seed: ${counts.items} catalogue records in ${((Date.now() - started) / 1000).toFixed(1)} s`);
 
+  // Maltese words (data/foods/aliases-mt.json): each leads to the records it names, as an alias, so typing
+  // "tadam" or "ġbejniet" finds them first. Only the search text changes; the records stay as their source has them.
+  const mtFile = path.join(DATA, 'foods/aliases-mt.json');
+  if (fs.existsSync(mtFile)) {
+    const pairs = readJson(mtFile).items.flatMap((x) => (x.keys || []).map((k) => [k, norm(x.mt)])).filter(([k, w]) => k && w);
+    await sql`update food_items f set alias_norm = array(select distinct unnest(f.alias_norm || t.words)), search = f.search || ' ' || array_to_string(t.words, ' ')
+      from (select key, array_agg(distinct w) as words from unnest(${pairs.map((x) => x[0])}::text[], ${pairs.map((x) => x[1])}::text[]) as u(key, w) group by key) t
+      where f.key = t.key`;
+    counts.maltese = pairs.length;
+  }
+
   // The blueprint's food list, with what each requirement was matched to.
   const maps = new Map();
   for (const f of jsonIn(path.join(DATA, 'foods/map'))) for (const e of readJson(f)) if (e.req) maps.set(e.req, e);
+  // Later links (data/foods/reqmap) point requirements at records from the newer sources and win.
+  for (const f of jsonIn(path.join(DATA, 'foods/reqmap'))) for (const e of readJson(f)) if (e.req) maps.set(e.req, e);
   const foodReqs = readJson(path.join(DATA, 'food-requirements.json')).items;
   for (const r of foodReqs) {
     const m = maps.get(r.key);

@@ -238,7 +238,7 @@
         "fat": 0.1,
         "satfat": null,
         "fibre": 1.1,
-        "salt": null,
+        "salt": 0,
         "caffeine": null,
         "alcohol": null,
         "addsugars": null,
@@ -272,7 +272,7 @@
       "source_ref": "https://mcdonalds.com.mt/product/berlingo-fruit/",
       "source_date": "2026-10-28",
       "status": "ok",
-      "notes": "Per 100 g as published on McDonald's Malta's product page (the site heads the column 'Per 100g'). The page's per-portion column repeats the per-100 g figures, so the portion weight is not known."
+      "notes": "Per 100 g as published on McDonald's Malta's product page (the site heads the column 'Per 100g'). The page's per-portion column repeats the per-100 g figures, so the portion weight is not known. Salt is 0: the page shows 0.0 g per portion and in its summary, with the per-100 g cell blank (spot check, 28 Oct 2026)."
     },
     {
       "key": "brand:mcdonalds-mt:big-mac",

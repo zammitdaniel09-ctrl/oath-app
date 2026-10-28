@@ -394,6 +394,18 @@ test('the catalogue stays honest: a USDA record without a value has null, and li
   assert.equal(n, 0);
 });
 
+test('Maltese words find their foods, with or without the Maltese letters', async () => {
+  const words = JSON.parse(fs.readFileSync(new URL('../data/foods/aliases-mt.json', import.meta.url), 'utf8')).items;
+  for (const mt of ['tadam', 'ġbejniet', 'tuffieħ', 'ħobż']) {
+    const entry = words.find((w) => w.mt === mt);
+    assert.ok(entry, mt);
+    for (const q of [mt, mt.replace(/ħ/g, 'h').replace(/ġ/g, 'g').replace(/ż/g, 'z')]) {
+      const hits = await food.searchFoods(q);
+      assert.ok(hits.length && entry.keys.includes(hits[0].key), `${q} → ${hits[0]?.key}`);
+    }
+  }
+});
+
 test('search still puts the hand-picked records first, as before the big catalogue', async () => {
   for (const [q, key] of [['apple', 'apple-raw-with-skin'], ['banana', 'banana-raw'], ['orange', 'orange-raw'], ['watermelon', 'watermelon-raw']]) {
     const [first] = await food.searchFoods(q);

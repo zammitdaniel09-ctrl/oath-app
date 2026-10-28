@@ -1,0 +1,3822 @@
+[
+  {
+    "req": "alcohol/non-alcoholic-beer",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "beer-alcohol-free",
+        "fdc_id": 174863,
+        "name": "Beer, alcohol-free",
+        "state": "as-sold",
+        "aliases": [
+          "non-alcoholic beer",
+          "0.0% beer"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "cofid-17-212"
+      },
+      {
+        "key": "ciqual-5030"
+      },
+      {
+        "key": "ciqual-5029"
+      },
+      {
+        "key": "brand:heineken:heineken-0-0"
+      },
+      {
+        "key": "brand:guinness:guinness-0-0"
+      },
+      {
+        "key": "brand:carlsberg:carlsberg-0-0"
+      },
+      {
+        "key": "brand:peroni:peroni-nastro-azzurro-0-0"
+      },
+      {
+        "key": "brand:desperados:desperados-virgin-0-0"
+      }
+    ],
+    "note": "CoFID alcohol-free lager (UK average of 10 brands) and Ciqual alcohol-free beer (plain, and sweetened/flavoured) are the generic records; Heineken 0.0, Guinness 0.0, Carlsberg 0.0, Peroni 0.0 and Desperados Virgin 0.0 are exact can labels. The old USDA malt-beverage record is kept as a fallback. Other alcohol-free brands: use the label."
+  },
+  {
+    "req": "alcohol/cider",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cider-proxy",
+        "fdc_id": 174146,
+        "name": "Cider (US hard cider)",
+        "state": "as-sold",
+        "aliases": [
+          "hard cider"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "cofid-17-222"
+      },
+      {
+        "key": "cofid-17-224"
+      },
+      {
+        "key": "cofid-17-822"
+      },
+      {
+        "key": "cofid-17-223"
+      },
+      {
+        "key": "ciqual-5003"
+      },
+      {
+        "key": "ciqual-5006"
+      },
+      {
+        "key": "ciqual-5007"
+      },
+      {
+        "key": "ciqual-5021"
+      },
+      {
+        "key": "ciqual-5022"
+      },
+      {
+        "key": "brand:strongbow:strongbow-gold-apple"
+      },
+      {
+        "key": "brand:strongbow:strongbow-red-berries"
+      },
+      {
+        "key": "brand:strongbow:strongbow-dark-fruit"
+      },
+      {
+        "key": "brand:strongbow:strongbow-tropical"
+      },
+      {
+        "key": "brand:somersby:somersby-apple"
+      },
+      {
+        "key": "brand:somersby:somersby-blackberry"
+      }
+    ],
+    "note": "UK cider by style from CoFID (dry, sweet, strong, low alcohol) and French cider (average, dry, sweet, half-dry, fruit-flavoured) from Ciqual; Strongbow and Somersby flavours are exact labels. The old US cider proxy is kept. ABV and sugar still vary by brand, so prefer the label when known."
+  },
+  {
+    "req": "alcohol/sparkling-wine",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "wine-sparkling-proxy",
+        "fdc_id": 174837,
+        "name": "Sparkling wine, dry (white wine proxy)",
+        "state": "as-sold",
+        "aliases": [
+          "prosecco",
+          "cava",
+          "champagne",
+          "bubbly"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "cofid-17-757"
+      },
+      {
+        "key": "ciqual-5201"
+      },
+      {
+        "key": "ciqual-5207"
+      },
+      {
+        "key": "brand:martini:martini-prosecco"
+      },
+      {
+        "key": "brand:martini:asti-martini"
+      }
+    ],
+    "note": "CoFID white sparkling wine (about 11.5% ABV, not champagne), Ciqual sparkling white wine and champagne cover brut-style sparkling wine; Martini Prosecco and Asti Martini (sweet style) are exact labels. The old dry-white-wine proxy is kept but no longer needed."
+  },
+  {
+    "req": "alcohol/liqueur",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "liqueur-coffee",
+        "fdc_id": 175097,
+        "name": "Coffee liqueur",
+        "state": "as-sold",
+        "liquid": true
+      },
+      {
+        "key": "liqueur-cream",
+        "fdc_id": 175098,
+        "name": "Cream liqueur",
+        "state": "as-sold",
+        "aliases": [
+          "Irish cream liqueur"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "liqueur-creme-de-menthe",
+        "fdc_id": 173168,
+        "name": "Crème de menthe",
+        "state": "as-sold",
+        "aliases": [
+          "mint liqueur"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "cofid-17-244"
+      },
+      {
+        "key": "cofid-17-245"
+      },
+      {
+        "key": "cofid-17-768"
+      },
+      {
+        "key": "ciqual-1003"
+      },
+      {
+        "key": "ciqual-1021"
+      },
+      {
+        "key": "brand:baileys:baileys-original-irish-cream"
+      },
+      {
+        "key": "brand:baileys:baileys-chocolate"
+      },
+      {
+        "key": "brand:kahlua:kahlua-original"
+      },
+      {
+        "key": "brand:malibu:malibu-original"
+      }
+    ],
+    "note": "CoFID liqueurs by strength (high strength 30-40% ABV such as Cointreau, Drambuie; low-medium 20-28% such as cherry brandy, Tia Maria; cream liqueurs) and Ciqual liqueur and blackcurrant liqueur now cover amaretto, limoncello, herbal and fruit liqueurs by strength band; Baileys, Kahlua and Malibu are exact labels. Sugar differs between liqueurs in the same band, so use the bottle label when known."
+  },
+  {
+    "req": "alcohol/premixed-cocktail",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cocktail-canned-daiquiri",
+        "fdc_id": 169573,
+        "name": "Daiquiri, canned",
+        "state": "as-sold",
+        "liquid": true
+      },
+      {
+        "key": "cocktail-canned-pina-colada",
+        "fdc_id": 168750,
+        "name": "Piña colada, canned",
+        "state": "as-sold",
+        "aliases": [
+          "pina colada"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "cocktail-canned-whiskey-sour",
+        "fdc_id": 174810,
+        "name": "Whiskey sour, canned",
+        "state": "as-sold",
+        "liquid": true
+      },
+      {
+        "key": "cocktail-canned-tequila-sunrise",
+        "fdc_id": 168753,
+        "name": "Tequila sunrise, canned",
+        "state": "as-sold",
+        "liquid": true
+      },
+      {
+        "key": "cofid-17-758"
+      },
+      {
+        "key": "brand:bacardi:bacardi-mojito-can"
+      },
+      {
+        "key": "brand:bacardi:bacardi-cuba-libre-can"
+      },
+      {
+        "key": "brand:bombay-sapphire:bombay-sapphire-and-tonic-can"
+      },
+      {
+        "key": "brand:jack-daniels:jack-daniels-and-cola-can"
+      },
+      {
+        "key": "brand:breezer:breezer-watermelon"
+      },
+      {
+        "key": "brand:breezer:breezer-lime"
+      },
+      {
+        "key": "brand:breezer:breezer-orange"
+      },
+      {
+        "key": "brand:breezer:breezer-pineapple"
+      },
+      {
+        "key": "brand:white-claw:white-claw-natural-lime"
+      },
+      {
+        "key": "brand:white-claw:white-claw-black-cherry"
+      },
+      {
+        "key": "brand:white-claw:white-claw-mango"
+      },
+      {
+        "key": "brand:white-claw:white-claw-raspberry"
+      },
+      {
+        "key": "brand:kinnie:kinnie-spritz"
+      },
+      {
+        "key": "brand:kinnie:kinnie-rumba"
+      }
+    ],
+    "note": "CoFID pre-mixed spirit drinks (about 4% ABV alcopops: WKD, Breezer, Smirnoff Ice) is the UK generic; exact cans now include Bacardi Mojito and Cuba Libre, Bombay Sapphire & Tonic, Jack Daniel's & Cola, Bacardi Breezer flavours, White Claw hard seltzers and Kinnie Spritz/Rumba. Still missing: other canned G&Ts and spritzes, which need the can label."
+  },
+  {
+    "req": "baking/golden-syrup",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-17-065"
+      }
+    ],
+    "note": "CoFID golden syrup (UK partially inverted cane syrup; 3 samples of one brand) covers it directly."
+  },
+  {
+    "req": "baking/stock-cube",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "stock-cube-chicken-as-sold",
+        "fdc_id": 171563,
+        "name": "Chicken stock cube",
+        "state": "as-sold",
+        "aliases": [
+          "stock cube",
+          "chicken stock cube",
+          "chicken bouillon cube"
+        ]
+      },
+      {
+        "key": "stock-cube-beef-as-sold",
+        "fdc_id": 171561,
+        "name": "Beef stock cube",
+        "state": "as-sold",
+        "aliases": [
+          "beef stock cube",
+          "beef bouillon cube"
+        ]
+      },
+      {
+        "key": "ciqual-11001"
+      },
+      {
+        "key": "ciqual-11174"
+      },
+      {
+        "key": "ciqual-11041"
+      }
+    ],
+    "note": "Ciqual dehydrated stock/broth (beef, poultry, vegetable) covers dry cubes and powder, so the vegetable stock cube is no longer missing. The old US bouillon records are kept. CoFID stock cubes are not linked because CoFID publishes no energy for them. Cube weight and sodium still vary by brand; count sodium once."
+  },
+  {
+    "req": "baking/non-sugar-sweetener",
+    "status": "partial",
+    "records": [
+      {
+        "key": "ciqual-11506"
+      },
+      {
+        "key": "ciqual-11509"
+      }
+    ],
+    "note": "Ciqual aspartame tablets and aspartame powder (granulated, bulked) cover aspartame tabletop sweeteners. Still missing: sucralose and stevia sweeteners and other bulking agents, which need the pack label."
+  },
+  {
+    "req": "bread/seeded-bread",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bread-seeded-as-sold",
+        "fdc_id": 168013,
+        "name": "Seeded bread",
+        "state": "as-sold",
+        "aliases": [
+          "seeded loaf",
+          "seeded bread",
+          "multigrain bread",
+          "multi-grain bread"
+        ]
+      },
+      {
+        "key": "cofid-11-947"
+      },
+      {
+        "key": "ciqual-7113"
+      },
+      {
+        "key": "ciqual-7255"
+      },
+      {
+        "key": "ciqual-7098"
+      }
+    ],
+    "note": "CoFID seeded bread (UK label data) plus Ciqual multigrain/seeded sandwich loaf, bread and country-style loaf. The old multi-grain estimate is kept but no longer needed."
+  },
+  {
+    "req": "bread/ciabatta",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bread-ciabatta-as-sold",
+        "fdc_id": 174913,
+        "name": "Ciabatta",
+        "state": "as-sold",
+        "aliases": [
+          "ciabatta loaf",
+          "ciabatta roll"
+        ]
+      },
+      {
+        "key": "cofid-11-969"
+      }
+    ],
+    "note": "CoFID ciabatta (8 samples) covers it directly; the old Italian-bread estimate is kept."
+  },
+  {
+    "req": "bread/crumpet",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cofid-11-989"
+      }
+    ],
+    "note": "CoFID crumpets, toasted (9 samples) covers crumpets as usually eaten. Still missing: untoasted crumpets as sold, so logging pack weight before toasting needs the pack label."
+  },
+  {
+    "req": "bread/brioche",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ciqual-7746"
+      },
+      {
+        "key": "ciqual-7740"
+      },
+      {
+        "key": "ciqual-7745"
+      },
+      {
+        "key": "ciqual-7742"
+      },
+      {
+        "key": "ciqual-7210"
+      }
+    ],
+    "note": "Ciqual brioche (average, plain prepacked, pure butter prepacked, plain from bakery) and brioche sandwich loaf cover plain brioche; filled brioches have their own Ciqual records."
+  },
+  {
+    "req": "bread/pain-au-chocolat",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ciqual-7730"
+      },
+      {
+        "key": "ciqual-7733"
+      },
+      {
+        "key": "brand:starbucks:pain-au-chocolat"
+      }
+    ],
+    "note": "Ciqual chocolate croissant (pain au chocolat) from the bakery and prepacked, plus the Starbucks pain au chocolat label."
+  },
+  {
+    "req": "cereals/plain-muesli",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-11-781"
+      },
+      {
+        "key": "cofid-11-780"
+      },
+      {
+        "key": "ciqual-32141"
+      }
+    ],
+    "note": "CoFID Swiss-style muesli, no added sugar or salt (Jordans Natural and own brands) and Swiss-style muesli (Alpen and own brand), plus Ciqual unfortified muesli average."
+  },
+  {
+    "req": "cereals/fruit-muesli",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-11-780"
+      },
+      {
+        "key": "ciqual-32138"
+      },
+      {
+        "key": "ciqual-32113"
+      },
+      {
+        "key": "ciqual-32110"
+      }
+    ],
+    "note": "CoFID Swiss-style muesli (Alpen-type with fruit and nuts) and Ciqual muesli with fruit, nuts and/or seeds (unfortified, no added sugar, fortified)."
+  },
+  {
+    "req": "cereals/granola",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "granola-dry",
+        "fdc_id": 171646,
+        "name": "Granola",
+        "state": "dry",
+        "aliases": [
+          "granola",
+          "crunchy oat cereal"
+        ]
+      },
+      {
+        "key": "cofid-11-938"
+      },
+      {
+        "key": "cofid-11-939"
+      },
+      {
+        "key": "ciqual-32108"
+      },
+      {
+        "key": "ciqual-32111"
+      },
+      {
+        "key": "ciqual-32144"
+      },
+      {
+        "key": "ciqual-32145"
+      },
+      {
+        "key": "ciqual-32109"
+      },
+      {
+        "key": "ciqual-32112"
+      }
+    ],
+    "note": "Commercial granola: CoFID crunchy clusters without nuts (including Quaker Oat Granola) and crunchy muesli with nuts, and Ciqual granola with fruit, with nuts/seeds only and with chocolate (fortified and unfortified). The old homemade USDA granola is kept for homemade."
+  },
+  {
+    "req": "cereals/cornflakes",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-11-742"
+      },
+      {
+        "key": "cofid-11-745"
+      },
+      {
+        "key": "ciqual-32005"
+      },
+      {
+        "key": "ciqual-32014"
+      }
+    ],
+    "note": "CoFID fortified cornflakes (15 samples, Kellogg's and own brands) and unfortified cornflakes, plus Ciqual plain cornflakes. Fortification still differs by brand, so use the pack label for micronutrients when known."
+  },
+  {
+    "req": "cereals/bran-flakes",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-11-763"
+      }
+    ],
+    "note": "CoFID fortified bran flakes (15 samples, Kellogg's and own brands). Fortification and sugar still differ slightly by brand."
+  },
+  {
+    "req": "cereals/wheat-biscuits",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-11-773"
+      },
+      {
+        "key": "cofid-11-774"
+      }
+    ],
+    "note": "CoFID Weetabix-type wheat biscuits, fortified (Weetabix and own brands) and unfortified."
+  },
+  {
+    "req": "cereals/puffed-rice-cereal",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cereal-puffed-rice-dry",
+        "fdc_id": 173912,
+        "name": "Puffed rice cereal",
+        "state": "dry",
+        "aliases": [
+          "puffed rice",
+          "rice puffs"
+        ]
+      },
+      {
+        "key": "ciqual-32006"
+      },
+      {
+        "key": "cofid-11-750"
+      }
+    ],
+    "note": "Ciqual plain fortified puffed rice and CoFID toasted/crisp rice cereal (Rice Krispies and own brand). The old US puffed rice is kept. Sweetened or chocolate rice cereals are under chocolate or honey cereal."
+  },
+  {
+    "req": "cereals/puffed-wheat-cereal",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cereal-puffed-wheat-dry",
+        "fdc_id": 173913,
+        "name": "Puffed wheat cereal",
+        "state": "dry",
+        "aliases": [
+          "puffed wheat",
+          "wheat puffs"
+        ]
+      },
+      {
+        "key": "cofid-11-756"
+      },
+      {
+        "key": "cofid-11-757"
+      },
+      {
+        "key": "ciqual-32040"
+      }
+    ],
+    "note": "CoFID unfortified puffed wheat (Quaker Puffed Wheat and own brands) covers the plain cereal; CoFID honey-coated puffed wheat (Sugar Puffs type) and Ciqual honey/caramel puffed wheat cover the coated kind."
+  },
+  {
+    "req": "cereals/chocolate-cereal",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-11-753"
+      },
+      {
+        "key": "cofid-11-762"
+      },
+      {
+        "key": "ciqual-32001"
+      },
+      {
+        "key": "ciqual-32013"
+      },
+      {
+        "key": "ciqual-32016"
+      },
+      {
+        "key": "ciqual-32131"
+      },
+      {
+        "key": "ciqual-32012"
+      }
+    ],
+    "note": "By type: CoFID chocolate rice cereal (Coco Pops type) and chocolate wheat/multigrain cereal (Weetos, Coco Shreddies type), Ciqual chocolate extruded cereal (fortified and not), chocolate-filled pillows and chocolate puffed rice. Brand formulations still vary; use the pack label when known."
+  },
+  {
+    "req": "cereals/honey-cereal",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-11-755"
+      },
+      {
+        "key": "cofid-11-746"
+      },
+      {
+        "key": "cofid-11-757"
+      },
+      {
+        "key": "ciqual-32133"
+      },
+      {
+        "key": "ciqual-32142"
+      }
+    ],
+    "note": "By type: CoFID honey loops and hoops (Honey Cheerios type), honey-nut coated cornflakes (Crunchy Nut type) and honey-coated puffed wheat, and Ciqual honey puffed corn and honey/caramel extruded cereal. Brand formulations still vary; use the pack label when known."
+  },
+  {
+    "req": "cheese/halloumi",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-12-496"
+      }
+    ],
+    "note": "CoFID halloumi covers it directly."
+  },
+  {
+    "req": "cheese/mascarpone",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-12-490"
+      },
+      {
+        "key": "ciqual-19584"
+      }
+    ],
+    "note": "CoFID mascarpone and Ciqual cow's milk mascarpone cover it directly."
+  },
+  {
+    "req": "cheese/cream",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cream-single",
+        "fdc_id": 170857,
+        "name": "Single cream (US light cream)",
+        "state": "as-sold",
+        "aliases": [
+          "single cream",
+          "light cream",
+          "table cream"
+        ]
+      },
+      {
+        "key": "cream-half",
+        "fdc_id": 171255,
+        "name": "Half cream (US half-and-half)",
+        "state": "as-sold",
+        "aliases": [
+          "half and half"
+        ]
+      },
+      {
+        "key": "cofid-12-334"
+      },
+      {
+        "key": "cofid-12-332"
+      },
+      {
+        "key": "cofid-12-333"
+      },
+      {
+        "key": "cofid-12-592"
+      }
+    ],
+    "note": "UK double cream (CoFID, 53.7 g fat) is no longer missing; CoFID single, whipping and clotted cream are added alongside the old single and half cream records."
+  },
+  {
+    "req": "cheese/creme-fraiche",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "creme-fraiche-full-fat-proxy",
+        "fdc_id": 170858,
+        "name": "Crème fraîche, full-fat (proxy: light whipping cream)",
+        "state": "as-sold",
+        "aliases": [
+          "creme fraiche"
+        ]
+      },
+      {
+        "key": "cofid-12-335"
+      },
+      {
+        "key": "cofid-12-336"
+      }
+    ],
+    "note": "CoFID crème fraîche, full fat and half fat (6 brands each), so half-fat is no longer missing. The old whipping-cream proxy is kept but no longer needed."
+  },
+  {
+    "req": "coffee-tea/mocha",
+    "status": "partial",
+    "records": [
+      {
+        "key": "mocha-instant-powder",
+        "fdc_id": 174135,
+        "name": "Instant mocha mix (dry)",
+        "state": "dry"
+      },
+      {
+        "key": "mocha-iced-bottled",
+        "fdc_id": 174119,
+        "name": "Iced mocha, bottled",
+        "state": "as-sold",
+        "liquid": true
+      },
+      {
+        "key": "brand:mcdonalds-mt:cafe-mocha"
+      }
+    ],
+    "note": "Instant mix and bottled iced mocha as before, plus McDonald's Malta café mocha as an exact café drink. Still missing: a generic café mocha, which should be a recipe (espresso, milk, chocolate sauce)."
+  },
+  {
+    "req": "coffee-tea/iced-coffee",
+    "status": "partial",
+    "records": [
+      {
+        "key": "iced-coffee-bottled",
+        "fdc_id": 171880,
+        "name": "Iced coffee, bottled, with milk, sweetened",
+        "state": "as-sold",
+        "aliases": [
+          "ready-to-drink coffee"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "brand:benna:iced-coffee-milk-drink"
+      },
+      {
+        "key": "brand:mcdonalds-mt:ice-coffee-caramel"
+      },
+      {
+        "key": "brand:mcdonalds-mt:ice-coffee-vanilla"
+      },
+      {
+        "key": "brand:mcdonalds-mt:iced-cappuccino"
+      },
+      {
+        "key": "brand:wagamama:iced-latte-with-whole-milk"
+      }
+    ],
+    "note": "Bottled iced coffee as before, plus the Benna iced coffee milk drink (carton) and exact café drinks from McDonald's Malta and wagamama. Still missing: a generic café iced coffee, which should be a recipe."
+  },
+  {
+    "req": "convenience/frozen-plain-vegetables",
+    "status": "partial",
+    "records": [
+      {
+        "key": "frozen-mixed-veg",
+        "fdc_id": 170471,
+        "name": "Mixed vegetables, frozen",
+        "state": "frozen",
+        "aliases": [
+          "frozen mixed veg"
+        ]
+      },
+      {
+        "key": "frozen-mixed-veg-boiled",
+        "fdc_id": 170472,
+        "name": "Mixed vegetables, frozen, boiled",
+        "state": "boiled"
+      },
+      {
+        "key": "cofid-13-543"
+      },
+      {
+        "key": "ciqual-20214"
+      }
+    ],
+    "note": "CoFID frozen mixed vegetables, boiled (UK assorted mixes) and Ciqual frozen peas and carrots, raw. Still missing: UK frozen mixed vegetables uncooked, which stays on the old US-blend estimate. Single frozen vegetables use their own records."
+  },
+  {
+    "req": "convenience/frozen-vegetables-in-sauce",
+    "status": "partial",
+    "records": [
+      {
+        "key": "ciqual-25026"
+      },
+      {
+        "key": "ciqual-20273"
+      },
+      {
+        "key": "ciqual-20274"
+      },
+      {
+        "key": "ciqual-20262"
+      }
+    ],
+    "note": "Ciqual spinach in cream sauce and seasoned frozen pan-fry vegetable mixes (Asian-style, Mediterranean-style, plain) cover some types. Other vegetables in sauce still need the pack label, because the sauce drives the numbers."
+  },
+  {
+    "req": "convenience/frozen-pizza",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "frozen-pizza-cheese",
+        "fdc_id": 170317,
+        "name": "Frozen pizza, cheese, regular crust (cooked)",
+        "state": "baked",
+        "aliases": [
+          "margherita pizza"
+        ]
+      },
+      {
+        "key": "frozen-pizza-cheese-thin",
+        "fdc_id": 170373,
+        "name": "Frozen pizza, cheese, thin crust (cooked)",
+        "state": "baked"
+      },
+      {
+        "key": "frozen-pizza-pepperoni",
+        "fdc_id": 172096,
+        "name": "Frozen pizza, pepperoni (cooked)",
+        "state": "baked"
+      },
+      {
+        "key": "cofid-11-936"
+      },
+      {
+        "key": "cofid-11-1015"
+      },
+      {
+        "key": "cofid-11-1014"
+      },
+      {
+        "key": "cofid-11-1013"
+      },
+      {
+        "key": "cofid-11-1012"
+      }
+    ],
+    "note": "UK retail pizza from CoFID (frozen and chilled): cheese and tomato, meat topped, vegetarian, ham and pineapple, chicken. The old US frozen pizza estimates are kept. Use the box label when known."
+  },
+  {
+    "req": "convenience/chilled-ready-meal",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cofid-19-523"
+      },
+      {
+        "key": "cofid-15-651"
+      },
+      {
+        "key": "cofid-19-494"
+      },
+      {
+        "key": "cofid-19-208"
+      },
+      {
+        "key": "cofid-19-296"
+      },
+      {
+        "key": "cofid-19-520"
+      },
+      {
+        "key": "cofid-19-488"
+      },
+      {
+        "key": "cofid-19-449"
+      },
+      {
+        "key": "cofid-19-507"
+      },
+      {
+        "key": "cofid-19-524"
+      },
+      {
+        "key": "cofid-19-542"
+      },
+      {
+        "key": "cofid-19-522"
+      },
+      {
+        "key": "cofid-19-519"
+      },
+      {
+        "key": "cofid-15-637"
+      }
+    ],
+    "note": "CoFID retail ready meals (chilled and frozen, reheated) cover common dishes: lasagne, vegetable lasagne, cottage/shepherd's pie, chilli con carne, chicken tikka masala, chicken and beef curry, balti, moussaka, spaghetti bolognese, hot pot, chow mein, cauliflower cheese. Other dishes still need the pack label."
+  },
+  {
+    "req": "convenience/frozen-ready-meal",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cofid-19-523"
+      },
+      {
+        "key": "cofid-19-494"
+      },
+      {
+        "key": "cofid-19-208"
+      },
+      {
+        "key": "cofid-19-296"
+      },
+      {
+        "key": "cofid-19-520"
+      },
+      {
+        "key": "cofid-19-488"
+      },
+      {
+        "key": "cofid-19-449"
+      },
+      {
+        "key": "cofid-19-507"
+      },
+      {
+        "key": "cofid-19-524"
+      },
+      {
+        "key": "cofid-19-522"
+      },
+      {
+        "key": "cofid-19-521"
+      }
+    ],
+    "note": "CoFID retail ready meals sampled chilled and frozen (reheated): lasagne, cottage/shepherd's pie, chilli con carne, chicken tikka masala, chicken and beef curry, balti, moussaka, spaghetti bolognese, hot pot, and frozen chicken stir-fry with rice. Other dishes still need the pack label."
+  },
+  {
+    "req": "convenience/ready-made-soup",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cofid-17-636"
+      },
+      {
+        "key": "cofid-17-634"
+      },
+      {
+        "key": "cofid-17-635"
+      },
+      {
+        "key": "cofid-17-637"
+      }
+    ],
+    "note": "CoFID chilled carton soups: tomato, carrot and coriander, mushroom, broccoli and stilton (New Covent Garden and own brands). Other flavours still need the pot label; canned soups are under canned soup."
+  },
+  {
+    "req": "convenience/canned-soup",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "soup-tomato-canned",
+        "fdc_id": 171176,
+        "name": "Tomato soup, canned (made up)",
+        "state": "prepared",
+        "aliases": [
+          "cream of tomato soup"
+        ]
+      },
+      {
+        "key": "soup-tomato-condensed",
+        "fdc_id": 172882,
+        "name": "Tomato soup, condensed (undiluted)",
+        "state": "concentrate"
+      },
+      {
+        "key": "soup-vegetable-canned",
+        "fdc_id": 171559,
+        "name": "Vegetable soup, canned, ready to serve",
+        "state": "as-sold"
+      },
+      {
+        "key": "soup-chicken-noodle-canned",
+        "fdc_id": 171148,
+        "name": "Chicken noodle soup, canned, ready to serve",
+        "state": "as-sold"
+      },
+      {
+        "key": "soup-minestrone-canned",
+        "fdc_id": 171550,
+        "name": "Minestrone soup, canned, ready to serve",
+        "state": "as-sold"
+      },
+      {
+        "key": "soup-cream-chicken-canned",
+        "fdc_id": 174553,
+        "name": "Cream of chicken soup, canned (made up)",
+        "state": "prepared"
+      },
+      {
+        "key": "cofid-17-652"
+      },
+      {
+        "key": "cofid-17-712"
+      },
+      {
+        "key": "cofid-17-695"
+      },
+      {
+        "key": "cofid-17-698"
+      },
+      {
+        "key": "cofid-17-711"
+      },
+      {
+        "key": "cofid-17-713"
+      },
+      {
+        "key": "cofid-17-700"
+      },
+      {
+        "key": "cofid-17-699"
+      },
+      {
+        "key": "cofid-17-696"
+      },
+      {
+        "key": "cofid-17-697"
+      }
+    ],
+    "note": "UK ready-to-serve canned soups from CoFID: cream of tomato, vegetable, cream of chicken, lentil, minestrone, cream of mushroom, oxtail, low calorie; condensed cream of chicken kept separate from its as-served record. The old US records are kept."
+  },
+  {
+    "req": "convenience/canned-pasta",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "canned-pasta-tomato",
+        "fdc_id": 172100,
+        "name": "Pasta in tomato sauce, canned",
+        "state": "as-sold",
+        "aliases": [
+          "spaghetti hoops",
+          "tinned spaghetti"
+        ]
+      },
+      {
+        "key": "canned-spaghetti-meatballs",
+        "fdc_id": 172099,
+        "name": "Spaghetti and meatballs, canned",
+        "state": "as-sold"
+      },
+      {
+        "key": "canned-ravioli-meat",
+        "fdc_id": 173329,
+        "name": "Ravioli in tomato sauce, canned",
+        "state": "as-sold"
+      },
+      {
+        "key": "cofid-11-735"
+      },
+      {
+        "key": "cofid-11-736"
+      },
+      {
+        "key": "ciqual-25019"
+      }
+    ],
+    "note": "UK canned spaghetti in tomato sauce and canned meat ravioli in tomato sauce (CoFID), plus Ciqual canned meat ravioli. The old US records are kept."
+  },
+  {
+    "req": "convenience/instant-soup-powder",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "instant-soup-chicken-noodle-dry",
+        "fdc_id": 171571,
+        "name": "Instant chicken noodle soup (dry)",
+        "state": "dry"
+      },
+      {
+        "key": "instant-soup-chicken-noodle-made",
+        "fdc_id": 172925,
+        "name": "Instant chicken noodle soup, made up",
+        "state": "prepared"
+      },
+      {
+        "key": "instant-soup-tomato-made",
+        "fdc_id": 174569,
+        "name": "Instant tomato soup, made up",
+        "state": "prepared",
+        "aliases": [
+          "cup soup"
+        ]
+      },
+      {
+        "key": "instant-soup-cream-chicken-made",
+        "fdc_id": 174567,
+        "name": "Instant cream of chicken soup, made up",
+        "state": "prepared"
+      },
+      {
+        "key": "instant-soup-cream-veg-dry",
+        "fdc_id": 171166,
+        "name": "Instant cream of vegetable soup (dry)",
+        "state": "dry"
+      },
+      {
+        "key": "cofid-17-653"
+      },
+      {
+        "key": "cofid-17-660"
+      },
+      {
+        "key": "cofid-17-850"
+      },
+      {
+        "key": "cofid-17-714"
+      }
+    ],
+    "note": "CoFID instant soup powder as purchased and as served, and chicken noodle soup dried and as served (UK sachets). Never log powder and made-up soup together."
+  },
+  {
+    "req": "convenience/ready-made-sandwich",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cofid-11-955"
+      },
+      {
+        "key": "cofid-11-963"
+      },
+      {
+        "key": "cofid-11-964"
+      },
+      {
+        "key": "cofid-11-966"
+      },
+      {
+        "key": "cofid-11-965"
+      },
+      {
+        "key": "cofid-11-967"
+      }
+    ],
+    "note": "CoFID commercial-sandwich averages on white bread: BLT, cheddar and pickle, chicken salad, egg mayonnaise, ham salad, tuna mayonnaise. Other fillings and breads still need the exact label."
+  },
+  {
+    "req": "convenience/prepared-salad",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cofid-15-635"
+      },
+      {
+        "key": "cofid-15-636"
+      },
+      {
+        "key": "cofid-15-654"
+      },
+      {
+        "key": "ciqual-26282"
+      },
+      {
+        "key": "ciqual-25619"
+      },
+      {
+        "key": "ciqual-25670"
+      },
+      {
+        "key": "ciqual-26263"
+      }
+    ],
+    "note": "Retail coleslaw (regular and reduced calorie) and potato salad with mayonnaise (CoFID), and Ciqual prepacked chicken pasta salad, pasta salad with meat/fish, chicken mixed salad and tuna rice salad (all with dressing). Other salads still need the exact label."
+  },
+  {
+    "req": "convenience/sushi-pack",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cofid-16-361"
+      },
+      {
+        "key": "cofid-16-362"
+      },
+      {
+        "key": "cofid-15-617"
+      },
+      {
+        "key": "ciqual-25456"
+      }
+    ],
+    "note": "CoFID salmon nigiri, tuna nigiri and vegetable sushi, and Ciqual seafood sushi/maki; a mixed pack can be logged by piece type. Still missing: other types (California rolls, sashimi), which need the pack label."
+  },
+  {
+    "req": "convenience/sausage-roll",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-19-468"
+      },
+      {
+        "key": "cofid-19-643"
+      },
+      {
+        "key": "brand:starbucks:gourmet-sausage-roll"
+      }
+    ],
+    "note": "CoFID retail flaky-pastry sausage roll (10 products, mini and large) and homemade short-pastry sausage roll, plus the Starbucks gourmet sausage roll label."
+  },
+  {
+    "req": "convenience/quiche",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-12-936"
+      },
+      {
+        "key": "cofid-12-949"
+      },
+      {
+        "key": "ciqual-25405"
+      },
+      {
+        "key": "cofid-12-952"
+      },
+      {
+        "key": "cofid-12-948"
+      }
+    ],
+    "note": "Retail quiche Lorraine and retail vegetable quiche (CoFID), Ciqual prepacked quiche Lorraine, and CoFID homemade quiche Lorraine and cheese and egg quiche."
+  },
+  {
+    "req": "convenience/spring-roll",
+    "status": "partial",
+    "records": [
+      {
+        "key": "spring-roll-vegetable",
+        "fdc_id": 172105,
+        "name": "Spring roll, vegetable (frozen, cooked)",
+        "state": "prepared",
+        "aliases": [
+          "egg roll"
+        ]
+      },
+      {
+        "key": "spring-roll-pork",
+        "fdc_id": 172103,
+        "name": "Spring roll, pork (chilled, heated)",
+        "state": "prepared"
+      },
+      {
+        "key": "cofid-19-327"
+      }
+    ],
+    "note": "CoFID takeaway meat spring rolls cover the UK takeaway kind exactly. Still missing: frozen vegetable spring rolls, which stay on the old US egg-roll estimate."
+  },
+  {
+    "req": "convenience/dumpling",
+    "status": "partial",
+    "records": [
+      {
+        "key": "dumpling-pork-veg",
+        "fdc_id": 169773,
+        "name": "Dumplings, pork and vegetable (frozen)",
+        "state": "frozen",
+        "aliases": [
+          "gyoza",
+          "potstickers",
+          "wontons"
+        ]
+      },
+      {
+        "key": "dumpling-potato-cheese",
+        "fdc_id": 169779,
+        "name": "Dumplings, potato or cheese filled (frozen)",
+        "state": "frozen",
+        "aliases": [
+          "pierogi"
+        ]
+      },
+      {
+        "key": "ciqual-25169"
+      },
+      {
+        "key": "ciqual-25110"
+      },
+      {
+        "key": "brand:wagamama:chicken-gyoza"
+      },
+      {
+        "key": "brand:wagamama:yasai-vegetable-gyoza"
+      },
+      {
+        "key": "brand:wagamama:duck-gyoza"
+      },
+      {
+        "key": "brand:wagamama:beef-brisket-and-kimchee-gyoza"
+      }
+    ],
+    "note": "Ciqual prepacked Chinese dumplings and steamed shrimp dumplings, and wagamama gyoza (restaurant, cooked). Frozen uncooked pork dumplings stay on the old US estimate; frying adds oil."
+  },
+  {
+    "req": "convenience/burger",
+    "status": "partial",
+    "records": [
+      {
+        "key": "burger-fast-food",
+        "fdc_id": 170694,
+        "name": "Burger, fast-food, single patty",
+        "state": "as-sold",
+        "aliases": [
+          "hamburger"
+        ]
+      },
+      {
+        "key": "burger-fast-food-large",
+        "fdc_id": 173317,
+        "name": "Burger, large, with salad and mayo",
+        "state": "as-sold"
+      },
+      {
+        "key": "burger-fast-food-double",
+        "fdc_id": 172080,
+        "name": "Burger, double, with salad and mayo",
+        "state": "as-sold"
+      },
+      {
+        "key": "brand:mcdonalds-mt:hamburger"
+      },
+      {
+        "key": "brand:mcdonalds-mt:cheeseburger"
+      },
+      {
+        "key": "brand:mcdonalds-mt:double-cheeseburger"
+      },
+      {
+        "key": "brand:mcdonalds-mt:triple-cheeseburger"
+      },
+      {
+        "key": "brand:mcdonalds-mt:big-mac"
+      },
+      {
+        "key": "brand:mcdonalds-mt:quarter-pounder-with-cheese"
+      },
+      {
+        "key": "brand:mcdonalds-mt:big-tasty"
+      },
+      {
+        "key": "brand:mcdonalds-mt:big-tasty-bacon"
+      },
+      {
+        "key": "brand:mcdonalds-mt:double-big-tasty"
+      },
+      {
+        "key": "brand:burger-king-mt:whopper"
+      },
+      {
+        "key": "brand:burger-king-mt:whopper-cheese"
+      },
+      {
+        "key": "brand:burger-king-mt:double-whopper"
+      },
+      {
+        "key": "brand:burger-king-mt:whopper-jr"
+      },
+      {
+        "key": "brand:burger-king-mt:hamburger"
+      },
+      {
+        "key": "brand:burger-king-mt:cheeseburger"
+      },
+      {
+        "key": "brand:burger-king-mt:double-cheeseburger"
+      },
+      {
+        "key": "brand:burger-king-mt:big-king"
+      },
+      {
+        "key": "brand:burger-king-mt:steakhouse"
+      },
+      {
+        "key": "brand:burger-king-mt:bacon-king"
+      }
+    ],
+    "note": "McDonald's Malta and Burger King Malta beef burgers are exact chain records. Other burgers stay on the old US fast-food estimates; homemade burgers are recipes."
+  },
+  {
+    "req": "convenience/takeaway-pizza",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "takeaway-pizza-cheese",
+        "fdc_id": 173292,
+        "name": "Takeaway pizza, cheese",
+        "state": "as-sold",
+        "aliases": [
+          "margherita"
+        ]
+      },
+      {
+        "key": "takeaway-pizza-pepperoni",
+        "fdc_id": 173295,
+        "name": "Takeaway pizza, pepperoni",
+        "state": "as-sold"
+      },
+      {
+        "key": "cofid-11-1015"
+      },
+      {
+        "key": "cofid-11-1014"
+      },
+      {
+        "key": "cofid-11-1011"
+      },
+      {
+        "key": "brand:pizza-hut:margherita-pan-small"
+      },
+      {
+        "key": "brand:pizza-hut:margherita-pan-medium"
+      },
+      {
+        "key": "brand:pizza-hut:margherita-pan-large"
+      },
+      {
+        "key": "brand:pizza-hut:margherita-cheezy-crust-medium"
+      },
+      {
+        "key": "brand:pizza-hut:margherita-cheezy-crust-large"
+      },
+      {
+        "key": "brand:pizza-hut:margherita-san-francisco-12in"
+      },
+      {
+        "key": "brand:pizza-hut:pepperoni-san-francisco-12in"
+      },
+      {
+        "key": "brand:pizza-hut:diavola-san-francisco-12in"
+      },
+      {
+        "key": "brand:pizza-hut:veggie-diavola-san-francisco-12in"
+      }
+    ],
+    "note": "CoFID meat-topped and vegetarian pizza (retail and takeaway) and fish-topped takeaway pizza, plus exact Pizza Hut Malta pizzas. The old US chain estimates are kept."
+  },
+  {
+    "req": "convenience/kebab",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-19-526"
+      },
+      {
+        "key": "cofid-19-539"
+      },
+      {
+        "key": "cofid-19-525"
+      },
+      {
+        "key": "cofid-19-150"
+      },
+      {
+        "key": "ciqual-25428"
+      }
+    ],
+    "note": "CoFID doner kebab in pitta with salad, doner meat only, shish kebab in pitta with salad, shish meat only, and Ciqual pitta kebab sandwich with raw vegetables. Sauces and extra bread are logged separately."
+  },
+  {
+    "req": "convenience/chips-from-takeaway",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chips-takeaway",
+        "fdc_id": 170698,
+        "name": "Chips, takeaway",
+        "state": "fried",
+        "aliases": [
+          "fries",
+          "french fries",
+          "chip shop chips"
+        ]
+      },
+      {
+        "key": "cofid-13-485"
+      },
+      {
+        "key": "cofid-13-613"
+      },
+      {
+        "key": "cofid-13-614"
+      },
+      {
+        "key": "cofid-13-612"
+      },
+      {
+        "key": "cofid-13-486"
+      },
+      {
+        "key": "brand:mcdonalds-mt:fries"
+      },
+      {
+        "key": "brand:burger-king-mt:fries"
+      }
+    ],
+    "note": "UK chip-shop chips (CoFID, fried in commercial oil, beef dripping, rapeseed or palm oil), fast-food fine-cut chips, and McDonald's and Burger King Malta fries. The old US fries record is kept."
+  },
+  {
+    "req": "dairy/lactose-free-milk",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "milk-lactose-free-semi-skimmed",
+        "fdc_id": 172205,
+        "name": "Lactose-free semi-skimmed milk (proxy: 2% milk)",
+        "state": "as-sold",
+        "aliases": [
+          "lactose-free milk"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "brand:benna:lactose-free-fresh-milk-2-5-fat"
+      },
+      {
+        "key": "ciqual-19060"
+      }
+    ],
+    "note": "Benna lactose-free fresh milk 2.5% fat (Maltese label) and Ciqual reduced-lactose semi-skimmed UHT milk. Filtered lower-sugar brands still need their label."
+  },
+  {
+    "req": "dairy/greek-style-yogurt",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-12-555"
+      },
+      {
+        "key": "cofid-12-377"
+      },
+      {
+        "key": "brand:benna:greek-style-yogurt-full-fat"
+      },
+      {
+        "key": "brand:benna:greek-style-yogurt-low-fat"
+      }
+    ],
+    "note": "CoFID UK Greek-style yogurt, plain (whole milk, 6 brands) and fruit, plus Benna Greek-style yogurt full fat and low fat labels."
+  },
+  {
+    "req": "dairy/kefir",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ciqual-19865"
+      }
+    ],
+    "note": "Ciqual milk kefir covers plain milk kefir; fat level still varies by brand, so prefer the label when known."
+  },
+  {
+    "req": "dairy/drinking-yogurt",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ciqual-19508"
+      },
+      {
+        "key": "ciqual-19535"
+      },
+      {
+        "key": "ciqual-19805"
+      },
+      {
+        "key": "ciqual-19801"
+      },
+      {
+        "key": "cofid-12-513"
+      }
+    ],
+    "note": "Ciqual fermented milk drinks (flavoured with sugar, with fruit, plain whole milk, plain skimmed) and CoFID fermented probiotic milk drinks (Yakult, Actimel-type shots)."
+  },
+  {
+    "req": "dairy/custard",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "custard-semi-skimmed-milk",
+        "fdc_id": 168787,
+        "name": "Custard, made with semi-skimmed (2%) milk",
+        "state": "prepared",
+        "aliases": [
+          "custard"
+        ]
+      },
+      {
+        "key": "custard-whole-milk",
+        "fdc_id": 168773,
+        "name": "Custard, made with whole milk",
+        "state": "prepared"
+      },
+      {
+        "key": "cofid-12-519"
+      },
+      {
+        "key": "cofid-12-574"
+      },
+      {
+        "key": "cofid-12-575"
+      },
+      {
+        "key": "cofid-12-543"
+      },
+      {
+        "key": "cofid-12-573"
+      },
+      {
+        "key": "cofid-11-1138"
+      }
+    ],
+    "note": "UK custard made from custard powder with semi-skimmed, skimmed or whole milk, ready-to-eat canned/carton custard, egg custard, and custard powder (CoFID). The old USDA egg custard records are kept."
+  },
+  {
+    "req": "dairy/ready-to-drink-protein-milk",
+    "status": "product",
+    "records": [
+      {
+        "key": "brand:benna:pro-milk-high-protein-milk"
+      },
+      {
+        "key": "brand:benna:pro-milk-chocolate-high-protein-milk"
+      },
+      {
+        "key": "brand:benna:pro-milk-strawberry-high-protein-milk"
+      }
+    ],
+    "note": "Benna PRO Milk+ high-protein milk (plain, chocolate, strawberry) are exact Maltese labels. Other brands still need their exact label."
+  },
+  {
+    "req": "energy-shakes/regular-energy-drink",
+    "status": "product",
+    "records": [
+      {
+        "key": "energy-drink-red-bull-us",
+        "fdc_id": 173210,
+        "name": "Red Bull (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Red Bull",
+        "market": "US"
+      },
+      {
+        "key": "energy-drink-monster-us",
+        "fdc_id": 171935,
+        "name": "Monster Energy (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Monster",
+        "market": "US"
+      },
+      {
+        "key": "energy-drink-rockstar-us",
+        "fdc_id": 171937,
+        "name": "Rockstar (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Rockstar",
+        "market": "US"
+      },
+      {
+        "key": "cofid-17-672"
+      },
+      {
+        "key": "ciqual-18352"
+      },
+      {
+        "key": "brand:red-bull:energy-drink"
+      },
+      {
+        "key": "brand:red-bull:red-edition"
+      },
+      {
+        "key": "brand:red-bull:tropical-edition"
+      },
+      {
+        "key": "brand:red-bull:blue-edition"
+      },
+      {
+        "key": "brand:red-bull:yellow-edition"
+      },
+      {
+        "key": "brand:red-bull:peach-edition"
+      },
+      {
+        "key": "brand:red-bull:winter-edition"
+      },
+      {
+        "key": "brand:red-bull:ice-edition"
+      },
+      {
+        "key": "brand:red-bull:apricot-edition"
+      },
+      {
+        "key": "brand:red-bull:coconut-edition"
+      },
+      {
+        "key": "brand:red-bull:cherry-edition"
+      },
+      {
+        "key": "brand:red-bull:apple-edition"
+      },
+      {
+        "key": "brand:red-bull:green-edition"
+      },
+      {
+        "key": "brand:red-bull:ruby-edition"
+      },
+      {
+        "key": "brand:red-bull:glacier-edition"
+      },
+      {
+        "key": "brand:monster-energy:original-green"
+      },
+      {
+        "key": "brand:monster-energy:mango-loco"
+      },
+      {
+        "key": "brand:monster-energy:aussie-lemonade"
+      },
+      {
+        "key": "brand:monster-energy:bad-apple"
+      },
+      {
+        "key": "brand:monster-energy:khaotic"
+      },
+      {
+        "key": "brand:monster-energy:rio-punch"
+      },
+      {
+        "key": "brand:monster-energy:mixxd-punch"
+      },
+      {
+        "key": "brand:monster-energy:viking-berry"
+      },
+      {
+        "key": "brand:rockstar:original"
+      },
+      {
+        "key": "brand:rockstar:mango"
+      },
+      {
+        "key": "brand:rockstar:blueberry-pomegranate"
+      },
+      {
+        "key": "brand:rockstar:tropical-guava"
+      }
+    ],
+    "note": "EU/UK cans for Red Bull (original and editions), Monster (original and Juiced range) and Rockstar are exact labels; CoFID carbonated energy drink and Ciqual sugared energy drink are generic fallbacks. The old US records are kept. Other brands still need the can label (caffeine matters)."
+  },
+  {
+    "req": "energy-shakes/sugar-free-energy-drink",
+    "status": "product",
+    "records": [
+      {
+        "key": "energy-drink-red-bull-sf-us",
+        "fdc_id": 171870,
+        "name": "Red Bull Sugarfree (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Red Bull",
+        "market": "US"
+      },
+      {
+        "key": "energy-drink-monster-low-carb-us",
+        "fdc_id": 173162,
+        "name": "Monster Lo-Carb (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Monster",
+        "market": "US"
+      },
+      {
+        "key": "energy-drink-rockstar-sf-us",
+        "fdc_id": 171938,
+        "name": "Rockstar Sugar Free (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Rockstar",
+        "market": "US"
+      },
+      {
+        "key": "ciqual-18353"
+      },
+      {
+        "key": "brand:red-bull:sugarfree"
+      },
+      {
+        "key": "brand:red-bull:zero"
+      },
+      {
+        "key": "brand:red-bull:pink-edition-sugarfree"
+      },
+      {
+        "key": "brand:red-bull:coconut-edition-sugarfree"
+      },
+      {
+        "key": "brand:red-bull:blue-edition-sugarfree"
+      },
+      {
+        "key": "brand:red-bull:green-edition-sugarfree"
+      },
+      {
+        "key": "brand:red-bull:ruby-edition-sugarfree"
+      },
+      {
+        "key": "brand:red-bull:apple-edition-sugarfree"
+      },
+      {
+        "key": "brand:red-bull:lilac-edition-sugarfree"
+      },
+      {
+        "key": "brand:red-bull:winter-edition-sugarfree"
+      },
+      {
+        "key": "brand:red-bull:ice-edition-sugarfree"
+      },
+      {
+        "key": "brand:monster-energy:zero-sugar"
+      },
+      {
+        "key": "brand:monster-energy:ultra-white"
+      },
+      {
+        "key": "brand:monster-energy:ultra-fiesta"
+      },
+      {
+        "key": "brand:monster-energy:ultra-rosa"
+      },
+      {
+        "key": "brand:monster-energy:ultra-peachy-keen"
+      },
+      {
+        "key": "brand:monster-energy:ultra-strawberry-dreams"
+      },
+      {
+        "key": "brand:monster-energy:ultra-fantasy-ruby-red"
+      },
+      {
+        "key": "brand:monster-energy:full-throttle-zero-sugar"
+      },
+      {
+        "key": "brand:monster-energy:lando-norris-zero-sugar"
+      },
+      {
+        "key": "brand:monster-energy:vr46-zero-sugar"
+      },
+      {
+        "key": "brand:rockstar:strawberry-lime-zero-sugar"
+      },
+      {
+        "key": "brand:rockstar:watermelon-kiwi-zero-sugar"
+      }
+    ],
+    "note": "Exact EU/UK cans for Red Bull Sugarfree/Zero and sugar-free editions, Monster Zero Sugar and Ultra range, and Rockstar Zero Sugar; Ciqual sweetened energy drink is a generic fallback. Other brands still need the can label."
+  },
+  {
+    "req": "energy-shakes/sports-drink",
+    "status": "product",
+    "records": [
+      {
+        "key": "sports-drink-powerade-us",
+        "fdc_id": 175108,
+        "name": "Powerade lemon-lime (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Powerade",
+        "market": "US"
+      },
+      {
+        "key": "sports-drink-gatorade-us",
+        "fdc_id": 173660,
+        "name": "Gatorade (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Gatorade",
+        "market": "US"
+      },
+      {
+        "key": "ciqual-18348"
+      },
+      {
+        "key": "ciqual-18349"
+      },
+      {
+        "key": "brand:powerade:berry-tropical"
+      },
+      {
+        "key": "brand:powerade:golden-mango"
+      },
+      {
+        "key": "brand:powerade:mountain-blast-it"
+      },
+      {
+        "key": "brand:powerade:blood-orange-it"
+      },
+      {
+        "key": "brand:powerade:orange-it"
+      },
+      {
+        "key": "brand:powerade:citrus-it"
+      },
+      {
+        "key": "brand:gatorade:orange-it"
+      },
+      {
+        "key": "brand:gatorade:cool-blue-it"
+      },
+      {
+        "key": "brand:gatorade:lemon-it"
+      },
+      {
+        "key": "brand:gatorade:blood-orange-it"
+      }
+    ],
+    "note": "European Powerade and Gatorade flavours are exact labels; Ciqual sports drink with sugar is a generic fallback. The old US records are kept. Other brands need the bottle label."
+  },
+  {
+    "req": "energy-shakes/zero-sugar-sports-drink",
+    "status": "product",
+    "records": [
+      {
+        "key": "sports-drink-powerade-zero-us",
+        "fdc_id": 171923,
+        "name": "Powerade Zero (US)",
+        "state": "as-sold",
+        "liquid": true,
+        "kind": "product",
+        "brand": "Powerade",
+        "market": "US"
+      },
+      {
+        "key": "brand:powerade:active-zero-it"
+      },
+      {
+        "key": "brand:powerade:zero-mountain-blast-it"
+      },
+      {
+        "key": "brand:gatorade:zero-glacier-freeze-it"
+      }
+    ],
+    "note": "European Powerade Active Zero, Powerade Zero Mountain Blast and Gatorade Zero are exact labels. Other brands need the bottle label."
+  },
+  {
+    "req": "energy-shakes/isotonic-drink",
+    "status": "product",
+    "records": [
+      {
+        "key": "ciqual-18348"
+      },
+      {
+        "key": "brand:powerade:berry-tropical"
+      },
+      {
+        "key": "brand:powerade:golden-mango"
+      },
+      {
+        "key": "brand:powerade:mountain-blast-it"
+      },
+      {
+        "key": "brand:powerade:blood-orange-it"
+      },
+      {
+        "key": "brand:powerade:orange-it"
+      },
+      {
+        "key": "brand:powerade:citrus-it"
+      },
+      {
+        "key": "brand:gatorade:orange-it"
+      },
+      {
+        "key": "brand:gatorade:cool-blue-it"
+      },
+      {
+        "key": "brand:gatorade:lemon-it"
+      },
+      {
+        "key": "brand:gatorade:blood-orange-it"
+      }
+    ],
+    "note": "Isotonic drinks are sports drinks: the European Powerade and Gatorade labels and Ciqual sports drink are the same records as under sports drink. Other brands need the bottle label."
+  },
+  {
+    "req": "energy-shakes/ready-made-milkshake",
+    "status": "product",
+    "records": [
+      {
+        "key": "brand:benna:chocolate-milkshake"
+      },
+      {
+        "key": "brand:benna:strawberry-milkshake"
+      },
+      {
+        "key": "brand:benna:banana-milkshake"
+      },
+      {
+        "key": "brand:benna:fruit-punch-milkshake"
+      },
+      {
+        "key": "brand:benna:cookies-and-cream-milkshake"
+      },
+      {
+        "key": "brand:benna:pistachio-milkshake"
+      },
+      {
+        "key": "brand:benna:white-chocolate-milkshake"
+      },
+      {
+        "key": "brand:benna:caramel-toffee-milkshake"
+      },
+      {
+        "key": "brand:benna:vanilla-biscuit-milkshake"
+      },
+      {
+        "key": "brand:benna:coconut-milkshake"
+      }
+    ],
+    "note": "Benna bottled/carton milkshakes (Maltese labels, per 100 ml) are exact records for the main flavours. Other brands still need the label; fast-food thick shakes are a different item."
+  },
+  {
+    "req": "fish/canned-tuna-in-brine",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tuna-canned-brine-light",
+        "fdc_id": 173709,
+        "name": "Tuna, canned in brine, drained (proxy: light tuna in water)",
+        "state": "canned-drained",
+        "aliases": [
+          "tuna in brine"
+        ]
+      },
+      {
+        "key": "cofid-16-416"
+      },
+      {
+        "key": "ciqual-26039"
+      }
+    ],
+    "note": "CoFID tuna canned in brine, drained (10 products) and Ciqual tuna in brine, drained; the old US water-packed proxy is kept."
+  },
+  {
+    "req": "fish/hake",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "hake-proxy-raw",
+        "fdc_id": 173713,
+        "name": "Hake (proxy: whiting), raw",
+        "state": "raw",
+        "aliases": [
+          "hake fillet"
+        ]
+      },
+      {
+        "key": "hake-proxy-baked",
+        "fdc_id": 175161,
+        "name": "Hake (proxy: whiting), baked or grilled",
+        "state": "baked"
+      },
+      {
+        "key": "cofid-16-070"
+      },
+      {
+        "key": "cofid-16-071"
+      },
+      {
+        "key": "ciqual-26044"
+      },
+      {
+        "key": "ciqual-26048"
+      },
+      {
+        "key": "ciqual-26120"
+      }
+    ],
+    "note": "Real hake records: CoFID raw and grilled flesh, Ciqual European hake raw and braised, and frozen hake fillet raw. The old whiting proxy is kept but no longer needed."
+  },
+  {
+    "req": "fish/sea-bream",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sea-bream-proxy-raw",
+        "fdc_id": 175141,
+        "name": "Sea bream (proxy: scup), raw",
+        "state": "raw",
+        "aliases": [
+          "awrata",
+          "gilthead bream",
+          "dorade"
+        ]
+      },
+      {
+        "key": "sea-bream-proxy-baked",
+        "fdc_id": 174241,
+        "name": "Sea bream (proxy: scup), baked or grilled",
+        "state": "baked"
+      },
+      {
+        "key": "cofid-16-006"
+      },
+      {
+        "key": "ciqual-26088"
+      },
+      {
+        "key": "ciqual-26080"
+      },
+      {
+        "key": "ciqual-26099"
+      },
+      {
+        "key": "ciqual-26222"
+      }
+    ],
+    "note": "Real sea bream: CoFID sea bream raw, Ciqual gilthead sea bream raw (farmed and wild), and black sea bream raw and baked. Cooked gilthead is not separate; use black sea bream baked or the old baked proxy."
+  },
+  {
+    "req": "fish/sardines",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sardines-canned-oil-drained",
+        "fdc_id": 175139,
+        "name": "Sardines, canned in oil, drained (with bones)",
+        "state": "canned-drained",
+        "aliases": [
+          "sardines",
+          "sardin",
+          "tinned sardines"
+        ]
+      },
+      {
+        "key": "cofid-16-401"
+      },
+      {
+        "key": "cofid-16-438"
+      },
+      {
+        "key": "cofid-16-488"
+      },
+      {
+        "key": "ciqual-26065"
+      },
+      {
+        "key": "ciqual-26136"
+      }
+    ],
+    "note": "Fresh sardines are no longer missing: CoFID raw, grilled, and grilled weighed with skin and bones, and Ciqual raw and grilled/pan-fried without fat."
+  },
+  {
+    "req": "fish/fish-fingers",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "fish-fingers-oven-cooked",
+        "fdc_id": 174195,
+        "name": "Fish fingers, oven-cooked",
+        "state": "prepared",
+        "aliases": [
+          "fish sticks",
+          "fish finger"
+        ]
+      },
+      {
+        "key": "ciqual-26029"
+      },
+      {
+        "key": "cofid-16-405"
+      },
+      {
+        "key": "cofid-16-371"
+      },
+      {
+        "key": "cofid-16-406"
+      },
+      {
+        "key": "cofid-16-444"
+      }
+    ],
+    "note": "Frozen uncooked state covered by Ciqual breaded fish, frozen, raw; UK cod, pollock and salmon fish fingers grilled/baked and cod fish fingers fried (CoFID) cover cooked states."
+  },
+  {
+    "req": "fish/smoked-salmon",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "smoked-salmon",
+        "fdc_id": 173687,
+        "name": "Smoked salmon (chinook)",
+        "state": "as-sold",
+        "aliases": [
+          "lox"
+        ]
+      },
+      {
+        "key": "cofid-16-412"
+      },
+      {
+        "key": "cofid-16-413"
+      },
+      {
+        "key": "ciqual-26696"
+      },
+      {
+        "key": "ciqual-26037"
+      }
+    ],
+    "note": "UK cold-smoked and hot-smoked salmon (CoFID, 11 and 7 products) and Ciqual farmed smoked salmon and smoked salmon average cover the fattier farmed Atlantic product."
+  },
+  {
+    "req": "fish/canned-sardines-in-tomato-sauce",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sardines-tomato-sauce-drained",
+        "fdc_id": 175140,
+        "name": "Sardines in tomato sauce, canned, drained (with bones)",
+        "state": "canned-drained",
+        "aliases": [
+          "sardines in tomato sauce"
+        ]
+      },
+      {
+        "key": "cofid-16-422"
+      }
+    ],
+    "note": "CoFID sardines canned in tomato sauce, whole contents, so the whole tin including sauce is no longer missing."
+  },
+  {
+    "req": "fruit-preserved/fruit-puree",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ciqual-13214"
+      },
+      {
+        "key": "ciqual-13210"
+      },
+      {
+        "key": "ciqual-13187"
+      },
+      {
+        "key": "ciqual-13185"
+      },
+      {
+        "key": "ciqual-13212"
+      }
+    ],
+    "note": "Ciqual prepacked fruit purée/compote: no added sugar (average, refrigerated, apple), sugar content unknown, and apple compote average. Purées with added juice or other ingredients still need the label."
+  },
+  {
+    "req": "fruit-preserved/candied-peel",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "candied-peel",
+        "fdc_id": 167781,
+        "name": "Candied peel",
+        "state": "as-sold",
+        "aliases": [
+          "mixed peel",
+          "candied citrus peel",
+          "candied orange peel",
+          "candied lemon peel"
+        ]
+      },
+      {
+        "key": "cofid-14-338"
+      }
+    ],
+    "note": "CoFID mixed peel (candied citrus peel, 10 samples, 9 brands) covers it directly; the old candied-fruit proxy is kept."
+  },
+  {
+    "req": "fruit-wider/fresh-date",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "dates-medjool",
+        "fdc_id": 168191,
+        "name": "Medjool dates",
+        "state": "as-sold",
+        "aliases": [
+          "medjool",
+          "medjool date",
+          "fresh dates"
+        ]
+      },
+      {
+        "key": "cofid-14-083"
+      },
+      {
+        "key": "cofid-14-084"
+      }
+    ],
+    "note": "CoFID raw dates, flesh and skin, and weighed with stones cover fresh dates; the old Medjool record is kept for soft cured dates."
+  },
+  {
+    "req": "fruit-wider/cooking-apple",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cooking-apple-raw",
+        "fdc_id": 171689,
+        "name": "Cooking apple, peeled",
+        "state": "raw",
+        "aliases": [
+          "bramley",
+          "bramley apple",
+          "cooking apples"
+        ]
+      },
+      {
+        "key": "cooking-apple-boiled",
+        "fdc_id": 173928,
+        "name": "Cooking apple, peeled, stewed",
+        "state": "boiled",
+        "aliases": [
+          "stewed apple",
+          "stewed bramley"
+        ]
+      },
+      {
+        "key": "cofid-14-362"
+      },
+      {
+        "key": "cofid-14-363"
+      },
+      {
+        "key": "cofid-14-320"
+      },
+      {
+        "key": "cofid-14-332"
+      },
+      {
+        "key": "cofid-14-342"
+      },
+      {
+        "key": "cofid-14-344"
+      }
+    ],
+    "note": "Real Bramley/cooking apple records from CoFID: raw peeled, raw weighed with skin and core, stewed without and with sugar, baked without and with sugar. The old dessert-apple proxy is kept."
+  },
+  {
+    "req": "grains/basmati-rice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "rice-basmati-dry",
+        "fdc_id": 169756,
+        "name": "Basmati rice, dry",
+        "state": "dry",
+        "aliases": [
+          "basmati"
+        ]
+      },
+      {
+        "key": "rice-basmati-cooked",
+        "fdc_id": 169757,
+        "name": "Basmati rice, cooked",
+        "state": "cooked",
+        "aliases": [
+          "boiled basmati",
+          "cooked basmati"
+        ]
+      },
+      {
+        "key": "cofid-11-857"
+      },
+      {
+        "key": "cofid-11-858"
+      },
+      {
+        "key": "cofid-11-859"
+      },
+      {
+        "key": "cofid-11-860"
+      },
+      {
+        "key": "cofid-11-866"
+      },
+      {
+        "key": "cofid-11-867"
+      }
+    ],
+    "note": "Real basmati from CoFID: white raw and boiled, easy-cook raw and boiled, brown raw and boiled. The old long-grain proxy is kept."
+  },
+  {
+    "req": "grains/jasmine-rice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "rice-jasmine-dry",
+        "fdc_id": 169756,
+        "name": "Jasmine rice, dry",
+        "state": "dry",
+        "aliases": [
+          "jasmine",
+          "Thai fragrant rice"
+        ]
+      },
+      {
+        "key": "rice-jasmine-cooked",
+        "fdc_id": 169757,
+        "name": "Jasmine rice, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked jasmine rice"
+        ]
+      },
+      {
+        "key": "cofid-11-874"
+      },
+      {
+        "key": "cofid-11-875"
+      }
+    ],
+    "note": "CoFID Thai fragrant (jasmine) rice, raw and boiled in unsalted water; the old long-grain proxy is kept."
+  },
+  {
+    "req": "grains/arborio-rice",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "rice-arborio-dry",
+        "fdc_id": 169760,
+        "name": "Arborio rice, dry",
+        "state": "dry",
+        "aliases": [
+          "arborio",
+          "risotto rice"
+        ]
+      },
+      {
+        "key": "rice-arborio-cooked",
+        "fdc_id": 168930,
+        "name": "Arborio rice, cooked",
+        "state": "cooked",
+        "aliases": [
+          "cooked arborio rice"
+        ]
+      },
+      {
+        "key": "cofid-11-878"
+      },
+      {
+        "key": "cofid-11-879"
+      }
+    ],
+    "note": "CoFID Italian Arborio risotto rice, raw and boiled in unsalted water. Risotto with stock, butter and cheese is still a recipe."
+  },
+  {
+    "req": "grains/wholewheat-couscous",
+    "status": "partial",
+    "records": [
+      {
+        "key": "ciqual-9685"
+      }
+    ],
+    "note": "Ciqual wholewheat couscous, cooked without salt, covers the cooked state. Still missing: dry wholewheat couscous, which needs the pack label."
+  },
+  {
+    "req": "grains/polenta",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "polenta-cornmeal-dry",
+        "fdc_id": 168929,
+        "name": "Polenta (cornmeal), dry",
+        "state": "dry",
+        "aliases": [
+          "polenta",
+          "cornmeal",
+          "maize meal",
+          "yellow cornmeal"
+        ]
+      },
+      {
+        "key": "ciqual-9615"
+      },
+      {
+        "key": "ciqual-9614"
+      }
+    ],
+    "note": "Cooked polenta is no longer missing (Ciqual polenta cooked without salt); Ciqual pre-cooked (instant) polenta raw is added beside the old dry cornmeal record. Ready-made polenta blocks are close to cooked polenta but use the label when known."
+  },
+  {
+    "req": "legumes/red-lentils",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "red-lentils-dry",
+        "fdc_id": 174284,
+        "name": "Red lentils, dried",
+        "state": "dry",
+        "aliases": [
+          "split red lentils",
+          "pink lentils"
+        ]
+      },
+      {
+        "key": "cofid-13-657"
+      },
+      {
+        "key": "cofid-13-658"
+      },
+      {
+        "key": "ciqual-20535"
+      },
+      {
+        "key": "ciqual-20589"
+      }
+    ],
+    "note": "Boiled red lentils are no longer missing: CoFID red split lentils raw and boiled, and Ciqual red lentils dried and boiled."
+  },
+  {
+    "req": "legumes/green-lentils",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "green-lentils-dry",
+        "fdc_id": 172420,
+        "name": "Green lentils, dried (generic lentils)",
+        "state": "dry",
+        "aliases": [
+          "puy lentils"
+        ]
+      },
+      {
+        "key": "green-lentils-boiled",
+        "fdc_id": 172421,
+        "name": "Green lentils, boiled (generic lentils, no salt)",
+        "state": "boiled"
+      },
+      {
+        "key": "ciqual-20585"
+      },
+      {
+        "key": "ciqual-20587"
+      },
+      {
+        "key": "cofid-13-089"
+      },
+      {
+        "key": "cofid-13-661"
+      }
+    ],
+    "note": "Ciqual green lentils dried and boiled, and CoFID green and brown whole lentils raw and boiled. The old generic USDA lentil records are kept."
+  },
+  {
+    "req": "legumes/silken-tofu",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tofu-silken-proxy",
+        "fdc_id": 172449,
+        "name": "Silken tofu (proxy: soft tofu)",
+        "state": "raw",
+        "aliases": [
+          "silken tofu"
+        ]
+      },
+      {
+        "key": "ciqual-20906"
+      }
+    ],
+    "note": "Ciqual silken tofu, prepacked, covers it directly; the old soft-tofu proxy is kept."
+  },
+  {
+    "req": "legumes/textured-vegetable-protein",
+    "status": "partial",
+    "records": [
+      {
+        "key": "tvp-dry",
+        "fdc_id": 174275,
+        "name": "Textured vegetable protein, dry (proxy: defatted soya flour)",
+        "state": "dry",
+        "aliases": [
+          "TVP",
+          "textured soy protein",
+          "dried soya mince"
+        ]
+      },
+      {
+        "key": "ciqual-20591"
+      }
+    ],
+    "note": "Ciqual textured soy protein, rehydrated, covers TVP as eaten. Still missing: dry TVP, which stays on the old defatted soya flour proxy."
+  },
+  {
+    "req": "legumes/baked-beans-in-tomato-sauce",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "baked-beans-canned",
+        "fdc_id": 175182,
+        "name": "Baked beans in tomato sauce, canned",
+        "state": "canned-with-liquid",
+        "aliases": [
+          "baked beans"
+        ]
+      },
+      {
+        "key": "cofid-13-532"
+      },
+      {
+        "key": "cofid-13-535"
+      },
+      {
+        "key": "brand:mayor:baked-beans-in-tomato-sauce"
+      }
+    ],
+    "note": "UK baked beans in tomato sauce (CoFID, 9 brands), reduced sugar and salt version, and the Mayor (Malta) label. The old US record is kept."
+  },
+  {
+    "req": "legumes/plant-burger",
+    "status": "partial",
+    "records": [
+      {
+        "key": "ciqual-20914"
+      },
+      {
+        "key": "ciqual-25593"
+      },
+      {
+        "key": "ciqual-25596"
+      },
+      {
+        "key": "ciqual-25591"
+      },
+      {
+        "key": "ciqual-25592"
+      }
+    ],
+    "note": "Ciqual prepacked plant burgers by base: soybean, wheat and soybean (vegan), soybean and vegetables, lentil/soy/vegetables, and seitan with vegetables. Still missing: pea-protein meat-style burgers (Beyond-type), which need the label."
+  },
+  {
+    "req": "maltese/kunserva",
+    "status": "product",
+    "records": [
+      {
+        "key": "brand:three-hills:kunserva-tomato-paste-traditional"
+      },
+      {
+        "key": "brand:three-hills:kunserva-with-basil-and-garlic"
+      },
+      {
+        "key": "brand:three-hills:kunserva-with-mint-and-onion"
+      },
+      {
+        "key": "brand:three-hills:kunserva-tomato-paste-no-salt-added"
+      },
+      {
+        "key": "brand:tomafina:kunserva-tomato-paste-kunserva-tat-tadam"
+      },
+      {
+        "key": "brand:victoria:tomato-spread-tomato-paste"
+      }
+    ],
+    "note": "Exact Maltese jar labels: Three Hills kunserva (traditional, basil and garlic, mint and onion, no salt added), Tomafina kunserva and Victoria tomato spread. Other makers still need their label."
+  },
+  {
+    "req": "maltese/gbejna-fresh",
+    "status": "product",
+    "records": [
+      {
+        "key": "brand:hanini:fresh-sheeps-milk-cheeselets"
+      },
+      {
+        "key": "brand:hanini:fresh-cows-milk-cheeselets"
+      },
+      {
+        "key": "brand:hanini:fresh-goats-milk-cheeselets"
+      },
+      {
+        "key": "brand:hanini:lactose-free-fresh-cows-milk-cheeselets"
+      },
+      {
+        "key": "brand:benna:fresh-cheeselet"
+      }
+    ],
+    "note": "Exact fresh ġbejna labels: Hanini fresh sheep's, cow's, goat's and lactose-free cow's milk cheeselets, and Benna fresh cheeselet. Unlabelled farm ġbejna still has no generic record."
+  },
+  {
+    "req": "maltese/gbejna-dried",
+    "status": "product",
+    "records": [
+      {
+        "key": "brand:hanini:dried-sheeps-milk-cheeselets"
+      },
+      {
+        "key": "brand:hanini:dried-cows-milk-cheeselets"
+      },
+      {
+        "key": "brand:hanini:dried-goats-milk-cheeselets"
+      },
+      {
+        "key": "brand:hanini:smoked-dried-sheeps-milk-cheeselets"
+      },
+      {
+        "key": "brand:hanini:dried-sheeps-milk-cheeselets-with-herbs"
+      },
+      {
+        "key": "brand:hanini:hard-cheeselets-gbejniet-moxxi"
+      },
+      {
+        "key": "brand:benna:hard-cheeselet"
+      },
+      {
+        "key": "brand:tal-garra:clay-pot-matured-sheeps-milk-cheeselets"
+      }
+    ],
+    "note": "Exact dried ġbejna labels: Hanini dried sheep's, cow's and goat's milk, smoked and herb cheeselets and hard cheeselets (ġbejniet moxxi), Benna hard cheeselet (ġbejna moxxa) and Tal-Ġarra clay-pot matured. Moisture and salt differ by maker and drying time."
+  },
+  {
+    "req": "maltese/gbejna-peppered",
+    "status": "product",
+    "records": [
+      {
+        "key": "brand:hanini:peppered-sheeps-milk-cheeselets"
+      },
+      {
+        "key": "brand:benna:peppered-cheeselet"
+      },
+      {
+        "key": "brand:tal-garra:clay-pot-matured-sheeps-milk-cheeselets-with-black-pepper"
+      }
+    ],
+    "note": "Exact peppered ġbejna labels: Hanini peppered sheep's milk cheeselets, Benna peppered cheeselet and Tal-Ġarra clay-pot matured with black pepper. Ġbejna kept in oil or vinegar still needs its label."
+  },
+  {
+    "req": "meat/bacon",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "bacon-streaky-raw",
+        "fdc_id": 168277,
+        "name": "Streaky bacon, raw",
+        "state": "raw",
+        "aliases": [
+          "streaky bacon",
+          "American bacon",
+          "bacon rashers"
+        ]
+      },
+      {
+        "key": "bacon-streaky-fried",
+        "fdc_id": 168322,
+        "name": "Streaky bacon, fried",
+        "state": "fried"
+      },
+      {
+        "key": "bacon-streaky-baked",
+        "fdc_id": 167914,
+        "name": "Streaky bacon, baked",
+        "state": "baked"
+      },
+      {
+        "key": "bacon-back-lean-raw",
+        "fdc_id": 167869,
+        "name": "Back bacon, fat removed (Canadian bacon), raw",
+        "state": "raw",
+        "aliases": [
+          "Canadian bacon",
+          "back bacon medallions"
+        ]
+      },
+      {
+        "key": "bacon-back-lean-fried",
+        "fdc_id": 168383,
+        "name": "Back bacon, fat removed (Canadian bacon), fried",
+        "state": "fried"
+      },
+      {
+        "key": "cofid-19-497"
+      },
+      {
+        "key": "cofid-19-500"
+      },
+      {
+        "key": "cofid-19-498"
+      },
+      {
+        "key": "cofid-19-502"
+      },
+      {
+        "key": "cofid-19-501"
+      },
+      {
+        "key": "cofid-19-646"
+      },
+      {
+        "key": "cofid-19-499"
+      },
+      {
+        "key": "cofid-19-649"
+      },
+      {
+        "key": "cofid-19-503"
+      }
+    ],
+    "note": "UK back bacon with its fat rim is no longer missing: CoFID back rashers raw, grilled, dry-fried, microwaved and grilled crispy, fat-trimmed raw and grilled, and middle rashers raw and grilled."
+  },
+  {
+    "req": "meat/chorizo",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "chorizo-fresh-raw",
+        "fdc_id": 173859,
+        "name": "Cooking chorizo (fresh), raw",
+        "state": "raw",
+        "aliases": [
+          "fresh chorizo",
+          "Mexican chorizo"
+        ]
+      },
+      {
+        "key": "chorizo-fresh-fried",
+        "fdc_id": 746781,
+        "name": "Cooking chorizo (fresh), pan-fried",
+        "state": "fried"
+      },
+      {
+        "key": "cofid-19-516"
+      }
+    ],
+    "note": "CoFID chorizo (UK ready-to-eat, manufacturers' data) covers the cured sliced chorizo; the old fresh-chorizo records stay for cooking chorizo."
+  },
+  {
+    "req": "meat/pork-sausage",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pork-sausage-us-raw",
+        "fdc_id": 172934,
+        "name": "Pork sausage (US-style, no rusk), raw",
+        "state": "raw",
+        "aliases": [
+          "pork sausages",
+          "bangers"
+        ]
+      },
+      {
+        "key": "pork-sausage-us-fried",
+        "fdc_id": 174578,
+        "name": "Pork sausage (US-style, no rusk), fried",
+        "state": "fried"
+      },
+      {
+        "key": "cofid-19-510"
+      },
+      {
+        "key": "cofid-19-509"
+      },
+      {
+        "key": "cofid-19-512"
+      },
+      {
+        "key": "cofid-19-655"
+      },
+      {
+        "key": "cofid-19-654"
+      },
+      {
+        "key": "cofid-19-658"
+      },
+      {
+        "key": "cofid-19-511"
+      },
+      {
+        "key": "cofid-19-662"
+      },
+      {
+        "key": "cofid-19-657"
+      },
+      {
+        "key": "cofid-19-513"
+      },
+      {
+        "key": "cofid-19-661"
+      }
+    ],
+    "note": "UK pork sausages with rusk from CoFID: raw, chilled grilled and fried, frozen grilled and fried, reduced fat raw/grilled/fried, and premium raw/grilled/fried. The old US records are kept."
+  },
+  {
+    "req": "meat/meatballs",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "meatballs-frozen-italian",
+        "fdc_id": 171638,
+        "name": "Meatballs, frozen, Italian style",
+        "state": "frozen",
+        "aliases": [
+          "frozen meatballs"
+        ]
+      },
+      {
+        "key": "ciqual-25186"
+      },
+      {
+        "key": "ciqual-25222"
+      },
+      {
+        "key": "ciqual-25163"
+      },
+      {
+        "key": "ciqual-25194"
+      },
+      {
+        "key": "ciqual-25221"
+      }
+    ],
+    "note": "Shop-bought meatballs: Ciqual pork and beef (Swedish-style) raw and cooked, beef meatballs cooked, and beef and lamb kefta raw and cooked. Homemade meatballs are still recipes."
+  },
+  {
+    "req": "nuts/mixed-nuts",
+    "status": "partial",
+    "records": [
+      {
+        "key": "mixed-nuts-dry-roasted-salted",
+        "fdc_id": 168599,
+        "name": "Mixed nuts with peanuts, dry roasted, salted",
+        "state": "roasted",
+        "aliases": [
+          "salted mixed nuts"
+        ]
+      },
+      {
+        "key": "mixed-nuts-dry-roasted-unsalted",
+        "fdc_id": 170585,
+        "name": "Mixed nuts with peanuts, dry roasted, unsalted",
+        "state": "roasted"
+      },
+      {
+        "key": "mixed-nuts-no-peanuts-oil-roasted-salted",
+        "fdc_id": 169423,
+        "name": "Mixed nuts without peanuts, oil roasted, salted",
+        "state": "roasted"
+      },
+      {
+        "key": "cofid-14-880"
+      }
+    ],
+    "note": "CoFID mixed nuts, plain (unsalted, unroasted; calculated as 68% peanuts with almonds, cashews and hazelnuts). Still missing: raw mixed nuts without peanuts, which differ in composition."
+  },
+  {
+    "req": "pasta/filled-ravioli",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ciqual-25181"
+      },
+      {
+        "key": "ciqual-25149"
+      },
+      {
+        "key": "ciqual-25157"
+      },
+      {
+        "key": "ciqual-25158"
+      },
+      {
+        "key": "ciqual-25182"
+      },
+      {
+        "key": "ciqual-25155"
+      },
+      {
+        "key": "ciqual-25203"
+      },
+      {
+        "key": "ciqual-25193"
+      },
+      {
+        "key": "ciqual-25216"
+      }
+    ],
+    "note": "Ciqual fresh filled pasta by filling, raw and cooked: cheese, meat, cheese and vegetables, vegetables, plus a cooked average."
+  },
+  {
+    "req": "pasta/tortellini",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tortellini-cheese-fresh-as-sold",
+        "fdc_id": 172094,
+        "name": "Cheese tortellini, fresh, uncooked",
+        "state": "as-sold",
+        "aliases": [
+          "tortellini",
+          "cheese tortellini"
+        ]
+      },
+      {
+        "key": "ciqual-25149"
+      },
+      {
+        "key": "ciqual-25157"
+      },
+      {
+        "key": "ciqual-25158"
+      },
+      {
+        "key": "ciqual-25155"
+      }
+    ],
+    "note": "Cooked tortellini and meat fillings are no longer missing: Ciqual fresh filled pasta with cheese (cooked), meat (raw and cooked) and cheese and vegetables (cooked)."
+  },
+  {
+    "req": "pasta/potato-gnocchi",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ciqual-26264"
+      },
+      {
+        "key": "ciqual-25510"
+      }
+    ],
+    "note": "Ciqual potato gnocchi raw (as sold) and cooked."
+  },
+  {
+    "req": "plant-drinks/sweetened-almond-drink",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "almond-drink-sweetened",
+        "fdc_id": 168751,
+        "name": "Almond drink, sweetened (vanilla)",
+        "state": "as-sold",
+        "aliases": [
+          "sweetened almond milk"
+        ],
+        "liquid": true
+      },
+      {
+        "key": "ciqual-18110"
+      }
+    ],
+    "note": "Ciqual almond drink with sugar, calcium-fortified, covers plain sweetened (\"original\") almond drink; the old sweetened vanilla record is kept."
+  },
+  {
+    "req": "plant-drinks/soy-yogurt",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ciqual-19693"
+      },
+      {
+        "key": "ciqual-19694"
+      },
+      {
+        "key": "ciqual-19692"
+      },
+      {
+        "key": "ciqual-19695"
+      },
+      {
+        "key": "cofid-12-609"
+      }
+    ],
+    "note": "Ciqual fermented soy yogurt alternative, plain no added sugar (fortified and not) and with fruit (fortified and not), and CoFID fortified fruit soya yogurt."
+  },
+  {
+    "req": "plant-drinks/plant-cream",
+    "status": "partial",
+    "records": [
+      {
+        "key": "ciqual-11214"
+      }
+    ],
+    "note": "Ciqual soy cream covers soya cooking cream. Still missing: oat and coconut cooking creams, which need the label."
+  },
+  {
+    "req": "plant-drinks/plant-cheese",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ciqual-1029"
+      },
+      {
+        "key": "ciqual-1028"
+      },
+      {
+        "key": "ciqual-1027"
+      }
+    ],
+    "note": "Ciqual prepacked plant cheese by type: without soy (coconut oil and starch blocks), cashew-based, and soy spread-cheese. Brands still vary, so prefer the label when known."
+  },
+  {
+    "req": "sauces/mustard",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "mustard-yellow",
+        "fdc_id": 172234,
+        "name": "Mustard, yellow (prepared)",
+        "state": "as-sold",
+        "aliases": [
+          "American mustard"
+        ]
+      },
+      {
+        "key": "cofid-17-364"
+      },
+      {
+        "key": "cofid-17-365"
+      },
+      {
+        "key": "ciqual-11013"
+      },
+      {
+        "key": "ciqual-11021"
+      }
+    ],
+    "note": "CoFID smooth mustard (7 types including English and French) and wholegrain mustard, and Ciqual mustard (French Dijon-type) and mustard with grains, beside the old yellow mustard."
+  },
+  {
+    "req": "sauces/sweet-chilli-sauce",
+    "status": "product",
+    "records": [
+      {
+        "key": "brand:jolly:sweet-chilli-sauce-catering"
+      },
+      {
+        "key": "brand:burger-king-mt:sweet-chili-dip"
+      }
+    ],
+    "note": "No generic sweet chilli sauce yet; Jolly sweet chilli sauce (Malta) and Burger King Malta sweet chili dip are exact labels. Other bottles need their label."
+  },
+  {
+    "req": "sauces/vinegar",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "vinegar-white",
+        "fdc_id": 172237,
+        "name": "White vinegar (distilled)",
+        "state": "as-sold",
+        "aliases": [
+          "spirit vinegar"
+        ]
+      },
+      {
+        "key": "vinegar-cider",
+        "fdc_id": 173469,
+        "name": "Cider vinegar",
+        "state": "as-sold",
+        "aliases": [
+          "apple cider vinegar"
+        ]
+      },
+      {
+        "key": "vinegar-red-wine",
+        "fdc_id": 172240,
+        "name": "Red wine vinegar",
+        "state": "as-sold",
+        "aliases": [
+          "wine vinegar"
+        ]
+      },
+      {
+        "key": "vinegar-balsamic",
+        "fdc_id": 172241,
+        "name": "Balsamic vinegar",
+        "state": "as-sold"
+      },
+      {
+        "key": "cofid-17-339"
+      }
+    ],
+    "note": "CoFID vinegar (UK average of malt, cider and wine vinegar) stands in for malt vinegar beside the old white, cider, red wine and balsamic records."
+  },
+  {
+    "req": "savoury-snacks/flavoured-crisps",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "crisps-cheese",
+        "fdc_id": 169682,
+        "name": "Crisps, cheese flavour",
+        "state": "as-sold",
+        "aliases": [
+          "cheese crisps"
+        ]
+      },
+      {
+        "key": "crisps-bbq",
+        "fdc_id": 167962,
+        "name": "Crisps, barbecue flavour",
+        "state": "as-sold",
+        "aliases": [
+          "BBQ crisps"
+        ]
+      },
+      {
+        "key": "crisps-sour-cream-onion",
+        "fdc_id": 167963,
+        "name": "Crisps, sour cream and onion",
+        "state": "as-sold"
+      },
+      {
+        "key": "cofid-17-671"
+      },
+      {
+        "key": "ciqual-4004"
+      }
+    ],
+    "note": "CoFID potato crisps fried in sunflower oil (assorted UK flavours including Walkers) and Ciqual crisps plain or flavoured cover salt and vinegar, prawn cocktail and other flavours generically. Use the pack label when known."
+  },
+  {
+    "req": "savoury-snacks/savoury-crackers",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "crackers-butter",
+        "fdc_id": 174982,
+        "name": "Butter crackers",
+        "state": "as-sold",
+        "aliases": [
+          "round snack crackers"
+        ]
+      },
+      {
+        "key": "crackers-water-biscuits",
+        "fdc_id": 171856,
+        "name": "Water biscuits",
+        "state": "as-sold",
+        "aliases": [
+          "water crackers"
+        ]
+      },
+      {
+        "key": "crackers-saltine",
+        "fdc_id": 172746,
+        "name": "Saltine crackers",
+        "state": "as-sold",
+        "aliases": [
+          "soda crackers"
+        ]
+      },
+      {
+        "key": "crackers-crispbread-rye",
+        "fdc_id": 172739,
+        "name": "Rye crispbread",
+        "state": "as-sold",
+        "aliases": [
+          "crispbread"
+        ]
+      },
+      {
+        "key": "crackers-wholewheat",
+        "fdc_id": 172749,
+        "name": "Wholewheat crackers",
+        "state": "as-sold"
+      },
+      {
+        "key": "cofid-11-820"
+      },
+      {
+        "key": "cofid-11-823"
+      }
+    ],
+    "note": "UK cream crackers and retail oatcakes (CoFID) are no longer missing."
+  },
+  {
+    "req": "savoury-snacks/sweet-popcorn",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "popcorn-sweet-proxy",
+        "fdc_id": 167552,
+        "name": "Sweet popcorn (caramel-coated proxy)",
+        "state": "as-sold",
+        "aliases": [
+          "sugar-coated popcorn"
+        ]
+      },
+      {
+        "key": "cofid-17-691"
+      },
+      {
+        "key": "ciqual-9232"
+      }
+    ],
+    "note": "CoFID candied (sweet) popcorn and Ciqual caramel popcorn; the old caramel-coated US proxy is kept."
+  },
+  {
+    "req": "savoury-snacks/seasoned-nuts",
+    "status": "partial",
+    "records": [
+      {
+        "key": "mixed-nuts-roasted-salted",
+        "fdc_id": 168599,
+        "name": "Mixed nuts, dry roasted, salted",
+        "state": "as-sold"
+      },
+      {
+        "key": "peanuts-roasted-salted",
+        "fdc_id": 174262,
+        "name": "Peanuts, dry roasted, salted",
+        "state": "as-sold",
+        "aliases": [
+          "salted peanuts"
+        ]
+      },
+      {
+        "key": "cashews-roasted-salted",
+        "fdc_id": 169421,
+        "name": "Cashews, dry roasted, salted",
+        "state": "as-sold"
+      },
+      {
+        "key": "almonds-honey-roasted",
+        "fdc_id": 168592,
+        "name": "Almonds, honey roasted",
+        "state": "as-sold"
+      },
+      {
+        "key": "ciqual-38406"
+      }
+    ],
+    "note": "Coated nuts now covered by Ciqual peanuts coated with savoury biscuit. Still missing: chilli and wasabi nuts, which need the label."
+  },
+  {
+    "req": "savoury-snacks/pork-scratchings",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "pork-scratchings-proxy",
+        "fdc_id": 167961,
+        "name": "Pork scratchings (pork rind proxy)",
+        "state": "as-sold",
+        "aliases": [
+          "pork crackling snack",
+          "pork rinds"
+        ]
+      },
+      {
+        "key": "cofid-17-132"
+      }
+    ],
+    "note": "CoFID pork scratchings (19 samples, 4 brands) covers UK scratchings directly; the old US pork-rind proxy is kept."
+  },
+  {
+    "req": "savoury-snacks/mini-cheese-snack",
+    "status": "partial",
+    "records": [
+      {
+        "key": "cofid-11-821"
+      }
+    ],
+    "note": "CoFID cheese-flavoured biscuits (Cheddars, Mini Cheddars, cheese savouries) covers the biscuit-bite reading. Mini cheese portions (Babybel-type) use cheese records or the label."
+  },
+  {
+    "req": "savoury-snacks/snack-sausage",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "meat-snack-stick",
+        "fdc_id": 168850,
+        "name": "Smoked meat snack stick",
+        "state": "as-sold",
+        "aliases": [
+          "beef stick",
+          "snack salami stick"
+        ]
+      },
+      {
+        "key": "pepperoni-sliced",
+        "fdc_id": 174575,
+        "name": "Pepperoni",
+        "state": "as-sold"
+      },
+      {
+        "key": "cofid-19-508"
+      }
+    ],
+    "note": "CoFID salami snack (Peperami and own-brand equivalents) covers pork snack salami sticks; the old US beef stick and pepperoni are kept."
+  },
+  {
+    "req": "savoury-snacks/savoury-snack-mix",
+    "status": "partial",
+    "records": [
+      {
+        "key": "snack-mix-rice-crackers",
+        "fdc_id": 167958,
+        "name": "Rice cracker snack mix",
+        "state": "as-sold",
+        "aliases": [
+          "oriental snack mix",
+          "Japanese rice cracker mix"
+        ]
+      },
+      {
+        "key": "cofid-17-764"
+      },
+      {
+        "key": "ciqual-38416"
+      }
+    ],
+    "note": "Bombay mix (CoFID, 20 samples) and Ciqual Japanese-style rice crackers with coated peanuts are added. Still missing: pretzel and cracker mixes, which need the label."
+  },
+  {
+    "req": "soft-drinks/squash-concentrate",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-17-738"
+      },
+      {
+        "key": "cofid-17-739"
+      },
+      {
+        "key": "cofid-17-737"
+      },
+      {
+        "key": "cofid-17-740"
+      },
+      {
+        "key": "cofid-17-674"
+      },
+      {
+        "key": "cofid-17-743"
+      },
+      {
+        "key": "cofid-17-200"
+      }
+    ],
+    "note": "UK squash undiluted from CoFID: fruit squash regular and no added sugar, blackcurrant (Ribena-type), high juice regular and no added sugar, barley water and lime cordial. Use the bottle label when known; log concentrate only."
+  },
+  {
+    "req": "soft-drinks/prepared-squash",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-17-847"
+      },
+      {
+        "key": "cofid-17-846"
+      },
+      {
+        "key": "cofid-17-845"
+      },
+      {
+        "key": "cofid-17-848"
+      },
+      {
+        "key": "cofid-17-844"
+      },
+      {
+        "key": "cofid-17-201"
+      }
+    ],
+    "note": "CoFID diluted squash (calculated at about 1 part concentrate to 4 water): fruit squash regular and no added sugar, blackcurrant, high juice, barley water and lime cordial. Never count concentrate and diluted drink twice."
+  },
+  {
+    "req": "soft-drinks/ready-made-smoothie",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-17-747"
+      },
+      {
+        "key": "ciqual-18300"
+      },
+      {
+        "key": "ciqual-18296"
+      }
+    ],
+    "note": "CoFID retail chilled fruit smoothies (not milk-based) and Ciqual smoothie-type drinks (no added sugar, and fortified). Use the bottle label when known."
+  },
+  {
+    "req": "starches/new-potato",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "potato-new-raw",
+        "fdc_id": 170029,
+        "name": "New potatoes, raw",
+        "state": "raw",
+        "aliases": [
+          "new potato",
+          "baby potatoes",
+          "salad potatoes"
+        ]
+      },
+      {
+        "key": "potato-new-boiled",
+        "fdc_id": 170438,
+        "name": "New potatoes, boiled in skin",
+        "state": "boiled",
+        "aliases": [
+          "boiled new potatoes"
+        ]
+      },
+      {
+        "key": "cofid-13-618"
+      },
+      {
+        "key": "cofid-13-495"
+      },
+      {
+        "key": "ciqual-4023"
+      },
+      {
+        "key": "ciqual-4007"
+      }
+    ],
+    "note": "Real new potato records: CoFID new and salad potatoes raw and boiled in skins, and Ciqual new potato raw and boiled."
+  },
+  {
+    "req": "starches/cassava",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cassava-raw",
+        "fdc_id": 169985,
+        "name": "Cassava, raw",
+        "state": "raw",
+        "aliases": [
+          "cassava",
+          "manioc",
+          "yuca"
+        ]
+      },
+      {
+        "key": "cofid-13-210"
+      },
+      {
+        "key": "cofid-13-209"
+      },
+      {
+        "key": "cofid-13-211"
+      },
+      {
+        "key": "cofid-13-212"
+      },
+      {
+        "key": "ciqual-54034"
+      }
+    ],
+    "note": "Cooked cassava is no longer missing: CoFID boiled, baked, steamed and frozen raw, and Ciqual cooked cassava root."
+  },
+  {
+    "req": "starches/potato-croquettes",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "ciqual-4049"
+      },
+      {
+        "key": "cofid-13-038"
+      }
+    ],
+    "note": "Ciqual frozen potato croquettes, raw (log the frozen weight for oven-baked), and CoFID potato croquettes shallow-fried (5 brands)."
+  },
+  {
+    "req": "sweet-snacks/chocolate-bar",
+    "status": "product",
+    "records": [
+      {
+        "key": "cofid-17-668"
+      },
+      {
+        "key": "cofid-17-670"
+      },
+      {
+        "key": "cofid-17-669"
+      },
+      {
+        "key": "cofid-17-766"
+      },
+      {
+        "key": "cofid-17-657"
+      },
+      {
+        "key": "cofid-11-812"
+      },
+      {
+        "key": "cofid-17-658"
+      },
+      {
+        "key": "cofid-17-649"
+      },
+      {
+        "key": "cofid-17-651"
+      }
+    ],
+    "note": "UK countline types from CoFID (each brand plus own-brand equivalents): Mars, Snickers, Milky Way, Bounty, Twix-type fingers, Kit Kat-type wafer, Lion/Picnic-type caramel and cereal bars, Cadbury Caramel-type bars and Maltesers. Other bars still need the wrapper label; plain bars map to milk, dark or white chocolate."
+  },
+  {
+    "req": "sweet-snacks/chocolate-biscuits",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "biscuits-chocolate-coated",
+        "fdc_id": 174958,
+        "name": "Chocolate-coated biscuits",
+        "state": "as-sold",
+        "aliases": [
+          "chocolate-covered biscuits"
+        ]
+      },
+      {
+        "key": "biscuits-chocolate-sandwich",
+        "fdc_id": 172718,
+        "name": "Chocolate sandwich biscuits, cream filled",
+        "state": "as-sold",
+        "aliases": [
+          "chocolate cream biscuits",
+          "sandwich cookies"
+        ]
+      },
+      {
+        "key": "cofid-11-807"
+      },
+      {
+        "key": "cofid-11-1060"
+      },
+      {
+        "key": "cofid-11-806"
+      },
+      {
+        "key": "cofid-11-809"
+      },
+      {
+        "key": "cofid-11-810"
+      },
+      {
+        "key": "cofid-11-811"
+      }
+    ],
+    "note": "Chocolate digestives and chocolate oat biscuits are no longer missing: CoFID digestive half-coated, oat-based half-coated, short/sweet half-coated, fully coated, fully coated with cream (Penguin, Club) and with marshmallow (teacakes)."
+  },
+  {
+    "req": "sweet-snacks/digestive-biscuits",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "biscuits-digestive-proxy",
+        "fdc_id": 174957,
+        "name": "Digestive-style biscuits (graham cracker proxy)",
+        "state": "as-sold",
+        "aliases": [
+          "digestives",
+          "graham crackers"
+        ]
+      },
+      {
+        "key": "cofid-11-799"
+      },
+      {
+        "key": "cofid-11-803"
+      }
+    ],
+    "note": "Real UK digestives from CoFID: plain (7 products) and with oats (Hobnobs type). The old graham-cracker proxy is kept."
+  },
+  {
+    "req": "sweet-snacks/cereal-bar",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "cofid-11-819"
+      },
+      {
+        "key": "cofid-11-818"
+      },
+      {
+        "key": "ciqual-31113"
+      },
+      {
+        "key": "ciqual-31106"
+      },
+      {
+        "key": "ciqual-31114"
+      },
+      {
+        "key": "ciqual-31115"
+      },
+      {
+        "key": "ciqual-31101"
+      },
+      {
+        "key": "ciqual-31102"
+      }
+    ],
+    "note": "CoFID cereal bars with fruit/nuts, with and without chocolate, and Ciqual cereal bars with fruit, chocolate, nuts, chocolate and fruit (fortified and not). Bars vary widely, so prefer the label when known."
+  },
+  {
+    "req": "sweet-snacks/sorbet",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "sorbet-proxy",
+        "fdc_id": 169638,
+        "name": "Sorbet (water ice proxy)",
+        "state": "as-sold",
+        "aliases": [
+          "water ice"
+        ]
+      },
+      {
+        "key": "cofid-12-393"
+      },
+      {
+        "key": "ciqual-39524"
+      }
+    ],
+    "note": "CoFID fruit sorbet (assorted flavours) and Ciqual tub sorbet; the old lime water-ice proxy is kept."
+  },
+  {
+    "req": "vegetables/cherry-tomato",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "tomato-cherry-raw",
+        "fdc_id": 321360,
+        "name": "Cherry tomatoes",
+        "state": "raw",
+        "aliases": [
+          "cherry tomato",
+          "grape tomatoes",
+          "baby plum tomatoes"
+        ]
+      },
+      {
+        "key": "cofid-13-519"
+      },
+      {
+        "key": "ciqual-20172"
+      }
+    ],
+    "note": "CoFID cherry tomatoes raw (21 samples, loose and on the vine) and Ciqual cherry tomato raw; the old grape-tomato proxy is kept."
+  },
+  {
+    "req": "vegetables/fennel",
+    "status": "mapped",
+    "records": [
+      {
+        "key": "fennel-raw",
+        "fdc_id": 169385,
+        "name": "Fennel bulb",
+        "state": "raw",
+        "aliases": [
+          "fennel",
+          "florence fennel",
+          "bużbież"
+        ]
+      },
+      {
+        "key": "cofid-13-542"
+      },
+      {
+        "key": "ciqual-20118"
+      },
+      {
+        "key": "ciqual-20317"
+      }
+    ],
+    "note": "Cooked fennel is no longer missing: CoFID Florence fennel boiled, and Ciqual fennel boiled and braised."
+  }
+]

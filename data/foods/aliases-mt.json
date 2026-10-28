@@ -1,0 +1,2326 @@
+{
+  "source": "Maltese food words for search. The words and meanings come from a collected list, checked against English Wiktionary's Maltese entries; each is mapped by hand to Oath catalogue records (USDA, CoFID, Ciqual, Oath placeholders and the branded files) found with scripts/find-food.mjs.",
+  "built": "2026-10-28",
+  "items": [
+    {
+      "mt": "frott",
+      "en": "fruit",
+      "keys": [
+        "cofid-14-333",
+        "ciqual-13134",
+        "fruit-cocktail-tinned-juice-with-liquid",
+        "brand:mayor:fruit-cocktail-in-light-syrup",
+        "cofid-14-087"
+      ]
+    },
+    {
+      "mt": "tuffieħ",
+      "en": "apples",
+      "keys": [
+        "apple-raw-with-skin",
+        "apple-raw-peeled",
+        "cofid-14-319",
+        "cooking-apple-raw",
+        "cooking-apple-boiled",
+        "apple-sauce-unsweetened"
+      ]
+    },
+    {
+      "mt": "tuffieħa",
+      "en": "an apple",
+      "keys": [
+        "apple-raw-with-skin",
+        "apple-raw-peeled",
+        "cofid-14-319",
+        "cooking-apple-raw",
+        "cooking-apple-boiled",
+        "apple-sauce-unsweetened"
+      ]
+    },
+    {
+      "mt": "lanġas",
+      "en": "pears",
+      "keys": [
+        "pear-raw",
+        "cofid-14-365",
+        "ciqual-13037",
+        "cofid-14-368",
+        "cofid-14-197"
+      ]
+    },
+    {
+      "mt": "lanġasa",
+      "en": "a pear",
+      "keys": [
+        "pear-raw",
+        "cofid-14-365",
+        "ciqual-13037",
+        "cofid-14-368",
+        "cofid-14-197"
+      ]
+    },
+    {
+      "mt": "bambinella",
+      "en": "small Maltese June pear",
+      "keys": [
+        "pear-raw",
+        "cofid-14-365",
+        "ciqual-13037"
+      ]
+    },
+    {
+      "mt": "bambinelli",
+      "en": "small Maltese June pears",
+      "keys": [
+        "pear-raw",
+        "cofid-14-365",
+        "ciqual-13037"
+      ]
+    },
+    {
+      "mt": "larinġ",
+      "en": "oranges",
+      "keys": [
+        "orange-raw",
+        "cofid-14-327",
+        "ciqual-13034"
+      ]
+    },
+    {
+      "mt": "larinġa",
+      "en": "an orange",
+      "keys": [
+        "orange-raw",
+        "cofid-14-327",
+        "ciqual-13034"
+      ]
+    },
+    {
+      "mt": "lumi",
+      "en": "lemons",
+      "keys": [
+        "lemon-raw",
+        "lemon-juice-fresh",
+        "lemon-peel-raw",
+        "ciqual-13009",
+        "cofid-14-277"
+      ]
+    },
+    {
+      "mt": "lumija",
+      "en": "a lemon",
+      "keys": [
+        "lemon-raw",
+        "lemon-juice-fresh",
+        "lemon-peel-raw",
+        "ciqual-13009",
+        "cofid-14-277"
+      ]
+    },
+    {
+      "mt": "mandolin",
+      "en": "mandarins",
+      "keys": [
+        "mandarin-raw",
+        "clementine-raw",
+        "ciqual-13024",
+        "cofid-14-146"
+      ]
+    },
+    {
+      "mt": "mandolina",
+      "en": "a mandarin",
+      "keys": [
+        "mandarin-raw",
+        "clementine-raw",
+        "ciqual-13024",
+        "cofid-14-146"
+      ]
+    },
+    {
+      "mt": "tronġ",
+      "en": "grapefruit, pomelo",
+      "keys": [
+        "grapefruit-raw",
+        "pomelo-raw",
+        "cofid-14-384",
+        "cofid-14-228"
+      ]
+    },
+    {
+      "mt": "tronġa",
+      "en": "a grapefruit, a pomelo",
+      "keys": [
+        "grapefruit-raw",
+        "pomelo-raw",
+        "cofid-14-384",
+        "cofid-14-228"
+      ]
+    },
+    {
+      "mt": "banana",
+      "en": "banana",
+      "keys": [
+        "banana-raw",
+        "cofid-14-318",
+        "ciqual-13005",
+        "ciqual-13089"
+      ]
+    },
+    {
+      "mt": "għeneb",
+      "en": "grapes",
+      "keys": [
+        "grapes-green-raw",
+        "grapes-red-raw",
+        "cofid-14-350",
+        "cofid-14-322",
+        "cofid-14-323"
+      ]
+    },
+    {
+      "mt": "għenba",
+      "en": "a grape",
+      "keys": [
+        "grapes-green-raw",
+        "grapes-red-raw",
+        "cofid-14-350",
+        "cofid-14-322",
+        "cofid-14-323"
+      ]
+    },
+    {
+      "mt": "frawla",
+      "en": "strawberry",
+      "keys": [
+        "strawberries-raw",
+        "strawberries-frozen",
+        "cofid-14-324",
+        "ciqual-13014"
+      ]
+    },
+    {
+      "mt": "frawli",
+      "en": "strawberries",
+      "keys": [
+        "strawberries-raw",
+        "strawberries-frozen",
+        "cofid-14-324",
+        "ciqual-13014"
+      ]
+    },
+    {
+      "mt": "lampun",
+      "en": "raspberries",
+      "keys": [
+        "raspberries-raw",
+        "raspberries-frozen",
+        "cofid-14-375",
+        "ciqual-13015"
+      ]
+    },
+    {
+      "mt": "lampuna",
+      "en": "a raspberry",
+      "keys": [
+        "raspberries-raw",
+        "raspberries-frozen",
+        "cofid-14-375",
+        "ciqual-13015"
+      ]
+    },
+    {
+      "mt": "tut",
+      "en": "blackberries; mulberries",
+      "keys": [
+        "blackberries-raw",
+        "blackberries-frozen",
+        "mulberries-raw",
+        "cofid-14-388",
+        "cofid-14-168",
+        "ciqual-13071"
+      ]
+    },
+    {
+      "mt": "tuta",
+      "en": "a blackberry; a mulberry",
+      "keys": [
+        "blackberries-raw",
+        "blackberries-frozen",
+        "mulberries-raw",
+        "cofid-14-388",
+        "cofid-14-168",
+        "ciqual-13071"
+      ]
+    },
+    {
+      "mt": "ċirasa",
+      "en": "cherry",
+      "keys": [
+        "cherries-raw",
+        "cofid-14-382",
+        "ciqual-13008",
+        "sour-cherries-raw"
+      ]
+    },
+    {
+      "mt": "ċirasiet",
+      "en": "cherries",
+      "keys": [
+        "cherries-raw",
+        "cofid-14-382",
+        "ciqual-13008",
+        "sour-cherries-raw"
+      ]
+    },
+    {
+      "mt": "berquq",
+      "en": "apricots",
+      "keys": [
+        "apricot-raw",
+        "apricots-dried",
+        "cofid-14-025",
+        "cofid-14-031",
+        "ciqual-13000"
+      ]
+    },
+    {
+      "mt": "berquqa",
+      "en": "an apricot",
+      "keys": [
+        "apricot-raw",
+        "apricots-dried",
+        "cofid-14-025",
+        "cofid-14-031",
+        "ciqual-13000"
+      ]
+    },
+    {
+      "mt": "ħawħ",
+      "en": "peaches",
+      "keys": [
+        "peach-raw",
+        "cofid-14-299",
+        "ciqual-13043",
+        "peaches-tinned-juice-with-liquid",
+        "peaches-tinned-light-syrup-with-liquid"
+      ]
+    },
+    {
+      "mt": "ħawħa",
+      "en": "a peach",
+      "keys": [
+        "peach-raw",
+        "cofid-14-299",
+        "ciqual-13043",
+        "peaches-tinned-juice-with-liquid",
+        "peaches-tinned-light-syrup-with-liquid"
+      ]
+    },
+    {
+      "mt": "għajnbaqar",
+      "en": "plums",
+      "keys": [
+        "plum-raw",
+        "cofid-14-372",
+        "ciqual-13100",
+        "cofid-14-315",
+        "prunes-dried"
+      ]
+    },
+    {
+      "mt": "għajnbaqra",
+      "en": "a plum",
+      "keys": [
+        "plum-raw",
+        "cofid-14-372",
+        "ciqual-13100",
+        "cofid-14-315",
+        "prunes-dried"
+      ]
+    },
+    {
+      "mt": "tin",
+      "en": "figs",
+      "keys": [
+        "fig-raw",
+        "figs-dried",
+        "cofid-14-091",
+        "cofid-14-092",
+        "ciqual-13012"
+      ]
+    },
+    {
+      "mt": "tina",
+      "en": "a fig",
+      "keys": [
+        "fig-raw",
+        "figs-dried",
+        "cofid-14-091",
+        "cofid-14-092",
+        "ciqual-13012"
+      ]
+    },
+    {
+      "mt": "bajtar",
+      "en": "prickly pears (short for bajtar tax-xewk)",
+      "keys": [
+        "prickly-pear-raw",
+        "cofid-14-230",
+        "ciqual-13063"
+      ]
+    },
+    {
+      "mt": "bajtra",
+      "en": "a prickly pear",
+      "keys": [
+        "prickly-pear-raw",
+        "cofid-14-230",
+        "ciqual-13063"
+      ]
+    },
+    {
+      "mt": "bajtar tax-xewk",
+      "en": "prickly pears",
+      "keys": [
+        "prickly-pear-raw",
+        "cofid-14-230",
+        "ciqual-13063"
+      ]
+    },
+    {
+      "mt": "rummien",
+      "en": "pomegranates",
+      "keys": [
+        "pomegranate-raw",
+        "cofid-14-226",
+        "ciqual-13018"
+      ]
+    },
+    {
+      "mt": "rummiena",
+      "en": "a pomegranate",
+      "keys": [
+        "pomegranate-raw",
+        "cofid-14-226",
+        "ciqual-13018"
+      ]
+    },
+    {
+      "mt": "sfarġel",
+      "en": "quince",
+      "keys": [
+        "cofid-14-241",
+        "ciqual-13010"
+      ]
+    },
+    {
+      "mt": "sfarġla",
+      "en": "a quince",
+      "keys": [
+        "cofid-14-241",
+        "ciqual-13010"
+      ]
+    },
+    {
+      "mt": "tamar",
+      "en": "dates",
+      "keys": [
+        "dates-medjool",
+        "dates-deglet-noor-dried",
+        "cofid-14-394",
+        "cofid-14-083",
+        "ciqual-13011"
+      ]
+    },
+    {
+      "mt": "tamal",
+      "en": "dates (variant of tamar)",
+      "keys": [
+        "dates-medjool",
+        "dates-deglet-noor-dried",
+        "cofid-14-394",
+        "cofid-14-083",
+        "ciqual-13011"
+      ]
+    },
+    {
+      "mt": "tamra",
+      "en": "a date",
+      "keys": [
+        "dates-medjool",
+        "dates-deglet-noor-dried",
+        "cofid-14-394",
+        "cofid-14-083",
+        "ciqual-13011"
+      ]
+    },
+    {
+      "mt": "dulliegħ",
+      "en": "watermelons",
+      "keys": [
+        "watermelon-raw",
+        "cofid-14-296",
+        "ciqual-13036"
+      ]
+    },
+    {
+      "mt": "dulliegħa",
+      "en": "a watermelon",
+      "keys": [
+        "watermelon-raw",
+        "cofid-14-296",
+        "ciqual-13036"
+      ]
+    },
+    {
+      "mt": "bettieħ",
+      "en": "melons",
+      "keys": [
+        "cantaloupe-raw",
+        "honeydew-melon-raw",
+        "cofid-14-354",
+        "cofid-14-339",
+        "ciqual-13742"
+      ]
+    },
+    {
+      "mt": "bettieħa",
+      "en": "a melon",
+      "keys": [
+        "cantaloupe-raw",
+        "honeydew-melon-raw",
+        "cofid-14-354",
+        "cofid-14-339",
+        "ciqual-13742"
+      ]
+    },
+    {
+      "mt": "żbib",
+      "en": "raisins",
+      "keys": [
+        "raisins-seedless",
+        "sultanas",
+        "cofid-14-393",
+        "cofid-14-263"
+      ]
+    },
+    {
+      "mt": "żbiba",
+      "en": "a raisin",
+      "keys": [
+        "raisins-seedless",
+        "sultanas",
+        "cofid-14-393",
+        "cofid-14-263"
+      ]
+    },
+    {
+      "mt": "żebbuġ",
+      "en": "olives",
+      "keys": [
+        "olives-green",
+        "olives-black",
+        "cofid-14-340",
+        "ciqual-13033",
+        "ciqual-13032",
+        "brand:mayor:whole-mixed-olives"
+      ]
+    },
+    {
+      "mt": "żebbuġa",
+      "en": "an olive",
+      "keys": [
+        "olives-green",
+        "olives-black",
+        "cofid-14-340",
+        "ciqual-13033",
+        "ciqual-13032",
+        "brand:mayor:whole-mixed-olives"
+      ]
+    },
+    {
+      "mt": "ħarrub",
+      "en": "carob",
+      "keys": [
+        "fdc-173755",
+        "brand:ta-mari:carob-syrup",
+        "fdc-167973"
+      ]
+    },
+    {
+      "mt": "ħaxix",
+      "en": "vegetables",
+      "keys": [
+        "frozen-mixed-veg",
+        "frozen-mixed-veg-boiled",
+        "cofid-13-543",
+        "ciqual-20101"
+      ]
+    },
+    {
+      "mt": "tadam",
+      "en": "tomatoes",
+      "keys": [
+        "tomato-raw",
+        "tomato-cherry-raw",
+        "tomato-cooked",
+        "tomatoes-tinned-chopped",
+        "cofid-13-517",
+        "cofid-13-519"
+      ]
+    },
+    {
+      "mt": "tadama",
+      "en": "a tomato",
+      "keys": [
+        "tomato-raw",
+        "tomato-cherry-raw",
+        "tomato-cooked",
+        "tomatoes-tinned-chopped",
+        "cofid-13-517",
+        "cofid-13-519"
+      ]
+    },
+    {
+      "mt": "tadam imqadded",
+      "en": "sun-dried tomatoes",
+      "keys": [
+        "tomatoes-sun-dried-oil-drained",
+        "fdc-168567",
+        "brand:mayor:sun-dried-tomatoes-in-oil",
+        "brand:three-hills:sun-dried-tomato-conserve-il-helwa"
+      ]
+    },
+    {
+      "mt": "basal",
+      "en": "onions",
+      "keys": [
+        "onion-raw",
+        "onion-red-raw",
+        "onion-boiled",
+        "cofid-13-499",
+        "cofid-13-591"
+      ]
+    },
+    {
+      "mt": "basla",
+      "en": "an onion",
+      "keys": [
+        "onion-raw",
+        "onion-red-raw",
+        "onion-boiled",
+        "cofid-13-499",
+        "cofid-13-591"
+      ]
+    },
+    {
+      "mt": "tewm",
+      "en": "garlic",
+      "keys": [
+        "garlic-raw",
+        "garlic-powder-as-sold",
+        "cofid-13-244",
+        "ciqual-11000"
+      ]
+    },
+    {
+      "mt": "patata",
+      "en": "potato, potatoes",
+      "keys": [
+        "potato-white-raw",
+        "potato-white-boiled",
+        "potato-white-baked",
+        "potato-new-boiled",
+        "cofid-13-489",
+        "cofid-13-490"
+      ]
+    },
+    {
+      "mt": "brunġiel",
+      "en": "aubergines",
+      "keys": [
+        "aubergine-raw",
+        "aubergine-boiled",
+        "cofid-13-161",
+        "cofid-13-669",
+        "cofid-13-577"
+      ]
+    },
+    {
+      "mt": "brunġiela",
+      "en": "an aubergine",
+      "keys": [
+        "aubergine-raw",
+        "aubergine-boiled",
+        "cofid-13-161",
+        "cofid-13-669",
+        "cofid-13-577"
+      ]
+    },
+    {
+      "mt": "qarabagħli",
+      "en": "marrow, courgette",
+      "keys": [
+        "courgette-raw",
+        "courgette-boiled",
+        "cofid-13-274",
+        "cofid-13-276",
+        "cofid-13-627"
+      ]
+    },
+    {
+      "mt": "qarabagħlija",
+      "en": "a marrow, a courgette",
+      "keys": [
+        "courgette-raw",
+        "courgette-boiled",
+        "cofid-13-274",
+        "cofid-13-276",
+        "cofid-13-627"
+      ]
+    },
+    {
+      "mt": "qargħabagħli",
+      "en": "marrows, courgettes (variant spelling of qarabagħli)",
+      "keys": [
+        "courgette-raw",
+        "courgette-boiled",
+        "cofid-13-274",
+        "cofid-13-276",
+        "cofid-13-627"
+      ]
+    },
+    {
+      "mt": "zukkini",
+      "en": "courgette, zucchini",
+      "keys": [
+        "courgette-raw",
+        "courgette-boiled",
+        "cofid-13-627",
+        "cofid-13-628",
+        "ciqual-20020"
+      ]
+    },
+    {
+      "mt": "qargħa",
+      "en": "a pumpkin",
+      "keys": [
+        "pumpkin-raw",
+        "pumpkin-boiled",
+        "butternut-squash-raw",
+        "butternut-squash-baked",
+        "cofid-13-326"
+      ]
+    },
+    {
+      "mt": "qargħa ħamra",
+      "en": "pumpkin",
+      "keys": [
+        "pumpkin-raw",
+        "pumpkin-boiled",
+        "butternut-squash-raw",
+        "butternut-squash-baked",
+        "cofid-13-326"
+      ]
+    },
+    {
+      "mt": "bżar",
+      "en": "pepper (spice); sweet pepper",
+      "keys": [
+        "black-pepper-ground-as-sold",
+        "pepper-red-raw",
+        "pepper-green-raw",
+        "pepper-yellow-raw",
+        "cofid-13-880",
+        "cofid-13-524"
+      ]
+    },
+    {
+      "mt": "bżara",
+      "en": "a sweet pepper",
+      "keys": [
+        "pepper-red-raw",
+        "pepper-green-raw",
+        "pepper-yellow-raw",
+        "cofid-13-524",
+        "cofid-13-318"
+      ]
+    },
+    {
+      "mt": "ħjar",
+      "en": "cucumbers",
+      "keys": [
+        "cucumber-raw",
+        "cucumber-peeled-raw",
+        "cofid-13-523",
+        "ciqual-20019"
+      ]
+    },
+    {
+      "mt": "ħjara",
+      "en": "a cucumber",
+      "keys": [
+        "cucumber-raw",
+        "cucumber-peeled-raw",
+        "cofid-13-523",
+        "ciqual-20019"
+      ]
+    },
+    {
+      "mt": "ħass",
+      "en": "lettuce",
+      "keys": [
+        "lettuce-iceberg-raw",
+        "lettuce-cos-raw",
+        "lettuce-butterhead-raw",
+        "cofid-13-520",
+        "ciqual-20031"
+      ]
+    },
+    {
+      "mt": "ħassa",
+      "en": "a lettuce",
+      "keys": [
+        "lettuce-iceberg-raw",
+        "lettuce-cos-raw",
+        "lettuce-butterhead-raw",
+        "cofid-13-520",
+        "ciqual-20031"
+      ]
+    },
+    {
+      "mt": "kaboċċa",
+      "en": "cabbage",
+      "keys": [
+        "cabbage-white-raw",
+        "cabbage-white-boiled",
+        "cabbage-red-raw",
+        "cabbage-red-boiled",
+        "cofid-13-582",
+        "cofid-13-510"
+      ]
+    },
+    {
+      "mt": "kaboċċi",
+      "en": "cabbages",
+      "keys": [
+        "cabbage-white-raw",
+        "cabbage-white-boiled",
+        "cabbage-red-raw",
+        "cabbage-red-boiled",
+        "cofid-13-582",
+        "cofid-13-510"
+      ]
+    },
+    {
+      "mt": "pastard",
+      "en": "cauliflower",
+      "keys": [
+        "cauliflower-raw",
+        "cauliflower-boiled",
+        "cofid-13-512",
+        "ciqual-20016"
+      ]
+    },
+    {
+      "mt": "karfus",
+      "en": "celery",
+      "keys": [
+        "celery-raw",
+        "celery-boiled",
+        "cofid-13-636"
+      ]
+    },
+    {
+      "mt": "kurrat",
+      "en": "leek",
+      "keys": [
+        "leek-raw",
+        "leek-boiled",
+        "cofid-13-624"
+      ]
+    },
+    {
+      "mt": "bużbież",
+      "en": "fennel",
+      "keys": [
+        "fennel-raw",
+        "fennel-seeds-as-sold",
+        "cofid-13-241",
+        "ciqual-20028",
+        "cofid-13-827"
+      ]
+    },
+    {
+      "mt": "ġidra",
+      "en": "turnip; kohlrabi",
+      "keys": [
+        "kohlrabi-raw",
+        "ciqual-20094",
+        "cofid-13-389",
+        "cofid-13-391",
+        "ciqual-20065"
+      ]
+    },
+    {
+      "mt": "pitrava",
+      "en": "beetroot",
+      "keys": [
+        "beetroot-raw",
+        "beetroot-boiled",
+        "beetroot-pickled-with-liquid",
+        "cofid-13-164"
+      ]
+    },
+    {
+      "mt": "spinaċi",
+      "en": "spinach",
+      "keys": [
+        "spinach-raw",
+        "spinach-boiled",
+        "spinach-frozen-boiled",
+        "cofid-13-572",
+        "cofid-13-521"
+      ]
+    },
+    {
+      "mt": "bqajla",
+      "en": "spinach",
+      "keys": [
+        "spinach-raw",
+        "spinach-boiled",
+        "spinach-frozen-boiled",
+        "cofid-13-572",
+        "cofid-13-521"
+      ]
+    },
+    {
+      "mt": "spraġ",
+      "en": "asparagus",
+      "keys": [
+        "asparagus-raw",
+        "asparagus-boiled",
+        "cofid-13-157"
+      ]
+    },
+    {
+      "mt": "qaqoċċ",
+      "en": "artichokes",
+      "keys": [
+        "artichoke-raw",
+        "artichoke-boiled",
+        "cofid-13-153",
+        "cofid-13-155",
+        "ciqual-20155"
+      ]
+    },
+    {
+      "mt": "qaqoċċa",
+      "en": "an artichoke",
+      "keys": [
+        "artichoke-raw",
+        "artichoke-boiled",
+        "cofid-13-153",
+        "cofid-13-155",
+        "ciqual-20155"
+      ]
+    },
+    {
+      "mt": "faqqiegħ",
+      "en": "mushrooms",
+      "keys": [
+        "mushroom-white-raw",
+        "mushroom-white-boiled",
+        "mushroom-chestnut-raw",
+        "portobello-raw",
+        "cofid-13-505",
+        "brand:mayor:sliced-mushrooms-in-brine"
+      ]
+    },
+    {
+      "mt": "faqqiegħa",
+      "en": "a mushroom",
+      "keys": [
+        "mushroom-white-raw",
+        "mushroom-white-boiled",
+        "mushroom-chestnut-raw",
+        "portobello-raw",
+        "cofid-13-505",
+        "brand:mayor:sliced-mushrooms-in-brine"
+      ]
+    },
+    {
+      "mt": "zunnarija",
+      "en": "carrot",
+      "keys": [
+        "carrot-raw",
+        "carrot-boiled",
+        "cofid-13-496",
+        "cofid-13-448"
+      ]
+    },
+    {
+      "mt": "zunnariji",
+      "en": "carrots",
+      "keys": [
+        "carrot-raw",
+        "carrot-boiled",
+        "cofid-13-496",
+        "cofid-13-448"
+      ]
+    },
+    {
+      "mt": "karrotta",
+      "en": "a carrot",
+      "keys": [
+        "carrot-raw",
+        "carrot-boiled",
+        "cofid-13-496",
+        "cofid-13-448"
+      ]
+    },
+    {
+      "mt": "karrotti",
+      "en": "carrots",
+      "keys": [
+        "carrot-raw",
+        "carrot-boiled",
+        "cofid-13-496",
+        "cofid-13-448"
+      ]
+    },
+    {
+      "mt": "ċikwejra",
+      "en": "chicory, endive",
+      "keys": [
+        "cofid-13-225",
+        "cofid-13-586",
+        "cofid-13-240",
+        "ciqual-20026",
+        "ciqual-20012"
+      ]
+    },
+    {
+      "mt": "qamħirrum",
+      "en": "maize, sweetcorn",
+      "keys": [
+        "sweetcorn-tinned-drained",
+        "sweetcorn-frozen",
+        "sweetcorn-frozen-boiled",
+        "corn-on-the-cob-boiled",
+        "corn-on-the-cob-raw",
+        "polenta-cornmeal-dry"
+      ]
+    },
+    {
+      "mt": "kappar",
+      "en": "capers",
+      "keys": [
+        "capers-drained",
+        "brand:mayor:capers",
+        "brand:ta-mari:hand-picked-capers-in-aged-wine-vinegar",
+        "ciqual-11040"
+      ]
+    },
+    {
+      "mt": "insalata",
+      "en": "salad",
+      "keys": [
+        "cofid-15-648",
+        "ciqual-25604",
+        "cofid-15-876",
+        "cofid-15-871"
+      ]
+    },
+    {
+      "mt": "ful",
+      "en": "broad beans",
+      "keys": [
+        "broad-beans-fresh-raw",
+        "broad-beans-fresh-boiled",
+        "broad-beans-dry",
+        "broad-beans-dried-boiled",
+        "broad-beans-canned",
+        "cofid-13-064"
+      ]
+    },
+    {
+      "mt": "fula",
+      "en": "a broad bean",
+      "keys": [
+        "broad-beans-fresh-raw",
+        "broad-beans-fresh-boiled",
+        "broad-beans-dry",
+        "broad-beans-dried-boiled",
+        "broad-beans-canned",
+        "cofid-13-064"
+      ]
+    },
+    {
+      "mt": "fażola",
+      "en": "beans",
+      "keys": [
+        "haricot-beans-boiled",
+        "cannellini-beans-canned-drained",
+        "borlotti-beans-boiled",
+        "kidney-beans-canned-drained",
+        "butter-beans-boiled",
+        "green-beans-boiled"
+      ]
+    },
+    {
+      "mt": "fażola bajda",
+      "en": "white beans",
+      "keys": [
+        "cannellini-beans-canned-drained",
+        "cannellini-beans-dry",
+        "haricot-beans-boiled",
+        "haricot-beans-canned-drained",
+        "brand:mayor:cannellini-beans",
+        "cofid-13-666"
+      ]
+    },
+    {
+      "mt": "għads",
+      "en": "lentils",
+      "keys": [
+        "lentils-boiled",
+        "lentils-dry",
+        "green-lentils-boiled",
+        "red-lentils-dry",
+        "cofid-13-661",
+        "cofid-13-658"
+      ]
+    },
+    {
+      "mt": "ħabaq",
+      "en": "basil",
+      "keys": [
+        "basil-fresh",
+        "cofid-13-804",
+        "cofid-13-805",
+        "ciqual-11032"
+      ]
+    },
+    {
+      "mt": "tursin",
+      "en": "parsley",
+      "keys": [
+        "parsley-fresh",
+        "cofid-13-844",
+        "cofid-13-845"
+      ]
+    },
+    {
+      "mt": "nagħniegħ",
+      "en": "mint",
+      "keys": [
+        "mint-fresh",
+        "peppermint-fresh",
+        "cofid-13-836",
+        "cofid-13-837"
+      ]
+    },
+    {
+      "mt": "sagħtar",
+      "en": "thyme",
+      "keys": [
+        "thyme-fresh",
+        "thyme-dried-as-sold",
+        "cofid-13-893",
+        "cofid-13-883"
+      ]
+    },
+    {
+      "mt": "klin",
+      "en": "rosemary",
+      "keys": [
+        "rosemary-fresh",
+        "cofid-13-892",
+        "cofid-13-882"
+      ]
+    },
+    {
+      "mt": "rand",
+      "en": "bay laurel",
+      "keys": [
+        "bay-leaves-dried-as-sold",
+        "cofid-13-806",
+        "ciqual-11053"
+      ]
+    },
+    {
+      "mt": "kosbor",
+      "en": "coriander",
+      "keys": [
+        "coriander-fresh",
+        "coriander-ground-as-sold",
+        "cofid-13-888",
+        "cofid-13-875"
+      ]
+    },
+    {
+      "mt": "merdqux",
+      "en": "marjoram",
+      "keys": [
+        "marjoram-dried-as-sold",
+        "cofid-13-835",
+        "ciqual-11034"
+      ]
+    },
+    {
+      "mt": "kemmun",
+      "en": "cumin",
+      "keys": [
+        "cumin-as-sold",
+        "cofid-13-889",
+        "ciqual-11042"
+      ]
+    },
+    {
+      "mt": "kannella",
+      "en": "cinnamon",
+      "keys": [
+        "cinnamon-ground-as-sold",
+        "cofid-13-874",
+        "ciqual-11025"
+      ]
+    },
+    {
+      "mt": "qronfol",
+      "en": "cloves",
+      "keys": [
+        "cloves-ground-as-sold",
+        "cofid-13-816",
+        "ciqual-11052"
+      ]
+    },
+    {
+      "mt": "żagħfran",
+      "en": "saffron",
+      "keys": [
+        "cofid-13-852",
+        "ciqual-11039"
+      ]
+    },
+    {
+      "mt": "ġulġlien",
+      "en": "sesame",
+      "keys": [
+        "sesame-seeds",
+        "cofid-14-844",
+        "ciqual-15010",
+        "tahini"
+      ]
+    },
+    {
+      "mt": "melħ",
+      "en": "salt",
+      "keys": [
+        "salt-table-as-sold",
+        "salt-table"
+      ]
+    },
+    {
+      "mt": "lewż",
+      "en": "almonds",
+      "keys": [
+        "almonds-raw",
+        "almonds-dry-roasted-unsalted",
+        "almonds-dry-roasted-salted",
+        "flour-almond-as-sold",
+        "cofid-14-896",
+        "cofid-14-870"
+      ]
+    },
+    {
+      "mt": "lewża",
+      "en": "an almond",
+      "keys": [
+        "almonds-raw",
+        "almonds-dry-roasted-unsalted",
+        "almonds-dry-roasted-salted",
+        "flour-almond-as-sold",
+        "cofid-14-896",
+        "cofid-14-870"
+      ]
+    },
+    {
+      "mt": "ġewż",
+      "en": "walnuts",
+      "keys": [
+        "walnuts",
+        "cofid-14-879"
+      ]
+    },
+    {
+      "mt": "ġewża",
+      "en": "a walnut",
+      "keys": [
+        "walnuts",
+        "cofid-14-879"
+      ]
+    },
+    {
+      "mt": "ġellewż",
+      "en": "hazelnuts",
+      "keys": [
+        "hazelnuts",
+        "hazelnuts-dry-roasted",
+        "cofid-14-874"
+      ]
+    },
+    {
+      "mt": "fosdoq",
+      "en": "pistachio",
+      "keys": [
+        "pistachios-raw",
+        "pistachios-dry-roasted-salted",
+        "cofid-14-840",
+        "ciqual-15044"
+      ]
+    },
+    {
+      "mt": "karawett",
+      "en": "peanuts",
+      "keys": [
+        "peanuts-raw",
+        "peanuts-dry-roasted-salted",
+        "cofid-14-877",
+        "cofid-14-878",
+        "cofid-14-834"
+      ]
+    },
+    {
+      "mt": "qastan",
+      "en": "chestnuts",
+      "keys": [
+        "chestnuts-roasted",
+        "chestnuts-boiled",
+        "chestnuts-raw",
+        "cofid-14-813",
+        "cofid-14-815"
+      ]
+    },
+    {
+      "mt": "prinjol",
+      "en": "pine nut",
+      "keys": [
+        "pine-nuts",
+        "cofid-14-839",
+        "ciqual-15025"
+      ]
+    },
+    {
+      "mt": "qamħ",
+      "en": "wheat",
+      "keys": [
+        "fdc-169721",
+        "fdc-169720",
+        "ciqual-9060",
+        "ciqual-9081",
+        "bulgur-dry",
+        "bulgur-cooked"
+      ]
+    },
+    {
+      "mt": "xgħir",
+      "en": "barley",
+      "keys": [
+        "pearl-barley-dry",
+        "pearl-barley-cooked",
+        "cofid-11-002",
+        "cofid-11-003",
+        "ciqual-9320"
+      ]
+    },
+    {
+      "mt": "ħafur",
+      "en": "oats",
+      "keys": [
+        "oats-rolled-dry",
+        "oats-quick-dry",
+        "oats-steel-cut-dry",
+        "cofid-11-788",
+        "cofid-11-789",
+        "oat-bran-dry"
+      ]
+    },
+    {
+      "mt": "dqiq",
+      "en": "flour",
+      "keys": [
+        "flour-plain-white-as-sold",
+        "flour-self-raising-as-sold",
+        "flour-strong-white-bread-as-sold",
+        "flour-wholemeal-as-sold",
+        "cofid-11-886"
+      ]
+    },
+    {
+      "mt": "smid",
+      "en": "semolina",
+      "keys": [
+        "semolina-dry",
+        "cofid-11-903",
+        "ciqual-9610"
+      ]
+    },
+    {
+      "mt": "ħmira",
+      "en": "yeast",
+      "keys": [
+        "yeast-dried-active-as-sold",
+        "yeast-fresh-compressed-as-sold",
+        "cofid-17-379",
+        "cofid-17-378"
+      ]
+    },
+    {
+      "mt": "ross",
+      "en": "rice",
+      "keys": [
+        "rice-white-long-grain-cooked",
+        "rice-white-long-grain-dry",
+        "rice-basmati-cooked",
+        "rice-basmati-dry",
+        "rice-brown-long-grain-cooked",
+        "rice-arborio-dry"
+      ]
+    },
+    {
+      "mt": "għaġin",
+      "en": "pasta",
+      "keys": [
+        "spaghetti-dry",
+        "spaghetti-cooked",
+        "penne-dry",
+        "penne-cooked",
+        "pasta-fresh-as-sold",
+        "pasta-wholewheat-dry"
+      ]
+    },
+    {
+      "mt": "mqarrun",
+      "en": "macaroni",
+      "keys": [
+        "macaroni-dry",
+        "macaroni-cooked",
+        "penne-dry",
+        "penne-cooked"
+      ]
+    },
+    {
+      "mt": "imqarrun",
+      "en": "macaroni (variant spelling of mqarrun)",
+      "keys": [
+        "macaroni-dry",
+        "macaroni-cooked",
+        "penne-dry",
+        "penne-cooked"
+      ]
+    },
+    {
+      "mt": "ravjul",
+      "en": "ravioli",
+      "keys": [
+        "cofid-11-728",
+        "ciqual-25149",
+        "brand:divini:ricotta-ravioli-with-tomato-sauce",
+        "brand:divini:ricotta-and-parsley-ravioli-with-tomato-sauce",
+        "cofid-11-732",
+        "canned-ravioli-meat"
+      ]
+    },
+    {
+      "mt": "kusksu",
+      "en": "small pasta beads used in soup",
+      "keys": [
+        "pearl-couscous-dry",
+        "pearl-couscous-cooked"
+      ]
+    },
+    {
+      "mt": "ħobż",
+      "en": "bread",
+      "keys": [
+        "hobz-tal-malti-as-sold",
+        "bread-white-sliced-as-sold",
+        "bread-wholemeal-sliced-as-sold",
+        "bread-sourdough-as-sold",
+        "bread-roll-crusty-as-sold"
+      ]
+    },
+    {
+      "mt": "ħobża",
+      "en": "a loaf of bread",
+      "keys": [
+        "hobz-tal-malti-as-sold",
+        "bread-white-sliced-as-sold",
+        "bread-wholemeal-sliced-as-sold",
+        "bread-sourdough-as-sold",
+        "bread-roll-crusty-as-sold"
+      ]
+    },
+    {
+      "mt": "ftira",
+      "en": "flat ring-shaped Maltese bread",
+      "keys": [
+        "ftira-bread-as-sold"
+      ]
+    },
+    {
+      "mt": "ftajjar",
+      "en": "Maltese flat ring-shaped breads",
+      "keys": [
+        "ftira-bread-as-sold"
+      ]
+    },
+    {
+      "mt": "brijoxx",
+      "en": "brioche",
+      "keys": [
+        "fdc-2707682",
+        "ciqual-7225"
+      ]
+    },
+    {
+      "mt": "galletti",
+      "en": "Maltese water biscuits",
+      "keys": [
+        "crackers-water-biscuits"
+      ]
+    },
+    {
+      "mt": "galletta",
+      "en": "a Maltese water biscuit",
+      "keys": [
+        "crackers-water-biscuits"
+      ]
+    },
+    {
+      "mt": "ħalib",
+      "en": "milk",
+      "keys": [
+        "milk-whole",
+        "milk-semi-skimmed",
+        "milk-skimmed",
+        "brand:benna:fresh-whole-milk-3-5-fat",
+        "brand:benna:fresh-milk-2-5-fat",
+        "brand:benna:fresh-skimmed-milk-0-3-fat"
+      ]
+    },
+    {
+      "mt": "butir",
+      "en": "butter",
+      "keys": [
+        "butter-salted",
+        "butter-unsalted",
+        "brand:benna:salted-butter",
+        "brand:benna:unsalted-butter",
+        "cofid-17-685"
+      ]
+    },
+    {
+      "mt": "ġobon",
+      "en": "cheese",
+      "keys": [
+        "cheddar",
+        "cofid-12-604",
+        "mozzarella-whole-milk",
+        "parmesan-grated",
+        "feta",
+        "brand:tan-nar:maltese-cheese-original-gobon-malti"
+      ]
+    },
+    {
+      "mt": "ġbejna",
+      "en": "small Maltese cheeselet",
+      "keys": [
+        "gbejna-needs-label",
+        "brand:benna:fresh-cheeselet",
+        "brand:benna:plain-cheeselet",
+        "brand:benna:peppered-cheeselet",
+        "brand:hanini:fresh-sheeps-milk-cheeselets",
+        "brand:hanini:dried-sheeps-milk-cheeselets"
+      ]
+    },
+    {
+      "mt": "ġbejniet",
+      "en": "Maltese cheeselets",
+      "keys": [
+        "gbejna-needs-label",
+        "brand:benna:fresh-cheeselet",
+        "brand:benna:plain-cheeselet",
+        "brand:benna:peppered-cheeselet",
+        "brand:hanini:fresh-sheeps-milk-cheeselets",
+        "brand:hanini:dried-sheeps-milk-cheeselets"
+      ]
+    },
+    {
+      "mt": "irkotta",
+      "en": "ricotta",
+      "keys": [
+        "ricotta-whole-milk",
+        "ricotta-part-skim",
+        "cofid-12-176",
+        "brand:benna:fresh-irkotta-ricotta",
+        "brand:hanini:fresh-artisan-irkotta-ricotta"
+      ]
+    },
+    {
+      "mt": "krema",
+      "en": "cream",
+      "keys": [
+        "cream-single",
+        "cream-double",
+        "whipping-cream",
+        "brand:benna:fresh-cream",
+        "cofid-12-332",
+        "cofid-12-334"
+      ]
+    },
+    {
+      "mt": "ġelat",
+      "en": "ice cream",
+      "keys": [
+        "ice-cream-vanilla",
+        "ice-cream-chocolate",
+        "ice-cream-strawberry",
+        "ice-cream-vanilla-light",
+        "cofid-12-508"
+      ]
+    },
+    {
+      "mt": "bajd",
+      "en": "eggs",
+      "keys": [
+        "egg-whole-raw",
+        "egg-whole-boiled",
+        "egg-whole-fried",
+        "egg-whole-poached",
+        "egg-white-raw",
+        "egg-yolk-raw"
+      ]
+    },
+    {
+      "mt": "bajda",
+      "en": "an egg",
+      "keys": [
+        "egg-whole-raw",
+        "egg-whole-boiled",
+        "egg-whole-fried",
+        "egg-whole-poached",
+        "egg-white-raw",
+        "egg-yolk-raw"
+      ]
+    },
+    {
+      "mt": "froġa",
+      "en": "omelette",
+      "keys": [
+        "cofid-12-946",
+        "ciqual-22500",
+        "cofid-12-947",
+        "ciqual-22506"
+      ]
+    },
+    {
+      "mt": "ċanga",
+      "en": "beef",
+      "keys": [
+        "beef-mince-15-fat-raw",
+        "beef-mince-5-fat-raw",
+        "beef-sirloin-steak-lean-raw",
+        "beef-sirloin-steak-lean-grilled",
+        "stewing-beef-raw",
+        "stewing-beef-braised"
+      ]
+    },
+    {
+      "mt": "majjal",
+      "en": "pig; pork",
+      "keys": [
+        "pork-chop-lean-fat-raw",
+        "pork-loin-lean-fat-raw",
+        "pork-mince-regular-raw",
+        "pork-chop-lean-fat-grilled",
+        "pork-loin-lean-fat-roasted",
+        "cofid-18-557"
+      ]
+    },
+    {
+      "mt": "ħaruf",
+      "en": "lamb",
+      "keys": [
+        "lamb-leg-lean-fat-raw",
+        "lamb-loin-chop-lean-fat-raw",
+        "lamb-loin-chop-lean-fat-grilled",
+        "lamb-mince-raw",
+        "lamb-mince-grilled",
+        "cofid-18-478"
+      ]
+    },
+    {
+      "mt": "mogħża",
+      "en": "goat",
+      "keys": [
+        "fdc-175303",
+        "fdc-175304",
+        "ciqual-21800",
+        "ciqual-21801"
+      ]
+    },
+    {
+      "mt": "fenek",
+      "en": "rabbit",
+      "keys": [
+        "rabbit-raw",
+        "rabbit-roasted",
+        "rabbit-stewed",
+        "cofid-18-387",
+        "cofid-18-388",
+        "cofid-19-623"
+      ]
+    },
+    {
+      "mt": "fniek",
+      "en": "rabbits",
+      "keys": [
+        "rabbit-raw",
+        "rabbit-roasted",
+        "rabbit-stewed",
+        "cofid-18-387",
+        "cofid-18-388",
+        "cofid-19-623"
+      ]
+    },
+    {
+      "mt": "tiġieġ",
+      "en": "chicken",
+      "keys": [
+        "chicken-breast-skinless-raw",
+        "chicken-breast-skinless-grilled",
+        "chicken-thigh-skinless-raw",
+        "chicken-whole-skin-on-roasted",
+        "chicken-drumstick-skin-on-roasted",
+        "chicken-wing-skin-on-roasted"
+      ]
+    },
+    {
+      "mt": "tiġieġa",
+      "en": "a chicken",
+      "keys": [
+        "chicken-breast-skinless-raw",
+        "chicken-breast-skinless-grilled",
+        "chicken-thigh-skinless-raw",
+        "chicken-whole-skin-on-roasted",
+        "chicken-drumstick-skin-on-roasted",
+        "chicken-wing-skin-on-roasted"
+      ]
+    },
+    {
+      "mt": "papra",
+      "en": "duck",
+      "keys": [
+        "duck-breast-skin-on-roasted",
+        "duck-breast-skinless-grilled",
+        "cofid-18-489",
+        "cofid-18-372",
+        "cofid-18-374"
+      ]
+    },
+    {
+      "mt": "dundjan",
+      "en": "turkey",
+      "keys": [
+        "turkey-breast-skinless-raw",
+        "turkey-breast-skinless-roasted",
+        "turkey-breast-skin-on-roasted",
+        "turkey-mince-7-fat-raw",
+        "turkey-breast-slices"
+      ]
+    },
+    {
+      "mt": "laħam taż-żiemel",
+      "en": "horse meat",
+      "keys": [
+        "ciqual-6900",
+        "ciqual-6902",
+        "fdc-175086",
+        "fdc-175087"
+      ]
+    },
+    {
+      "mt": "fwied",
+      "en": "liver",
+      "keys": [
+        "beef-liver-raw",
+        "beef-liver-fried",
+        "chicken-liver-raw",
+        "cofid-18-417",
+        "cofid-18-418",
+        "cofid-18-409"
+      ]
+    },
+    {
+      "mt": "kliewi",
+      "en": "kidneys",
+      "keys": [
+        "cofid-18-406",
+        "cofid-18-407",
+        "cofid-18-402",
+        "cofid-18-493",
+        "cofid-18-404",
+        "cofid-18-405"
+      ]
+    },
+    {
+      "mt": "kirxa",
+      "en": "tripe",
+      "keys": [
+        "cofid-18-428",
+        "cofid-50-502",
+        "cofid-19-637",
+        "ciqual-40502"
+      ]
+    },
+    {
+      "mt": "kustilja",
+      "en": "rib; a rib chop (pork or lamb)",
+      "keys": [
+        "pork-chop-lean-fat-raw",
+        "pork-chop-lean-fat-grilled",
+        "pork-chop-lean-raw",
+        "pork-chop-lean-grilled",
+        "lamb-loin-chop-lean-fat-raw",
+        "lamb-loin-chop-lean-fat-grilled"
+      ]
+    },
+    {
+      "mt": "kustilji",
+      "en": "ribs; rib chops",
+      "keys": [
+        "pork-chop-lean-fat-raw",
+        "pork-chop-lean-fat-grilled",
+        "pork-chop-lean-raw",
+        "pork-chop-lean-grilled",
+        "lamb-loin-chop-lean-fat-raw",
+        "lamb-loin-chop-lean-fat-grilled"
+      ]
+    },
+    {
+      "mt": "zalzett",
+      "en": "sausage",
+      "keys": [
+        "cofid-19-510",
+        "cofid-19-509",
+        "cofid-19-512",
+        "pork-sausage-us-raw",
+        "pork-sausage-us-fried",
+        "ciqual-30051"
+      ]
+    },
+    {
+      "mt": "perżut",
+      "en": "ham",
+      "keys": [
+        "ham-cooked-regular-sliced",
+        "ham-cooked-extra-lean-sliced",
+        "cofid-19-496",
+        "ciqual-28812",
+        "fdc-2705879"
+      ]
+    },
+    {
+      "mt": "braġjoli",
+      "en": "beef olives",
+      "keys": [
+        "cofid-19-588"
+      ]
+    },
+    {
+      "mt": "tonn",
+      "en": "tuna",
+      "keys": [
+        "tuna-canned-oil-light",
+        "tuna-canned-brine-light",
+        "tuna-canned-water-light",
+        "tuna-bluefin-raw",
+        "tuna-yellowfin-raw",
+        "tuna-yellowfin-baked"
+      ]
+    },
+    {
+      "mt": "lampuka",
+      "en": "dolphinfish, mahi-mahi",
+      "keys": [
+        "mahi-mahi-raw",
+        "mahi-mahi-baked",
+        "ciqual-25991",
+        "ciqual-25990"
+      ]
+    },
+    {
+      "mt": "lampuki",
+      "en": "dolphinfish (plural)",
+      "keys": [
+        "mahi-mahi-raw",
+        "mahi-mahi-baked",
+        "ciqual-25991",
+        "ciqual-25990"
+      ]
+    },
+    {
+      "mt": "qarnit",
+      "en": "octopus",
+      "keys": [
+        "octopus-raw",
+        "octopus-cooked",
+        "cofid-16-259",
+        "ciqual-10079"
+      ]
+    },
+    {
+      "mt": "klamar",
+      "en": "squid",
+      "keys": [
+        "squid-raw",
+        "squid-fried",
+        "cofid-16-263",
+        "cofid-16-404",
+        "ciqual-10037"
+      ]
+    },
+    {
+      "mt": "gamblu",
+      "en": "shrimp, prawn",
+      "keys": [
+        "prawns-raw",
+        "prawns-cooked",
+        "cofid-16-387",
+        "cofid-16-389",
+        "cofid-16-384"
+      ]
+    },
+    {
+      "mt": "gambli",
+      "en": "shrimps, prawns",
+      "keys": [
+        "prawns-raw",
+        "prawns-cooked",
+        "cofid-16-387",
+        "cofid-16-389",
+        "cofid-16-384"
+      ]
+    },
+    {
+      "mt": "awwista",
+      "en": "lobster",
+      "keys": [
+        "cofid-16-332",
+        "ciqual-10010",
+        "ciqual-10009",
+        "ciqual-10015",
+        "ciqual-10022"
+      ]
+    },
+    {
+      "mt": "granċ",
+      "en": "crab",
+      "keys": [
+        "crab-cooked",
+        "crab-raw",
+        "crab-canned",
+        "cofid-16-441"
+      ]
+    },
+    {
+      "mt": "masklu",
+      "en": "mussel",
+      "keys": [
+        "mussels-raw",
+        "mussels-cooked",
+        "cofid-16-497",
+        "cofid-16-390"
+      ]
+    },
+    {
+      "mt": "maskli",
+      "en": "mussels",
+      "keys": [
+        "mussels-raw",
+        "mussels-cooked",
+        "cofid-16-497",
+        "cofid-16-390"
+      ]
+    },
+    {
+      "mt": "sardin",
+      "en": "sardines",
+      "keys": [
+        "cofid-16-401",
+        "cofid-16-438",
+        "sardines-canned-oil-drained",
+        "sardines-tomato-sauce-drained",
+        "cofid-16-440",
+        "cofid-16-424"
+      ]
+    },
+    {
+      "mt": "sardina",
+      "en": "a sardine",
+      "keys": [
+        "cofid-16-401",
+        "cofid-16-438",
+        "sardines-canned-oil-drained",
+        "sardines-tomato-sauce-drained",
+        "cofid-16-440",
+        "cofid-16-424"
+      ]
+    },
+    {
+      "mt": "inċova",
+      "en": "anchovies",
+      "keys": [
+        "anchovies-raw",
+        "anchovies-canned-oil-drained",
+        "cofid-16-448",
+        "ciqual-26000"
+      ]
+    },
+    {
+      "mt": "pixxispad",
+      "en": "swordfish",
+      "keys": [
+        "swordfish-raw",
+        "swordfish-baked",
+        "cofid-16-221",
+        "cofid-16-222"
+      ]
+    },
+    {
+      "mt": "spnotta",
+      "en": "sea bass",
+      "keys": [
+        "sea-bass-raw",
+        "sea-bass-baked",
+        "cofid-16-385",
+        "cofid-16-386"
+      ]
+    },
+    {
+      "mt": "ċerna",
+      "en": "grouper",
+      "keys": [
+        "ciqual-26178",
+        "fdc-171962",
+        "fdc-171963"
+      ]
+    },
+    {
+      "mt": "dentiċi",
+      "en": "dentex",
+      "keys": [
+        "ciqual-26103"
+      ]
+    },
+    {
+      "mt": "sargu",
+      "en": "white bream",
+      "keys": [
+        "cofid-16-006",
+        "sea-bream-proxy-raw",
+        "sea-bream-proxy-baked"
+      ]
+    },
+    {
+      "mt": "trill",
+      "en": "red mullet",
+      "keys": [
+        "cofid-16-098",
+        "cofid-16-099",
+        "ciqual-26085",
+        "ciqual-26110"
+      ]
+    },
+    {
+      "mt": "bebbux",
+      "en": "snails",
+      "keys": [
+        "ciqual-10008",
+        "ciqual-10099",
+        "fdc-167744"
+      ]
+    },
+    {
+      "mt": "għasel",
+      "en": "honey",
+      "keys": [
+        "honey-as-sold",
+        "cofid-17-050",
+        "ciqual-31008"
+      ]
+    },
+    {
+      "mt": "zokkor",
+      "en": "sugar",
+      "keys": [
+        "sugar-white-as-sold",
+        "sugar-brown-soft-as-sold",
+        "sugar-demerara-as-sold",
+        "sugar-icing-as-sold",
+        "cofid-17-063"
+      ]
+    },
+    {
+      "mt": "żejt",
+      "en": "oil",
+      "keys": [
+        "oil-olive",
+        "oil-sunflower",
+        "oil-vegetable",
+        "oil-rapeseed",
+        "cofid-17-038"
+      ]
+    },
+    {
+      "mt": "żejt taż-żebbuġa",
+      "en": "olive oil",
+      "keys": [
+        "oil-olive",
+        "cofid-17-038",
+        "ciqual-17270",
+        "fdc-2710186"
+      ]
+    },
+    {
+      "mt": "żejt taż-żebbuġ",
+      "en": "olive oil",
+      "keys": [
+        "oil-olive",
+        "cofid-17-038",
+        "ciqual-17270",
+        "fdc-2710186"
+      ]
+    },
+    {
+      "mt": "ħall",
+      "en": "vinegar",
+      "keys": [
+        "vinegar-white",
+        "vinegar-red-wine",
+        "vinegar-balsamic",
+        "vinegar-cider",
+        "cofid-17-339"
+      ]
+    },
+    {
+      "mt": "zalza",
+      "en": "sauce, usually tomato sauce",
+      "keys": [
+        "cofid-50-1173",
+        "cofid-17-834",
+        "fdc-170054",
+        "brand:mayor:maltese-tomato-sauce-with-garlic-zalza-maltese",
+        "brand:mayor:ready-tomato-sauce-with-herbs-zalza-pronta",
+        "brand:mayor:tomato-sauce-sugu"
+      ]
+    },
+    {
+      "mt": "kunserva",
+      "en": "concentrated tomato paste",
+      "keys": [
+        "tomato-paste",
+        "brand:three-hills:kunserva-tomato-paste-traditional",
+        "brand:tomafina:kunserva-tomato-paste-kunserva-tat-tadam",
+        "cofid-13-531",
+        "ciqual-20268"
+      ]
+    },
+    {
+      "mt": "ċikkulata",
+      "en": "chocolate",
+      "keys": [
+        "chocolate-milk-bar",
+        "chocolate-dark-70-85",
+        "chocolate-dark-45-59",
+        "chocolate-white",
+        "cofid-17-648",
+        "cofid-17-491"
+      ]
+    },
+    {
+      "mt": "ġulepp tal-ħarrub",
+      "en": "carob syrup",
+      "keys": [
+        "brand:ta-mari:carob-syrup"
+      ]
+    },
+    {
+      "mt": "qubbajt",
+      "en": "nougat",
+      "keys": [
+        "cofid-17-814",
+        "ciqual-31127",
+        "fdc-169060"
+      ]
+    },
+    {
+      "mt": "biskuttini tal-lewż",
+      "en": "almond biscuits (macaroons)",
+      "keys": [
+        "cofid-12-951",
+        "ciqual-23027",
+        "fdc-2707900"
+      ]
+    },
+    {
+      "mt": "pudina tal-ħobż",
+      "en": "bread pudding",
+      "keys": [
+        "cofid-11-1038",
+        "fdc-2705680"
+      ]
+    },
+    {
+      "mt": "ilma",
+      "en": "water",
+      "keys": [
+        "water-tap",
+        "water-bottled-still",
+        "water-sparkling"
+      ]
+    },
+    {
+      "mt": "meraq",
+      "en": "juice",
+      "keys": [
+        "juice-orange",
+        "juice-apple",
+        "juice-pineapple",
+        "juice-grape",
+        "cofid-14-329",
+        "ciqual-2004"
+      ]
+    },
+    {
+      "mt": "birra",
+      "en": "beer",
+      "keys": [
+        "beer-regular",
+        "beer-light",
+        "beer-strong",
+        "beer-alcohol-free",
+        "cofid-17-506"
+      ]
+    },
+    {
+      "mt": "nbid",
+      "en": "wine",
+      "keys": [
+        "wine-red",
+        "wine-white",
+        "wine-rose",
+        "wine-sparkling-proxy",
+        "cofid-17-752"
+      ]
+    },
+    {
+      "mt": "inbid",
+      "en": "wine (variant spelling of nbid)",
+      "keys": [
+        "wine-red",
+        "wine-white",
+        "wine-rose",
+        "wine-sparkling-proxy",
+        "cofid-17-752"
+      ]
+    },
+    {
+      "mt": "kafè",
+      "en": "coffee",
+      "keys": [
+        "coffee-filter",
+        "espresso",
+        "coffee-instant-made",
+        "espresso-double",
+        "coffee-instant-granules"
+      ]
+    },
+    {
+      "mt": "te",
+      "en": "tea",
+      "keys": [
+        "tea-black",
+        "tea-green",
+        "tea-herbal",
+        "cofid-17-165"
+      ]
+    },
+    {
+      "mt": "aljotta",
+      "en": "garlicky fish soup",
+      "keys": [
+        "ciqual-25904",
+        "fdc-2707143"
+      ]
+    },
+    {
+      "mt": "minestra",
+      "en": "thick vegetable soup",
+      "keys": [
+        "soup-minestrone-canned",
+        "cofid-17-810",
+        "cofid-17-711",
+        "ciqual-25916",
+        "cofid-17-684"
+      ]
+    },
+    {
+      "mt": "soppa",
+      "en": "soup",
+      "keys": [
+        "cofid-17-684",
+        "soup-vegetable-canned",
+        "soup-tomato-canned",
+        "soup-minestrone-canned",
+        "soup-chicken-noodle-canned"
+      ]
+    },
+    {
+      "mt": "brodu",
+      "en": "broth",
+      "keys": [
+        "stock-chicken-ready",
+        "stock-chicken-from-cube",
+        "stock-beef-from-cube",
+        "stock-vegetable-ready",
+        "fish-stock-homemade",
+        "ciqual-25909"
+      ]
+    },
+    {
+      "mt": "stuffat",
+      "en": "stew",
+      "keys": [
+        "rabbit-stewed",
+        "cofid-19-623",
+        "ciqual-25065",
+        "stewing-beef-braised",
+        "fdc-173330"
+      ]
+    },
+    {
+      "mt": "patata l-forn",
+      "en": "oven-baked sliced potatoes",
+      "keys": [
+        "cofid-13-534",
+        "cofid-13-599",
+        "ciqual-4026",
+        "fdc-2709405"
+      ]
+    }
+  ]
+}
