@@ -2603,16 +2603,30 @@ hooks.idle = () => {
 // The keyboard. iOS keeps fixed bars on the part of the screen left above the keyboard, so the tab bar
 // rode up with it and sat on top of the keys. While a text field has focus the tab bar steps aside
 // (app.css, html.kb-open) and the chat composers drop to just above the keyboard.
-const TYPING = 'input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]), textarea, select, [contenteditable="true"]';
+// The keyboard counts as open while a text field has focus or the visible screen has shrunk by more than
+// a bar's height (the keyboard coming up), whichever iOS reports first. In the food chat the newest
+// message is brought back into view above the composer once the keyboard has settled.
+const TEXT_FIELDS = 'input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]), textarea, select, [contenteditable="true"]';
+const vv = window.visualViewport;
+let typingFocus = false;
+function keyboardState() {
+  const shrunk = vv ? window.innerHeight - vv.height > 140 : false;
+  document.documentElement.classList.toggle('kb-open', typingFocus || shrunk);
+  if (shrunk && state.route === 'food' && state.param === 'chat') motion.chatToEnd();
+}
 document.addEventListener('focusin', (e) => {
-  if (e.target.matches?.(TYPING)) document.documentElement.classList.add('kb-open');
+  if (!e.target.matches?.(TEXT_FIELDS)) return;
+  typingFocus = true;
+  keyboardState();
 });
 document.addEventListener('focusout', () => {
   // Moving from one field to the next keeps the keyboard up, so wait for the next focus before deciding.
   setTimeout(() => {
-    if (!document.activeElement?.matches?.(TYPING)) document.documentElement.classList.remove('kb-open');
+    typingFocus = Boolean(document.activeElement?.matches?.(TEXT_FIELDS));
+    keyboardState();
   }, 120);
 });
+vv?.addEventListener('resize', keyboardState);
 
 // Back from the background. With the lock screen up, ask for Face ID again. With Face ID only and
 // more than a minute away, lock the open app in place (no reload, no flash of the day) and ask.
@@ -2624,6 +2638,9 @@ document.addEventListener('visibilitychange', () => {
   }
   const away = hiddenAt ? Date.now() - hiddenAt : 0;
   hiddenAt = 0;
+  // Ask for a newer version first, also when the lock screen comes up: a phone that only ever resumes the
+  // app would otherwise keep running an old version (watchForUpdates swaps it in at a quiet moment).
+  navigator.serviceWorker?.getRegistration().then((reg) => reg?.update()).catch(() => {});
   if (lockEl()) {
     resumeLock();
     return;
@@ -2632,7 +2649,6 @@ document.addEventListener('visibilitychange', () => {
     lockApp();
     return;
   }
-  navigator.serviceWorker?.getRegistration().then((reg) => reg?.update()).catch(() => {});
   if (document.querySelector('.tabbar') && canRedraw()) go();
 });
 
@@ -2671,7 +2687,8 @@ motion.initMotion({
 
 // ---------- Boot ----------
 
-// When a new version of the app is installed, switch to it straight away.
+// When a new version of the app is installed, switch to it at the next quiet moment: never while the
+// lock screen is asking for Face ID or while he is typing, so nothing he is doing is lost.
 function watchForUpdates() {
   if (!('serviceWorker' in navigator)) return;
   const hadController = Boolean(navigator.serviceWorker.controller);
@@ -2679,7 +2696,8 @@ function watchForUpdates() {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (!hadController || reloading) return;
     reloading = true;
-    location.reload();
+    const swap = () => (lockEl() || document.documentElement.classList.contains('kb-open') ? setTimeout(swap, 1000) : location.reload());
+    swap();
   });
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
