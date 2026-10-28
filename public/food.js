@@ -983,6 +983,8 @@ function customBody(s) {
 // estimated amount; a typed food with no record keeps a rough estimate and logs as an estimated
 // quick add. Nothing is logged until Log all.
 function reviewItem(it) {
+  // His own values (Macros) win over the record and the estimate.
+  if (it.own && num(it.own.kcal) !== null) return { mode: 'own' };
   const { item, filled } = withFill(it.match, it.fill);
   const l = item && Number(it.qty) > 0 ? line(item, it.qty, it.unit) : null;
   if (l && !l.error) return { mode: 'match', line: l, filled };
@@ -996,8 +998,98 @@ function roughAmount(g) {
   return g.unit === 'piece' ? `about ${q} ${q === 1 ? 'piece' : 'pieces'}` : `about ${q} ${g.unit}`;
 }
 
+// The values a reviewed food logs with: the record at its amount, his own, or the rough estimate.
+function reviewNutrients(it) {
+  const m = reviewItem(it);
+  if (m.mode === 'match') return m.line.nutrients;
+  if (m.mode === 'own') return { protein: null, carbs: null, fat: null, ...it.own };
+  if (m.mode === 'rough') return { kcal: it.guess.kcal, protein: it.guess.protein ?? null, carbs: it.guess.carbs ?? null, fat: it.guess.fat ?? null };
+  return null;
+}
+
+// How much of a reviewed food he had, in g or ml, when that is known.
+function reviewWeight(it) {
+  const l = it.match && Number(it.qty) > 0 ? line(it.match, it.qty, it.unit) : null;
+  if (l && !l.error) return { grams: l.g ?? null, ml: l.g ? null : l.ml ?? null };
+  const g = it.guess || {};
+  const w = num(g.weight) ?? (['g', 'ml'].includes(g.unit) ? num(g.amount) : null);
+  return it.fill?.basis === 'ml' || g.unit === 'ml' ? { grams: null, ml: w } : { grams: w, ml: null };
+}
+
+// A food that logs with values of its own rather than a catalogue line: his own (Macros), or a rough
+// estimate for a food the catalogue does not have. His energy, protein, carbs and fat win; the record's
+// other values stay, never more sugar than his carbs or saturates than his fat.
+function ownParts(it) {
+  const m = reviewItem(it);
+  const name = it.match?.name || cap(it.name);
+  const amount = it.match && Number(it.qty) > 0 ? amountText(it.qty, it.unit, it.match) : roughAmount(it.guess);
+  const { grams, ml } = reviewWeight(it);
+  if (m.mode === 'own') {
+    const l = it.match && Number(it.qty) > 0 ? line(it.match, it.qty, it.unit) : null;
+    const rec = l && !l.error ? l.nutrients : it.guess || {};
+    const o = it.own;
+    const part = (v, whole) => (num(v) === null ? null : num(whole) === null ? v : Math.min(v, whole));
+    return { name, amount, grams, ml, kcal: o.kcal, protein: o.protein ?? null, carbs: o.carbs ?? null, fat: o.fat ?? null,
+      sugars: part(rec.sugars, o.carbs), satfat: part(rec.satfat, o.fat), fibre: num(rec.fibre), salt: num(rec.salt), caffeine: num(rec.caffeine), alcohol: num(rec.alcohol) };
+  }
+  // Not in the catalogue: the estimate per 100 and the weight, or without them the rough totals.
+  const g = it.guess;
+  const body = { name, amount, grams, ml, estimate: true };
+  if (it.fill && (grams ?? ml)) body.fill = it.fill;
+  else Object.assign(body, { kcal: round(g.kcal, 0), protein: g.protein, carbs: g.carbs, sugars: g.sugars, fat: g.fat, fibre: g.fibre, salt: g.salt });
+  return body;
+}
+
+// A typed value on a reviewed food: its amount or unit, or one of his own values (own_kcal and so on).
+// The first own value starts from what was shown, so the others are kept; a new amount scales them.
+function setReviewField(it, field, value) {
+  it.edited = true;
+  const x = String(value).trim().replace(',', '.');
+  if (field.startsWith('own_')) {
+    if (!it.own) {
+      const n = reviewNutrients(it) || {};
+      it.own = Object.fromEntries(['kcal', 'protein', 'carbs', 'fat'].map((k) => [k, num(n[k]) === null ? null : round(n[k], k === 'kcal' ? 0 : 1)]));
+    }
+    const v = Number(x);
+    it.own[field.slice(4)] = x === '' ? null : v >= 0 ? v : it.own[field.slice(4)];
+    return;
+  }
+  if (field === 'qty' && it.own && Number(it.qty) > 0 && Number(x) > 0) {
+    for (const k of Object.keys(it.own)) if (num(it.own[k]) !== null) it.own[k] = round((it.own[k] * Number(x)) / Number(it.qty), 1);
+  }
+  it[field] = value;
+}
+
+// Several foods log as one meal (each food listed inside it) or each as its own entry.
+function asMealSeg(on, attrs) {
+  return `<div class="seg frv-mode" role="group" aria-label="Log as">
+    <button type="button" aria-pressed="${on}" ${attrs('meal')}>One meal</button>
+    <button type="button" aria-pressed="${!on}" ${attrs('items')}>Separate foods</button></div>`;
+}
+
+// His own energy and macros for one food, for the amount he had.
+function ownEditor(it, field, reset) {
+  const n = reviewNutrients(it) || {};
+  const v = (k) => { const x = it.own?.[k] ?? n[k]; return num(x) === null ? '' : round(x, k === 'kcal' ? 0 : 1); };
+  const f = (k, label, unit) => `<label class="own-f"><span>${label}</span><span class="own-in"><input class="input" inputmode="decimal" value="${v(k)}" placeholder="?" ${field(`own_${k}`)} aria-label="${label} in ${unit}"><i>${unit}</i></span></label>`;
+  return `<div class="own-ed">${f('kcal', 'Energy', 'kcal')}${f('protein', 'Protein', 'g')}${f('carbs', 'Carbs', 'g')}${f('fat', 'Fat', 'g')}
+    <p class="own-note">For the amount above. ${it.own ? `<button type="button" class="linkish" ${reset}>Use ${it.match ? 'the catalogue' : 'the estimate'} again</button>` : 'Type over any value to use your own.'}</p></div>`;
+}
+
+// The review's running total: energy and the three macros, "~" when any of it is estimated.
+function reviewTotal(items) {
+  const rows = items.map(reviewNutrients).filter(Boolean);
+  if (!rows.length) return '';
+  const t = total(rows);
+  if (num(t.kcal) === null) return '';
+  const est = items.some((it) => !it.edited && reviewItem(it).mode !== 'own') ? '<i class="est">~</i>' : '';
+  const g = (k) => (num(t[k]) === null ? '–' : `${fmtN(t[k])}${t.missing?.[k] ? '+' : ''}`);
+  return `<b class="frv-total">${est}${fmtN(t.kcal)}${t.missing?.kcal ? '+' : ''} kcal</b><span class="frv-macros">P ${g('protein')} g · C ${g('carbs')} g · F ${g('fat')} g</span>`;
+}
+
 function reviewKcal(it) {
   const m = reviewItem(it);
+  if (m.mode === 'own') return `${fmtN(it.own.kcal)} kcal`;
   const est = it.edited ? '' : '<i class="est">~</i>';
   if (m.mode === 'match') return `${est || (m.filled.has('kcal') ? '<i class="est">~</i>' : '')}${show(m.line.nutrients, 'kcal')}`;
   if (m.mode === 'rough') return `<i class="est">~</i>${fmtN(it.guess.kcal)} kcal`;
@@ -1012,22 +1104,26 @@ function reviewBody(s) {
     const brand = it.brand ?? it.match?.brand ?? null;
     const size = it.size ?? (it.match?.pack ? amountText(1, 'pack', it.match) : null);
     const names = [brand, size].filter(Boolean).map(esc).join(' · ');
-    const sub = it.match ? names : m.mode === 'rough' ? esc(roughAmount(it.guess)) : 'No match';
+    const sub = [m.mode === 'own' ? 'Your values' : '', it.match ? names : m.mode === 'rough' ? esc(roughAmount(it.guess)) : m.mode === 'own' ? '' : 'No match'].filter(Boolean).join(' · ');
+    const own = m.mode !== 'none' ? ` · <button class="linkish" data-action="food-photo-own" data-index="${i}" aria-expanded="${Boolean(it.ownOpen)}">Macros</button>` : '';
     return `<div class="li li-plain photo-item">
       ${gradeDot(itemGrade(it.match))}
       <span class="li-body"><span class="li-title">${esc(it.match?.name || cap(it.name))}</span>
-        <span class="li-sub">${sub}${sub ? ' · ' : ''}<button class="linkish" data-action="food-photo-change" data-index="${i}">Change</button></span>
+        <span class="li-sub">${sub}${sub ? ' · ' : ''}<button class="linkish" data-action="food-photo-change" data-index="${i}">Change</button>${own}</span>
         ${it.why && it.match ? `<span class="frv-why">${esc(it.why)}</span>` : ''}</span>
       <span class="li-side"><b data-photo-kcal="${i}">${reviewKcal(it)}</b><button class="icon-btn" data-action="food-photo-drop" data-index="${i}" aria-label="Remove">${icon('close')}</button></span>
       ${it.match ? `<span class="amount-row small photo-amount"><input class="input" inputmode="decimal" value="${esc(it.qty ?? '')}" placeholder="amount" data-photo-index="${i}" data-photo-field="qty" aria-label="Amount">
-        <select class="input" data-photo-index="${i}" data-photo-field="unit" aria-label="Unit">${unitOptions(it.match, it.unit)}</select></span>` : ''}</div>`;
+        <select class="input" data-photo-index="${i}" data-photo-field="unit" aria-label="Unit">${unitOptions(it.match, it.unit)}</select></span>` : ''}
+      ${it.ownOpen && m.mode !== 'none' ? ownEditor(it, (k) => `data-photo-index="${i}" data-photo-field="${k}"`, `data-action="food-photo-own-reset" data-index="${i}"`) : ''}</div>`;
   }).join('');
   const n = modes.filter((m) => m.mode !== 'none').length;
-  const sum = modes.reduce((a, m, i) => a + (m.mode === 'match' ? num(m.line.nutrients.kcal) || 0 : m.mode === 'rough' ? num(s.items[i].guess.kcal) || 0 : 0), 0);
-  return `<div class="frv-top"><p class="frv-sum">${r.summary ? esc(r.summary) : `${s.items.length} ${s.items.length === 1 ? 'item' : 'items'}`}</p>${sum ? `<b class="frv-total"><i class="est">~</i>${fmtN(sum)} kcal</b>` : ''}${infoBtn('review')}</div>
+  const asMeal = n > 1 && s.asMeal !== false;
+  const label = asMeal ? (n === s.items.length ? 'Log as one meal' : `Log ${n} of ${s.items.length} as one meal`) : n === s.items.length ? 'Log all' : `Log ${n} of ${s.items.length}`;
+  return `<div class="frv-top"><p class="frv-sum">${r.summary ? esc(r.summary) : `${s.items.length} ${s.items.length === 1 ? 'item' : 'items'}`}</p><span class="frv-tot" id="frv-total">${reviewTotal(s.items)}</span>${infoBtn('review')}</div>
     ${infoLine('review')}
+    ${n > 1 ? asMealSeg(asMeal, (mode) => `data-action="food-review-mode" data-mode="${mode}"`) : ''}
     <div class="group photo-items">${rows || '<p class="note pad">Nothing left to log.</p>'}</div>
-    <form data-form="food-photo-log">${slotSelect(slotNow())}<div class="form-actions"><button class="btn primary" type="submit"${n ? '' : ' disabled'}>${n === s.items.length ? 'Log all' : `Log ${n} of ${s.items.length}`}</button></div></form>`;
+    <form data-form="food-photo-log">${asMeal ? `<label class="field"><span>Meal name</span><input class="input" name="meal_name" value="${esc(s.mealName ?? r.summary ?? '')}" maxlength="120" autocomplete="off" data-photo-meal placeholder="Meal"></label>` : ''}${slotSelect(slotNow())}<div class="form-actions"><button class="btn primary" type="submit"${n ? '' : ' disabled'}>${label}</button></div></form>`;
 }
 
 function photoBody(s) {
@@ -1780,7 +1876,20 @@ async function afterLog(r, name, info = {}) {
 // Logs reviewed foods, a photo's from its sheet or a meal's from the food chat: a matched food at its
 // amount, and a food with no record as an estimated quick add. Says how many landed and whether any is
 // waiting on this phone.
-async function logReviewed(items, slot) {
+// As one meal (`asMeal`, two or more foods): one diary entry named `name`, each food inside it with its
+// own amount, values and estimate; `id` keeps a retry from logging it twice.
+async function logReviewed(items, slot, { asMeal = false, name = '', id = null } = {}) {
+  const ready = items.filter((it) => reviewItem(it).mode !== 'none');
+  if (asMeal && ready.length > 1) {
+    const lines = ready.map((it) => (reviewItem(it).mode === 'match'
+      ? { ref: 'item', ref_key: it.match.key, qty: Number(it.qty), unit: it.unit, ...(it.fill ? { fill: it.fill } : {}) }
+      : { ref: 'own', ...ownParts(it) }));
+    const title = String(name || '').trim() || 'Meal';
+    const kcal = total(ready.map(reviewNutrients)).kcal;
+    const body = { lines, name: title, slot, estimate: ready.some((it) => !it.edited), id: id || uuid(), ...dated() };
+    const r = await act(() => foodPost('meal', body, { name: title, amount: `${lines.length} foods`, kcal }));
+    return { n: r ? 1 : 0, queued: Boolean(r?.queued), meal: Boolean(r) };
+  }
   let n = 0;
   let queued = false;
   for (const it of items) {
@@ -1790,18 +1899,11 @@ async function logReviewed(items, slot) {
       // The matched record's gaps, estimated per 100, go back with the line so the server keeps them.
       const body = { key: it.match.key, qty: Number(it.qty), unit: it.unit, slot, estimate: !it.edited, id: it.logId, ...(it.fill ? { fill: it.fill } : {}), ...dated() };
       r = await act(() => foodPost('log', body, { name: it.match.name, amount: amountText(it.qty, it.unit, it.match), kcal: m.line.nutrients.kcal }));
-    } else if (m.mode === 'rough') {
-      // Not in the catalogue: the estimate per 100 and its weight go in the diary as a quick add
-      // marked as an estimate. Without a profile or a weight, the rough totals stand in.
-      const g = it.guess;
-      const name = cap(it.name);
-      const amount = roughAmount(g);
-      const drink = it.fill?.basis === 'ml' || g.unit === 'ml';
-      const weight = num(g.weight) ?? (['g', 'ml'].includes(g.unit) ? num(g.amount) : null);
-      const body = { name, amount, slot, estimate: true, id: it.logId, ...(drink ? { ml: weight } : { grams: weight }), ...dated() };
-      if (it.fill && weight) body.fill = it.fill;
-      else Object.assign(body, { kcal: round(g.kcal, 0), protein: g.protein, carbs: g.carbs, sugars: g.sugars, fat: g.fat, fibre: g.fibre, salt: g.salt });
-      r = await act(() => foodPost('quick', body, { name, amount, kcal: g.kcal }));
+    } else if (m.mode === 'rough' || m.mode === 'own') {
+      // Not in the catalogue, or with his own values: a quick add with its weight, marked as an estimate
+      // when it is one.
+      const body = { ...ownParts(it), slot, id: it.logId, ...dated() };
+      r = await act(() => foodPost('quick', body, { name: body.name, amount: body.amount, kcal: body.kcal ?? it.guess?.kcal }));
     } else if (m.error) toast(`${it.match.name}: ${m.error}`, true);
     if (r) { n += 1; queued = queued || r.queued; }
   }
@@ -2085,6 +2187,23 @@ export async function foodClick(a, el) {
       if (r) await afterLog(r, m.name);
       return true;
     }
+    case 'food-review-mode':
+      s.asMeal = el.dataset.mode === 'meal';
+      haptic('toggle');
+      ctx.render();
+      return true;
+    case 'food-photo-own': {
+      const it = s.items[Number(el.dataset.index)];
+      if (it) it.ownOpen = !it.ownOpen;
+      ctx.render();
+      return true;
+    }
+    case 'food-photo-own-reset': {
+      const it = s.items[Number(el.dataset.index)];
+      if (it) delete it.own;
+      ctx.render();
+      return true;
+    }
     case 'food-photo-change': {
       // The matcher's other candidates come first; typing searches the whole catalogue.
       const it = s.items[Number(el.dataset.index)];
@@ -2330,8 +2449,10 @@ export async function foodSubmit(kind, form) {
       return true;
     }
     case 'food-photo-log': {
-      const { n, queued } = await logReviewed(s.items, o.slot);
-      if (n) await afterLog({ queued }, `${n} ${n === 1 ? 'item' : 'items'}`);
+      s.mealLogId = s.mealLogId || uuid();
+      const name = o.meal_name ?? s.mealName ?? s.result?.summary ?? '';
+      const { n, queued, meal } = await logReviewed(s.items, o.slot, { asMeal: s.asMeal !== false, name, id: s.mealLogId });
+      if (n) await afterLog({ queued }, meal ? (String(name).trim() || 'the meal') : `${n} ${n === 1 ? 'item' : 'items'}`);
       return true;
     }
     case 'food-entry-edit': {
@@ -2513,12 +2634,15 @@ function onInput(e) {
     document.getElementById('builder-total').innerHTML = builderTotals(s);
   } else if (el.matches('[data-bl-name]')) {
     s.name = el.value;
+  } else if (el.matches('[data-photo-meal]')) {
+    s.mealName = el.value;
   } else if (el.matches('[data-photo-index]')) {
     const it = s.items[Number(el.dataset.photoIndex)];
-    it[el.dataset.photoField] = el.value;
-    it.edited = true;
+    setReviewField(it, el.dataset.photoField, el.value);
     const out = document.querySelector(`[data-photo-kcal="${el.dataset.photoIndex}"]`);
     if (out) out.innerHTML = reviewKcal(it);
+    const tot = document.getElementById('frv-total');
+    if (tot) tot.innerHTML = reviewTotal(s.items);
   } else if (el.matches('[data-re-index]')) {
     s.draft.lines[Number(el.dataset.reIndex)][el.dataset.reField] = el.value;
     if (s.draft.imported) importTyped(s.draft, Number(el.dataset.reIndex));
@@ -2567,7 +2691,7 @@ function onChange(e) {
     }
     return;
   }
-  if (el.matches('[data-food-amount], [data-bl-index], [data-photo-index], [data-re-index]')) onInput(e);
+  if (el.matches('[data-food-amount], [data-bl-index], [data-photo-index], [data-photo-meal], [data-re-index]')) onInput(e);
   if (el.matches('[data-photo-index][data-photo-field="unit"]')) ctx.render();
 }
 
@@ -2602,7 +2726,7 @@ export function initFood(c) {
   });
   initTagDb({ f, sheetHtml, shell: (html) => ctx.shell(html), render: () => ctx.render() });
   initChat({
-    f, store, uuid, openSheet, runSearch, defaults, reviewItem, reviewKcal, roughAmount, unitOptions, itemGrade, foodRing, macroParts, energyRing,
+    f, store, uuid, openSheet, runSearch, defaults, reviewItem, reviewKcal, reviewNutrients, setReviewField, asMealSeg, ownEditor, roughAmount, unitOptions, itemGrade, foodRing, macroParts, energyRing,
     logReviewed, shrink, slotNow, SLOT, SLOTS, photoItemsFrom, fmtN, cap, sizeText, sheetHtml,
     shell: (html) => ctx.shell(html), render: () => ctx.render(),
   });

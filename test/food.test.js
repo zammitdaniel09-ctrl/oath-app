@@ -710,3 +710,33 @@ test('search leaves out a bulk record that says the same as a hand-picked one, a
   assert.ok(!list.some((x) => x.key === 'fdc-2709224'), 'two rows nothing tells apart never show');
   assert.ok(list.some((x) => x.key.startsWith('fdc-')), 'other bulk records stay');
 });
+
+test('a plate logged as one meal keeps each food: catalogue amounts, his own values and estimates', async () => {
+  const lines = [
+    { ref: 'item', ref_key: 'banana-raw', qty: 120, unit: 'g' },
+    // A food with his own numbers: these win, the rest stays unknown.
+    { ref: 'own', name: 'Chicken shawarma wrap', amount: '1 wrap', grams: 250, kcal: 520, protein: 38, carbs: 45, fat: 18 },
+    // A food only estimated: the profile per 100 g fills it from the weight.
+    { ref: 'own', name: 'Garlic sauce', amount: 'about 30 g', grams: 30, estimate: true, fill: { basis: 'g', kcal: 600, protein: 1, carbs: 5, fat: 64 } },
+  ];
+  const r = await post('/api/food/meals/log', { id: id(), lines, name: 'Wrap and a banana', slot: 'lunch' });
+  const e = r.entry;
+  assert.equal(e.kind, 'meal');
+  assert.equal(e.name, 'Wrap and a banana');
+  assert.deepEqual(e.lines.map((l) => l.ref_key ?? l.name), ['banana-raw', 'Chicken shawarma wrap', 'Garlic sauce']);
+  const [banana, wrap, sauce] = e.lines;
+  assert.equal(wrap.nutrients.kcal, 520);
+  assert.equal(wrap.nutrients.protein, 38);
+  assert.equal(wrap.nutrients.fibre, null, 'not given stays unknown');
+  near(sauce.nutrients.kcal, 180);
+  near(sauce.nutrients.fat, 19.2);
+  assert.ok(sauce.estimate);
+  assert.ok(e.estimate, 'an estimated food marks the meal');
+  near(e.nutrients.kcal, banana.nutrients.kcal + 520 + 180);
+  near(e.grams, 400);
+  // A food with no calories at all is refused, and a saved meal stays catalogue-only.
+  const bad = await call('POST', '/api/food/meals/log', { id: id(), lines: [{ ref: 'own', name: 'Mystery', grams: 50 }], name: 'x' });
+  assert.equal(bad.status, 400);
+  const saved = await call('POST', '/api/food/meals', { name: 'x', kind: 'meal', lines });
+  assert.equal(saved.status, 400);
+});

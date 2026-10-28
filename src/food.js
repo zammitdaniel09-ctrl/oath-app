@@ -1423,33 +1423,90 @@ function labelOf(totals, est) {
 
 const MEAL_KINDS = ['meal', 'shake', 'bowl', 'plate'];
 
-function cleanMealLines(lines) {
+// What a food of his own in a meal may carry: the values for the amount he had.
+const OWN_KEYS = ['kcal', 'protein', 'carbs', 'sugars', 'fat', 'satfat', 'fibre', 'salt', 'caffeine', 'alcohol'];
+
+// A food in a logged meal that is not a catalogue record: one he gave his own values for, or one only
+// estimated from a photo or a description. { name, amount, grams | ml, kcal, protein, ..., fill, estimate }:
+// the values are for the amount he had, `fill` (an estimate per 100) fills the rest when the weight is
+// known, and anything still missing stays unknown.
+function cleanOwnLine(l) {
+  const name = clean(l.name, 120);
+  if (!name) throw new RuleError('Each food needs a name.');
+  const size = (x) => (Number(x) > 0 && Number(x) <= 10000 ? Number(x) : null);
+  const grams = size(l.grams);
+  const ml = grams ? null : size(l.ml);
+  const nutrients = NUT.unknown();
+  for (const k of OWN_KEYS) {
+    if (l[k] === undefined || l[k] === null || l[k] === '') continue;
+    const v = Number(l[k]);
+    if (!(v >= 0) || v > (k === 'kcal' ? 10000 : 2000)) throw new RuleError(`${name}: ${k === 'kcal' ? 'the calories' : k} must be zero or more.`);
+    nutrients[k] = v;
+  }
+  const fill = cleanFill(l.fill, ml ? 'ml' : 'g');
+  if (fillGaps(nutrients, grams ?? ml, fill, FILL_KEYS).nutrients.kcal === null) throw new RuleError(`${name}: give the calories.`);
+  return { ref: 'own', name, amount: clean(l.amount, 60), grams, ml, nutrients, ...(fill ? { fill } : {}), estimate: Boolean(l.estimate) };
+}
+
+// A meal's lines. `own` lets in foods of his own (only a meal logged straight from a plate or a chat
+// card; a saved meal stays made of catalogue records). Catalogue lines may bring an estimate per 100
+// (`fill`) for the values their record is missing.
+function cleanMealLines(lines, { own = false } = {}) {
   if (!Array.isArray(lines) || !lines.length) throw new RuleError('A saved meal needs at least one food.');
   if (lines.length > 40) throw new RuleError('Too many lines.');
   return lines.map((l) => {
+    if (own && (l.ref === 'own' || l.ref === 'custom')) return cleanOwnLine(l);
     const ref = l.ref === 'recipe' ? 'recipe' : 'item';
     if (!l.ref_key) throw new RuleError('Each line needs a food.');
     const qty = Number(l.qty);
     if (!(qty > 0)) throw new RuleError('Each line needs an amount.');
-    return { ref, ref_key: String(l.ref_key), qty, unit: String(l.unit || (ref === 'recipe' ? 'serving' : 'g')), optional: Boolean(l.optional), grp: clean(l.grp, 30) };
+    return { ref, ref_key: String(l.ref_key), qty, unit: String(l.unit || (ref === 'recipe' ? 'serving' : 'g')), optional: Boolean(l.optional), grp: clean(l.grp, 30),
+      ...(own && ref === 'item' && l.fill ? { fill: l.fill } : {}) };
   });
 }
 
-// Works out a meal's lines against the catalogue: [{ name, amount_text, nutrients, ... }].
+// A food of his own as a priced row, scaled by the share of the meal he had.
+function ownRow(l, factor) {
+  const g = l.grams ? l.grams * factor : null;
+  const ml = l.ml ? l.ml * factor : null;
+  const { nutrients, filled } = fillGaps(NUT.scale(l.nutrients, factor, 1), g ?? ml, l.fill, FILL_KEYS);
+  return {
+    ref: 'own', ref_key: null, name: l.name, qty: null, unit: null,
+    amount_text: l.amount || (g ? `${round(g, 0)} g` : ml ? `${round(ml, 0)} ml` : ''),
+    g, ml, liquid: Boolean(ml), nutrients, filled, estimate: l.estimate, error: null,
+  };
+}
+
+// Works out a meal's lines against the catalogue: [{ name, amount_text, nutrients, ... }]. Foods of his
+// own are priced from their own values and keep their place in the list; a catalogue line with an
+// estimate per 100 has the values its record is missing filled from it, listed in `filled`.
 async function priceLines(lines, opts = {}) {
-  const all = [...lines, ...Object.values(opts.swap || {})];
+  const at = [];
+  const listed = lines.filter((l, i) => (l.ref === 'own' ? false : at.push(i) > 0));
+  const back = new Map(at.map((orig, j) => [orig, j]));
+  const moved = (list) => (list || []).map(Number).filter((i) => back.has(i)).map((i) => back.get(i));
+  const swap = Object.fromEntries(Object.entries(opts.swap || {}).filter(([i]) => back.has(Number(i))).map(([i, s]) => [back.get(Number(i)), s]));
+  const sub = { ...opts, skip: moved(opts.skip), with: moved(opts.with), swap };
+  const all = [...listed, ...Object.values(swap)];
   const graph = await loadGraph(all.filter((l) => l.ref === 'recipe').map((l) => l.ref_key), all.filter((l) => l.ref !== 'recipe').map((l) => l.ref_key));
-  const pseudo = { key: '__meal__', servings: 1, lines };
-  const t = recipeTotals(pseudo, graph.get, opts);
+  const t = recipeTotals({ key: '__meal__', servings: 1, lines: listed }, graph.get, sub);
   const rows = t.rows.map((r) => {
     const it = r.ref === 'recipe' ? graph.recipes.get(r.ref_key) : graph.items.get(r.ref_key);
+    const g = r.g ?? (r.basis === 'g' ? r.amount : null);
+    const ml = r.ml ?? null;
+    const fill = r.ref === 'item' && it ? cleanFill(listed[r.index]?.fill, it.basis) : null;
+    const { nutrients, filled } = fillGaps(r.nutrients, fill?.basis === 'ml' ? (ml ?? g) : (g ?? ml), fill, FILL_KEYS);
     return {
-      ref: r.ref, ref_key: r.ref_key, name: it?.name || r.ref_key, qty: r.qty, unit: r.unit,
+      index: at[r.index], ref: r.ref, ref_key: r.ref_key, name: it?.name || r.ref_key, qty: r.qty, unit: r.unit,
       amount_text: r.ref === 'recipe' ? amountText(r.qty, r.unit) : it ? amountText(r.qty, r.unit, it) : '',
-      g: r.g ?? (r.basis === 'g' ? r.amount : null), ml: r.ml ?? null, liquid: Boolean(it?.liquid), nutrients: r.nutrients, error: r.error,
+      g, ml, liquid: Boolean(it?.liquid), nutrients, ...(filled.length ? { filled } : {}), error: r.error,
     };
   });
-  return { rows, nutrients: t.nutrients, errors: t.errors };
+  const skipped = new Set((opts.skip || []).map(Number));
+  lines.forEach((l, i) => { if (l.ref === 'own' && !skipped.has(i)) rows.push({ index: i, ...ownRow(l, Number(opts.factor) > 0 ? Number(opts.factor) : 1) }); });
+  rows.sort((a, b) => a.index - b.index);
+  for (const r of rows) delete r.index;
+  return { rows, nutrients: NUT.total(rows.map((r) => r.nutrients)), errors: rows.filter((r) => r.error).map((r) => r.error) };
 }
 
 const shapeMeal = (r, priced) => ({
@@ -1504,7 +1561,7 @@ export async function logMeal(input, source = 'you') {
     lines = m.lines;
     name = name || m.name;
     mealId = m.id;
-  } else lines = cleanMealLines(input.lines);
+  } else lines = cleanMealLines(input.lines, { own: true });
   if (!name) name = 'Meal';
   const factor = input.factor === undefined ? 1 : Number(input.factor);
   if (!(factor > 0) || factor > 20) throw new RuleError('The share must be more than zero.');
@@ -1529,7 +1586,9 @@ export async function logMeal(input, source = 'you') {
     liquid: ml > 0 && priced.rows.every((r) => r.liquid || !r.g),
     nutrients: priced.nutrients,
     lines: priced.rows,
-    estimate: Boolean(input.estimate),
+    // Values estimated for any of its foods: the diary marks those totals with "~".
+    filled: [...new Set(priced.rows.flatMap((r) => r.filled || []))],
+    estimate: Boolean(input.estimate) || priced.rows.some((r) => r.estimate),
     source,
     note: input.note,
     plan_id: input.plan_id,

@@ -508,6 +508,21 @@ stop.g1 { stop-color: var(--mh); }
 .photo-item .li-side b { white-space: nowrap; font-size: 1.0625rem; font-variant-numeric: tabular-nums; }
 .photo-item .li-side .icon-btn { width: 36px; height: 36px; margin-right: -6px; }
 .photo-item .photo-amount { grid-column: 2 / -1; margin-top: 2px; }
+/* One meal or separate foods, and his own values for a food. */
+.frv-mode { margin: 10px 0 2px; }
+.frv-tot { display: grid; justify-items: end; gap: 1px; }
+.frv-macros { font-size: 0.75rem; color: var(--text-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.own-ed { grid-column: 2 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+@media (min-width: 560px) { .own-ed { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.own-f { display: grid; gap: 3px; min-width: 0; font-size: 0.6875rem; font-weight: 600; color: var(--text-3); }
+.own-in { position: relative; display: block; }
+.own-in .input { width: 100%; min-height: 44px; padding: 6px 40px 6px 10px; border-radius: 10px; font-size: 16px; font-variant-numeric: tabular-nums; }
+.own-in i { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-style: normal; font-size: 0.6875rem; color: var(--text-3); pointer-events: none; }
+.own-note { grid-column: 1 / -1; margin: 0; font-size: 0.75rem; color: var(--text-3); }
+.fc-card .frv-mode { margin: 4px 0 8px; }
+.fc-meal-name { display: grid; gap: 4px; margin: 0 0 8px; font-size: 0.75rem; font-weight: 600; color: var(--text-3); }
+.fc-meal-name .input { min-height: 40px; font-size: 16px; }
+.fc-item .own-ed { grid-column: 2 / -1; }
 .photo-item + .photo-item::before { left: 50px; }
 .frv-why { overflow: hidden; font-size: 0.75rem; color: var(--text-3); text-overflow: ellipsis; white-space: nowrap; }
 

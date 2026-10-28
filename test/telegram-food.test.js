@@ -163,28 +163,26 @@ test('Log it logs the entries the way the app does, once, and a second tap does 
   const id = idFrom(lastText());
   calls = [];
   await tg.handleUpdate(tap(`food:log:${id}`));
+  // A plate of two foods is one meal entry, each food inside it, as from the app.
   const rows = await entries(id);
-  assert.equal(rows.length, 2);
-  assert.deepEqual(rows.map((r) => [r.id, r.ref_key, r.qty, r.unit, r.estimate, r.source]), [
-    [`tg-${id}-0`, 'tg-banana', 1, 'p:1 medium', true, 'you'],
-    [`tg-${id}-1`, 'tg-rice-cooked', 180, 'g', true, 'you'],
-  ]);
-  assert.ok(rows[0].fill_profile, 'the reading\'s estimate per 100 goes with it, as from the app');
+  assert.equal(rows.length, 1);
+  assert.deepEqual([rows[0].id, rows[0].kind, rows[0].estimate, rows[0].source], [`tg-${id}-meal`, 'meal', true, 'you']);
+  assert.deepEqual(rows[0].lines.map((l) => [l.ref_key, l.qty, l.unit]), [['tg-banana', 1, 'p:1 medium'], ['tg-rice-cooked', 180, 'g']]);
   const answer = sent('answerCallbackQuery')[0].body.text;
-  assert.match(answer, /^Logged 2 items for \w[\w ]*, ~339 kcal\.$/);
+  assert.match(answer, /^Logged .+ as one meal \(2 foods\) for \w[\w ]*, ~339 kcal\.$/);
   assert.deepEqual(sent('editMessageReplyMarkup')[0].body.reply_markup, { inline_keyboard: [] }, 'the buttons go');
   assert.equal(lastText().text, answer);
   // Tapped again (or delivered twice): nothing more lands.
   calls = [];
   await tg.handleUpdate(tap(`food:log:${id}`));
-  assert.equal((await entries(id)).length, 2);
+  assert.equal((await entries(id)).length, 1);
   assert.equal(sent('answerCallbackQuery')[0].body.text, 'Already logged.');
   // Two taps at the same moment still land once each.
   coach.setCoachClient(plate());
   await tg.handleUpdate(photoMessage());
   const id2 = idFrom(lastText());
   await Promise.all([tg.handleUpdate(tap(`food:log:${id2}`)), tg.handleUpdate(tap(`food:log:${id2}`))]);
-  assert.equal((await entries(id2)).length, 2);
+  assert.equal((await entries(id2)).length, 1);
 });
 
 test('Cancel logs nothing and takes the buttons away; a later tap on it has expired', async () => {

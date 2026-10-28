@@ -6,7 +6,7 @@ import crypto from 'node:crypto';
 import { db, getKV, setKV, logEvent } from './db.js';
 import { RuleError } from './engine.js';
 import { readFoodPhoto } from './food-photo.js';
-import { logFood, quickAdd } from './food.js';
+import { logFood, logMeal, quickAdd } from './food.js';
 import { line, round, amountText, unitsFor } from '../public/nutrition.js';
 
 const MAX_BYTES = 10 * 1024 * 1024;
@@ -176,7 +176,7 @@ export async function foodPhoto(message, photo, h) {
     const pending = await hold({ kind: 'meal' });
     const ops = rows.map((r, i) => ({ op: r.op, data: { ...r.data, id: `tg-${pending.id}-${i}` } }));
     const sum = rows.reduce((a, r) => a + r.kcal, 0);
-    await pending.save({ ops, kcal: sum });
+    await pending.save({ ops, kcal: sum, name: result.summary || null, id: `tg-${pending.id}-meal` });
     const text = [
       `<b>${esc(result.summary || 'Here is what I can see')}</b>`,
       ...rows.map((r) => `• ${esc(r.text)}: ~${kcalText(r.kcal)} kcal`),
@@ -239,7 +239,13 @@ export async function foodCallback(q, { verb, id, portion }, h) {
   if (verb !== 'log') return null;
   let text;
   try {
-    if (p.kind === 'meal') {
+    if (p.kind === 'meal' && p.ops.length > 1) {
+      // Several foods on one plate go in the diary as one meal, each food listed inside it.
+      const lines = p.ops.map(({ op, data }) => (op === 'quick' ? { ref: 'own', ...data }
+        : { ref: 'item', ref_key: data.key, qty: data.qty, unit: data.unit, ...(data.fill ? { fill: data.fill } : {}) }));
+      const out = await logMeal({ id: p.id || `tg-${id}-meal`, name: cap(p.name) || 'Meal', lines, estimate: true });
+      text = out.duplicate ? 'Already logged.' : `Logged ${esc(cap(p.name) || 'the meal')} as one meal (${lines.length} foods) for ${SLOT[out.entry.slot] || 'today'}, ~${kcalText(out.entry.nutrients.kcal)} kcal.`;
+    } else if (p.kind === 'meal') {
       const out = [];
       for (const op of p.ops) out.push(op.op === 'quick' ? await quickAdd(op.data) : await logFood(op.data));
       const fresh = out.filter((o) => !o.duplicate);

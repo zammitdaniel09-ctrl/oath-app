@@ -214,8 +214,10 @@ function readyToLog(src, slot, ref) {
     return { op: 'meal', data: { meal_id: m.id, factor: src.qty || 1, slot }, name: m.name, label: m.name, amount: src.amount_text, kcal: kcalOf(src.nutrients) };
   }
   if (src.kind === 'meal') {
-    const lines = (Array.isArray(src.lines) ? src.lines : []).filter((l) => l?.ref_key && Number(l.qty) > 0 && l.unit && !l.error)
-      .map((l) => ({ ref: l.ref === 'recipe' ? 'recipe' : 'item', ref_key: l.ref_key, qty: l.qty, unit: l.unit }));
+    const own = (l) => ({ ref: 'own', name: l.name, amount: l.amount_text, grams: l.g, ml: l.ml, estimate: l.estimate,
+      ...Object.fromEntries(['kcal', 'protein', 'carbs', 'sugars', 'fat', 'satfat', 'fibre', 'salt', 'caffeine', 'alcohol'].map((k) => [k, l.nutrients?.[k] ?? null])) });
+    const lines = (Array.isArray(src.lines) ? src.lines : []).filter((l) => l && !l.error && (l.ref === 'own' ? typeof l.nutrients?.kcal === 'number' : l.ref_key && Number(l.qty) > 0 && l.unit))
+      .map((l) => (l.ref === 'own' ? own(l) : { ref: l.ref === 'recipe' ? 'recipe' : 'item', ref_key: l.ref_key, qty: l.qty, unit: l.unit }));
     if (!lines.length || lines.length !== (src.lines || []).length) return null;
     return { op: 'meal', data: { lines, name: src.name, slot }, name: src.name, label: src.name, amount: src.amount_text, kcal: kcalOf(src.nutrients) };
   }

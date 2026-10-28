@@ -204,25 +204,26 @@ function answerPhoto(r) {
 // ---------- Logging ----------
 
 function cardTotal(m) {
-  const rows = m.items.map((it) => {
-    const r = D.reviewItem(it);
-    if (r.mode === 'match') return r.line.nutrients;
-    if (r.mode === 'rough') return { kcal: it.guess.kcal, protein: it.guess.protein ?? null, carbs: it.guess.carbs ?? null, fat: it.guess.fat ?? null };
-    return null;
-  }).filter(Boolean);
+  const rows = m.items.map(D.reviewNutrients).filter(Boolean);
   return rows.length ? total(rows) : null;
 }
+
+// Two or more foods on a card log as one meal unless he picks Separate foods.
+const asMealOn = (m) => m.asMeal !== false && m.items.filter((it) => D.reviewItem(it).mode !== 'none').length > 1;
 
 async function logCard(m) {
   const slot = m.slot || D.slotNow();
   const t = cardTotal(m);
   const rows = m.items.filter((it) => D.reviewItem(it).mode !== 'none').map((it) => {
-    const r = D.reviewItem(it);
-    const kcal = r.mode === 'match' ? num(r.line.nutrients.kcal) : num(it.guess?.kcal);
+    const kcal = num(D.reviewNutrients(it)?.kcal);
     return { name: itemName(it), amount: itemAmount(it), kcal: kcal === null ? null : Math.round(kcal) };
   });
+  const asMeal = asMealOn(m);
+  const name = String(m.mealName ?? m.title ?? '').trim() || 'Meal';
+  m.mealLogId = m.mealLogId || D.uuid();
+  save();
   setBusy('log');
-  const { n, queued } = await D.logReviewed(m.items, slot);
+  const { n, queued } = await D.logReviewed(m.items, slot, { asMeal, name, id: m.mealLogId });
   chat().busy = null;
   if (!n) {
     render();
@@ -230,14 +231,14 @@ async function logCard(m) {
   }
   haptic('log-food');
   m.state = 'logged';
-  m.done = { rows, slot };
+  m.done = { rows, slot, meal: asMeal ? name : null };
   state.foodToday = null;
   await loadChatDay().catch(() => {});
   const word = D.SLOT[slot].toLowerCase();
   const est = m.items.some((it) => !it.edited) ? '~' : '';
   push({
     role: 'food', kind: 'logged', queued,
-    text: `${n === 1 ? `Logged ${rows[0]?.name || 'it'}` : `Logged ${n} foods`} to ${word}`,
+    text: asMeal ? `Logged ${name.replace(/^(A|An|The) /, (w) => w.toLowerCase())} as one meal (${rows.length} foods) to ${word}` : `${n === 1 ? `Logged ${rows[0]?.name || 'it'}` : `Logged ${n} foods`} to ${word}`,
     kcal: num(t?.kcal) === null ? null : `${est}${fmt(t.kcal)}${t.missing?.kcal ? '+' : ''}`,
     day: queued ? null : daySnap(),
   });
@@ -336,16 +337,18 @@ function itemHtml(m, it, i) {
   const r = D.reviewItem(it);
   const name = itemName(it);
   const brand = it.brand ?? it.match?.brand ?? null;
-  const sub = it.match ? (brand ? esc(brand) : '') : r.mode === 'rough' ? `${esc(D.roughAmount(it.guess))}, estimated` : 'No match in the catalogue';
-  const n = r.mode === 'match' ? r.line.nutrients : r.mode === 'rough' ? it.guess : null;
+  const sub = [r.mode === 'own' ? 'Your values' : '', it.match ? (brand ? esc(brand) : '') : r.mode === 'rough' ? `${esc(D.roughAmount(it.guess))}, estimated` : r.mode === 'own' ? '' : 'No match in the catalogue'].filter(Boolean).join(' · ');
+  const n = D.reviewNutrients(it);
+  const field = (k) => `data-chat-cid="${m.id}" data-chat-index="${i}" data-chat-field="${k}"`;
   return `<li class="fc-item${r.mode === 'none' ? ' none' : ''}" style="--i:${i}">
     ${D.foodRing(n, D.itemGrade(it.match))}
     <div class="fc-item-body"><p class="fc-item-name">${esc(name)}</p>
-      <p class="fc-item-sub">${sub}${sub ? '<span aria-hidden="true"> · </span>' : ''}<button type="button" class="linkish" data-action="food-chat-change" data-cid="${m.id}" data-index="${i}">Change</button></p></div>
+      <p class="fc-item-sub">${sub}${sub ? '<span aria-hidden="true"> · </span>' : ''}<button type="button" class="linkish" data-action="food-chat-change" data-cid="${m.id}" data-index="${i}">Change</button>${r.mode !== 'none' ? `<span aria-hidden="true"> · </span><button type="button" class="linkish" data-action="food-chat-own" data-cid="${m.id}" data-index="${i}" aria-expanded="${Boolean(it.ownOpen)}">Macros</button>` : ''}</p></div>
     <div class="fc-item-side"><b class="fc-kcal" data-chat-kcal="${m.id}:${i}">${D.reviewKcal(it)}</b>
       <button type="button" class="fc-x" data-action="food-chat-drop" data-cid="${m.id}" data-index="${i}" aria-label="Remove ${esc(name)}">${icon('close')}</button></div>
     ${it.match ? `<div class="fc-amount"><input class="input" inputmode="decimal" value="${esc(it.qty ?? '')}" placeholder="amount" data-chat-cid="${m.id}" data-chat-index="${i}" data-chat-field="qty" aria-label="Amount of ${esc(name)}">
       <select class="input" data-chat-cid="${m.id}" data-chat-index="${i}" data-chat-field="unit" aria-label="Unit for ${esc(name)}">${D.unitOptions(it.match, it.unit)}</select></div>` : ''}
+    ${it.ownOpen && r.mode !== 'none' ? D.ownEditor(it, field, `data-action="food-chat-own-reset" data-cid="${m.id}" data-index="${i}"`) : ''}
   </li>`;
 }
 
@@ -371,8 +374,11 @@ function cardHtml(m) {
   const busy = chat().busy;
   const n = m.items.filter((it) => D.reviewItem(it).mode !== 'none').length;
   const slot = m.slot || D.slotNow();
-  const label = n === m.items.length ? (n === 1 ? 'Log it' : `Log all ${n}`) : `Log ${n} of ${m.items.length}`;
+  const asMeal = asMealOn(m);
+  const label = asMeal ? (n === m.items.length ? 'Log as one meal' : `Log ${n} of ${m.items.length} as one meal`) : n === m.items.length ? (n === 1 ? 'Log it' : `Log all ${n}`) : `Log ${n} of ${m.items.length}`;
   return `<div class="msg assistant fc-card${m.fresh ? ' fresh' : ''}" data-cid="${m.id}">${head}
+    ${n > 1 ? D.asMealSeg(asMeal, (mode) => `data-action="food-chat-mode" data-cid="${m.id}" data-mode="${mode}"`) : ''}
+    ${asMeal ? `<label class="fc-meal-name"><span>Meal name</span><input class="input" value="${esc(m.mealName ?? m.title ?? '')}" maxlength="120" autocomplete="off" placeholder="Meal" data-chat-cid="${m.id}" data-chat-meal></label>` : ''}
     <ul class="fc-items">${m.items.map((it, i) => itemHtml(m, it, i)).join('') || '<li class="fc-empty">Nothing left on this card.</li>'}</ul>
     ${totalHtml(m)}
     <div class="fc-slots" role="radiogroup" aria-label="Log to">${D.SLOTS.map(([v, l]) => `<button type="button" role="radio" aria-checked="${v === slot}" class="fc-slot${v === slot ? ' on' : ''}" data-action="food-chat-slot" data-cid="${m.id}" data-slot="${v}">${l}</button>`).join('')}</div>
@@ -525,6 +531,24 @@ export async function chatClick(a, el) {
     case 'food-chat-log':
       if (m?.state === 'open' && !chat().busy) await logCard(m);
       return true;
+    case 'food-chat-mode':
+      if (m) {
+        m.asMeal = el.dataset.mode === 'meal';
+        save();
+        haptic('toggle');
+        render();
+      }
+      return true;
+    case 'food-chat-own':
+    case 'food-chat-own-reset': {
+      const it = m?.items?.[Number(el.dataset.index)];
+      if (!it) return true;
+      if (a === 'food-chat-own') it.ownOpen = !it.ownOpen;
+      else delete it.own;
+      save();
+      render();
+      return true;
+    }
     case 'food-chat-drop':
       if (m?.items) {
         m.items.splice(Number(el.dataset.index), 1);
@@ -593,10 +617,14 @@ export async function chatSubmit(form) {
 export function chatInput(el) {
   const m = find(el.dataset.chatCid);
   const i = Number(el.dataset.chatIndex);
+  if (m && el.matches('[data-chat-meal]')) {
+    m.mealName = el.value;
+    save();
+    return;
+  }
   const it = m?.items?.[i];
   if (!it) return;
-  it[el.dataset.chatField] = el.value;
-  it.edited = true;
+  D.setReviewField(it, el.dataset.chatField, el.value);
   save();
   const out = document.querySelector(`[data-chat-kcal="${m.id}:${i}"]`);
   if (out) out.innerHTML = D.reviewKcal(it);
