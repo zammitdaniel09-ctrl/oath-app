@@ -2690,7 +2690,17 @@ const vv = window.visualViewport;
 let typingFocus = false;
 function keyboardState() {
   const shrunk = vv ? window.innerHeight - vv.height > 140 : false;
-  document.documentElement.classList.toggle('kb-open', typingFocus || shrunk);
+  const open = typingFocus || shrunk;
+  const root = document.documentElement;
+  root.classList.toggle('kb-open', open);
+  // How much of the screen the keyboard covers and how much is left above it, so a sheet can sit on top
+  // of the keyboard with its buttons in reach instead of going under it (app.css).
+  const kb = open && vv ? Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)) : 0;
+  root.style.setProperty('--kb', `${kb}px`);
+  root.style.setProperty('--vvh', `${Math.round(vv ? vv.height : window.innerHeight)}px`);
+  // The field being typed in stays in view inside a sheet that just got shorter.
+  const field = document.activeElement;
+  if (kb && field?.closest?.('.sheet')) requestAnimationFrame(() => field.scrollIntoView?.({ block: 'nearest' }));
   if (shrunk && state.route === 'food' && state.param === 'chat') motion.chatToEnd();
 }
 document.addEventListener('focusin', (e) => {
@@ -2706,6 +2716,8 @@ document.addEventListener('focusout', () => {
   }, 120);
 });
 vv?.addEventListener('resize', keyboardState);
+// iOS slides the visible screen up and down while the keyboard is open; the sheet follows it.
+vv?.addEventListener('scroll', () => { if (document.documentElement.classList.contains('kb-open')) keyboardState(); });
 
 // Back from the background. With the lock screen up, ask for Face ID again. With Face ID only and
 // more than a minute away, lock the open app in place (no reload, no flash of the day) and ask.
@@ -2783,7 +2795,7 @@ motion.initMotion({
 // newer version is ever loaded, never an older one.
 
 // This copy of the app. sw.js carries the same name, and test/syntax.test.js keeps the two in step.
-const BUILD = 'oath-v30';
+const BUILD = 'oath-v31';
 const UPDATE_KEY = 'oath.update';
 const buildNo = (b) => Number(/^oath-v(\d+)$/.exec(String(b || ''))?.[1] || 0);
 let updating = false;

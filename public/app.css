@@ -1514,7 +1514,9 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .msg.assistant:has(+ .msg.assistant) { border-bottom-left-radius: 22px; }
 .msg time { display: block; margin-top: 6px; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.04em; color: var(--text-3); }
 /* Report a problem: a quiet text button under a coach reply. */
-.msg-report { display: inline-block; margin-top: 6px; padding: 4px 0; border: 0; background: none; font: inherit; font-size: 0.75rem; font-weight: 600; color: var(--text-3); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.msg-report { position: relative; display: inline-block; margin-top: 6px; padding: 4px 0; border: 0; background: none; font: inherit; font-size: 0.75rem; font-weight: 600; color: var(--text-3); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+/* A small link, a thumb-sized reach. */
+.msg-report::before { content: ''; position: absolute; inset: -8px -10px; }
 .msg-report:active { color: var(--text-2); }
 .msg.user time { color: #ffd9d4; font-weight: 500; }
 /* The coach thinking: three chrome dots lifting in a wave. */
@@ -2097,6 +2099,13 @@ body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(s
   .fchat-page > .chat:has(> .fc-hello:only-child), .cchat-page > .chat:has(> .empty-state:only-child) { align-content: center; }
   html.kb-open .page:has(> .fchat-page), html.kb-open .page:has(> .cchat-page) { padding-bottom: 10px; }
   html.kb-open .composer-dock { bottom: 10px; }
+  /* A sheet sits on top of the keyboard instead of going under it (--kb and --vvh, app.js), so Save, Log
+     and the rest stay in reach while typing, and it scrolls within the room left above the keys. */
+  html.kb-open .sheet { bottom: var(--kb, 0px); max-height: calc(var(--vvh, 100dvh) - env(safe-area-inset-top) - 12px); padding-bottom: 16px; }
+}
+/* Fields on a phone are at least 16 px: iOS zooms the whole page into anything smaller when it is tapped. */
+@media (pointer: coarse) {
+  .input.mono, .copy-row .input { font-size: 1rem; }
 }
 @media (min-width: 900px) {
   :root { --tabbar: 0px; --pad: 22px; --pad-sm: 16px; }
