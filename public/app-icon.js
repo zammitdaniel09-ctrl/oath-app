@@ -1,5 +1,5 @@
 // The app icon, the same in every theme: a dark tile, the word, a 0 to 100 scale and a glass gauge of
-// liquid. Inside the app it moves the way Boss's reference does: full and green, it drains through yellow
+// liquid. Inside the app it moves the way the reference video does: full and green, it drains through yellow
 // and orange to a red sliver, sloshes there, and fills back to green. The Home Screen icons are this
 // drawing at rest (rendered to PNG by ../tools/themekit/render-app-icon.cjs): iOS fixes an icon when
 // Oath is added, so it cannot move there. Only transform and opacity animate (app-icon.css).
@@ -21,7 +21,7 @@ export function appIconSvg(size = 96, { still = false, bleed = false, level = 1,
   const liq = still ? '' : 'ai-liq';
   // The liquid in its four colours, red at the bottom; the ones above fade as it falls past them.
   const layers = (k) => `<use href="#${g}s" fill="url(#${g}r)"/><use class="ai-o${k}" href="#${g}s" fill="url(#${g}o)"/><use class="ai-y${k}" href="#${g}s" fill="url(#${g}y)"/><use class="ai-g${k}" href="#${g}s" fill="url(#${g}g)"/>`;
-  const stops = (list) => list.map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join('');
+  const stops = (list) => list.map(([at, c]) => `<stop offset="${at}" stop-color="${c}"/>`).join('');
   const liquid = (id, list) => `<linearGradient id="${g}${id}" gradientUnits="userSpaceOnUse" x1="-${W}" y1="0" x2="0" y2="0">${stops(list)}</linearGradient>`;
   return `<svg class="ai-svg" width="${size}" height="${size}" viewBox="${o} ${o} ${box} ${box}" aria-hidden="true" font-family="Satoshi, -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif">
     <defs>
