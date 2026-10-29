@@ -16,6 +16,7 @@ import { initFood, loadFood, viewFood, foodClick, foodSubmit, loadFoodToday, flu
 import { initMail, loadMail, viewMail, mailClick, mailSubmit, mailChange, mailChip } from './mail.js';
 import { initToday, ringHero, overview, nextTile, afterToday } from './today.js';
 import { initCalendar, loadCalendar, viewCalendar, calendarClick, calendarSubmit } from './calendar.js';
+import { initPlan, planHero, planHabits, planTasks, planRest, planClick } from './plan.js';
 import {
   initCoachMedia, mediaHtml, stagedHtml, stagePhotos, unstage, takePhotos, toggleVoice, startRecording, cancelRecording, finishRecording,
   recording, recBarHtml, draft as coachDraft, syncComposer, composerEmpty, leaveChat,
@@ -81,6 +82,7 @@ initFood({ shell, render: () => render(), go: () => go() });
 initMail({ shell, render: () => render() });
 initToday({ render: () => render() });
 initCalendar({ shell, render: () => render(), go: () => go() });
+initPlan({ render: () => render(), heatmap, quickAdd });
 initCoachMedia({ render: () => render(), send: (x) => sendCoach(x), addMessage: (m) => coachShow(m) });
 
 // ---------- Today ----------
@@ -811,70 +813,6 @@ function taskForm(k) {
   </form>`;
 }
 
-function habitCard(h, p) {
-  const r = h.nextRules || {};
-  const weekly = h.weeklyTarget;
-  const sched = weekly ? `${weekly} times a week, ${h.weekDone} done this week` : scheduleText(h.days, h.deadline);
-  const pending = h.nextRulesFrom ? `<p class="note">From ${fmtDay(h.nextRulesFrom)}: ${r.weekly_target ? `${r.weekly_target} times a week` : scheduleText(r.days, r.deadline)}${r.minimum ? `, minimum "${esc(r.minimum)}"` : ''}.</p>` : '';
-  const building = h.strength < 80 ? `Day ${h.buildingDay} of building.` : 'Established.';
-  const facts = [
-    h.cue ? ['After', esc(h.cue)] : null,
-    h.minimum ? ['Minimum', esc(h.minimum)] : null,
-    h.ifThen ? ['Plan', esc(h.ifThen)] : null,
-    h.auto ? ['Health', `${fmtInt(h.auto.target)} ${(AUTO_LABELS[h.auto.metric] || {}).unit || ''}${h.auto.filter ? `, ${esc(h.auto.filter)}` : ''}`] : null,
-    h.goalTitle ? ['Goal', `<a href="#/goals/${h.goalId}">${esc(h.goalTitle)}</a>`] : null,
-  ].filter(Boolean);
-  // Compact by default: the history (the heatmap) opens from the strength ring or the History toggle,
-  // and Remove lives in the edit sheet.
-  const heat = heatmap(h.heat, p.today);
-  const open = Boolean(heat) && historyOpen(h.id);
-  const ringCls = `hcard-ring ${h.strength >= 80 ? 'strong' : h.strength >= 40 ? 'mid' : 'new'}`;
-  const ringInner = `${miniRing(h.strength, 42)}<b>${h.strength}<small>%</small></b>`;
-  const ring = heat
-    ? `<button class="${ringCls}" data-action="habit-history" data-id="${h.id}" aria-expanded="${open}" aria-controls="heat-${h.id}" aria-label="Strength ${h.strength}%, history">${ringInner}</button>`
-    : `<div class="${ringCls}" role="img" aria-label="Strength ${h.strength}%">${ringInner}</div>`;
-  return `<div class="card hcard${h.non_negotiable ? ' heavy' : ''}${h.archivedFrom ? ' leaving' : ''}${open ? ' history-open' : ''}" data-habit="${h.id}">
-    <div class="hcard-top">
-      <div class="hcard-text"><h3>${esc(h.name)}</h3>
-        <p class="li-sub">${sched}${h.non_negotiable ? ', <span class="bad">non-negotiable</span>' : ''}, minus ${h.penalty}&nbsp;HP</p></div>
-      ${ring}
-    </div>
-    ${facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}
-    ${heat ? `<div class="hcard-heat" id="heat-${h.id}"${open ? '' : ' hidden'}>${heat}</div>` : ''}
-    ${pending}
-    <div class="hcard-foot">${h.archivedFrom
-      ? `<span class="small leaving">Leaves your list tomorrow. Today still counts.</span>
-        <button class="btn tinted small" data-action="restore-habit" data-id="${h.id}">Keep it</button>`
-      : `<span class="faint small">${building}${h.streak ? ` ${h.streak} ${weekly ? 'week' : 'day'} streak.` : ''}</span>
-        <span class="hcard-btns">${heat ? `<button class="btn plain small hist-btn" data-action="habit-history" data-id="${h.id}" aria-expanded="${open}" aria-controls="heat-${h.id}">History</button>` : ''}
-        <button class="btn tinted small" data-action="sheet" data-kind="habit" data-id="${h.id}">Edit</button></span>`}</div>
-  </div>`;
-}
-
-// Rest days are booked in advance: today can be neither booked nor cancelled, so neither is offered.
-function restCard(p) {
-  const list = p.restDays.map((d) => `<div class="li li-plain">
-    <span class="li-body"><span class="li-title">${fmtDay(d.date, { weekday: 'long', day: 'numeric', month: 'long' })}</span><span class="li-sub">${d.date === p.today ? 'Today, resting' : ''}${d.reason ? `${d.date === p.today ? '. ' : ''}${esc(d.reason)}` : ''}</span></span>
-    ${d.date === p.today ? '' : `<button class="btn tinted small" data-action="rest-cancel" data-date="${d.date}">Cancel</button>`}</div>`).join('');
-  return `<section class="section"><div class="gh"><h2>Rest days</h2><span class="gh-count">${p.settings.restDaysPerMonth} a month</span></div>
-    <div class="card">
-      ${list ? `<div class="group flush">${list}</div>` : ''}
-      <form class="rest-form" data-form="rest">
-        <label class="sr" for="rest-date">Date</label>
-        <input id="rest-date" class="input" type="date" name="date" min="${addDays(p.today, 1)}" required>
-        <input class="input" name="reason" maxlength="200" placeholder="Reason" autocomplete="off">
-        <button class="btn primary" type="submit">Book</button>
-      </form>
-    </div></section>`;
-}
-
-// What a fully missed day would put on the line against what one day can actually cost.
-function budgetNote(s) {
-  if (!s?.worstDay) return '';
-  const capped = s.worstDay > s.dailyLossCap;
-  return `<div class="capacity${capped ? ' over' : ''}">${icon('shield')}<p>Worst day <b>${s.worstDay} HP</b> · day cap <b>${s.dailyLossCap} HP</b></p></div>`;
-}
-
 // A habit that left the list at once can come back for a couple of minutes; one leaving tomorrow
 // shows Keep it on its own card instead.
 const undoable = (p) => state.removed && Date.now() - state.removed.at < 120000 && !p.habits.some((h) => h.id === state.removed.id);
@@ -883,43 +821,28 @@ function viewPlan() {
   const p = state.plan;
   if (!p) return shell(skeleton('Plan'));
   const tab = state.planTab || 'habits';
-  const habits = p.habits.map((h) => habitCard(h, p)).join('');
-  const tasks = p.tasks.map((k) => {
-    const due = k.dueDate ? `${fmtDay(k.dueDate)}${k.deadline ? ` ${k.deadline}` : ''}` : 'No date';
-    const extras = [k.hard ? 'hard' : '', k.estimate ? fmtMin(k.estimate) : '', k.goalTitle ? esc(k.goalTitle) : '', k.createdBy === 'coach' ? 'from the coach' : k.createdBy === 'siri' ? 'from Siri' : ''].filter(Boolean).join(', ');
-    return `<button class="li li-plain li-nav${k.hard ? ' heavy' : ''}" data-action="sheet" data-kind="task" data-id="${k.id}">
-      <span class="li-body"><span class="li-title">${k.createdBy === 'vle' ? '<span class="tag uni">VLE</span>' : ''}${esc(k.title)}</span><span class="li-sub">${due}${extras ? `, ${extras}` : ''}</span></span>
-      ${icon('chevron', 'chev')}</button>`;
-  }).join('');
+  const wide = window.matchMedia('(min-width: 1240px)').matches;
   // Goals are Plan's third segment on the phone; the sidebar keeps its own Goals row.
   const goals = state.goals || p.goals;
-  const segBtn = (id, label) => `<button role="tab" aria-selected="${tab === id}" data-action="plan-tab" data-tab="${id}">${label}</button>`;
+  const activeGoals = goals.filter((g) => g.status === 'active').length;
+  const segBtn = (id, label, n) => `<button role="tab" aria-selected="${tab === id}" data-action="plan-tab" data-tab="${id}">${label}<span class="seg-n">${n}</span></button>`;
   const seg = `<div class="seg plan-seg only-narrow-flex" role="tablist" aria-label="Show">
-      ${segBtn('habits', 'Habits')}${segBtn('tasks', 'Tasks')}${segBtn('goals', 'Goals')}
+      ${segBtn('habits', 'Habits', p.habits.length)}${segBtn('tasks', 'Tasks', p.tasks.length)}${segBtn('goals', 'Goals', activeGoals)}
     </div>`;
   // Two columns from 1240px show habits and tasks, so + adds a habit there.
-  const add = tab === 'goals' && !window.matchMedia('(min-width: 1240px)').matches
+  const add = tab === 'goals' && !wide
     ? `<a class="icon-btn accent" href="#/goals/new" aria-label="New goal">${icon('plus')}</a>`
     : `<button class="icon-btn accent" data-action="sheet" data-kind="${tab === 'tasks' ? 'task' : 'habit'}" aria-label="New ${tab === 'tasks' ? 'task' : 'habit'}">${icon('plus')}</button>`;
-  const activeGoals = goals.filter((g) => g.status === 'active').length;
+  const undo = undoable(p) ? `<div class="banner food-undo"><span>Removed ${esc(state.removed.name)}.</span><button class="btn tinted small" data-action="restore-habit" data-id="${state.removed.id}">Undo</button></div>` : '';
+  const empty = emptyState({ icon: 'plan', title: 'No habits yet', actions: '<button class="btn primary" data-action="sheet" data-kind="habit">Add the first habit</button>' });
 
   shell(`${pageHead('Plan', { over: `${p.habits.length} habits, ${p.tasks.length} tasks, ${activeGoals} ${activeGoals === 1 ? 'goal' : 'goals'}`, actions: add })}
+    ${tab === 'goals' && !wide ? '' : planHero(p)}
     ${seg}
     ${askCoach('plan')}
     <div class="split plan-split tab-${tab}">
-    <div class="pane-habits">
-      <section class="section"><div class="gh"><h2>Habits</h2><button class="gh-link" data-action="sheet" data-kind="habit">New habit</button></div>
-        ${undoable(p) ? `<div class="banner food-undo"><span>Removed ${esc(state.removed.name)}.</span><button class="btn tinted small" data-action="restore-habit" data-id="${state.removed.id}">Undo</button></div>` : ''}
-        ${budgetNote(p.settings)}
-        ${habits || emptyState({ icon: 'plan', title: 'No habits yet', actions: '<button class="btn primary" data-action="sheet" data-kind="habit">Add the first habit</button>' })}
-      </section>
-      ${restCard(p)}
-    </div>
-    <aside class="pane-tasks">
-      <section class="section"><div class="gh"><h2>Tasks</h2><button class="gh-link" data-action="sheet" data-kind="task">New task</button></div>
-        <div class="group">${quickAdd('plan-quick')}${tasks}</div>
-      </section>
-    </aside>
+    <div class="pane-habits">${planHabits(p, { undo, empty })}${planRest(p)}</div>
+    <aside class="pane-tasks">${planTasks(p)}</aside>
     <div class="pane-goals">${goalsBody(goals, '<div class="gh"><h2>Goals</h2><a class="gh-link" href="#/goals/new">New goal</a></div>')}</div>
   </div>`);
 }
@@ -2233,28 +2156,7 @@ function closeSheet() {
   render();
 }
 
-// A habit's history opens from its strength ring or the History toggle, and stays as it was left.
-const shownHistory = new Map();
-function historyOpen(id) {
-  if (!shownHistory.has(id)) {
-    let open = false;
-    try { open = localStorage.getItem(`oath.history.${id}`) === '1'; } catch { /* storage unavailable */ }
-    shownHistory.set(id, open);
-  }
-  return shownHistory.get(id);
-}
-function toggleHistory(id) {
-  const open = !historyOpen(id);
-  shownHistory.set(id, open);
-  try { localStorage.setItem(`oath.history.${id}`, open ? '1' : '0'); } catch { /* storage unavailable */ }
-  const card = $app.querySelector(`.hcard[data-habit="${id}"]`);
-  if (!card) return;
-  card.classList.toggle('history-open', open);
-  card.querySelector('.hcard-heat').hidden = !open;
-  card.querySelectorAll('[data-action="habit-history"]').forEach((b) => b.setAttribute('aria-expanded', String(open)));
-}
-
-// Taps for the layout's own pieces: the oath and briefs sheets and a habit's history.
+// Taps for the layout's own pieces: the oath and briefs sheets.
 async function layoutClick(a, el) {
   if (a === 'oath-open' || a === 'briefs-open') {
     state.sheet = { kind: a === 'oath-open' ? 'oath' : 'briefs' };
@@ -2267,10 +2169,6 @@ async function layoutClick(a, el) {
     render();
     return false;
   }
-  if (a === 'habit-history') {
-    toggleHistory(Number(el.dataset.id));
-    return true;
-  }
   return false;
 }
 
@@ -2278,6 +2176,7 @@ async function handleAction(e, el) {
   const id = Number(el.dataset.id);
   const a = el.dataset.action;
   if (await goalsClick(a, el)) return;
+  if (planClick(a, el, $app)) return;
   if (await dataClick(a, el)) return;
   if (await foodClick(a, el)) return;
   if (await mailClick(a, el)) return;
@@ -2933,7 +2832,7 @@ motion.initMotion({
 // newer version is ever loaded, never an older one.
 
 // This copy of the app. sw.js carries the same name, and test/syntax.test.js keeps the two in step.
-const BUILD = 'oath-v35';
+const BUILD = 'oath-v36';
 const UPDATE_KEY = 'oath.update';
 const buildNo = (b) => Number(/^oath-v(\d+)$/.exec(String(b || ''))?.[1] || 0);
 let updating = false;

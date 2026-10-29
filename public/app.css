@@ -1205,47 +1205,11 @@ button.tchip:active, a.tchip:active { transform: scale(0.96); transition: backgr
 /* ---------- Plan ---------- */
 
 .plan-seg { margin: 6px 0 0; }
-/* Habit cards are compact: name, rules and the strength ring, a few short facts, and a foot. The
-   history (the heatmap) opens from the ring or the History toggle. */
-.hcard { padding: var(--pad-sm) var(--pad); margin-top: 10px; }
-.hcard.heavy { box-shadow: inset 3px 0 0 var(--red), var(--rim); }
-.hcard-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
-.hcard-text { min-width: 0; }
-.hcard-text h3 { font-size: 1.0625rem; font-weight: 680; letter-spacing: -0.012em; overflow-wrap: anywhere; line-height: 1.3; }
-.hcard-text .li-sub { margin-top: 2px; font-size: 0.8125rem; }
-.hcard-text .li-sub .bad { white-space: nowrap; }
-.hcard-ring { position: relative; width: 42px; height: 42px; flex: none; padding: 0; border: 0; background: none; color: var(--text-3); font: inherit; }
-.hcard-ring svg { display: block; }
-.hcard-ring b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: var(--text); }
-.hcard-ring b small { font-size: 0.5rem; }
-.hcard-ring.strong { color: var(--green); }
-.hcard-ring.mid { color: var(--amber); }
-.hcard-ring.new { color: var(--text-3); }
-button.hcard-ring { cursor: pointer; border-radius: 50%; transition: transform var(--spring-ms) var(--spring); }
-button.hcard-ring::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; }
-button.hcard-ring:active { transform: scale(0.92); transition: transform var(--t-press) var(--ease); }
-.hcard.history-open .hcard-ring { filter: drop-shadow(0 0 6px currentColor); }
 .facts { margin: 10px 0 0; display: grid; gap: 4px; }
 .facts > div { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px; font-size: 0.875rem; line-height: 1.4; }
 .facts dt { color: var(--text-3); font-size: 0.75rem; font-weight: 560; padding-top: 2px; }
 .facts dd { margin: 0; overflow-wrap: anywhere; color: var(--text); }
-.hcard-heat { margin-top: 4px; }
-.hcard-heat:not([hidden]) { animation: heat-in 220ms var(--ease) both; }
 @keyframes heat-in { from { opacity: 0; transform: translateY(-4px); } }
-.hcard-heat .heat { margin-top: 10px; }
-.hcard-foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 10px; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line-soft); }
-.hcard-foot .faint { flex: 1 1 160px; color: var(--text-2); font-size: 0.8125rem; }
-.hcard-btns { display: flex; gap: 4px; margin-left: auto; }
-.hcard-btns .btn.small { padding: 0 12px; font-size: 0.875rem; }
-.hist-btn::after {
-  content: ''; width: 6px; height: 6px; margin-left: 2px; border-right: 1.75px solid currentColor; border-bottom: 1.75px solid currentColor;
-  transform: translateY(-2px) rotate(45deg); transition: transform var(--t-ctl) var(--ease);
-}
-.hist-btn[aria-expanded="true"] { color: var(--text); }
-.hist-btn[aria-expanded="true"]::after { transform: translateY(1px) rotate(225deg); }
-/* Removed but due today: it stays until tomorrow, quieter, with Keep it. */
-.hcard.leaving { opacity: 0.62; }
-.hcard-foot .leaving { flex: 1 1 200px; color: var(--text-2); }
 
 .heat { display: grid; grid-template-rows: repeat(7, 11px); grid-auto-flow: column; grid-auto-columns: 11px; gap: 3px; margin-top: 16px; overflow-x: auto; padding-bottom: 2px; }
 .heat i, .heat-key i { border-radius: 3px; background: var(--fill-2); }

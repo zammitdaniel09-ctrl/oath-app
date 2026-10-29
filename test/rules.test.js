@@ -73,6 +73,10 @@ test('what is at stake today is capped, and the plan shows the worst day', async
   const plan = (await call('GET', '/api/plan')).data;
   assert.equal(plan.settings.worstDay, 200);
   assert.equal(plan.settings.dailyLossCap, 50);
+  // The week, Monday first: from today on, all eight habits are due, 200 HP on the line each day.
+  assert.equal(plan.week.length, 7);
+  assert.ok(plan.week[0].date <= plan.today && plan.week[6].date >= plan.today);
+  for (const d of plan.week.filter((x) => x.date >= plan.today)) assert.deepEqual([d.due, d.stake, d.rest], [8, 200, false]);
 });
 
 test('a fully missed day costs 50 HP, and every miss is still recorded', async () => {

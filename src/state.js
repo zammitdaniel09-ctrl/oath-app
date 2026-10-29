@@ -355,6 +355,11 @@ export async function buildPlan() {
   const leaves = new Map(await Promise.all(habits.map(async (h) => [h.id, await removalDate(h, today, tz)])));
   return {
     today,
+    // This week, Monday first: how many habits each day asks for and what they put on the line.
+    week: weekDates(weekStartOf(today, tz), tz).map((date) => {
+      const due = habits.filter((h) => isScheduled(h, date, tz, rest));
+      return { date, due: due.length, stake: due.reduce((n, h) => n + rulesOn(h, date).penalty, 0), rest: rest.has(date) };
+    }),
     settings: {
       maxNonNegotiables: s.maxNonNegotiables,
       restDaysPerMonth: s.restDaysPerMonth,
