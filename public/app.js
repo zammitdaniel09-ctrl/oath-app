@@ -31,7 +31,7 @@ import { initUpdate, checkBuild, resumeFresh, watchForUpdates } from './update.j
 import { followTheme } from './theme.js';
 
 // This copy of the app. sw.js carries the same name, and test/syntax.test.js keeps the two in step.
-const BUILD = 'oath-v39';
+const BUILD = 'oath-v40';
 
 // ---------- Shell ----------
 
