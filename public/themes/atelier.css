@@ -1,0 +1,481 @@
+/* Atelier: ink on paper. A private-press journal: warm laid paper, black ink, one oxblood rule,
+   aged brass for the few highlights, olive for what is done and a muted vermilion for a miss. Book
+   serif for display, Satoshi for reading and controls, Geist Mono in letter-spaced capitals for the
+   colophon labels. Hairline rules instead of slabs, near-square corners, no glows: shadows are only
+   the faint lift of a sheet off the desk. The one light theme, so every dark surface is re-laid. */
+
+/* ---------- Tokens (also inside Food and the Coach, which set their own) ---------- */
+
+:root[data-theme="atelier"],
+:root[data-theme="atelier"] .page-food,
+:root[data-theme="atelier"] .cchat-page {
+  --bg: #f3eee4; --card: #fbf8f2; --inset: #ebe4d6; --raised: #f7f2e8; --raised-hover: #ede6d9; --sheet: #f8f4ec;
+  --text: #1b1712; --text-2: #5c5348; --text-3: #6f655a;
+  --line: #ddd5c6; --line-soft: #e7e0d3; --line-ctl: #877d6e; --line-strong: #847a6b;
+  --merlot: #7b1e1e; --merlot-hi: #8f2525; --chrome-c: #5c5348; --menthol: #4f6b3a; --cherry: #a63c26;
+  --honey: #80601c; --blaze: #94491a; --ember: #a23a1a;
+  --silver: #1b1712; --on-silver: #fbf8f2; --focus: #1b1712;
+  --blue: #3d5470;
+  --fill: rgba(27, 23, 18, 0.045); --fill-2: rgba(27, 23, 18, 0.085);
+  --rim: inset 0 0 0 1px rgba(27, 23, 18, 0.13), 0 1px 1px rgba(70, 50, 25, 0.04);
+  --burgundy: #7b1e1e; --burgundy-hi: #8f2525; --burgundy-lo: #5a1414; --on-burgundy: #fbf8f2;
+}
+:root[data-theme="atelier"] {
+  color-scheme: light;
+  --book: 'Iowan Old Style', 'Palatino', 'Palatino Linotype', 'Book Antiqua', ui-serif, 'New York', Georgia, serif;
+  --serif: var(--book);
+  --ink: #1b1712; --paper: #fbf8f2; --brass: #b08a3e; --hair: rgba(27, 23, 18, 0.14);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .25 0 0 0 0 .16 0 0 0 -2.4 1.32'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='.24'/%3E%3C/svg%3E");
+  --green: var(--menthol); --red: var(--cherry); --amber: var(--honey);
+  --c-hp: var(--merlot); --c-day: var(--menthol); --c-move: var(--blue);
+  /* Rings: faded ink at the start, fresh ink at the head, a paper track lightly tinted. */
+  --ring-hp-0: #c09088; --ring-hp-1: #7b1e1e; --ring-hp-t: #ece0d8; --ring-hp-g: transparent;
+  --ring-day-0: #a59b8c; --ring-day-1: #1b1712; --ring-day-t: #e6dfd2; --ring-day-g: transparent;
+  --ring-done-0: #a8b597; --ring-done-1: #3f5a2c; --ring-done-t: #e2e5d6; --ring-done-g: transparent;
+  --ring-move-0: #d8c597; --ring-move-1: #8c6a2b; --ring-move-t: #ede4cf; --ring-move-g: transparent;
+  --ring-kcal-0: #d8c597; --ring-kcal-1: #8c6a2b; --ring-kcal-t: #ede4cf; --ring-kcal-g: transparent;
+  --ring-pro-0: #c09088; --ring-pro-1: #7b1e1e; --ring-pro-t: #ece0d8; --ring-pro-g: transparent;
+  --ring-fib-0: #a8b597; --ring-fib-1: #4f6b3a; --ring-fib-t: #e2e5d6; --ring-fib-g: transparent;
+  --ring-water-0: #a3b3bd; --ring-water-1: #3d5470; --ring-water-t: #dfe3e2; --ring-water-g: transparent;
+  --cv-hp: #7b1e1e; --cv-kcal: #a8823a; --cv-move: #3d5470;
+  --urg: var(--chrome-c);
+  --chrome: linear-gradient(180deg, #1b1712, #1b1712);
+  --r-sheet: 6px; --r-card: 3px; --r-group: 3px; --r-tile: 3px; --r-inset: 2px; --r-ctl: 2px; --r-badge: 2px;
+  --lift: 0 1px 2px rgba(70, 50, 25, 0.07), 0 10px 26px -18px rgba(70, 50, 25, 0.32);
+  /* The mark: an ink half and an oxblood half. */
+  --mark-c1: #3a3229; --mark-c2: #241f19; --mark-c3: #1b1712; --mark-c4: #110e0b; --mark-c5: #1b1712; --mark-c6: #2c261f;
+  --mark-m1: #9e2d26; --mark-m2: #7b1e1e; --mark-m3: #6a1818; --mark-m4: #4e1010;
+  --mark-rim-l: transparent; --mark-rim-r: transparent;
+  /* Food: protein in sepia ink, carbs in brass, fat in olive, water in slate. */
+  --f-protein: #5a4636; --f-protein-hi: #8a705a; --f-carbs: #a8823a; --f-carbs-hi: #c9aa6a;
+  --f-fat: #4f6b3a; --f-fat-hi: #7f9668; --f-unknown: #a59d8e; --f-energy: #1b1712; --f-energy-hi: #5c5348;
+  --f-micro: #7a7064; --f-micro-hi: #a89d8c; --f-water: #3d5470; --f-water-hi: #7d93a8;
+  --f-protein-rgb: 90, 70, 54; --f-carbs-rgb: 168, 130, 58; --f-fat-rgb: 79, 107, 58; --f-micro-rgb: 122, 112, 100; --f-water-rgb: 61, 84, 112;
+  --fc-lime: #4f6b3a; --fc-leaf: #3f5a2c; --fc-hi: #61804a; --fc-ink: #fbf8f2; --fc-rgb: 79, 107, 58;
+  --f-good: #4f6b3a; --f-good-rgb: 79, 107, 58;
+  --fc-bubble-0: #fbf8f2; --fc-bubble-1: #f7f3ea; --fc-done-0: #f1f2e7; --fc-done-1: #e9ecdd;
+  --f-bar: rgba(27, 23, 18, 0.32); --f-bar-prev: rgba(27, 23, 18, 0.18);
+  --hatch: repeating-linear-gradient(45deg, #a09684 0 1.4px, transparent 1.4px 4px);
+}
+
+/* ---------- Paper, type, the page head ---------- */
+
+:root[data-theme="atelier"],
+:root[data-theme="atelier"] body,
+:root[data-theme="atelier"] body:has(.page-food),
+:root[data-theme="atelier"] body:has(.cchat-page) { background: var(--grain), var(--bg); }
+:root[data-theme="atelier"] body::before, :root[data-theme="atelier"] .gate::before { display: none; }
+:root[data-theme="atelier"] ::selection { background: rgba(123, 30, 30, 0.18); color: var(--ink); }
+:root[data-theme="atelier"] :focus-visible { border-radius: 2px; }
+
+:root[data-theme="atelier"] :is(.lt-title, .gh h2, .card h3, .now-title, .li-title, .oath-title, .sheet-head h2, .sheet h3, .confirm-title, .dodge-title,
+  .empty-state h3, .chd-head-text h1, .fday-head h2, .goal-mini-title, .goal-h, .wordmark, .tabbar-brand span, .topbar-title, .rates legend, .tri-text .li-title,
+  .gh h3, .pl-h-name, .next-step-title, .woop-steps h3, .cal-ag-head h3, .cal-d-title, .cal-label, .ml-setup h2, .bgroup > h3, .bgroup-head h3, .nf-top h3, .fcard-head h2, .fc-head-text h1, .fc-hello h2, .fnext-name, .goal-title) {
+  font-family: var(--book); font-weight: 400; letter-spacing: -0.004em;
+}
+:root[data-theme="atelier"] :is(.rings-center b, .lg-val, .ov-v, .clock, .goal-big, .fring-c b, .li-side b, .tl-title, .nx-body b, .oath-mini-text b, .now-left,
+  .pl-big, .pl-hero-ring b, .pl-stat b, .pl-date b, .goal-countdown b, .wt-v, .need b, .dtile-val, .body-val, .bm-val, .season-hp b, .streaks b, .ft-kcal, .fmc-v, .fmicro-i b,
+  .tg-stat b, .frv-total, .fkpi b, .fburn-v b, .fprog b, .fwt-v b, .fburn-tile-v b, .fl-tile b, .frich-v b, .fc-kcal, .fc-total-top b, .cov-stats .big, .fprev-main b, .stat b, .goal-ring b) {
+  font-family: var(--book); font-weight: 500; letter-spacing: -0.01em; font-variant-numeric: lining-nums tabular-nums;
+}
+:root[data-theme="atelier"] :is(.chrome:not(.btn), .wordmark, .tabbar-brand span, .clock, .goal-big, .lg.r-hp .lg-val, .rings-center b, .lt-title, .goal-h) {
+  background: none; color: var(--text); -webkit-text-fill-color: currentColor;
+}
+:root[data-theme="atelier"] :is(.serif, .lt-title em, .gh h2 em, .oath-title em) { font-family: var(--book); font-style: italic; color: var(--merlot); }
+:root[data-theme="atelier"] :is(.lt-over, .eyebrow, .lg-label, .ov-h, .gh-count, .dock-label, .wk-l, .oc-axis, .facts dt) {
+  font-family: var(--mono); font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+}
+:root[data-theme="atelier"] .gh-count { font-size: 0.6875rem; color: var(--text-3); }
+:root[data-theme="atelier"] .gh-link { font-family: var(--mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--merlot); }
+
+/* The masthead: a dateline in oxblood capitals, the title set large in the book face, a thin-thick rule under it. */
+:root[data-theme="atelier"] .lt {
+  padding-bottom: 14px; margin-bottom: 6px;
+  background: linear-gradient(var(--ink), var(--ink)) 0 100% / 100% 2px no-repeat, linear-gradient(var(--ink), var(--ink)) 0 calc(100% - 4px) / 100% 1px no-repeat;
+}
+:root[data-theme="atelier"] .lt-over { font-size: 0.6875rem; letter-spacing: 0.22em; color: var(--merlot); margin-bottom: 8px; }
+:root[data-theme="atelier"] .lt-title { font-size: clamp(2.25rem, 1.4rem + 3.6vw, 2.75rem); line-height: 1.02; letter-spacing: -0.018em; }
+:root[data-theme="atelier"] .gh h2 { font-size: 1.375rem; letter-spacing: -0.008em; }
+:root[data-theme="atelier"] .gh { margin-top: 36px; padding-bottom: 7px; border-bottom: 1px solid var(--hair); }
+:root[data-theme="atelier"] .li-title { font-size: 1.0625rem; line-height: 1.32; }
+:root[data-theme="atelier"] .card h3 { font-size: 1.125rem; }
+
+/* ---------- Bars ---------- */
+
+:root[data-theme="atelier"] .topbar { background: rgba(243, 238, 228, 0.95); box-shadow: 0 1px 0 var(--hair); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="atelier"] .topbar { background: rgba(243, 238, 228, 0.8); -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2); }
+}
+:root[data-theme="atelier"] .topbar-back { color: var(--merlot); }
+
+/* ---------- Surfaces: lighter leaves with a hairline edge ---------- */
+
+:root[data-theme="atelier"] .note.bad { color: var(--cherry); background: rgba(166, 60, 38, 0.07); box-shadow: inset 0 0 0 1px rgba(166, 60, 38, 0.32); }
+:root[data-theme="atelier"] code { background: var(--inset); box-shadow: none; }
+:root[data-theme="atelier"] .empty-state { background: var(--card); }
+:root[data-theme="atelier"] .empty-orb { color: var(--merlot); background: var(--bg); box-shadow: inset 0 0 0 1px var(--hair), 0 0 0 6px var(--card), 0 0 0 7px var(--hair); }
+:root[data-theme="atelier"] .skeleton i::after, :root[data-theme="atelier"] .shimmer::after { background: linear-gradient(100deg, transparent 25%, rgba(27, 23, 18, 0.05) 50%, transparent 75%); }
+
+/* ---------- Buttons: ink, oxblood, or an outline ---------- */
+
+:root[data-theme="atelier"] .btn { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px rgba(27, 23, 18, 0.38); font-weight: 600; }
+:root[data-theme="atelier"] .btn.tinted { background: var(--card); }
+:root[data-theme="atelier"] .btn.primary { background: var(--ink); color: var(--paper); box-shadow: 0 1px 2px rgba(27, 23, 18, 0.18); }
+:root[data-theme="atelier"] .btn.chrome { background: var(--merlot); color: var(--paper); box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.18), 0 1px 2px rgba(91, 20, 20, 0.22); }
+:root[data-theme="atelier"] .btn.plain { background: transparent; color: var(--text-2); box-shadow: none; }
+:root[data-theme="atelier"] .btn.danger { background: var(--cherry); color: var(--paper); }
+:root[data-theme="atelier"] .btn.tinted.danger-text { box-shadow: inset 0 0 0 1px rgba(166, 60, 38, 0.45); }
+:root[data-theme="atelier"] .btn.small { border-radius: 2px; }
+:root[data-theme="atelier"] .btn.big { border-radius: 3px; }
+:root[data-theme="atelier"] .icon-btn { background: var(--card); color: var(--text); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .icon-btn.accent { background: var(--merlot); color: var(--paper); box-shadow: 0 1px 2px rgba(91, 20, 20, 0.25); }
+@media (hover: hover) {
+  :root[data-theme="atelier"] .btn:hover:not(:disabled) { background-color: var(--fill); }
+  :root[data-theme="atelier"] .btn.primary:hover:not(:disabled) { background: #2e2820; }
+  :root[data-theme="atelier"] .btn.chrome:hover:not(:disabled) { background: #8a2323; }
+  :root[data-theme="atelier"] .btn.danger:hover:not(:disabled) { background: #b4452d; }
+  :root[data-theme="atelier"] .icon-btn:hover { background: var(--raised-hover); }
+  :root[data-theme="atelier"] .icon-btn.accent:hover { background: #8a2323; }
+}
+
+/* ---------- Fields and selections ---------- */
+
+:root[data-theme="atelier"] .input { background-color: #fffdf8; box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="atelier"] .input:focus { background-color: #fffdf8; box-shadow: inset 0 0 0 1.5px var(--ink), 0 0 0 3px rgba(123, 30, 30, 0.12); }
+:root[data-theme="atelier"] .input[readonly] { background-color: var(--inset); }
+:root[data-theme="atelier"] select.input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%235c5348' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 15px center;
+}
+:root[data-theme="atelier"] .seg { background: var(--inset); box-shadow: inset 0 0 0 1px var(--line); }
+:root[data-theme="atelier"] :is(.seg span, .seg button, .seg-ind) { border-radius: 2px; }
+:root[data-theme="atelier"] :is(.seg input:checked + span, .seg button[aria-selected="true"], .seg button.on, .seg button[aria-pressed="true"], .seg-ind) {
+  background: var(--card); color: var(--text); box-shadow: inset 0 0 0 1px rgba(27, 23, 18, 0.22), 0 1px 2px rgba(70, 50, 25, 0.12);
+}
+:root[data-theme="atelier"] :is(.seg-live input:checked + span, .seg-live button[aria-selected="true"], .seg-live button.on, .seg-live button[aria-pressed="true"]) { background: transparent; box-shadow: none; }
+:root[data-theme="atelier"] :is(.chip span, .days span, .rate span) { background: var(--card); box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="atelier"] :is(.chip input:checked + span, .days input:checked + span, .rate input:checked + span) { background: var(--ink); color: var(--paper); box-shadow: none; }
+:root[data-theme="atelier"] .check input { background: var(--card); box-shadow: inset 0 0 0 1.5px var(--line-strong); }
+:root[data-theme="atelier"] .check input:checked { background: var(--ink); }
+:root[data-theme="atelier"] .switch { background: var(--inset); box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="atelier"] .switch:checked { background: var(--menthol); box-shadow: none; }
+:root[data-theme="atelier"] .switch::after { background: var(--paper); box-shadow: 0 1px 2px rgba(27, 23, 18, 0.3), 0 0 0 0.5px rgba(27, 23, 18, 0.2); }
+:root[data-theme="atelier"] :is(.auto-field, .pardon-form) { background: var(--inset); box-shadow: inset 0 0 0 1px var(--line); }
+:root[data-theme="atelier"] :is(.auto-field, .pardon-form, .sheet) .input { background-color: #fffdf8; }
+:root[data-theme="atelier"] .pchip { background: var(--card); }
+
+/* Near-square corners everywhere the base rounds a little or into a pill. */
+:root[data-theme="atelier"] :is(.back, .gh-link, .li-ic, .tag, code, .rich code, .cal-ev, .cal-mk-chip, .cc-staged-img, .cc-staged-img img, .cc-photos, .cc-full, .receipts li,
+  .fburn-tile-ic, .fl-unlock-ic, .fc-photo img, .fc-staged-img img, .fc-amount .input, .fc-clear, .fc-ex, button.rirow, .fmicro-i, .ftl-c, .ftg-list, .tg-stat, .own-in .input,
+  .fconf, .fl-chip, .fwater-btn, .fslot-chip, .pchip-btn, .ftag, .ftag-mini, .ftg-n, .fadv-why, .ml-action, .ml-due, .ml-reason, .pl-filters button, .pl-pill,
+  .pace, .goal-status, .pl-chip, .pl-date, .sic, .howto summary, .gate .recover summary, .scan-type, .scan-type .btn, .btn.briefs-btn) { border-radius: 2px; }
+:root[data-theme="atelier"] :is(.pl-bar, .fxb-bar) { border-radius: 1px 1px 0 0; }
+
+/* ---------- Lists and ticks ---------- */
+
+:root[data-theme="atelier"] .li-ic { background: var(--bg); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .chk svg { stroke: var(--paper); stroke-width: 2.4; }
+:root[data-theme="atelier"] .heavy .chk { box-shadow: inset 0 0 0 2px var(--merlot); }
+:root[data-theme="atelier"] :is(.kept, .done) .chk { background: var(--menthol); box-shadow: none; }
+:root[data-theme="atelier"] .missed .chk { background: rgba(166, 60, 38, 0.08); box-shadow: inset 0 0 0 2px var(--cherry); }
+:root[data-theme="atelier"] .pardoned .chk { background: repeating-linear-gradient(45deg, rgba(92, 83, 72, 0.5) 0 1.5px, transparent 1.5px 4.5px); box-shadow: inset 0 0 0 2px var(--text-3); }
+:root[data-theme="atelier"] .met .chk svg { stroke: var(--menthol); }
+:root[data-theme="atelier"] .li[class*=" u-"]:not(.u-calm)::after { box-shadow: none; width: 2px; border-radius: 0; }
+:root[data-theme="atelier"] .li.pending { animation-name: atl-flash; }
+@keyframes atl-flash { 0% { background-color: rgba(79, 107, 58, 0.16); } 100% { background-color: transparent; } }
+:root[data-theme="atelier"] .hp-chip { color: var(--paper); border-radius: 2px; }
+:root[data-theme="atelier"] .swipe-bg { background: color-mix(in srgb, var(--sw) 12%, var(--card)); }
+:root[data-theme="atelier"] .swipe-bg.armed, :root[data-theme="atelier"] .swipe-bg.armed[data-side="later"] { background: var(--sw); color: var(--paper); }
+:root[data-theme="atelier"] .tag.bad { background: rgba(166, 60, 38, 0.1); }
+:root[data-theme="atelier"] .tag.uni { background: rgba(61, 84, 112, 0.1); }
+:root[data-theme="atelier"] :is(.add-ic) { box-shadow: inset 0 0 0 1px var(--line-strong); border-radius: 50%; }
+:root[data-theme="atelier"] .pbar { height: 4px; border-radius: 0; }
+:root[data-theme="atelier"] .pbar i { border-radius: 0; background: var(--ink); }
+:root[data-theme="atelier"] .pbar.auto i { background: var(--cherry); }
+
+/* ---------- Today: rings in fine ink ---------- */
+
+:root[data-theme="atelier"] .rings { --sw: 9px; --rgap: 7px; }
+:root[data-theme="atelier"] .rc-fuel .rings { --sw: calc(var(--size) * 0.05); --rgap: 5px; }
+:root[data-theme="atelier"] .rc-fuel, :root[data-theme="atelier"] .rings-foot { border-color: var(--hair); }
+:root[data-theme="atelier"] .ring.over .ring-head::before { box-shadow: calc(var(--sw) * 0.15) 0 calc(var(--sw) * 0.25) rgba(27, 23, 18, 0.35); }
+:root[data-theme="atelier"] :is(.ring-flare, .ring-shine) { display: none; }
+:root[data-theme="atelier"] .rings-center b { font-size: calc(var(--size) * 0.22); }
+:root[data-theme="atelier"] .rings-center > span { color: var(--merlot); }
+:root[data-theme="atelier"] .lg-dot { background: var(--r1); box-shadow: none; border-radius: 0; width: 12px; height: 2px; }
+:root[data-theme="atelier"] .lg-val { font-size: 1.5rem; }
+:root[data-theme="atelier"] .lg-label { font-size: 0.625rem; letter-spacing: 0.16em; }
+
+/* ---------- Up next and its dock ---------- */
+
+:root[data-theme="atelier"] .now { background: radial-gradient(110% 60% at 0% 0%, color-mix(in srgb, var(--urg) 7%, transparent), transparent 62%), var(--card); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--urg) 30%, rgba(27, 23, 18, 0.14)), var(--lift); }
+:root[data-theme="atelier"] .now::before { height: 2px; background: var(--urg); }
+:root[data-theme="atelier"] .now.in-focus { background: var(--card); }
+:root[data-theme="atelier"] .now-left { border-radius: 2px; background: transparent; box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .now[class*=" u-"]:not(.u-calm) .now-left { background: color-mix(in srgb, var(--urg) 8%, var(--card)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--urg) 45%, transparent); }
+:root[data-theme="atelier"] .now-left.soon { box-shadow: inset 0 0 0 1px rgba(128, 96, 28, 0.4); }
+:root[data-theme="atelier"] .now-left.gone { box-shadow: inset 0 0 0 1px rgba(166, 60, 38, 0.4); }
+:root[data-theme="atelier"] .now-title { font-size: clamp(1.625rem, 1.25rem + 1.6vw, 1.875rem); line-height: 1.12; }
+:root[data-theme="atelier"] :is(.np-bar, .focus-bar) { height: 4px; border-radius: 0; }
+:root[data-theme="atelier"] .np-bar i { background: var(--menthol); box-shadow: none; border-radius: 0; }
+:root[data-theme="atelier"] .focus-bar i { background: var(--merlot); box-shadow: none; border-radius: 0; }
+:root[data-theme="atelier"] .now-cue { background: var(--bg); box-shadow: inset 2px 0 0 var(--merlot); font-family: var(--book); font-size: 1rem; }
+:root[data-theme="atelier"] .now.is-focus { box-shadow: inset 0 0 0 1px rgba(123, 30, 30, 0.6), var(--lift); }
+:root[data-theme="atelier"] .now.is-focus .eyebrow { color: var(--merlot); }
+:root[data-theme="atelier"] .now.secured { box-shadow: inset 0 0 0 1px rgba(79, 107, 58, 0.5), var(--lift); }
+:root[data-theme="atelier"] .now.dodging { box-shadow: inset 0 0 0 1px rgba(128, 96, 28, 0.5), var(--lift); }
+:root[data-theme="atelier"] :is(.now.u-ember, .now.u-over) .btn.chrome { animation-name: atl-urge; }
+@keyframes atl-urge { 50% { transform: scale(1.02); } }
+:root[data-theme="atelier"] .next-dock, :root[data-theme="atelier"] .update-bar {
+  background: rgba(251, 248, 242, 0.97); box-shadow: inset 0 0 0 1px var(--hair), inset 2px 0 0 var(--urg), 0 10px 28px -14px rgba(70, 50, 25, 0.4);
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="atelier"] .next-dock { background: rgba(251, 248, 242, 0.86); }
+}
+:root[data-theme="atelier"] .update-bar { border-radius: 3px; --urg: var(--merlot); }
+:root[data-theme="atelier"] .dock-text b { font-family: var(--book); font-weight: 500; font-size: 1rem; }
+
+/* Chips, the coach line, the oath */
+:root[data-theme="atelier"] .tchip { border-radius: 2px; background: var(--card); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .tchip.act { box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="atelier"] .tchip.warn { box-shadow: inset 0 0 0 1px rgba(128, 96, 28, 0.45); }
+:root[data-theme="atelier"] .ask-coach { background: var(--card); box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="atelier"] .ask-input { font-family: var(--book); font-size: 1.0625rem; }
+:root[data-theme="atelier"] .ask-input::placeholder { font-style: italic; }
+:root[data-theme="atelier"] .oath-mini { background: var(--card); }
+:root[data-theme="atelier"] .oath-ic { color: var(--merlot); background: var(--bg); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .last-night, :root[data-theme="atelier"] .oath .capacity { background: var(--bg); box-shadow: inset 0 0 0 1px var(--line-soft); }
+:root[data-theme="atelier"] :is(.brief-text, .plan-text) { color: var(--text); font-family: var(--book); font-size: 1.0625rem; line-height: 1.6; }
+:root[data-theme="atelier"] .tl-chip { background: var(--bg); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .tl-now::after { box-shadow: 0 0 0 3px var(--card); }
+:root[data-theme="atelier"] :is(.connect-ic, .setup-ic) { background: var(--bg); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .nx-chip { border-radius: 2px; }
+:root[data-theme="atelier"] .nx-row.on .nx-time { color: var(--menthol); }
+
+/* Overview tiles: graphite columns become pencil, today in ink. */
+:root[data-theme="atelier"] .oc-bar { fill: #ddd4c4; }
+:root[data-theme="atelier"] .oc-bar.met { fill: color-mix(in oklab, var(--oc) 38%, #ddd4c4); }
+:root[data-theme="atelier"] .sp-dot { background: var(--merlot); box-shadow: 0 0 0 2px var(--card); }
+:root[data-theme="atelier"] .sp-w0 { stop-opacity: 0.14; }
+:root[data-theme="atelier"] .wk-day.clean .wk-dot { background: var(--menthol); color: var(--paper); box-shadow: none; }
+:root[data-theme="atelier"] .wk-day.missed .wk-dot { background: rgba(123, 30, 30, 0.07); color: var(--merlot); box-shadow: inset 0 0 0 1.5px var(--merlot); }
+:root[data-theme="atelier"] .wk-day.kept .wk-dot { background: rgba(79, 107, 58, 0.1); box-shadow: inset 0 0 0 1.5px rgba(79, 107, 58, 0.6); }
+:root[data-theme="atelier"] .wk-dot .mring { color: var(--ink); }
+:root[data-theme="atelier"] .ov-split { border-radius: 0; height: 6px; }
+:root[data-theme="atelier"] .ov-key i { border-radius: 0; }
+:root[data-theme="atelier"] .goal-mini-row .mring { color: var(--merlot); }
+
+/* ---------- Sheets, the confirm sheet, the toast ---------- */
+
+:root[data-theme="atelier"] .sheet-backdrop { background: rgba(44, 34, 22, 0.3); }
+:root[data-theme="atelier"] .sheet { background: var(--grain), var(--sheet); box-shadow: inset 0 1px 0 var(--paper), 0 -1px 0 var(--hair), 0 -18px 50px -10px rgba(60, 40, 20, 0.22), 0 160px 0 0 var(--sheet); }
+:root[data-theme="atelier"] .sheet-head { background: var(--sheet); box-shadow: 0 1px 0 var(--hair); margin-bottom: 10px; }
+:root[data-theme="atelier"] .sheet-head h2, :root[data-theme="atelier"] .confirm-title { font-size: 1.5rem; }
+:root[data-theme="atelier"] .sheet .seg { background: var(--inset); }
+:root[data-theme="atelier"] :is(.sheet .days span, .sheet .chip span) { background: #fffdf8; }
+:root[data-theme="atelier"] .sheet-grab { background: var(--line-strong); width: 36px; height: 3px; border-radius: 0; }
+:root[data-theme="atelier"] .sheet-move { background: var(--bg); }
+:root[data-theme="atelier"] .sheet-form { border-color: var(--hair); }
+:root[data-theme="atelier"] .toast { background: var(--ink); color: var(--paper); border-radius: 3px; box-shadow: 0 12px 34px -12px rgba(27, 23, 18, 0.55); }
+:root[data-theme="atelier"] .toast.bad { background: var(--merlot); color: var(--paper); box-shadow: 0 12px 34px -12px rgba(91, 20, 20, 0.6); }
+:root[data-theme="atelier"] .toast.link { text-decoration-color: rgba(251, 248, 242, 0.5); }
+:root[data-theme="atelier"] .ptr { background: var(--card); box-shadow: inset 0 0 0 1px var(--hair), 0 6px 16px -8px rgba(70, 50, 25, 0.4); }
+:root[data-theme="atelier"] .ptr-track { stroke: rgba(27, 23, 18, 0.12); }
+:root[data-theme="atelier"] :is(.ptr.armed, .ptr.spin) { color: var(--merlot); }
+
+/* ---------- The tab bar: a paper strip with a top hairline; from 900px a ruled sidebar ---------- */
+
+@media (max-width: 899px) {
+  :root[data-theme="atelier"] .tabbar {
+    left: 0; right: 0; bottom: 0; height: calc(64px + env(safe-area-inset-bottom));
+    padding: 4px calc(env(safe-area-inset-right) + 6px) env(safe-area-inset-bottom) calc(env(safe-area-inset-left) + 6px);
+    border-radius: 0; background: rgba(243, 238, 228, 0.96); box-shadow: 0 -1px 0 rgba(27, 23, 18, 0.2);
+  }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    :root[data-theme="atelier"] .tabbar { background: rgba(243, 238, 228, 0.84); -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2); }
+  }
+  :root[data-theme="atelier"] .tab-pill { border-radius: 2px; background: transparent; box-shadow: inset 0 2px 0 var(--merlot); inset: -8px -14px auto; height: 54px; }
+}
+:root[data-theme="atelier"] .tab { color: var(--text-3); }
+:root[data-theme="atelier"] .tab > span:last-child { font-family: var(--mono); font-size: 0.625rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+:root[data-theme="atelier"] .tab[aria-current="page"], :root[data-theme="atelier"] .tab[aria-current="page"] .ic { color: var(--ink); }
+:root[data-theme="atelier"] .tab[aria-current="page"] .ic { color: var(--merlot); }
+:root[data-theme="atelier"] .tab-badge { color: var(--paper); background: var(--merlot); box-shadow: 0 0 0 1.5px var(--bg); border-radius: 2px; }
+@media (min-width: 900px) {
+  :root[data-theme="atelier"] .tabbar { background: var(--grain), #efe9dd; box-shadow: 1px 0 0 var(--hair); }
+  :root[data-theme="atelier"] .tabbar-brand.wide-only { font-size: 2rem; }
+  :root[data-theme="atelier"] .tab > span:last-child { font-family: var(--book); font-size: 1.0625rem; font-weight: 400; letter-spacing: 0; text-transform: none; }
+  :root[data-theme="atelier"] .tab { color: var(--text-2); }
+  :root[data-theme="atelier"] .tab .ic { color: var(--text-3); }
+  :root[data-theme="atelier"] .tab-pill { background: var(--card); box-shadow: inset 0 0 0 1px var(--hair), inset 2px 0 0 var(--merlot); border-radius: 2px; }
+  :root[data-theme="atelier"] .tabbar > a.tab:nth-of-type(8)::before { background: var(--hair); }
+  /* The dock clears the sidebar instead of running under it. */
+  :root[data-theme="atelier"] .next-dock { left: calc(var(--side) + 16px); right: 16px; }
+  :root[data-theme="atelier"] .sheet { box-shadow: inset 0 0 0 1px var(--hair), 0 30px 80px -30px rgba(60, 40, 20, 0.45); }
+}
+
+/* ---------- The way in and the lock ---------- */
+
+:root[data-theme="atelier"] .gate-mark { filter: none; }
+:root[data-theme="atelier"] .wordmark { font-size: 4.5rem; letter-spacing: -0.02em; }
+:root[data-theme="atelier"] .tagline { font-family: var(--book); color: var(--merlot); }
+:root[data-theme="atelier"] .brand-lockup { padding-bottom: 18px; background: linear-gradient(var(--ink), var(--ink)) 50% 100% / 64px 1px no-repeat; }
+:root[data-theme="atelier"] .lock-glyph { color: var(--text-2); }
+:root[data-theme="atelier"] .lock-glyph::after { background: var(--merlot); box-shadow: none; height: 1px; }
+:root[data-theme="atelier"] .lock[data-state="scanning"] .lock-glyph { animation: none; }
+:root[data-theme="atelier"] .lock[data-state="unlocking"] .lock-glyph { color: var(--menthol); filter: none; }
+
+/* ---------- Coach ---------- */
+
+:root[data-theme="atelier"] .cchat-page { background: none; }
+:root[data-theme="atelier"] .chd-head { background: rgba(243, 238, 228, 0.94); box-shadow: 0 1px 0 var(--hair); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="atelier"] .chd-head { background: rgba(243, 238, 228, 0.8); }
+}
+:root[data-theme="atelier"] .chd-av { background: var(--merlot); box-shadow: none; font-family: var(--book); }
+:root[data-theme="atelier"] .chd-head-text h1 { font-size: 1.375rem; }
+:root[data-theme="atelier"] .msg { border-radius: 3px; }
+:root[data-theme="atelier"] :is(.msg.user, .cchat .msg.user) { color: var(--paper); background: var(--merlot); box-shadow: 0 1px 2px rgba(91, 20, 20, 0.18); border-bottom-right-radius: 0; }
+:root[data-theme="atelier"] :is(.msg.user time, .cchat .msg.user time) { color: rgba(251, 248, 242, 0.78); }
+:root[data-theme="atelier"] :is(.msg.assistant, .cchat .msg.assistant) {
+  color: var(--text); background: var(--card); box-shadow: inset 0 0 0 1px var(--hair); border-bottom-left-radius: 0;
+  font-family: var(--book); font-size: 1.0625rem; line-height: 1.55;
+}
+:root[data-theme="atelier"] .msg.user:has(+ .msg.user), :root[data-theme="atelier"] .msg.assistant:has(+ .msg.assistant) { border-radius: 3px; }
+:root[data-theme="atelier"] .msg.assistant time { font-family: var(--mono); font-size: 0.6875rem; }
+:root[data-theme="atelier"] .cchat .typing i:nth-of-type(2) { background: var(--ink); }
+:root[data-theme="atelier"] :is(.confirm-row, .cchat .confirm-row) { background: rgba(123, 30, 30, 0.05); box-shadow: inset 0 0 0 1px rgba(123, 30, 30, 0.4); }
+:root[data-theme="atelier"] .receipts li { background: var(--bg); }
+:root[data-theme="atelier"] :is(.cchat-page .btn.chrome, .cchat-page .composer .send, .cc-mic, .cc-staged-x) { background: var(--merlot); color: var(--paper); box-shadow: none; }
+:root[data-theme="atelier"] :is(.composer, .cchat-page .composer, .cc-staged) {
+  border-radius: 4px; background: rgba(251, 248, 242, 0.97); box-shadow: inset 0 0 0 1px var(--line-ctl), 0 10px 30px -18px rgba(70, 50, 25, 0.45);
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="atelier"] .composer { background: rgba(251, 248, 242, 0.9); }
+}
+:root[data-theme="atelier"] :is(.composer:focus-within, .cchat-page .composer:focus-within) { box-shadow: inset 0 0 0 1.5px var(--ink), 0 10px 30px -18px rgba(70, 50, 25, 0.45); }
+:root[data-theme="atelier"] .composer textarea { font-family: var(--book); font-size: 1.0625rem; background: transparent; box-shadow: none; }
+:root[data-theme="atelier"] .msg.assistant :is(.btn, .confirm-done, .msg-report) { font-family: var(--font); }
+:root[data-theme="atelier"] :is(.qchip, .cchat-page .qchip) { border-radius: 2px; background: var(--card); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .qchip-food .ic { color: var(--menthol); }
+:root[data-theme="atelier"] :is(.cc-cam, .cc-rec-x) { background: transparent; box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .composer-dock::before { background: linear-gradient(180deg, rgba(243, 238, 228, 0), rgba(243, 238, 228, 0.94) 46%); }
+:root[data-theme="atelier"] .cc-play { color: var(--merlot); background: var(--paper); box-shadow: none; }
+:root[data-theme="atelier"] .cc-wave i { background: rgba(251, 248, 242, 0.42); }
+:root[data-theme="atelier"] .cc-wave i.on { background: var(--paper); }
+:root[data-theme="atelier"] :is(.cc-dur, .cc-note) { color: rgba(251, 248, 242, 0.85); }
+:root[data-theme="atelier"] .msg.assistant .cc-note { color: var(--text-2); }
+:root[data-theme="atelier"] .cc-full { background: var(--ink); }
+:root[data-theme="atelier"] :is(.cc-staged-img.up .cc-staged-spin, .cc-dots) { border-color: rgba(27, 23, 18, 0.2); border-top-color: var(--ink); }
+:root[data-theme="atelier"] .briefs-btn .ic { color: var(--brass); }
+
+/* ---------- Food ---------- */
+
+:root[data-theme="atelier"] .fcap-bar { border-radius: 4px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="atelier"] :is(.fcap-cam, .fcap-send, .fc-cam, .fc-av) { background: var(--fc-lime); color: var(--paper); box-shadow: none; }
+:root[data-theme="atelier"] .fcap-q { font-family: var(--book); font-style: italic; font-size: 1.125rem; }
+:root[data-theme="atelier"] .fcap-tool { border-radius: 2px; background: var(--card); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .fday { background: var(--card); }
+:root[data-theme="atelier"] .fr-track { stroke: rgba(27, 23, 18, 0.08); }
+:root[data-theme="atelier"] .fh-bg { fill: rgba(27, 23, 18, 0.03); }
+:root[data-theme="atelier"] .fh-line { fill: var(--text-3); }
+:root[data-theme="atelier"] .fdot { border-radius: 0; }
+:root[data-theme="atelier"] .fdot.m-unknown { box-shadow: inset 0 0 0 1px #9c9282; }
+:root[data-theme="atelier"] .fday-left { border-radius: 2px; background: var(--bg); }
+:root[data-theme="atelier"] .fmc { background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+:root[data-theme="atelier"] :is(.fmc-bar, .fmeal, .ri-bar, .rirow-bar, .fc-day-bar) { background: var(--fill-2); border-radius: 0; }
+:root[data-theme="atelier"] :is(.fmc-bar i, .ri-bar i, .rirow-bar i, .fwater-bar i) { border-radius: 0; }
+:root[data-theme="atelier"] :is(.fmc.over .fmc-of, .ftag.t-warn, .ftag-mini.t-warn, .frank-h.bad, .fadv-why.t-warn) { color: var(--blaze); }
+:root[data-theme="atelier"] :is(.ri-bar.full i, .rirow.full .rirow-bar i) { background: var(--f-micro); }
+:root[data-theme="atelier"] :is(.fk-now, .fcmp-bar.cur i) { background: var(--ink); }
+:root[data-theme="atelier"] .fmicro-i { background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+:root[data-theme="atelier"] .fmicro-i.done { background: rgba(79, 107, 58, 0.08); box-shadow: inset 0 0 0 1px rgba(79, 107, 58, 0.4); }
+:root[data-theme="atelier"] .fwater-bar i::after { display: none; }
+:root[data-theme="atelier"] :is(.ftl-c, .tg-stat) { background: var(--bg); }
+:root[data-theme="atelier"] .ftg-n { background: var(--fill-2); }
+:root[data-theme="atelier"] .tg-row:active { background: var(--fill); }
+:root[data-theme="atelier"] .tg-row.t-warn .tg-dot { background: var(--blaze); }
+:root[data-theme="atelier"] .fxb { background: repeating-linear-gradient(0deg, transparent 0 calc(25% - 1px), rgba(27, 23, 18, 0.07) calc(25% - 1px) 25%); }
+:root[data-theme="atelier"] .fheat-grid i { background: color-mix(in srgb, var(--merlot) calc(var(--a, 0) * 100%), rgba(27, 23, 18, 0.05)); }
+:root[data-theme="atelier"] .gmix-bar i { box-shadow: none; }
+:root[data-theme="atelier"] .fk-inc { background: repeating-linear-gradient(45deg, rgba(92, 83, 72, 0.6) 0 1.6px, transparent 1.6px 4px); box-shadow: inset 0 0 0 1px rgba(92, 83, 72, 0.75); }
+:root[data-theme="atelier"] .tag.ftag-est { background: rgba(128, 96, 28, 0.1); }
+:root[data-theme="atelier"] .tag.ftag-estimate { background: rgba(148, 73, 26, 0.1); }
+:root[data-theme="atelier"] .fu.combo { background: rgba(79, 107, 58, 0.06); box-shadow: inset 0 0 0 1px rgba(79, 107, 58, 0.3); }
+:root[data-theme="atelier"] .fcap .tray-chip { background: var(--card); }
+/* The food chat, in olive ink */
+:root[data-theme="atelier"] .fc-head { background: rgba(243, 238, 228, 0.94); box-shadow: 0 1px 0 var(--hair); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="atelier"] .fc-head { background: rgba(243, 238, 228, 0.8); }
+}
+:root[data-theme="atelier"] .fc-daysep span { background: var(--bg); box-shadow: inset 0 0 0 1px var(--hair); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.12em; }
+:root[data-theme="atelier"] .fchat .msg.user { color: var(--paper); background: var(--fc-lime); box-shadow: none; }
+:root[data-theme="atelier"] .fchat .msg.user time { color: rgba(251, 248, 242, 0.78); }
+:root[data-theme="atelier"] .fchat .msg.assistant { color: var(--text); background: var(--card); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .fchat .fc-say.bad { box-shadow: inset 0 0 0 1px rgba(166, 60, 38, 0.45); }
+:root[data-theme="atelier"] :is(.fc-items, .fc-pick) { background: var(--bg); border-radius: 2px; }
+:root[data-theme="atelier"] :is(.fc-slot, .fc-act) { background: var(--card); border-radius: 2px; }
+:root[data-theme="atelier"] :is(.fc-slot.on, .fc-act.on, .composer .fc-send) { color: var(--paper); background: var(--fc-lime); }
+:root[data-theme="atelier"] .fc-log { color: var(--paper); background: var(--fc-lime); box-shadow: none; border-radius: 2px; }
+:root[data-theme="atelier"] .fc-logged { background: rgba(79, 107, 58, 0.07); box-shadow: inset 0 0 0 1px rgba(79, 107, 58, 0.35); }
+:root[data-theme="atelier"] .fc-staged { background: var(--card); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="atelier"] .fc-dock::before { background: linear-gradient(180deg, rgba(243, 238, 228, 0), rgba(243, 238, 228, 0.96) 22px, rgba(243, 238, 228, 0.96)); }
+:root[data-theme="atelier"] .fc-composer { background: rgba(251, 248, 242, 0.95); box-shadow: inset 0 0 0 1px var(--line-ctl), 0 10px 30px -18px rgba(70, 50, 25, 0.45); }
+:root[data-theme="atelier"] .fc-composer:focus-within { box-shadow: inset 0 0 0 1.5px var(--fc-lime), 0 10px 30px -18px rgba(70, 50, 25, 0.45); }
+/* The scanner keeps the dark of a camera. */
+:root[data-theme="atelier"] .scan {
+  --bg: #14110d; --text: #fbf8f2; --text-2: #d9d0c1; --text-3: #b3a998; --silver: #fbf8f2; --on-silver: #1b1712; --focus: #fbf8f2;
+  --line: #3a332a; --line-ctl: #8d8373; --card: #1f1a14; --inset: #191510; background: #14110d;
+}
+:root[data-theme="atelier"] .scan-cam { background: radial-gradient(120% 70% at 50% 45%, #2a241c 0%, #14110d 70%); }
+:root[data-theme="atelier"] .scan-off { --sheet: #f8f4ec; --text: #1b1712; --text-2: #5c5348; --text-3: #6f655a; --focus: #1b1712; color: var(--text); }
+:root[data-theme="atelier"] .scan-type .input { background-color: transparent; box-shadow: none; }
+
+/* ---------- Calendar, Plan, Goals, Settings ---------- */
+
+:root[data-theme="atelier"] .cal-top { background: rgba(243, 238, 228, 0.96); box-shadow: 0 1px 0 var(--hair); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="atelier"] .cal-top { background: rgba(243, 238, 228, 0.84); }
+}
+:root[data-theme="atelier"] :is(.cal-sync.bad, .cal-feed.bad small) { color: var(--cherry); }
+:root[data-theme="atelier"] :is(.cal-chip, .cal-mc) { background: color-mix(in srgb, var(--c, var(--chrome-c)) 13%, var(--card)); }
+:root[data-theme="atelier"] .cal-col.today { background: rgba(123, 30, 30, 0.025); }
+:root[data-theme="atelier"] .cal-ev { background: color-mix(in srgb, var(--c) 12%, var(--card)); box-shadow: inset 2px 0 0 var(--c), inset 0 0 0 1px color-mix(in srgb, var(--c) 28%, transparent), 0 0 0 1px var(--card); }
+:root[data-theme="atelier"] .cal-ev.own { background: color-mix(in srgb, var(--merlot) 9%, var(--card)); box-shadow: inset 2px 0 0 var(--merlot), 0 0 0 1px var(--card); }
+:root[data-theme="atelier"] :is(.cal-ev-s, .cal-ev-p) { color: color-mix(in srgb, var(--c) 35%, var(--text-2)); }
+:root[data-theme="atelier"] .cal-mk-chip { background: rgba(251, 248, 242, 0.92); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 55%, transparent); }
+:root[data-theme="atelier"] .pl-day.clean .pl-dot { background: var(--menthol); color: var(--paper); box-shadow: none; }
+:root[data-theme="atelier"] .pl-day.kept .pl-dot { background: rgba(79, 107, 58, 0.1); }
+:root[data-theme="atelier"] .pl-day.missed .pl-dot { background: rgba(123, 30, 30, 0.07); color: var(--merlot); box-shadow: inset 0 0 0 1.5px var(--merlot); }
+:root[data-theme="atelier"] .pl-day.today .pl-dot { background: var(--fill); }
+:root[data-theme="atelier"] .pl-filters button[aria-selected="true"] span { color: rgba(27, 23, 18, 0.6); }
+:root[data-theme="atelier"] :is(.pl-chip.nn, .pl-chip.hard, .pl-chip.late, .pl-pill.missed) { background: rgba(166, 60, 38, 0.09); }
+:root[data-theme="atelier"] :is(.pl-chip.streak, .pl-chip.due.ember, .pl-chip.due.over) { background: rgba(148, 73, 26, 0.09); }
+:root[data-theme="atelier"] .pl-pill.done { background: rgba(79, 107, 58, 0.1); }
+:root[data-theme="atelier"] .pl-strip i.h-min, :root[data-theme="atelier"] :is(.heat i.h-min, .heat-key i.h-min) { background: rgba(79, 107, 58, 0.45); }
+:root[data-theme="atelier"] :is(.heat i.h-none, .heat i.h-flex, .heat-key i.h-none, .heat-key i.h-flex) { background: var(--inset); }
+:root[data-theme="atelier"] .pl-bar { background: #ddd4c4; }
+:root[data-theme="atelier"] .pl-bar i { background: var(--cherry); }
+:root[data-theme="atelier"] .pl-col.is-today .pl-bar:not(.zero) { background: var(--ink); box-shadow: none; }
+:root[data-theme="atelier"] .pl-hero-ring .mring { filter: none; }
+:root[data-theme="atelier"] .pl-hero, :root[data-theme="atelier"] .season-card, :root[data-theme="atelier"] .next-step { background: var(--card); }
+:root[data-theme="atelier"] .next-step { box-shadow: inset 2px 0 0 var(--merlot), var(--rim); }
+:root[data-theme="atelier"] .goal-ring { filter: none; }
+:root[data-theme="atelier"] .pace.pace-on, :root[data-theme="atelier"] .pace.pace-ahead { background: rgba(79, 107, 58, 0.1); }
+:root[data-theme="atelier"] .pace.pace-behind { background: rgba(162, 58, 26, 0.09); }
+:root[data-theme="atelier"] .goal-status.done { box-shadow: inset 0 0 0 1px rgba(79, 107, 58, 0.45); }
+:root[data-theme="atelier"] .goal-bar .pbar i { background: var(--merlot); box-shadow: none; }
+:root[data-theme="atelier"] .node-row.parent-sel { background: var(--fill); box-shadow: inset 2px 0 0 var(--merlot); }
+:root[data-theme="atelier"] .node-box svg { stroke: var(--paper); }
+:root[data-theme="atelier"] .map-node.task.done rect { fill: #e6eadb; }
+:root[data-theme="atelier"] .hp-line { filter: none; stroke: var(--merlot); }
+:root[data-theme="atelier"] #hp-fill stop { stop-color: rgba(123, 30, 30, 0.14) !important; }
+:root[data-theme="atelier"] #hp-fill stop + stop { stop-color: rgba(123, 30, 30, 0) !important; }
+:root[data-theme="atelier"] .theme-card { border: 0; border-radius: 3px; }
+:root[data-theme="atelier"] .theme-card.on { box-shadow: inset 0 0 0 1.5px var(--ink), 0 10px 26px -18px rgba(70, 50, 25, 0.5); }
+:root[data-theme="atelier"] .theme-shot { border-radius: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="atelier"] .li.pending { animation: atl-flash 0.8s ease !important; }
+  :root[data-theme="atelier"] :is(.now.u-ember, .now.u-over) .btn.chrome { animation: none !important; }
+}

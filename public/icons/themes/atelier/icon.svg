@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="paper" cx="50%" cy="44%" r="72%">
+      <stop offset="0" stop-color="#f8f4ec"/>
+      <stop offset="0.7" stop-color="#f1ebdf"/>
+      <stop offset="1" stop-color="#e6ddcc"/>
+    </radialGradient>
+    <linearGradient id="ink" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a3229"/>
+      <stop offset="0.45" stop-color="#1b1712"/>
+      <stop offset="1" stop-color="#2a241d"/>
+    </linearGradient>
+    <linearGradient id="ox" gradientUnits="userSpaceOnUse" x1="34" y1="6" x2="57" y2="58">
+      <stop offset="0" stop-color="#a13128"/>
+      <stop offset="0.45" stop-color="#7b1e1e"/>
+      <stop offset="1" stop-color="#561212"/>
+    </linearGradient>
+    <clipPath id="L"><rect width="30.8" height="64"/></clipPath>
+    <clipPath id="R"><rect x="33.2" width="30.8" height="64"/></clipPath>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#paper)"/>
+  <!-- the mark, pressed into the sheet: a faint light edge below each half, as in letterpress -->
+  <g transform="translate(512 512) scale(10.6) translate(-32 -32)">
+    <g transform="translate(0 0.22)" opacity="0.55">
+      <g clip-path="url(#L)" transform="translate(0 2.8)"><circle cx="32" cy="32" r="21" fill="none" stroke="#fffdf8" stroke-width="10.5"/></g>
+      <g clip-path="url(#R)" transform="translate(0 -2.8)"><circle cx="32" cy="32" r="21" fill="none" stroke="#fffdf8" stroke-width="10.5"/></g>
+    </g>
+    <g clip-path="url(#L)" transform="translate(0 2.8)"><circle cx="32" cy="32" r="21" fill="none" stroke="url(#ink)" stroke-width="10.5"/></g>
+    <g clip-path="url(#R)" transform="translate(0 -2.8)"><circle cx="32" cy="32" r="21" fill="none" stroke="url(#ox)" stroke-width="10.5"/></g>
+  </g>
+</svg>
