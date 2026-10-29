@@ -7,55 +7,17 @@
 // response, sampled into a CSS linear() easing; when a drag lets go, the finger's speed is handed to
 // the spring so there is no seam. Reduced motion keeps the meaning (fades) and drops the travel.
 // The same moments are heard: sheets and taps ask sound.js for their sounds through fx().
+// Sheets move in motion-sheets.js, row swipes and pull to refresh in motion-touch.js; both are built
+// from the springs in motion-core.js, and this module routes the pointer to them.
 
-import { state, hooks, haptic, icon, fx, reduced } from './ui.js';
+import { state, hooks, icon, fx, reduced } from './ui.js';
+import { WIDE, EASE_OUT, spring, play, after, stop } from './motion-core.js';
+import { sheetsAfter, grabSheet, dragTo, letGo, sheetDrag } from './motion-sheets.js';
+import { initTouch, swipeStart, swipeMove, swipeEnd, swiping, swallowed, pulling } from './motion-touch.js';
+
+export { spring };
 
 const $app = document.getElementById('app');
-const WIDE = window.matchMedia('(min-width: 900px)');
-
-const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
-const EASE_DRAWER = 'cubic-bezier(0.32, 0.72, 0, 1)';
-const LINEAR_OK = Boolean(window.CSS?.supports?.('transition-timing-function', 'linear(0, 1)'));
-
-// ---------- Springs ----------
-
-// A spring from 0 to 1 as { easing, duration }. damping 1 settles without overshoot; below 1 it
-// overshoots a little. response is roughly how long it takes, in seconds. velocity is in distances
-// per second (the finger's px/s divided by the px left to travel).
-const springs = new Map();
-export function spring(damping = 1, response = 0.35, velocity = 0) {
-  const v0 = Math.max(-40, Math.min(40, Math.round(velocity * 4) / 4));
-  const key = `${damping}|${response}|${v0}`;
-  const hit = springs.get(key);
-  if (hit) return hit;
-  const w = (2 * Math.PI) / response;
-  let x = 0;
-  let v = v0;
-  let t = 0;
-  const pts = [0];
-  while (t < 1.5) {
-    for (let i = 0; i < 8; i += 1) {
-      v += (w * w * (1 - x) - 2 * damping * w * v) / 480;
-      x += v / 480;
-    }
-    t += 1 / 60;
-    pts.push(x);
-    if (Math.abs(1 - x) < 0.002 && Math.abs(v) < 0.05) break;
-  }
-  pts[pts.length - 1] = 1;
-  const s = LINEAR_OK
-    ? { easing: `linear(${pts.map((p) => Math.round(p * 1000) / 1000).join(', ')})`, duration: Math.round(t * 1000) }
-    : { easing: EASE_DRAWER, duration: Math.round(t * 650) };
-  if (springs.size > 200) springs.clear();
-  springs.set(key, s);
-  return s;
-}
-
-function play(el, frames, opts) {
-  if (!el?.animate) return null;
-  try { return el.animate(frames, opts); } catch { return null; }
-}
-const after = (a, fn) => (a ? a.finished.then(fn, fn) : fn());
 
 // Animations that must survive a redraw. A screen often redraws a moment after a change (its data
 // arrives, a side loader finishes): anything started under a key is picked up on the new element at
@@ -83,24 +45,6 @@ function prune() {
   const now = performance.now();
   for (const [k, r] of runs) if (now - r.t0 > (r.opts.delay || 0) + r.opts.duration) runs.delete(k);
 }
-const stop = (el) => el?.getAnimations?.().forEach((a) => a.cancel());
-// Real things slow before they stop: the further past an edge, the less the element follows.
-const rubber = (x, dim, c = 0.55) => (x * dim * c) / (dim + c * x);
-// Where a flick would come to rest (Apple's projection, deceleration 0.998), from px per ms.
-const project = (v) => v * 499;
-
-function currentY(el) {
-  try { return new DOMMatrixReadOnly(getComputedStyle(el).transform).m42; } catch { return 0; }
-}
-
-// Speed over the last tenth of a second, in px per ms. A finger that stopped before letting go has none.
-function speed(trail) {
-  const last = trail[trail.length - 1];
-  if (!last || performance.now() - last[0] > 90) return 0;
-  const first = trail.find(([t]) => last[0] - t <= 100) || last;
-  const dt = last[0] - first[0];
-  return dt > 8 ? (last[1] - first[1]) / dt : 0;
-}
 
 // ---------- Bookkeeping across redraws ----------
 
@@ -112,15 +56,12 @@ let inTransition = false;
 let navToken = 0;
 let lead = null;
 let tickAt = 0;
-let dragDismissed = false;
-let entering = null;
 const counted = new Map();
 const counters = new Map();
 let lastBadge = null;
 let lastNext = null;
 let topIO = null;
 let chatGrew = false;
-let cb = {};
 
 const isLoading = (page) => Boolean(page.querySelector(':scope > .skeleton'))
   || [...page.children].some((c) => c.matches('p.muted') && c.textContent.trim() === 'Loading');
@@ -166,7 +107,7 @@ export function afterShell(snap) {
   const loading = isLoading(page);
   const jobs = [];
   segsAfter(snap, jobs); // the only step that writes before reading: it adds the segment pills
-  sheetsAfter(snap, jobs);
+  sheetsAfter(snap, jobs, inTransition);
   pillAfter(snap, jobs);
   if (snap.rows) rowsAfter(snap, jobs);
   chatAfter(snap, jobs);
@@ -551,216 +492,6 @@ function onSegChange(e) {
   if (from && !reduced()) slide(ind, from, ind.getBoundingClientRect());
 }
 
-// ---------- Sheets: spring up, drag down to dismiss, fade the backdrop ----------
-
-function sheetFrames() {
-  if (reduced()) return { frames: [{ opacity: 0 }, { opacity: 1 }], opts: { duration: 200, easing: 'ease-out' } };
-  if (WIDE.matches) {
-    return { frames: [{ opacity: 0, transform: 'translateY(14px) scale(0.97)' }, { opacity: 1, transform: 'none' }], opts: { duration: 300, easing: EASE_OUT } };
-  }
-  return { frames: [{ transform: 'translateY(100%)' }, { transform: 'translateY(0)' }], opts: spring(1, 0.36) };
-}
-
-function enterSheet(sheet, backdrop) {
-  const { frames, opts } = sheetFrames();
-  const bopts = { duration: reduced() ? 200 : 320, easing: EASE_OUT };
-  play(sheet, frames, opts);
-  play(backdrop, [{ opacity: 0 }, { opacity: 1 }], bopts);
-  entering = { t0: performance.now(), frames, opts, bopts };
-}
-
-// The same sheet drawn again mid-entrance: pick the entrance up where it was.
-function carryEnter(sheet, backdrop) {
-  if (!entering) return;
-  const t = performance.now() - entering.t0;
-  if (t >= entering.opts.duration) {
-    entering = null;
-    return;
-  }
-  const a = play(sheet, entering.frames, entering.opts);
-  if (a) a.currentTime = t;
-  if (t < entering.bopts.duration) {
-    const b = play(backdrop, [{ opacity: 0 }, { opacity: 1 }], entering.bopts);
-    if (b) b.currentTime = t;
-  }
-}
-
-// A sheet that closed by any route (button, backdrop, Escape, a saved form) leaves the way it came:
-// its last frame is kept on screen, inert, and slides out over the new page.
-function exitSheet(snap) {
-  const { sheet, backdrop } = snap;
-  fx('sheet-close');
-  stop(sheet);
-  stop(backdrop);
-  const ghost = document.createElement('div');
-  ghost.className = 'sheet-ghost';
-  ghost.setAttribute('aria-hidden', 'true');
-  ghost.inert = true;
-  if (backdrop) ghost.append(backdrop);
-  ghost.append(sheet);
-  document.body.append(ghost);
-  if (snap.scroll) sheet.scrollTop = snap.scroll;
-  const from = snap.from.transform === 'none' ? 'translateY(0)' : snap.from.transform;
-  let frames;
-  let opts;
-  if (reduced()) {
-    frames = [{ opacity: snap.from.opacity }, { opacity: 0 }];
-    opts = { duration: 160, easing: 'ease-out' };
-  } else if (WIDE.matches) {
-    frames = [{ opacity: snap.from.opacity, transform: from }, { opacity: 0, transform: 'translateY(10px) scale(0.97)' }];
-    opts = { duration: 200, easing: EASE_OUT };
-  } else {
-    frames = [{ transform: from }, { transform: `translateY(${sheet.offsetHeight + 24}px)` }];
-    opts = spring(1, 0.3);
-  }
-  const a = play(sheet, frames, { ...opts, fill: 'forwards' });
-  play(backdrop, [{ opacity: snap.fromBackdrop }, { opacity: 0 }], { duration: Math.min(opts.duration, 260), easing: EASE_OUT, fill: 'forwards' });
-  const end = () => ghost.remove();
-  after(a, end);
-  setTimeout(end, opts.duration + 300);
-}
-
-function sheetsAfter(snap, jobs) {
-  const sheet = $app.querySelector('.sheet');
-  const backdrop = sheet ? $app.querySelector('.sheet-backdrop') : null;
-  if (sheet) bindSheetTouch(sheet);
-  if (sheet && (!snap.sheet || dragDismissed || !snap.same)) {
-    jobs.push(() => {
-      enterSheet(sheet, backdrop);
-      fx('sheet-open');
-    });
-  } else if (sheet) {
-    // Drawn again: the same sheet keeps its scroll; new contents in the same sheet cross-fade.
-    const same = snap.label === sheet.getAttribute('aria-label');
-    jobs.push(() => {
-      if (same && snap.scroll) sheet.scrollTop = snap.scroll;
-      carryEnter(sheet, backdrop);
-      if (!same) [...sheet.children].forEach((c) => play(c, [{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: 'ease-out' }));
-    });
-  } else if (snap.sheet && !dragDismissed && !inTransition) {
-    entering = null;
-    jobs.push(() => exitSheet(snap));
-  }
-  dragDismissed = false;
-}
-
-// Dragging: from the grabber and title (pointer events), or from the content when it is scrolled to
-// the top (touch events, so a pull down at the top moves the sheet instead of rubber-banding).
-let drag = null;
-
-function grabSheet(sheet, y) {
-  const backdrop = $app.querySelector('.sheet-backdrop');
-  const base = currentY(sheet);
-  const op = backdrop ? Number(getComputedStyle(backdrop).opacity) : 1;
-  stop(sheet);
-  stop(backdrop);
-  entering = null;
-  sheet.style.transform = `translate3d(0, ${base}px, 0)`;
-  if (backdrop) backdrop.style.opacity = String(op);
-  sheet.classList.add('is-dragging');
-  drag = { sheet, backdrop, y0: y, base, h: sheet.offsetHeight || 1, off: base, trail: [[performance.now(), base]] };
-}
-
-function dragTo(y) {
-  const d = drag;
-  let off = d.base + (y - d.y0);
-  if (off < 0) off = -rubber(-off, d.h);
-  d.off = off;
-  d.sheet.style.transform = `translate3d(0, ${off}px, 0)`;
-  if (d.backdrop) d.backdrop.style.opacity = String(1 - Math.min(1, Math.max(0, off) / d.h));
-  const now = performance.now();
-  d.trail.push([now, off]);
-  while (d.trail.length > 2 && now - d.trail[0][0] > 140) d.trail.shift();
-}
-
-function letGo() {
-  const d = drag;
-  drag = null;
-  if (!d) return;
-  d.sheet.classList.remove('is-dragging');
-  const v = speed(d.trail);
-  const dismiss = d.off > 4 && v > -0.05 && d.off + project(v) > d.h * 0.5;
-  const bFrom = d.backdrop?.style.opacity || '1';
-  if (dismiss) {
-    fx('sheet-close');
-    const to = d.h + 24;
-    const s = reduced() ? { duration: 160, easing: 'ease-out' } : spring(1, 0.3, (v * 1000) / Math.max(1, to - d.off));
-    const a = play(d.sheet, [{ transform: `translate3d(0, ${d.off}px, 0)` }, { transform: `translate3d(0, ${to}px, 0)` }], { ...s, fill: 'forwards' });
-    play(d.backdrop, [{ opacity: bFrom }, { opacity: 0 }], { duration: Math.min(s.duration, 280), easing: EASE_OUT, fill: 'forwards' });
-    after(a, () => closeDragged(d));
-    return;
-  }
-  const s = reduced() ? { duration: 180, easing: EASE_OUT } : spring(Math.abs(v) > 0.3 ? 0.8 : 1, 0.3, d.off ? (v * 1000) / -d.off : 0);
-  play(d.sheet, [{ transform: `translate3d(0, ${d.off}px, 0)` }, { transform: 'translate3d(0, 0, 0)' }], s);
-  d.sheet.style.transform = '';
-  if (d.backdrop) {
-    play(d.backdrop, [{ opacity: bFrom }, { opacity: 1 }], { duration: 240, easing: EASE_OUT });
-    d.backdrop.style.opacity = '';
-  }
-}
-
-// Off screen: close it the way its own close button would, so every kind of sheet just works.
-function closeDragged(d) {
-  dragDismissed = true;
-  const closer = d.backdrop?.dataset.action ? d.backdrop
-    : d.sheet.querySelector('[data-action="sheet-dismiss"], [data-action="sheet-close"], [data-action="food-close"]');
-  closer?.click();
-  setTimeout(() => {
-    if (!d.sheet.isConnected) return;
-    // Nothing closed it: bring it back rather than leave it hidden.
-    dragDismissed = false;
-    stop(d.sheet);
-    stop(d.backdrop);
-    d.sheet.style.transform = '';
-    if (d.backdrop) d.backdrop.style.opacity = '';
-    enterSheet(d.sheet, d.backdrop);
-  }, 160);
-}
-
-const NO_PULL = 'input, textarea, select, .tray, .map-scroll, .heat, .table-wrap, .quick-replies';
-
-function bindSheetTouch(sheet) {
-  let start = null;
-  sheet.addEventListener('touchstart', (e) => {
-    start = null;
-    if (WIDE.matches || drag || e.touches.length !== 1) return;
-    if (e.target.closest('.sheet-grab, .sheet-head') || e.target.closest(NO_PULL)) return;
-    const t = e.touches[0];
-    start = { x: t.clientX, y: t.clientY, top: sheet.scrollTop <= 0 };
-  }, { passive: true });
-  sheet.addEventListener('touchmove', (e) => {
-    if (!start) return;
-    const t = e.touches[0];
-    if (drag?.touch) {
-      if (e.cancelable) e.preventDefault();
-      dragTo(t.clientY);
-      return;
-    }
-    if (!start.top || sheet.scrollTop > 0) {
-      start = null;
-      return;
-    }
-    const dx = t.clientX - start.x;
-    const dy = t.clientY - start.y;
-    if (dy < 0 || Math.abs(dx) > Math.abs(dy)) {
-      if (Math.abs(dx) + Math.abs(dy) > 6) start = null;
-      return;
-    }
-    // At the top, pulling down would only rubber-band: take it for the sheet instead.
-    if (e.cancelable) e.preventDefault();
-    if (dy > 8) {
-      grabSheet(sheet, t.clientY);
-      drag.touch = true;
-    }
-  }, { passive: false });
-  const end = () => {
-    start = null;
-    if (drag?.touch) letGo();
-  };
-  sheet.addEventListener('touchend', end, { passive: true });
-  sheet.addEventListener('touchcancel', end, { passive: true });
-}
-
 // ---------- Ticks: the check pops and draws, then the list settles into its new order ----------
 
 export function ticked(row) {
@@ -1026,207 +757,40 @@ export function chatToEnd() {
   window.scrollTo({ top: document.documentElement.scrollHeight, behavior: chatGrew && !reduced() ? 'smooth' : 'auto' });
 }
 
-// ---------- Swipe a habit or task row on Today: right for Done, left for Not now ----------
-// A row marked data-swipe="remove" (a Food diary entry) only goes left, to Remove: it carries on out
-// and the row fires oath:swipe-remove for its page to handle, with that page's Undo.
-
-let swipe = null;
-let swallowUntil = 0;
-
-function swipeStart(e) {
-  if (e.pointerType !== 'touch') return;
-  const row = e.target.closest?.('.page-today .group > button.li-habit, .page-today .group > button.li-task, .group > [data-swipe="remove"]');
-  if (!row || row.disabled) return;
-  const remove = row.dataset.swipe === 'remove';
-  if (!remove && !cb.notNow) return;
-  swipe = { row, remove, pid: e.pointerId, x0: e.clientX, y0: e.clientY, on: false, dx: 0, trail: [] };
-}
-
-function swipeBg(row, remove) {
-  const bg = document.createElement('div');
-  bg.className = `swipe-bg${remove ? ' remove' : ''}`;
-  bg.setAttribute('aria-hidden', 'true');
-  bg.innerHTML = remove ? `<span class="sw-remove">Remove${icon('trash')}</span>`
-    : `<span class="sw-done">${icon('check')}Done</span><span class="sw-later">Not now${icon('clock')}</span>`;
-  bg.style.top = `${row.offsetTop}px`;
-  bg.style.height = `${row.offsetHeight}px`;
-  row.parentElement.append(bg);
-  return bg;
-}
-
-function swipeMove(e) {
-  const s = swipe;
-  const dx = e.clientX - s.x0;
-  const dy = e.clientY - s.y0;
-  if (!s.on) {
-    if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) {
-      swipe = null;
-      return;
-    }
-    if (Math.abs(dx) < 12 || Math.abs(dx) < Math.abs(dy) * 1.3) return;
-    s.on = true;
-    s.x0 += Math.sign(dx) * 12;
-    s.w = s.row.offsetWidth || 1;
-    s.bg = swipeBg(s.row, s.remove);
-    s.row.classList.add('is-swiping');
-    try { s.row.setPointerCapture(s.pid); } catch { /* the row went away */ }
-  }
-  let x = e.clientX - s.x0;
-  const max = s.w * 0.42;
-  // A remove-only row resists going right.
-  if (s.remove && x > 0) x = rubber(x, s.w, 0.15);
-  else if (Math.abs(x) > max) x = Math.sign(x) * (max + rubber(Math.abs(x) - max, s.w));
-  s.dx = x;
-  s.row.style.transform = `translate3d(${x}px, 0, 0)`;
-  const side = s.remove ? (x < 0 ? 'remove' : '') : x >= 0 ? 'done' : 'later';
-  if (side !== s.side) {
-    s.side = side;
-    if (side) s.bg.dataset.side = side;
-    else delete s.bg.dataset.side;
-  }
-  const armed = Boolean(side) && Math.abs(x) > s.w * 0.26;
-  if (armed !== s.armed) {
-    s.armed = armed;
-    s.bg.classList.toggle('armed', armed);
-    if (armed) haptic();
-  }
-  s.trail.push([performance.now(), x]);
-  if (s.trail.length > 8) s.trail.shift();
-}
-
-function swipeEnd(cancelled) {
-  const s = swipe;
-  swipe = null;
-  if (!s?.on) return;
-  swallowUntil = performance.now() + 450;
-  const v = speed(s.trail);
-  const flick = Math.abs(v) > 0.5 && Math.sign(v) === Math.sign(s.dx) && Math.abs(s.dx) > 40;
-  const commit = !cancelled && (s.armed || flick) && (!s.remove || s.dx < 0);
-  if (commit && s.remove) {
-    // The row carries on out to the left over its "Remove" panel; the page redraws without it, or
-    // with it back if it could not be removed.
-    const out = reduced() ? [{ opacity: 1 }, { opacity: 0 }] : [{ transform: `translate3d(${s.dx}px, 0, 0)` }, { transform: `translate3d(${-s.w}px, 0, 0)` }];
-    play(s.row, out, { duration: 200, easing: EASE_OUT, fill: 'forwards' });
-    s.row.style.transform = '';
-    haptic();
-    s.row.dispatchEvent(new CustomEvent('oath:swipe-remove', { bubbles: true }));
-    return;
-  }
-  const sp = reduced() ? { duration: 180, easing: EASE_OUT } : spring(0.86, 0.34, s.dx ? (v * 1000) / -s.dx : 0);
-  const a = play(s.row, [{ transform: `translate3d(${s.dx}px, 0, 0)` }, { transform: 'translate3d(0, 0, 0)' }], sp);
-  s.row.style.transform = '';
-  play(s.bg, [{ opacity: 1 }, { opacity: 0 }], { duration: Math.round(sp.duration * 0.7), easing: EASE_OUT, fill: 'forwards' });
-  after(a, () => {
-    s.row.classList.remove('is-swiping');
-    s.bg.remove();
-  });
-  if (!commit) return;
-  if (s.dx > 0) s.row.click();
-  else cb.notNow(s.row);
-}
-
-// ---------- Pull to refresh on Today ----------
-
-const PULL = 72;
-let ptr = null;
-let pull = null;
-
-function drawPull() {
-  if (!pull) return;
-  pull.raf = 0;
-  const d = Math.max(0, -window.scrollY);
-  const p = Math.min(1, d / PULL);
-  ptr.style.opacity = String(Math.min(1, d / 28));
-  ptr.style.transform = `translate3d(-50%, ${Math.min(d, 120) * 0.55 - 30}px, 0) rotate(${Math.round(p * 270)}deg)`;
-  ptr.querySelector('.ptr-arc').style.strokeDashoffset = String(100 - p * 100);
-  const armed = d >= PULL;
-  if (armed !== pull.armed) {
-    pull.armed = armed;
-    ptr.classList.toggle('armed', armed);
-  }
-  if (pull.released && d < 1) {
-    ptr.style.opacity = '0';
-    pull = null;
-  }
-}
-
-function initPull() {
-  if (!('ontouchstart' in window)) return;
-  ptr = document.createElement('div');
-  ptr.className = 'ptr';
-  ptr.setAttribute('aria-hidden', 'true');
-  ptr.innerHTML = '<svg viewBox="0 0 28 28"><circle class="ptr-track" cx="14" cy="14" r="9.5"/><circle class="ptr-arc" cx="14" cy="14" r="9.5" pathLength="100"/></svg>';
-  document.body.append(ptr);
-  const track = () => {
-    if (pull && !pull.busy && !pull.raf) pull.raf = requestAnimationFrame(drawPull);
-  };
-  window.addEventListener('touchstart', (e) => {
-    if (pull?.busy) return;
-    const ok = cb.canPull?.() && window.scrollY <= 0 && e.touches.length === 1 && !e.target.closest('.sheet, input, textarea, select');
-    pull = ok ? { armed: false, released: false, raf: 0 } : null;
-  }, { passive: true });
-  window.addEventListener('touchmove', track, { passive: true });
-  window.addEventListener('scroll', track, { passive: true });
-  window.addEventListener('touchcancel', () => {
-    if (!pull || pull.busy) return;
-    pull.released = true;
-    pull.armed = false;
-    track();
-  }, { passive: true });
-  window.addEventListener('touchend', () => {
-    if (!pull || pull.busy) return;
-    if (!pull.armed) {
-      pull.released = true;
-      track();
-      return;
-    }
-    pull.busy = true;
-    haptic();
-    ptr.classList.add('spin');
-    ptr.style.opacity = '1';
-    ptr.style.transform = 'translate3d(-50%, 14px, 0)';
-    Promise.resolve(cb.refresh?.()).catch(() => {}).finally(() => {
-      const a = play(ptr, [{ opacity: 1, transform: 'translate3d(-50%, 14px, 0)' }, { opacity: 0, transform: 'translate3d(-50%, 6px, 0) scale(0.6)' }], { duration: 220, easing: EASE_OUT, fill: 'forwards' });
-      after(a, () => {
-        stop(ptr);
-        ptr.classList.remove('spin', 'armed');
-        ptr.style.opacity = '0';
-        pull = null;
-      });
-    });
-  }, { passive: true });
-}
-
 // ---------- Wiring ----------
 
 function onPointerDown(e) {
   tap.x = e.clientX;
   tap.y = e.clientY;
   tap.at = performance.now();
-  if (e.button !== 0 || drag || swipe) return;
+  if (e.button !== 0 || sheetDrag() || swiping()) return;
   const t = e.target;
   const head = !WIDE.matches && t.closest?.('.sheet .sheet-grab, .sheet .sheet-head');
   if (head && !t.closest('button, a, input, select, textarea, label') && !t.closest('.sheet-ghost')) {
     grabSheet(head.closest('.sheet'), e.clientY);
-    drag.pid = e.pointerId;
+    sheetDrag().pid = e.pointerId;
     return;
   }
   swipeStart(e);
 }
 
 function onPointerMove(e) {
+  const drag = sheetDrag();
+  const swipe = swiping();
   if (drag && drag.pid === e.pointerId) dragTo(e.clientY);
   else if (swipe && swipe.pid === e.pointerId) swipeMove(e);
 }
 
 function onPointerEnd(e) {
+  const drag = sheetDrag();
+  const swipe = swiping();
   if (drag && drag.pid === e.pointerId) letGo();
   else if (swipe && swipe.pid === e.pointerId) swipeEnd(e.type === 'pointercancel');
 }
 
 function onClickCapture(e) {
   // The click a finished swipe leaves behind is not a tap.
-  if (e.isTrusted && performance.now() < swallowUntil) {
+  if (e.isTrusted && swallowed()) {
     e.stopPropagation();
     e.preventDefault();
     return;
@@ -1245,11 +809,10 @@ function onChange(e) {
 }
 
 // Someone is mid-gesture: background refreshes wait, so the thing under the finger stays put.
-export const busy = () => Boolean(drag || swipe?.on || pull);
+export const busy = () => Boolean(sheetDrag() || swiping()?.on || pulling());
 hooks.busy = busy;
 
 export function initMotion(callbacks = {}) {
-  cb = callbacks;
   // iOS only shows :active press states once a page listens for touches.
   document.addEventListener('touchstart', () => {}, { passive: true });
   document.addEventListener('pointerdown', onPointerDown, { passive: true });
@@ -1259,5 +822,5 @@ export function initMotion(callbacks = {}) {
   document.addEventListener('change', onSegChange, true);
   document.addEventListener('change', onChange);
   document.addEventListener('click', onClickCapture, true);
-  initPull();
+  initTouch(callbacks);
 }
