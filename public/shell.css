@@ -219,6 +219,8 @@ body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(s
   .input.mono, .copy-row .input, .amount-row.small .input, .fc-amount .input { font-size: 1rem; }
 }
 @media (min-width: 900px) {
+  /* Up next's dock clears the sidebar instead of running under it. */
+  .next-dock { left: calc(var(--side) + 16px); right: 16px; }
   :root { --tabbar: 0px; --pad: 22px; --pad-sm: 16px; }
   .shell:has(> .tabbar) { padding-left: var(--side); }
   .page { max-width: 784px; padding: calc(env(safe-area-inset-top) + 24px) 32px 64px; }

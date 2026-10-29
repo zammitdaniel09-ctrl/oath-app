@@ -165,7 +165,8 @@
 .dock-left { font-family: var(--font); font-size: 0.75rem; letter-spacing: 0; text-transform: none; color: var(--text-2); }
 .next-dock .btn { flex: none; }
 .page-today { padding-bottom: calc(var(--tabbar) + env(safe-area-inset-bottom) + 84px); }
-body:has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(safe-area-inset-bottom) + 70px); }
+/* Not while a sheet or confirm is up: the toast moves to the top then, and both offsets would stretch it. */
+body:not(.sheet-open):not(.confirm-open):has(.next-dock:not([hidden])) .toast { bottom: calc(var(--tabbar) + env(safe-area-inset-bottom) + 70px); }
 
 /* Offline, reminders, a rest day and a waiting review: small chips in one row under the rings. A
    crowded row scrolls sideways and fades on the side with more, like the other sideways rows. */
