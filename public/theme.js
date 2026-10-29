@@ -17,9 +17,9 @@ export const THEMES = [
     p: { bg: '#000', card: 'rgba(255,255,255,0.07)', text: '#f5f5f7', sub: '#8e8e99', a: '#f5f5f7', b: '#9d9da8', c: '#28c840', font: "'Satoshi', system-ui, sans-serif", r: '20px', fx: 'liquid' },
   },
   {
-    id: 'atelier', name: 'Atelier', line: 'Ink on paper', note: 'Warm paper, black ink and an oxblood rule, set like a private press journal.',
-    color: '#f3eee4', light: true,
-    p: { bg: '#f3eee4', card: '#fbf8f2', text: '#1b1712', sub: '#7a7064', a: '#7b1e1e', b: '#1b1712', c: '#b08a3e', font: "'Iowan Old Style', 'Palatino', ui-serif, Georgia, serif", r: '2px' },
+    id: 'atelier', name: 'Atelier', line: 'A journal in colour', note: 'Dark glass under a lime glow, big figures in vivid gradients, pills and a lime key action.',
+    color: '#030303', light: false,
+    p: { bg: '#030303', card: '#181818', text: '#f6f6f4', sub: '#8e8e8a', a: '#ffc53d', b: '#c6f03a', c: '#2fd4ae', font: "'Satoshi', system-ui, sans-serif", r: '16px', fx: 'atelier' },
   },
   {
     id: 'tape', name: 'Tape', line: 'Dot-matrix dashboard', note: 'Charcoal tiles on a warm peach ground, figures in dots and one orange-red signal.',
