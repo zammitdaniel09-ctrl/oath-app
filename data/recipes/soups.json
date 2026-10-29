@@ -146,7 +146,7 @@
       { "ref": "item", "ref_key": "green-beans-raw", "qty": 100, "unit": "g", "label": "green beans" },
       { "ref": "item", "ref_key": "tomatoes-tinned-chopped", "qty": 400, "unit": "g", "label": "chopped tomatoes" },
       { "ref": "item", "ref_key": "stock-vegetable-ready", "qty": 1200, "unit": "g", "label": "stock" },
-      { "ref": "item", "ref_key": "cannellini-beans-canned-drained", "qty": 240, "unit": "g", "label": "cannellini beans" },
+      { "ref": "item", "ref_key": "cofid-13-666", "qty": 240, "unit": "g", "label": "cannellini beans" },
       { "ref": "item", "ref_key": "macaroni-dry", "qty": 80, "unit": "g", "label": "small pasta" },
       { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
       { "ref": "item", "ref_key": "basil-fresh", "qty": 8, "unit": "g", "label": "basil" },
@@ -400,7 +400,7 @@
       { "ref": "item", "ref_key": "garlic-raw", "qty": 3, "unit": "p:1 clove", "label": "garlic" },
       { "ref": "item", "ref_key": "chilli-flakes-as-sold", "qty": 0.5, "unit": "g", "label": "chilli flakes" },
       { "ref": "item", "ref_key": "tomato-paste", "qty": 2, "unit": "p:1 tbsp", "label": "tomato paste" },
-      { "ref": "item", "ref_key": "red-lentils-dry", "qty": 200, "unit": "g", "label": "red lentils" },
+      { "ref": "item", "ref_key": "cofid-13-657", "qty": 200, "unit": "g", "label": "red lentils" },
       { "ref": "item", "ref_key": "tomatoes-tinned-chopped", "qty": 800, "unit": "g", "label": "chopped tomatoes" },
       { "ref": "item", "ref_key": "stock-vegetable-ready", "qty": 1000, "unit": "g", "label": "stock" },
       { "ref": "item", "ref_key": "sugar-white-as-sold", "qty": 1, "unit": "p:1 tsp", "label": "sugar" },
@@ -438,7 +438,7 @@
       { "ref": "item", "ref_key": "celery-raw", "qty": 80, "unit": "g", "label": "celery" },
       { "ref": "item", "ref_key": "garlic-raw", "qty": 3, "unit": "p:1 clove", "label": "garlic" },
       { "ref": "item", "ref_key": "rosemary-fresh", "qty": 3, "unit": "g", "label": "rosemary" },
-      { "ref": "item", "ref_key": "cannellini-beans-canned-drained", "qty": 480, "unit": "g", "label": "cannellini beans" },
+      { "ref": "item", "ref_key": "cofid-13-666", "qty": 480, "unit": "g", "label": "cannellini beans" },
       { "ref": "item", "ref_key": "stock-vegetable-ready", "qty": 900, "unit": "g", "label": "stock" },
       { "ref": "item", "ref_key": "kale-raw", "qty": 100, "unit": "g", "label": "kale" },
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 10, "unit": "ml", "label": "lemon juice" },
@@ -477,7 +477,7 @@
       { "ref": "item", "ref_key": "potato-white-raw", "qty": 150, "unit": "g", "label": "potato" },
       { "ref": "item", "ref_key": "stock-vegetable-ready", "qty": 900, "unit": "g", "label": "stock" },
       { "ref": "item", "ref_key": "peas-frozen", "qty": 750, "unit": "g", "label": "frozen peas" },
-      { "ref": "item", "ref_key": "mint-fresh", "qty": 10, "unit": "g", "label": "mint" },
+      { "ref": "item", "ref_key": "ciqual-11027", "qty": 10, "unit": "g", "label": "mint" },
       { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
       { "ref": "item", "ref_key": "creme-fraiche-full-fat-proxy", "qty": 60, "unit": "g", "label": "crème fraîche", "optional": true },
       { "ref": "item", "ref_key": "hobz-tal-malti-as-sold", "qty": 160, "unit": "g", "label": "bread", "optional": true }
@@ -518,7 +518,7 @@
       { "ref": "item", "ref_key": "fish-stock-homemade", "qty": 1000, "unit": "ml", "label": "fish stock" },
       { "ref": "item", "ref_key": "potato-white-raw", "qty": 300, "unit": "g", "label": "potatoes" },
       { "ref": "item", "ref_key": "cod-raw", "qty": 400, "unit": "g", "label": "cod" },
-      { "ref": "item", "ref_key": "prawns-raw", "qty": 150, "unit": "g", "label": "prawns" },
+      { "ref": "item", "ref_key": "ciqual-10021", "qty": 150, "unit": "g", "label": "prawns" },
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 15, "unit": "ml", "label": "lemon juice" },
       { "ref": "item", "ref_key": "parsley-fresh", "qty": 10, "unit": "g", "label": "parsley" },
       { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
@@ -783,7 +783,7 @@
       { "ref": "item", "ref_key": "egg-whole-raw", "qty": 3, "unit": "p:1 large", "label": "eggs" },
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 60, "unit": "ml", "label": "lemon juice" },
       { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
-      { "ref": "item", "ref_key": "dill-fresh", "qty": 5, "unit": "g", "label": "dill", "optional": true }
+      { "ref": "item", "ref_key": "ciqual-11093", "qty": 5, "unit": "g", "label": "dill", "optional": true }
     ],
     "method": [
       "Bring the chicken stock to a simmer in a large saucepan, add the chicken breast and poach gently for 15 minutes until cooked through. Lift it out and shred it.",

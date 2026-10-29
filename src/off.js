@@ -202,13 +202,14 @@ function searchUrl(q, { page = 1, limit = 20, popular = false } = {}) {
 
 // One barcode: the catalogue first, then Open Food Facts once, cached either way. The catalogue is
 // asked for the code with or without leading zeros too, so a UPC-A scan finds the product kept under
-// its EAN-13 (and the other way round) without a second record or a call out.
+// its EAN-13 (and the other way round) without a second record or a call out. A label he photographed
+// wins, then a brand's own values (read from its label), then a cached Open Food Facts copy.
 export async function productByBarcode(barcode, { refresh = false } = {}) {
   const code = String(barcode || '').replace(/\D/g, '');
   if (code.length < 6 || code.length > 14) return null;
   if (!refresh) {
     const [mine] = await db()`select * from food_items where barcode = any(${barcodeVariants(code)}) and hidden = false
-      order by (kind = 'label') desc, (barcode = ${code}) desc limit 1`;
+      order by (kind = 'label') desc, (source = 'brand') desc, (barcode = ${code}) desc limit 1`;
     if (mine) return shapeItem(mine);
     const miss = await getKV(`off_miss:${code}`);
     if (miss && Date.now() - miss.at < 7 * 864e5) return null;

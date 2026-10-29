@@ -193,7 +193,7 @@
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 10, "unit": "ml", "label": "lemon juice" },
       { "ref": "item", "ref_key": "oil-olive", "qty": 10, "unit": "ml", "label": "olive oil" },
       { "ref": "item", "ref_key": "salt-table", "qty": 1, "unit": "g", "label": "salt" },
-      { "ref": "item", "ref_key": "mint-fresh", "qty": 3, "unit": "g", "label": "mint" }
+      { "ref": "item", "ref_key": "ciqual-11027", "qty": 3, "unit": "g", "label": "mint" }
     ],
     "method": [
       "Finely grate the garlic into a bowl and stir in the Greek yogurt, lemon juice, olive oil and salt.",
@@ -223,7 +223,7 @@
       { "ref": "item", "ref_key": "garlic-raw", "qty": 4, "unit": "g", "label": "garlic" },
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 10, "unit": "ml", "label": "lemon juice" },
       { "ref": "item", "ref_key": "oil-olive", "qty": 10, "unit": "ml", "label": "olive oil" },
-      { "ref": "item", "ref_key": "dill-fresh", "qty": 4, "unit": "g", "label": "dill" }
+      { "ref": "item", "ref_key": "ciqual-11093", "qty": 4, "unit": "g", "label": "dill" }
     ],
     "method": [
       "Coarsely grate the cucumber, toss with half the salt and leave for 10 minutes, then squeeze out as much liquid as you can in a clean tea towel.",
@@ -410,7 +410,7 @@
       { "ref": "item", "ref_key": "coriander-ground-as-sold", "qty": 2, "unit": "g", "label": "ground coriander" },
       { "ref": "item", "ref_key": "tomatoes-tinned-chopped", "qty": 400, "unit": "g", "label": "chopped tomatoes" },
       { "ref": "item", "ref_key": "salt-table", "qty": 3, "unit": "g", "label": "salt" },
-      { "ref": "item", "ref_key": "coconut-milk-tinned", "qty": 200, "unit": "ml", "label": "coconut milk" }
+      { "ref": "item", "ref_key": "cofid-14-889", "qty": 191, "unit": "g", "label": "coconut milk" }
     ],
     "method": [
       "Heat the sunflower oil in a large pan and fry the finely chopped onion over a medium heat for 10 minutes until soft and golden.",

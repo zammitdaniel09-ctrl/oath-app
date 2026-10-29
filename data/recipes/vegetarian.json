@@ -28,7 +28,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "red-lentils-dry",
+        "ref_key": "cofid-13-657",
         "qty": 250,
         "unit": "g",
         "label": "red lentils"
@@ -815,7 +815,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "cannellini-beans-canned-drained",
+        "ref_key": "cofid-13-666",
         "qty": 480,
         "unit": "g",
         "label": "cannellini beans"
@@ -1165,7 +1165,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "bread-pitta-white-as-sold",
+        "ref_key": "cofid-11-974",
         "qty": 240,
         "unit": "g",
         "label": "pitta",
@@ -1251,7 +1251,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "tomato-cherry-raw",
+        "ref_key": "cofid-13-519",
         "qty": 100,
         "unit": "g",
         "label": "cherry tomatoes"
@@ -1391,9 +1391,9 @@
       },
       {
         "ref": "item",
-        "ref_key": "coconut-milk-tinned",
-        "qty": 400,
-        "unit": "ml",
+        "ref_key": "cofid-14-889",
+        "qty": 382,
+        "unit": "g",
         "label": "coconut milk"
       },
       {
@@ -1609,7 +1609,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "tempeh",
+        "ref_key": "ciqual-20917",
         "qty": 200,
         "unit": "g",
         "label": "tempeh"
@@ -1806,7 +1806,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "haricot-beans-canned-drained",
+        "ref_key": "ciqual-20511",
         "qty": 240,
         "unit": "g",
         "label": "haricot beans"
@@ -1945,7 +1945,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "mint-fresh",
+        "ref_key": "ciqual-11027",
         "qty": 3,
         "unit": "g",
         "label": "mint"
@@ -2057,7 +2057,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "mint-fresh",
+        "ref_key": "ciqual-11027",
         "qty": 4,
         "unit": "g",
         "label": "mint"
@@ -2267,7 +2267,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "couscous-dry",
+        "ref_key": "ciqual-9681",
         "qty": 240,
         "unit": "g",
         "label": "couscous",
@@ -2312,7 +2312,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "halloumi-needs-label",
+        "ref_key": "cofid-12-496",
         "qty": 200,
         "unit": "g",
         "label": "halloumi"
@@ -2333,7 +2333,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "pepper-yellow-raw",
+        "ref_key": "cofid-13-526",
         "qty": 100,
         "unit": "g",
         "label": "yellow pepper"
@@ -2347,7 +2347,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "tomato-cherry-raw",
+        "ref_key": "cofid-13-519",
         "qty": 150,
         "unit": "g",
         "label": "cherry tomatoes"
@@ -2382,7 +2382,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "mint-fresh",
+        "ref_key": "ciqual-11027",
         "qty": 4,
         "unit": "g",
         "label": "mint"
@@ -2404,7 +2404,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "bread-pitta-white-as-sold",
+        "ref_key": "cofid-11-974",
         "qty": 120,
         "unit": "g",
         "label": "pitta",

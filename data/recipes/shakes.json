@@ -822,9 +822,9 @@
       },
       {
         "ref": "item",
-        "ref_key": "coconut-milk-tinned",
-        "qty": 40,
-        "unit": "ml",
+        "ref_key": "cofid-14-889",
+        "qty": 38.2,
+        "unit": "g",
         "label": "coconut milk",
         "optional": true
       },

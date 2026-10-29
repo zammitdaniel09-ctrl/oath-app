@@ -60,7 +60,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "dill-fresh",
+        "ref_key": "ciqual-11093",
         "qty": 4,
         "unit": "g",
         "label": "dill"
@@ -209,7 +209,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "prawns-raw",
+        "ref_key": "ciqual-10021",
         "qty": 300,
         "unit": "g",
         "label": "prawns"
@@ -571,7 +571,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "dill-fresh",
+        "ref_key": "ciqual-11093",
         "qty": 4,
         "unit": "g",
         "label": "dill"
@@ -676,7 +676,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "prawns-raw",
+        "ref_key": "ciqual-10021",
         "qty": 150,
         "unit": "g",
         "label": "prawns"
@@ -793,7 +793,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "tomato-cherry-raw",
+        "ref_key": "cofid-13-519",
         "qty": 200,
         "unit": "g",
         "label": "cherry tomatoes"
@@ -814,7 +814,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "prawns-raw",
+        "ref_key": "ciqual-10021",
         "qty": 150,
         "unit": "g",
         "label": "prawns"
@@ -924,7 +924,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "rice-arborio-dry",
+        "ref_key": "cofid-11-878",
         "qty": 300,
         "unit": "g",
         "label": "rice"
@@ -938,14 +938,14 @@
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 900,
         "unit": "g",
         "label": "chicken stock"
       },
       {
         "ref": "item",
-        "ref_key": "prawns-raw",
+        "ref_key": "ciqual-10021",
         "qty": 250,
         "unit": "g",
         "label": "prawns"
@@ -1478,7 +1478,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "prawns-raw",
+        "ref_key": "ciqual-10021",
         "qty": 150,
         "unit": "g",
         "label": "prawns"
@@ -1539,7 +1539,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "prawns-raw",
+        "ref_key": "ciqual-10021",
         "qty": 400,
         "unit": "g",
         "label": "prawns"
@@ -1602,9 +1602,9 @@
       },
       {
         "ref": "item",
-        "ref_key": "coconut-milk-tinned",
-        "qty": 400,
-        "unit": "ml",
+        "ref_key": "cofid-14-889",
+        "qty": 382,
+        "unit": "g",
         "label": "coconut milk"
       },
       {
@@ -1791,7 +1791,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "mahi-mahi-raw",
+        "ref_key": "ciqual-25991",
         "qty": 300,
         "unit": "g",
         "label": "lampuki fillets"
@@ -1819,7 +1819,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "tomato-cherry-raw",
+        "ref_key": "cofid-13-519",
         "qty": 250,
         "unit": "g",
         "label": "cherry tomatoes"
@@ -1977,7 +1977,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "dill-fresh",
+        "ref_key": "ciqual-11093",
         "qty": 2,
         "unit": "g",
         "label": "dill"

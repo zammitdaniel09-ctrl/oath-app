@@ -1079,7 +1079,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "halloumi-needs-label",
+    "ref_key": "cofid-12-496",
     "qty": 60,
     "unit": "g",
     "label": "halloumi"
@@ -1100,7 +1100,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "mint-fresh",
+    "ref_key": "ciqual-11027",
     "qty": 2,
     "unit": "g",
     "label": "mint"
@@ -1160,9 +1160,9 @@
   "lines": [
    {
     "ref": "item",
-    "ref_key": "falafel-home-prepared",
-    "qty": 4,
-    "unit": "p:1 patty (approx 2-1/4\" dia)",
+    "ref_key": "cofid-15-795",
+    "qty": 68,
+    "unit": "g",
     "label": "falafel"
    },
    {
@@ -1640,9 +1640,9 @@
    },
    {
     "ref": "item",
-    "ref_key": "dill-fresh",
+    "ref_key": "ciqual-11093",
     "qty": 1,
-    "unit": "p:5 sprigs",
+    "unit": "g",
     "label": "dill",
     "optional": true
    }
@@ -1734,9 +1734,9 @@
    },
    {
     "ref": "item",
-    "ref_key": "bread-pitta-white-as-sold",
-    "qty": 1,
-    "unit": "p:1 pita, large (6-1/2\" dia)",
+    "ref_key": "cofid-11-974",
+    "qty": 60,
+    "unit": "g",
     "label": "pitta"
    },
    {

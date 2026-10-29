@@ -1964,6 +1964,7 @@ export async function coverageReport() {
   const recipes = await sql`select key, name, type, req, status from recipes where deleted_at is null`;
   const byReq = new Map();
   for (const it of items) for (const k of it.req || []) byReq.set(k, [...(byReq.get(k) || []), it]);
+  const known = new Set([...items.map((it) => it.key), ...recipes.map((r) => r.key)]);
   const recByReq = new Map();
   for (const r of recipes) for (const k of r.req || []) recByReq.set(k, [...(recByReq.get(k) || []), r]);
   const productsBy = (name) => {
@@ -1971,7 +1972,8 @@ export async function coverageReport() {
     return items.filter((it) => it.kind === 'product' && it.status !== 'needs-label' && words.length && words.every((w) => norm(`${it.brand || ''} ${it.name}`).includes(w)));
   };
   const rows = reqs.map((r) => {
-    const linked = byReq.get(r.key) || [];
+    // The records the requirement map names count too: most records from the newer sources carry no req of their own.
+    const linked = [...new Set([...(byReq.get(r.key) || []).map((it) => it.key), ...(r.records || []).filter((k) => known.has(k))])];
     const recs = recByReq.get(r.key) || [];
     let state = r.status;
     let found = linked.length;

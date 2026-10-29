@@ -1394,7 +1394,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "tomato-cherry-raw",
+        "ref_key": "cofid-13-519",
         "qty": 150,
         "unit": "g",
         "label": "cherry tomatoes"
@@ -1810,9 +1810,9 @@
       },
       {
         "ref": "item",
-        "ref_key": "dill-fresh",
+        "ref_key": "ciqual-11093",
         "qty": 1,
-        "unit": "p:5 sprigs",
+        "unit": "g",
         "label": "dill",
         "optional": true
       },

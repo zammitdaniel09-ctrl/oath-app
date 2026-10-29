@@ -341,7 +341,7 @@
     "lines": [
       { "ref": "item", "ref_key": "courgette-raw", "qty": 300, "unit": "g", "label": "courgettes" },
       { "ref": "item", "ref_key": "pepper-red-raw", "qty": 200, "unit": "g", "label": "red pepper" },
-      { "ref": "item", "ref_key": "pepper-yellow-raw", "qty": 150, "unit": "g", "label": "yellow pepper" },
+      { "ref": "item", "ref_key": "cofid-13-526", "qty": 150, "unit": "g", "label": "yellow pepper" },
       { "ref": "item", "ref_key": "aubergine-raw", "qty": 250, "unit": "g", "label": "aubergine" },
       { "ref": "item", "ref_key": "onion-red-raw", "qty": 150, "unit": "g", "label": "red onions" },
       { "ref": "item", "ref_key": "oil-olive", "qty": 3, "unit": "p:1 tablespoon", "label": "olive oil" },
@@ -349,7 +349,7 @@
       { "ref": "item", "ref_key": "oregano-dried-as-sold", "qty": 1, "unit": "g", "label": "dried oregano" },
       { "ref": "item", "ref_key": "salt-table", "qty": 2, "unit": "g", "label": "salt" },
       { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
-      { "ref": "item", "ref_key": "tomato-cherry-raw", "qty": 200, "unit": "g", "label": "cherry tomatoes" }
+      { "ref": "item", "ref_key": "cofid-13-519", "qty": 200, "unit": "g", "label": "cherry tomatoes" }
     ],
     "method": [
       "Heat the oven to 200°C (180°C fan). Cut the courgettes, red pepper, yellow pepper and aubergine into large chunks and the red onions into wedges.",

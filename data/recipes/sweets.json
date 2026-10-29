@@ -1213,7 +1213,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "rice-pudding-short-grain-dry",
+        "ref_key": "cofid-11-865",
         "qty": 100,
         "unit": "g",
         "label": "pudding rice"
@@ -1296,7 +1296,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "semolina-dry",
+        "ref_key": "cofid-11-903",
         "qty": 60,
         "unit": "g",
         "label": "semolina"
@@ -1401,7 +1401,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "sugar-demerara-as-sold",
+        "ref_key": "cofid-17-061",
         "qty": 80,
         "unit": "g",
         "label": "demerara sugar"
@@ -1482,7 +1482,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "sugar-demerara-as-sold",
+        "ref_key": "cofid-17-061",
         "qty": 80,
         "unit": "g",
         "label": "demerara sugar"

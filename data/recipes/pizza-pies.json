@@ -179,11 +179,11 @@
     "equipment": ["baking tray"],
     "tags": ["lunch", "dinner", "meat-free", "quick"],
     "lines": [
-      { "ref": "item", "ref_key": "bread-pitta-white-as-sold", "qty": 2, "unit": "p:1 pita, large (6-1/2\" dia)", "label": "pitta breads" },
+      { "ref": "item", "ref_key": "cofid-11-974", "qty": 120, "unit": "g", "label": "pitta breads" },
       { "ref": "recipe", "ref_key": "pizza-sauce", "qty": 0.6, "unit": "serving", "label": "pizza sauce" },
       { "ref": "item", "ref_key": "mozzarella-low-moisture", "qty": 60, "unit": "g", "label": "mozzarella" },
       { "ref": "item", "ref_key": "oregano-dried-as-sold", "qty": 0.5, "unit": "g", "label": "oregano" },
-      { "ref": "item", "ref_key": "tomato-cherry-raw", "qty": 50, "unit": "g", "label": "cherry tomatoes", "optional": true }
+      { "ref": "item", "ref_key": "cofid-13-519", "qty": 50, "unit": "g", "label": "cherry tomatoes", "optional": true }
     ],
     "method": [
       "Heat the oven to 220°C (200°C fan). Put the pitta breads on a baking tray.",
@@ -211,7 +211,7 @@
       { "ref": "item", "ref_key": "tortilla-wrap-plain-as-sold", "qty": 62, "unit": "g", "label": "tortilla" },
       { "ref": "recipe", "ref_key": "pizza-sauce", "qty": 0.5, "unit": "serving", "label": "pizza sauce" },
       { "ref": "item", "ref_key": "mozzarella-low-moisture", "qty": 50, "unit": "g", "label": "mozzarella" },
-      { "ref": "item", "ref_key": "tomato-cherry-raw", "qty": 50, "unit": "g", "label": "cherry tomatoes" },
+      { "ref": "item", "ref_key": "cofid-13-519", "qty": 50, "unit": "g", "label": "cherry tomatoes" },
       { "ref": "item", "ref_key": "basil-fresh", "qty": 2, "unit": "g", "label": "basil" }
     ],
     "method": [
@@ -385,7 +385,7 @@
     "lines": [
       { "ref": "item", "ref_key": "cod-raw", "qty": 400, "unit": "g", "label": "cod" },
       { "ref": "item", "ref_key": "haddock-smoked", "qty": 200, "unit": "g", "label": "smoked haddock" },
-      { "ref": "item", "ref_key": "prawns-raw", "qty": 150, "unit": "g", "label": "prawns" },
+      { "ref": "item", "ref_key": "ciqual-10021", "qty": 150, "unit": "g", "label": "prawns" },
       { "ref": "item", "ref_key": "peas-frozen", "qty": 100, "unit": "g", "label": "peas" },
       { "ref": "recipe", "ref_key": "bechamel-sauce", "qty": 4, "unit": "serving", "label": "white sauce" },
       { "ref": "item", "ref_key": "parsley-fresh", "qty": 8, "unit": "g", "label": "parsley" },
@@ -463,7 +463,7 @@
       { "ref": "item", "ref_key": "basil-fresh", "qty": 6, "unit": "g", "label": "basil" },
       { "ref": "item", "ref_key": "salt-table", "qty": 2, "unit": "g", "label": "salt" },
       { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
-      { "ref": "item", "ref_key": "tomato-cherry-raw", "qty": 150, "unit": "g", "label": "cherry tomatoes" },
+      { "ref": "item", "ref_key": "cofid-13-519", "qty": 150, "unit": "g", "label": "cherry tomatoes" },
       { "ref": "item", "ref_key": "oil-olive", "qty": 5, "unit": "ml", "label": "olive oil" }
     ],
     "method": [
@@ -561,7 +561,7 @@
       { "ref": "item", "ref_key": "garlic-raw", "qty": 3, "unit": "g", "label": "garlic" },
       { "ref": "item", "ref_key": "feta", "qty": 200, "unit": "g", "label": "feta" },
       { "ref": "item", "ref_key": "egg-whole-raw", "qty": 2, "unit": "p:1 large", "label": "eggs" },
-      { "ref": "item", "ref_key": "dill-fresh", "qty": 6, "unit": "g", "label": "dill" },
+      { "ref": "item", "ref_key": "ciqual-11093", "qty": 6, "unit": "g", "label": "dill" },
       { "ref": "item", "ref_key": "nutmeg-ground-as-sold", "qty": 0.2, "unit": "g", "label": "nutmeg" },
       { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
       { "ref": "item", "ref_key": "butter-unsalted", "qty": 30, "unit": "g", "label": "butter" },

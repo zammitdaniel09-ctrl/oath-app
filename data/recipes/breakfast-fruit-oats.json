@@ -262,7 +262,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "chia-seeds",
+        "ref_key": "fdc-2707590",
         "qty": 5,
         "unit": "g",
         "label": "chia seeds"
@@ -490,7 +490,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "chia-seeds",
+        "ref_key": "fdc-2707590",
         "qty": 25,
         "unit": "g",
         "label": "chia seeds"
@@ -557,7 +557,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "rice-pudding-short-grain-dry",
+        "ref_key": "cofid-11-865",
         "qty": 60,
         "unit": "g",
         "label": "pudding rice"
@@ -660,7 +660,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "couscous-dry",
+        "ref_key": "ciqual-9681",
         "qty": 50,
         "unit": "g",
         "label": "couscous"
@@ -1109,7 +1109,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "mint-fresh",
+        "ref_key": "ciqual-11027",
         "qty": 1,
         "unit": "g",
         "label": "mint",
@@ -1163,14 +1163,14 @@
       },
       {
         "ref": "item",
-        "ref_key": "clementine-raw",
+        "ref_key": "fdc-2709164",
         "qty": 70,
         "unit": "g",
         "label": "clementine"
       },
       {
         "ref": "item",
-        "ref_key": "mint-fresh",
+        "ref_key": "ciqual-11027",
         "qty": 1,
         "unit": "g",
         "label": "mint",

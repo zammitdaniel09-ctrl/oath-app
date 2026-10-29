@@ -387,7 +387,7 @@ test('the catalogue stays honest: a USDA record without a value has null, and li
   assert.ok(rows.length > 100);
   for (const r of rows) {
     assert.ok(r.density > 0.5 && r.density < 2, `${r.key} ${r.density}`);
-    assert.ok(r.portions.some((p) => /fl oz|cup|ml/i.test(p.label)), `${r.key} has no volume portion`);
+    assert.ok(r.portions.some((p) => /fl(uid)? oz|cup|ml|tbsp|tsp|tablespoon|teaspoon/i.test(p.label)), `${r.key} has no volume portion`);
   }
   // Nutrients USDA lacks stay null: SR Legacy has no added sugars anywhere.
   const [{ n }] = await sql()`select count(*)::int as n from food_items where key like 'fdc-%' and nutrients->>'addsugars' is not null and source_date = '2018-04'`;
@@ -417,6 +417,29 @@ test('Maltese words find their foods, with or without the Maltese letters', asyn
       assert.ok(hits.length && entry.keys.includes(hits[0].key), `${q} → ${hits[0]?.key}`);
     }
   }
+});
+
+test('the food sprint: checked fixes land on their records, label products come up by barcode and name, requirements count their records', async () => {
+  // Every fix found its record.
+  const fixes = JSON.parse(fs.readFileSync(new URL('../data/foods/fixes/sprint-2026-10-29.json', import.meta.url), 'utf8')).items;
+  assert.equal(firstSeed.fixed, fixes.length);
+  // The 139 g "slice" copied from a US bread is gone from ħobż, the ounce stays; US pack sizes say so.
+  const hobz = await food.getFood({ key: 'hobz-tal-malti-as-sold' });
+  assert.ok(!hobz.portions.some((p) => p.label === '1 slice') && hobz.portions.some((p) => p.label === '1 oz'), JSON.stringify(hobz.portions));
+  const tuna = await food.getFood({ key: 'tuna-canned-brine-light' });
+  assert.ok(tuna.portions.some((p) => p.label === '1 US can' && p.g === 165), JSON.stringify(tuna.portions));
+  // Instant coffee powder is no longer counted as a drink.
+  const [coffee] = await sql()`select liquid from food_items where key = 'fdc-2710481'`;
+  assert.equal(coffee.liquid, false);
+  // Kinnie's barcode leads to Kinnie, a Twistees bag to its label; "lampuka" finds the mahi-mahi.
+  assert.equal((await off.productByBarcode('5352201082060')).key, 'brand:kinnie:kinnie');
+  assert.equal((await off.productByBarcode('5350122999900')).key, 'sprint:twistees-cheesy-50g');
+  const hits = await food.searchFoods('lampuka');
+  assert.ok(hits.some((h) => h.key === 'mahi-mahi-raw'), hits.map((h) => h.key).join(' '));
+  // Only the requirements with no record at all are missing.
+  const report = await food.coverageReport();
+  const gaps = JSON.parse(fs.readFileSync(new URL('../data/foods/reqmap/wave2-sprint.json', import.meta.url), 'utf8')).filter((r) => r.status === 'gap');
+  assert.equal(report.foods.missing, gaps.length);
 });
 
 test('search still puts the hand-picked records first, as before the big catalogue', async () => {

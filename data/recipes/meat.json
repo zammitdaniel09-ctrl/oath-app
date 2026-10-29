@@ -591,7 +591,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "thyme-fresh",
+        "ref_key": "cofid-13-893",
         "qty": 2,
         "unit": "g",
         "label": "thyme"
@@ -1085,14 +1085,14 @@
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 200,
         "unit": "g",
         "label": "chicken stock"
       },
       {
         "ref": "item",
-        "ref_key": "cannellini-beans-canned-drained",
+        "ref_key": "cofid-13-666",
         "qty": 480,
         "unit": "g",
         "label": "cannellini beans"
@@ -1166,14 +1166,14 @@
       },
       {
         "ref": "item",
-        "ref_key": "pepper-yellow-raw",
+        "ref_key": "cofid-13-526",
         "qty": 150,
         "unit": "g",
         "label": "yellow pepper"
       },
       {
         "ref": "item",
-        "ref_key": "tomato-cherry-raw",
+        "ref_key": "cofid-13-519",
         "qty": 200,
         "unit": "g",
         "label": "cherry tomatoes"
@@ -1442,7 +1442,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "mint-fresh",
+        "ref_key": "ciqual-11027",
         "qty": 5,
         "unit": "g",
         "label": "mint"
@@ -1493,7 +1493,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "bread-pitta-white-as-sold",
+        "ref_key": "cofid-11-974",
         "qty": 240,
         "unit": "g",
         "label": "pitta",
@@ -1543,7 +1543,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "lamb-leg-lean-fat-raw",
+        "ref_key": "ciqual-21502",
         "qty": 500,
         "unit": "g",
         "label": "lamb"
@@ -1620,7 +1620,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 400,
         "unit": "g",
         "label": "chicken stock"
@@ -1662,7 +1662,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "couscous-dry",
+        "ref_key": "ciqual-9681",
         "qty": 240,
         "unit": "g",
         "label": "couscous",
@@ -1703,7 +1703,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "lamb-loin-chop-lean-fat-raw",
+        "ref_key": "fdc-172517",
         "qty": 400,
         "unit": "whole",
         "label": "lamb chops"
@@ -1731,7 +1731,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "tomato-cherry-raw",
+        "ref_key": "cofid-13-519",
         "qty": 150,
         "unit": "g",
         "label": "cherry tomatoes"
@@ -1961,7 +1961,7 @@
     "lines": [
       {
         "ref": "item",
-        "ref_key": "rabbit-raw",
+        "ref_key": "cofid-18-387",
         "qty": 750,
         "unit": "g",
         "label": "rabbit"
@@ -2010,7 +2010,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 200,
         "unit": "g",
         "label": "chicken stock"

@@ -51,7 +51,7 @@
       "equipment": ["mixing bowl"],
       "tags": ["maltese", "meat-free", "gluten-free"],
       "lines": [
-        { "ref": "item", "ref_key": "flour-almond-as-sold", "qty": 300, "unit": "g", "label": "ground almonds" },
+        { "ref": "item", "ref_key": "cofid-14-870", "qty": 300, "unit": "g", "label": "ground almonds" },
         { "ref": "item", "ref_key": "sugar-white-as-sold", "qty": 280, "unit": "g", "label": "caster sugar" },
         { "ref": "item", "ref_key": "lemon-peel-raw", "qty": 3, "unit": "g", "label": "lemon zest" },
         { "ref": "item", "ref_key": "egg-white-raw", "qty": 3, "unit": "p:1 large", "label": "egg whites" }
@@ -442,7 +442,7 @@
       "tags": ["maltese", "sweet", "pastry", "baked", "festive", "meat-free"],
       "lines": [
         { "ref": "recipe", "ref_key": "maltese-sweet-pastry", "qty": 1, "unit": "serving", "label": "sweet pastry" },
-        { "ref": "item", "ref_key": "flour-almond-as-sold", "qty": 250, "unit": "g", "label": "ground almonds" },
+        { "ref": "item", "ref_key": "cofid-14-870", "qty": 250, "unit": "g", "label": "ground almonds" },
         { "ref": "item", "ref_key": "sugar-white-as-sold", "qty": 100, "unit": "g", "label": "caster sugar" },
         { "ref": "item", "ref_key": "honey-as-sold", "qty": 80, "unit": "g", "label": "honey" },
         { "ref": "item", "ref_key": "orange-peel-raw", "qty": 5, "unit": "g", "label": "orange rind" },
@@ -478,7 +478,7 @@
       "tags": ["maltese", "sweet", "pastry", "baked", "festive", "meat-free"],
       "lines": [
         { "ref": "recipe", "ref_key": "maltese-sweet-pastry", "qty": 0.6, "unit": "serving", "label": "sweet pastry" },
-        { "ref": "item", "ref_key": "flour-almond-as-sold", "qty": 125, "unit": "g", "label": "ground almonds" },
+        { "ref": "item", "ref_key": "cofid-14-870", "qty": 125, "unit": "g", "label": "ground almonds" },
         { "ref": "item", "ref_key": "cofid-11-940", "qty": 75, "unit": "g", "label": "rusks" },
         { "ref": "item", "ref_key": "candied-peel", "qty": 60, "unit": "g", "label": "candied peel" },
         { "ref": "item", "ref_key": "marmalade-orange-as-sold", "qty": 20, "unit": "g", "label": "marmalade" },
@@ -874,7 +874,7 @@
       "tags": ["maltese", "sweet", "fried", "festive", "meat-free"],
       "lines": [
         { "ref": "item", "ref_key": "flour-plain-white-as-sold", "qty": 200, "unit": "g", "label": "flour" },
-        { "ref": "item", "ref_key": "semolina-dry", "qty": 50, "unit": "g", "label": "semolina" },
+        { "ref": "item", "ref_key": "cofid-11-903", "qty": 50, "unit": "g", "label": "semolina" },
         { "ref": "item", "ref_key": "sugar-white-as-sold", "qty": 15, "unit": "g", "label": "sugar" },
         { "ref": "item", "ref_key": "egg-whole-raw", "qty": 2, "unit": "p:1 large", "label": "eggs" },
         { "ref": "item", "ref_key": "water-tap", "qty": 30, "unit": "ml", "label": "water" },

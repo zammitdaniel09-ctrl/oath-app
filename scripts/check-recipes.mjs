@@ -17,8 +17,8 @@ const only = args.filter((a) => !a.startsWith('--'));
 
 const catalogue = JSON.parse(fs.readFileSync(path.join(repo, 'data/foods/usda-foods.json'), 'utf8')).items;
 const holders = JSON.parse(fs.readFileSync(path.join(repo, 'data/foods/placeholders.json'), 'utf8')).items;
-// The UK and French tables and the branded files, when present, can be used too.
-const more = ['data/foods/cofid.json', 'data/foods/ciqual.json', ...(fs.existsSync(path.join(repo, 'data/foods/brands')) ? fs.readdirSync(path.join(repo, 'data/foods/brands')).filter((f) => f.endsWith('.json')).map((f) => `data/foods/brands/${f}`) : [])]
+// The rest of USDA, the UK and French tables and the branded files, when present, can be used too.
+const more = ['data/foods/usda-all.json', 'data/foods/cofid.json', 'data/foods/ciqual.json', ...(fs.existsSync(path.join(repo, 'data/foods/brands')) ? fs.readdirSync(path.join(repo, 'data/foods/brands')).filter((f) => f.endsWith('.json')).map((f) => `data/foods/brands/${f}`) : [])]
   .map((f) => path.join(repo, f)).filter((f) => fs.existsSync(f)).flatMap((f) => JSON.parse(fs.readFileSync(f, 'utf8')).items || []);
 const items = new Map([...catalogue, ...holders, ...more].map((i) => [i.key, i]));
 const reqs = new Set(JSON.parse(fs.readFileSync(path.join(repo, 'data/recipe-requirements.json'), 'utf8')).items.map((r) => r.key));

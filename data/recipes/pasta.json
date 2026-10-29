@@ -453,7 +453,7 @@
       { "ref": "item", "ref_key": "creme-fraiche-full-fat-proxy", "qty": 75, "unit": "ml", "label": "crème fraîche" },
       { "ref": "item", "ref_key": "lemon-peel-raw", "qty": 2, "unit": "g", "label": "lemon zest" },
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 15, "unit": "ml", "label": "lemon juice" },
-      { "ref": "item", "ref_key": "dill-fresh", "qty": 4, "unit": "g", "label": "dill" }
+      { "ref": "item", "ref_key": "ciqual-11093", "qty": 4, "unit": "g", "label": "dill" }
     ],
     "method": [
       "Cook the 150 g dry linguine in a large pan of boiling water for 9 to 11 minutes, adding the frozen peas for the last 2 minutes. Scoop out a mugful of the cooking water, then drain.",
@@ -483,9 +483,9 @@
       { "ref": "item", "ref_key": "oil-olive", "qty": 20, "unit": "ml", "label": "olive oil" },
       { "ref": "item", "ref_key": "garlic-raw", "qty": 9, "unit": "g", "label": "garlic" },
       { "ref": "item", "ref_key": "chilli-red-fresh", "qty": 8, "unit": "g", "label": "red chilli" },
-      { "ref": "item", "ref_key": "tomato-cherry-raw", "qty": 200, "unit": "g", "label": "cherry tomatoes" },
+      { "ref": "item", "ref_key": "cofid-13-519", "qty": 200, "unit": "g", "label": "cherry tomatoes" },
       { "ref": "item", "ref_key": "wine-white", "qty": 60, "unit": "ml", "label": "white wine", "optional": true },
-      { "ref": "item", "ref_key": "prawns-raw", "qty": 200, "unit": "g", "label": "prawns" },
+      { "ref": "item", "ref_key": "ciqual-10021", "qty": 200, "unit": "g", "label": "prawns" },
       { "ref": "item", "ref_key": "salt-table", "qty": 1, "unit": "g", "label": "salt" },
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 10, "unit": "ml", "label": "lemon juice" },
       { "ref": "item", "ref_key": "parsley-fresh", "qty": 8, "unit": "g", "label": "parsley" }
@@ -553,7 +553,7 @@
       { "ref": "item", "ref_key": "oregano-dried-as-sold", "qty": 1, "unit": "g", "label": "oregano" },
       { "ref": "item", "ref_key": "salt-table", "qty": 2, "unit": "g", "label": "salt" },
       { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
-      { "ref": "item", "ref_key": "tomato-cherry-raw", "qty": 150, "unit": "g", "label": "cherry tomatoes" },
+      { "ref": "item", "ref_key": "cofid-13-519", "qty": 150, "unit": "g", "label": "cherry tomatoes" },
       { "ref": "item", "ref_key": "garlic-raw", "qty": 6, "unit": "g", "label": "garlic" },
       { "ref": "item", "ref_key": "penne-dry", "qty": 180, "unit": "g", "label": "penne" },
       { "ref": "item", "ref_key": "feta", "qty": 60, "unit": "g", "label": "feta" },
@@ -620,7 +620,7 @@
       { "ref": "item", "ref_key": "celery-raw", "qty": 50, "unit": "g", "label": "celery" },
       { "ref": "item", "ref_key": "garlic-raw", "qty": 6, "unit": "g", "label": "garlic" },
       { "ref": "item", "ref_key": "tomato-passata", "qty": 200, "unit": "g", "label": "passata" },
-      { "ref": "item", "ref_key": "cannellini-beans-canned-drained", "qty": 240, "unit": "g", "label": "cannellini beans" },
+      { "ref": "item", "ref_key": "cofid-13-666", "qty": 240, "unit": "g", "label": "cannellini beans" },
       { "ref": "item", "ref_key": "stock-vegetable-ready", "qty": 700, "unit": "g", "label": "vegetable stock" },
       { "ref": "item", "ref_key": "macaroni-dry", "qty": 150, "unit": "g", "label": "macaroni" },
       { "ref": "item", "ref_key": "salt-table", "qty": 1, "unit": "g", "label": "salt" },
@@ -693,7 +693,7 @@
       { "ref": "item", "ref_key": "pork-sausage-us-raw", "qty": 150, "unit": "g", "label": "sausages" },
       { "ref": "item", "ref_key": "garlic-raw", "qty": 6, "unit": "g", "label": "garlic" },
       { "ref": "item", "ref_key": "chilli-flakes-as-sold", "qty": 0.5, "unit": "g", "label": "chilli flakes" },
-      { "ref": "item", "ref_key": "fennel-seeds-as-sold", "qty": 1, "unit": "g", "label": "fennel seeds" },
+      { "ref": "item", "ref_key": "ciqual-11066", "qty": 1, "unit": "g", "label": "fennel seeds" },
       { "ref": "item", "ref_key": "parmesan-hard", "qty": 20, "unit": "g", "label": "Parmesan" }
     ],
     "method": [
@@ -728,7 +728,7 @@
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 15, "unit": "ml", "label": "lemon juice" },
       { "ref": "item", "ref_key": "parmesan-hard", "qty": 30, "unit": "g", "label": "Parmesan" },
       { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" },
-      { "ref": "item", "ref_key": "mint-fresh", "qty": 4, "unit": "g", "label": "mint" }
+      { "ref": "item", "ref_key": "ciqual-11027", "qty": 4, "unit": "g", "label": "mint" }
     ],
     "method": [
       "Cook the 180 g dry spaghetti in a large pan of boiling water for 10 to 12 minutes, or as the pack says, until al dente. Scoop out a mugful of the cooking water, then drain.",

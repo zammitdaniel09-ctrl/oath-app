@@ -117,7 +117,7 @@
     "tags": ["lunch", "dinner", "one-pan"],
     "lines": [
       { "ref": "item", "ref_key": "rice-white-long-grain-cooked", "qty": 400, "unit": "g", "label": "cooked rice" },
-      { "ref": "item", "ref_key": "prawns-raw", "qty": 200, "unit": "g", "label": "prawns" },
+      { "ref": "item", "ref_key": "ciqual-10021", "qty": 200, "unit": "g", "label": "prawns" },
       { "ref": "item", "ref_key": "egg-whole-raw", "qty": 1, "unit": "p:1 large", "label": "egg" },
       { "ref": "item", "ref_key": "oil-vegetable", "qty": 1.5, "unit": "p:1 tbsp", "label": "vegetable oil" },
       { "ref": "item", "ref_key": "garlic-raw", "qty": 1, "unit": "p:1 clove", "label": "garlic" },
@@ -220,7 +220,7 @@
     "equipment": ["wide saucepan", "saucepan"],
     "tags": ["dinner", "meat-free"],
     "lines": [
-      { "ref": "item", "ref_key": "rice-arborio-dry", "qty": 160, "unit": "g", "label": "risotto rice" },
+      { "ref": "item", "ref_key": "cofid-11-878", "qty": 160, "unit": "g", "label": "risotto rice" },
       { "ref": "item", "ref_key": "onion-raw", "qty": 80, "unit": "g", "label": "onion" },
       { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tablespoon", "label": "olive oil" },
       { "ref": "item", "ref_key": "mushroom-chestnut-raw", "qty": 250, "unit": "g", "label": "mushrooms" },
@@ -257,7 +257,7 @@
     "equipment": ["wide saucepan", "saucepan"],
     "tags": ["dinner"],
     "lines": [
-      { "ref": "item", "ref_key": "rice-arborio-dry", "qty": 160, "unit": "g", "label": "risotto rice" },
+      { "ref": "item", "ref_key": "cofid-11-878", "qty": 160, "unit": "g", "label": "risotto rice" },
       { "ref": "item", "ref_key": "onion-raw", "qty": 80, "unit": "g", "label": "onion" },
       { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tablespoon", "label": "olive oil" },
       { "ref": "item", "ref_key": "chicken-thigh-skinless-raw", "qty": 250, "unit": "g", "label": "chicken thighs" },
@@ -294,7 +294,7 @@
     "equipment": ["wide saucepan", "saucepan"],
     "tags": ["dinner", "meat-free"],
     "lines": [
-      { "ref": "item", "ref_key": "rice-arborio-dry", "qty": 160, "unit": "g", "label": "risotto rice" },
+      { "ref": "item", "ref_key": "cofid-11-878", "qty": 160, "unit": "g", "label": "risotto rice" },
       { "ref": "item", "ref_key": "onion-raw", "qty": 80, "unit": "g", "label": "onion" },
       { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tablespoon", "label": "olive oil" },
       { "ref": "item", "ref_key": "peas-frozen", "qty": 200, "unit": "g", "label": "peas" },
@@ -303,7 +303,7 @@
       { "ref": "item", "ref_key": "wine-white", "qty": 75, "unit": "ml", "label": "white wine", "optional": true },
       { "ref": "item", "ref_key": "stock-vegetable-ready", "qty": 800, "unit": "g", "label": "stock" },
       { "ref": "item", "ref_key": "parmesan-grated", "qty": 30, "unit": "g", "label": "Parmesan" },
-      { "ref": "item", "ref_key": "mint-fresh", "qty": 5, "unit": "g", "label": "mint" },
+      { "ref": "item", "ref_key": "ciqual-11027", "qty": 5, "unit": "g", "label": "mint" },
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 10, "unit": "ml", "label": "lemon juice" },
       { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.3, "unit": "g", "label": "black pepper" }
     ],
@@ -331,11 +331,11 @@
     "equipment": ["wide saucepan", "saucepan"],
     "tags": ["dinner", "meat-free"],
     "lines": [
-      { "ref": "item", "ref_key": "rice-arborio-dry", "qty": 160, "unit": "g", "label": "risotto rice" },
+      { "ref": "item", "ref_key": "cofid-11-878", "qty": 160, "unit": "g", "label": "risotto rice" },
       { "ref": "item", "ref_key": "onion-raw", "qty": 80, "unit": "g", "label": "onion" },
       { "ref": "item", "ref_key": "oil-olive", "qty": 1, "unit": "p:1 tablespoon", "label": "olive oil" },
       { "ref": "item", "ref_key": "garlic-raw", "qty": 2, "unit": "p:1 clove", "label": "garlic" },
-      { "ref": "item", "ref_key": "tomato-cherry-raw", "qty": 150, "unit": "g", "label": "cherry tomatoes" },
+      { "ref": "item", "ref_key": "cofid-13-519", "qty": 150, "unit": "g", "label": "cherry tomatoes" },
       { "ref": "item", "ref_key": "butter-unsalted", "qty": 15, "unit": "g", "label": "butter" },
       { "ref": "item", "ref_key": "tomato-passata", "qty": 250, "unit": "g", "label": "passata" },
       { "ref": "item", "ref_key": "stock-vegetable-ready", "qty": 600, "unit": "g", "label": "stock" },
@@ -374,7 +374,7 @@
       { "ref": "item", "ref_key": "spring-onion-raw", "qty": 30, "unit": "g", "label": "spring onions" },
       { "ref": "item", "ref_key": "thyme-dried-as-sold", "qty": 1, "unit": "p:1 tsp, leaves", "label": "dried thyme" },
       { "ref": "item", "ref_key": "kidney-beans-canned-drained", "qty": 240, "unit": "g", "label": "kidney beans" },
-      { "ref": "item", "ref_key": "coconut-milk-tinned", "qty": 200, "unit": "ml", "label": "coconut milk" },
+      { "ref": "item", "ref_key": "cofid-14-889", "qty": 191, "unit": "g", "label": "coconut milk" },
       { "ref": "item", "ref_key": "salt-table", "qty": 3, "unit": "g", "label": "salt" },
       { "ref": "item", "ref_key": "black-pepper-ground-as-sold", "qty": 0.5, "unit": "g", "label": "black pepper" }
     ],
@@ -532,7 +532,7 @@
       { "ref": "item", "ref_key": "rice-basmati-dry", "qty": 300, "unit": "g", "label": "rice" },
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 15, "unit": "ml", "label": "lemon juice" },
       { "ref": "item", "ref_key": "coriander-fresh", "qty": 10, "unit": "g", "label": "fresh coriander" },
-      { "ref": "item", "ref_key": "mint-fresh", "qty": 5, "unit": "g", "label": "mint" }
+      { "ref": "item", "ref_key": "ciqual-11027", "qty": 5, "unit": "g", "label": "mint" }
     ],
     "method": [
       "Cut the chicken thighs into large pieces and mix with the yogurt, grated garlic and ginger, chilli powder, cumin, ground coriander, turmeric and salt. Leave for at least 20 minutes, or overnight in the fridge.",
@@ -580,7 +580,7 @@
       { "ref": "item", "ref_key": "rice-basmati-dry", "qty": 300, "unit": "g", "label": "rice" },
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 15, "unit": "ml", "label": "lemon juice" },
       { "ref": "item", "ref_key": "coriander-fresh", "qty": 10, "unit": "g", "label": "fresh coriander" },
-      { "ref": "item", "ref_key": "mint-fresh", "qty": 5, "unit": "g", "label": "mint" }
+      { "ref": "item", "ref_key": "ciqual-11027", "qty": 5, "unit": "g", "label": "mint" }
     ],
     "method": [
       "Peel the potatoes and cut them, the cauliflower and carrots into bite-size pieces. Mix with the yogurt, grated garlic and ginger, chilli powder, cumin, ground coriander, turmeric and salt.",
@@ -690,7 +690,7 @@
     "equipment": ["large frying pan", "bowl"],
     "tags": ["lunch", "dinner", "meat-free"],
     "lines": [
-      { "ref": "item", "ref_key": "couscous-dry", "qty": 120, "unit": "g", "label": "couscous" },
+      { "ref": "item", "ref_key": "ciqual-9681", "qty": 120, "unit": "g", "label": "couscous" },
       { "ref": "item", "ref_key": "stock-vegetable-ready", "qty": 180, "unit": "g", "label": "stock" },
       { "ref": "item", "ref_key": "courgette-raw", "qty": 200, "unit": "g", "label": "courgette" },
       { "ref": "item", "ref_key": "pepper-red-raw", "qty": 150, "unit": "g", "label": "red pepper" },
@@ -703,7 +703,7 @@
       { "ref": "item", "ref_key": "salt-table", "qty": 1, "unit": "g", "label": "salt" },
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 20, "unit": "ml", "label": "lemon juice" },
       { "ref": "item", "ref_key": "parsley-fresh", "qty": 10, "unit": "g", "label": "parsley" },
-      { "ref": "item", "ref_key": "mint-fresh", "qty": 5, "unit": "g", "label": "mint" },
+      { "ref": "item", "ref_key": "ciqual-11027", "qty": 5, "unit": "g", "label": "mint" },
       { "ref": "item", "ref_key": "feta", "qty": 50, "unit": "g", "label": "feta", "optional": true }
     ],
     "method": [
@@ -736,7 +736,7 @@
       { "ref": "item", "ref_key": "oil-olive", "qty": 1.5, "unit": "p:1 tablespoon", "label": "olive oil" },
       { "ref": "item", "ref_key": "paprika-as-sold", "qty": 2, "unit": "g", "label": "paprika" },
       { "ref": "item", "ref_key": "salt-table", "qty": 1, "unit": "g", "label": "salt" },
-      { "ref": "item", "ref_key": "quinoa-dry", "qty": 120, "unit": "g", "label": "quinoa" },
+      { "ref": "item", "ref_key": "cofid-14-843", "qty": 120, "unit": "g", "label": "quinoa" },
       { "ref": "item", "ref_key": "tahini", "qty": 20, "unit": "g", "label": "tahini" },
       { "ref": "item", "ref_key": "lemon-juice-fresh", "qty": 20, "unit": "ml", "label": "lemon juice" },
       { "ref": "item", "ref_key": "water-tap", "qty": 20, "unit": "ml", "label": "water" },

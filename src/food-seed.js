@@ -23,6 +23,7 @@ function seedFiles() {
     path.join(DATA, 'foods/cofid.json'),
     path.join(DATA, 'foods/ciqual.json'),
     ...jsonIn(path.join(DATA, 'foods/brands')),
+    ...jsonIn(path.join(DATA, 'foods/fixes')),
     path.join(DATA, 'foods/aliases-mt.json'),
     ...jsonIn(path.join(DATA, 'foods/reqmap')),
     path.join(DATA, 'foods/placeholders.json'),
@@ -35,6 +36,30 @@ export function seedHash() {
   const h = crypto.createHash('sha1');
   for (const f of seedFiles()) h.update(path.basename(f)).update(fs.readFileSync(f));
   return h.digest('hex');
+}
+
+// Checked corrections to records from any source (data/foods/fixes): a sourced edible share or density, a portion
+// copied from another food removed or relabelled, a barcode, a Maltese name, a powder no longer counted as a drink.
+// They are applied to each record as read, before it is saved, so a rebuilt source file keeps them. Each entry names its evidence.
+function loadFixes() {
+  const fixes = new Map();
+  for (const f of jsonIn(path.join(DATA, 'foods/fixes'))) for (const x of readJson(f).items || []) if (x.key) fixes.set(x.key, x);
+  return fixes;
+}
+
+export function applyFix(item, fix) {
+  if (!fix) return item;
+  const out = { ...item, ...(fix.set || {}) };
+  if (fix.aliases_add?.length) out.aliases = [...new Set([...(item.aliases || []), ...fix.aliases_add])];
+  const remove = new Set(fix.portions_remove || []);
+  const rename = new Map(fix.portions_rename || []);
+  if (remove.size || rename.size || fix.portions_add?.length) {
+    out.portions = [
+      ...(item.portions || []).filter((p) => !remove.has(p.label)).map((p) => (rename.has(p.label) ? { ...p, label: rename.get(p.label) } : p)),
+      ...(fix.portions_add || []),
+    ];
+  }
+  return out;
 }
 
 const RECIPE_ORDER = { component: 0, base: 1, template: 2, variant: 3 };
@@ -101,15 +126,21 @@ export async function seedFood({ force = false, log = () => {} } = {}) {
   const prev = await getKV('food_seed');
   if (!force && prev?.hash === hash) return { skipped: true, ...prev.counts };
   const sql = db();
-  const counts = { items: 0, usdaAll: 0, rejected: 0, foodRequirements: 0, recipeRequirements: 0, recipes: { added: 0, updated: 0, kept: 0 } };
+  const counts = { items: 0, usdaAll: 0, rejected: 0, fixed: 0, foodRequirements: 0, recipeRequirements: 0, recipes: { added: 0, updated: 0, kept: 0 } };
   const started = Date.now();
+  const fixes = loadFixes();
+  const fixed = (list) => list.map((i) => {
+    const fix = fixes.get(i.key);
+    if (fix) counts.fixed += 1;
+    return applyFix(i, fix);
+  });
 
   // The hand-picked records (USDA generics for the blueprint list, and foods with no generic source:
   // every value unknown until a label is added). A bad record here is a bug in the data, so it stops the seed.
   const curated = [...readJson(path.join(DATA, 'foods/usda-foods.json')).items];
   const holders = path.join(DATA, 'foods/placeholders.json');
   if (fs.existsSync(holders)) curated.push(...readJson(holders).items);
-  const first = await upsertItems(curated, sql, { batch: SEED_BATCH });
+  const first = await upsertItems(fixed(curated), sql, { batch: SEED_BATCH });
   if (first.rejected.length) throw new Error(`food seed: ${first.rejected.length} curated records failed: ${first.rejected.slice(0, 3).map((r) => `${r.key} ${r.error}`).join('; ')}`);
   counts.items += first.saved;
 
@@ -118,7 +149,7 @@ export async function seedFood({ force = false, log = () => {} } = {}) {
   const all = path.join(DATA, 'foods/usda-all.json');
   if (fs.existsSync(all)) {
     const rest = readJson(all).items.map((i) => ({ ...i, portions: (i.portions || []).map((p) => ({ source: 'usda', ...p })) }));
-    const r = await upsertItems(rest, sql, { batch: SEED_BATCH });
+    const r = await upsertItems(fixed(rest), sql, { batch: SEED_BATCH });
     counts.usdaAll = r.saved;
     counts.rejected = r.rejected.length;
     counts.items += r.saved;
@@ -132,7 +163,7 @@ export async function seedFood({ force = false, log = () => {} } = {}) {
   for (const [name, file] of extra) {
     if (!fs.existsSync(file)) continue;
     try {
-      const r = await upsertItems(readJson(file).items || [], sql, { batch: SEED_BATCH });
+      const r = await upsertItems(fixed(readJson(file).items || []), sql, { batch: SEED_BATCH });
       counts.sources = { ...(counts.sources || {}), [name]: r.saved };
       counts.items += r.saved;
       counts.rejected += r.rejected.length;
@@ -141,7 +172,7 @@ export async function seedFood({ force = false, log = () => {} } = {}) {
       log(`food seed: ${name} could not be read: ${e.message}`);
     }
   }
-  log(`food seed: ${counts.items} catalogue records in ${((Date.now() - started) / 1000).toFixed(1)} s`);
+  log(`food seed: ${counts.items} catalogue records in ${((Date.now() - started) / 1000).toFixed(1)} s, ${counts.fixed} of ${fixes.size} fixes applied`);
 
   // Maltese words (data/foods/aliases-mt.json): each leads to the records it names, as an alias, so typing
   // "tadam" or "ġbejniet" finds them first. Only the search text changes; the records stay as their source has them.

@@ -676,7 +676,7 @@
     "equipment": ["baking dish", "large saucepan", "colander"],
     "tags": ["dinner", "meat-free", "one-pan"],
     "lines": [
-      { "ref": "item", "ref_key": "tomato-cherry-raw", "qty": 600, "unit": "g", "label": "cherry tomatoes" },
+      { "ref": "item", "ref_key": "cofid-13-519", "qty": 600, "unit": "g", "label": "cherry tomatoes" },
       { "ref": "item", "ref_key": "oil-olive", "qty": 45, "unit": "ml", "label": "olive oil" },
       { "ref": "item", "ref_key": "garlic-raw", "qty": 9, "unit": "g", "label": "garlic" },
       { "ref": "item", "ref_key": "chilli-flakes-as-sold", "qty": 0.5, "unit": "g", "label": "chilli flakes" },

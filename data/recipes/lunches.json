@@ -242,7 +242,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "tomato-cherry-raw",
+    "ref_key": "cofid-13-519",
     "qty": 100,
     "unit": "g",
     "label": "cherry tomatoes"
@@ -416,7 +416,7 @@
   "lines": [
    {
     "ref": "item",
-    "ref_key": "couscous-dry",
+    "ref_key": "ciqual-9681",
     "qty": 60,
     "unit": "g",
     "label": "couscous"
@@ -479,7 +479,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "mint-fresh",
+    "ref_key": "ciqual-11027",
     "qty": 3,
     "unit": "g",
     "label": "mint"
@@ -561,7 +561,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "mint-fresh",
+    "ref_key": "ciqual-11027",
     "qty": 5,
     "unit": "g",
     "label": "mint"
@@ -660,7 +660,7 @@
   "lines": [
    {
     "ref": "item",
-    "ref_key": "quinoa-dry",
+    "ref_key": "cofid-14-843",
     "qty": 50,
     "unit": "g",
     "label": "quinoa"
@@ -1146,7 +1146,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "tomato-cherry-raw",
+    "ref_key": "cofid-13-519",
     "qty": 80,
     "unit": "g",
     "label": "cherry tomatoes"
@@ -1349,7 +1349,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "tomato-cherry-raw",
+    "ref_key": "cofid-13-519",
     "qty": 80,
     "unit": "g",
     "label": "cherry tomatoes"
@@ -1425,7 +1425,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "tomato-cherry-raw",
+    "ref_key": "cofid-13-519",
     "qty": 60,
     "unit": "g",
     "label": "cherry tomatoes"
@@ -1439,7 +1439,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "mint-fresh",
+    "ref_key": "ciqual-11027",
     "qty": 3,
     "unit": "g",
     "label": "mint"
@@ -1488,9 +1488,9 @@
    },
    {
     "ref": "item",
-    "ref_key": "bread-pitta-white-as-sold",
-    "qty": 1,
-    "unit": "p:1 pita, large (6-1/2\" dia)",
+    "ref_key": "cofid-11-974",
+    "qty": 60,
+    "unit": "g",
     "label": "pitta",
     "optional": true
    }
@@ -1528,7 +1528,7 @@
   "lines": [
    {
     "ref": "item",
-    "ref_key": "halloumi-needs-label",
+    "ref_key": "cofid-12-496",
     "qty": 80,
     "unit": "g",
     "label": "halloumi"
@@ -1563,7 +1563,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "tomato-cherry-raw",
+    "ref_key": "cofid-13-519",
     "qty": 100,
     "unit": "g",
     "label": "cherry tomatoes"
@@ -1584,7 +1584,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "mint-fresh",
+    "ref_key": "ciqual-11027",
     "qty": 3,
     "unit": "g",
     "label": "mint"
@@ -2037,7 +2037,7 @@
    },
    {
     "ref": "item",
-    "ref_key": "mint-fresh",
+    "ref_key": "ciqual-11027",
     "qty": 3,
     "unit": "g",
     "label": "mint"

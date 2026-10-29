@@ -69,7 +69,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "thyme-fresh",
+        "ref_key": "cofid-13-893",
         "qty": 2,
         "unit": "g",
         "label": "thyme"
@@ -165,7 +165,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 80,
         "unit": "g",
         "label": "chicken stock"
@@ -247,7 +247,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "pepper-yellow-raw",
+        "ref_key": "cofid-13-526",
         "qty": 150,
         "unit": "g",
         "label": "yellow pepper"
@@ -268,7 +268,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "tomato-cherry-raw",
+        "ref_key": "cofid-13-519",
         "qty": 200,
         "unit": "g",
         "label": "cherry tomatoes"
@@ -387,7 +387,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "thyme-fresh",
+        "ref_key": "cofid-13-893",
         "qty": 3,
         "unit": "g",
         "label": "thyme"
@@ -516,7 +516,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "tomato-cherry-raw",
+        "ref_key": "cofid-13-519",
         "qty": 150,
         "unit": "g",
         "label": "cherry tomatoes"
@@ -627,7 +627,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "pepper-yellow-raw",
+        "ref_key": "cofid-13-526",
         "qty": 120,
         "unit": "g",
         "label": "yellow pepper"
@@ -907,7 +907,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 200,
         "unit": "g",
         "label": "chicken stock"
@@ -1203,14 +1203,14 @@
       },
       {
         "ref": "item",
-        "ref_key": "coconut-milk-tinned",
-        "qty": 400,
-        "unit": "ml",
+        "ref_key": "cofid-14-889",
+        "qty": 382,
+        "unit": "g",
         "label": "coconut milk"
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 150,
         "unit": "g",
         "label": "chicken stock"
@@ -1344,7 +1344,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 300,
         "unit": "g",
         "label": "chicken stock"
@@ -1497,7 +1497,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 200,
         "unit": "g",
         "label": "chicken stock"
@@ -1659,7 +1659,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 200,
         "unit": "g",
         "label": "chicken stock"
@@ -1802,7 +1802,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "mint-fresh",
+        "ref_key": "ciqual-11027",
         "qty": 6,
         "unit": "g",
         "label": "mint"
@@ -1939,7 +1939,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "mint-fresh",
+        "ref_key": "ciqual-11027",
         "qty": 6,
         "unit": "g",
         "label": "mint"
@@ -2401,14 +2401,14 @@
       },
       {
         "ref": "item",
-        "ref_key": "thyme-fresh",
+        "ref_key": "cofid-13-893",
         "qty": 2,
         "unit": "g",
         "label": "thyme"
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 150,
         "unit": "g",
         "label": "chicken stock"
@@ -2504,7 +2504,7 @@
       },
       {
         "ref": "item",
-        "ref_key": "stock-chicken-from-cube",
+        "ref_key": "fdc-172924",
         "qty": 120,
         "unit": "g",
         "label": "chicken stock"
