@@ -1,0 +1,461 @@
+/* Sovereign: black lacquer and gold leaf, a private bank's ledger in art deco. Lacquer panels in a gold
+   hairline with bright corner caps, Didone heads and figures, spaced capitals for labels, a double rule
+   under each page head, one still sunburst. Gold leaf is the key action; emerald kept, garnet missed. */
+
+/* -- Tokens -- */
+
+:root[data-theme="sovereign"] {
+  color-scheme: dark; background: var(--bg);
+  --didone: 'Didot', 'Bodoni 72', 'Bodoni MT', ui-serif, serif;
+  --serif: 'Didot', 'Bodoni 72', 'Bodoni MT', 'Gambetta', ui-serif, serif;
+  --gold: #d4af37; --cg: #f1d98a; --bronze: #8c6a2b; --gold-t: #d2b062; --emerald: #1f5f4a; --garnet: #7a1f2b; --ink: #1a1206;
+  --leaf: linear-gradient(135deg, #8c6a2b 0%, #d4af37 35%, #f1d98a 50%, #d4af37 65%, #8c6a2b 100%);
+  --lb: linear-gradient(135deg, #a8822f 0%, #d4af37 30%, #f1d98a 50%, #d4af37 70%, #a8822f 100%);
+  --leaf-v: linear-gradient(180deg, #fbefc4 0%, #ecd283 30%, #d4af37 58%, #a8822f 82%, #d9b85a 100%);
+  --emerald-dot: radial-gradient(circle at 50% 30%, #2c7a60, #1f5f4a 72%);
+  --hair: #d4af373d; --g5: inset 0 0 0 1px #d4af3780;
+  --leaf-sh: inset 0 1px 0 #fff8dc99, inset 0 -1px 0 #3c280859, inset 0 0 0 1px #5a401259;
+  --cap: #f1d98ab3;
+  --caps:
+    linear-gradient(var(--cap), var(--cap)) left top / 12px 1px no-repeat, linear-gradient(var(--cap), var(--cap)) left top / 1px 12px no-repeat,
+    linear-gradient(var(--cap), var(--cap)) right top / 12px 1px no-repeat, linear-gradient(var(--cap), var(--cap)) right top / 1px 12px no-repeat,
+    linear-gradient(var(--cap), var(--cap)) left bottom / 12px 1px no-repeat, linear-gradient(var(--cap), var(--cap)) left bottom / 1px 12px no-repeat,
+    linear-gradient(var(--cap), var(--cap)) right bottom / 12px 1px no-repeat, linear-gradient(var(--cap), var(--cap)) right bottom / 1px 12px no-repeat;
+  --panel: linear-gradient(180deg, #f1d98a09, #f1d98a00 140px), var(--card);
+  --rule: var(--lozenge) center bottom / 40px 11px no-repeat,
+    linear-gradient(#d4af37d9, #d4af37d9) left bottom 6px / calc(50% - 19px) 1px no-repeat, linear-gradient(#d4af37d9, #d4af37d9) right bottom 6px / calc(50% - 19px) 1px no-repeat,
+    linear-gradient(#d4af3766, #d4af3766) left bottom 2px / calc(50% - 19px) 1px no-repeat, linear-gradient(#d4af3766, #d4af3766) right bottom 2px / calc(50% - 19px) 1px no-repeat;
+  --lozenge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='11'%3E%3Cpath d='M20 .8l4.7 4.7L20 10.2l-4.7-4.7z' fill='none' stroke='%23d4af37'/%3E%3Cpath d='M20 3.6l1.9 1.9L20 7.4l-1.9-1.9z' fill='%23f1d98a'/%3E%3Cpath d='M0 4.5h12M28 4.5h12' stroke='%23d4af37' stroke-opacity='.85'/%3E%3Cpath d='M0 8.5h13M27 8.5h13' stroke='%23d4af37' stroke-opacity='.4'/%3E%3C/svg%3E");
+  --bg: #0a0806; --card: #15110b; --inset: #1d1810; --raised: #241d13; --raised-hover: #2d2418; --sheet: #16120c;
+  --text: #efe4cc; --text-2: #b9a888; --text-3: #9c8a66;
+  --line: #2e2618; --line-soft: #221b11; --line-ctl: #7a6440; --line-strong: #8c7448;
+  --merlot: #d4af37; --merlot-hi: #f1d98a; --chrome-c: #cdb98c; --menthol: #79b99a; --cherry: #d9737c;
+  --honey: #e6c36a; --blaze: #cf8f45; --ember: #c96a46;
+  --silver: #f5e9c9; --on-silver: #140e05; --focus: #f1d98a;
+  --c-hp: #d4af37; --c-day: #f1d98a; --c-move: #b98a48;
+  /* Rings: gold HP, champagne day (emerald once all is done), bronze movement, on lacquer tracks. */
+  --ring-hp-0: #7a5a1e; --ring-hp-1: #f0cf63; --ring-hp-t: #1d160b; --ring-hp-g: #d4af3766;
+  --ring-day-0: #8f7a4c; --ring-day-1: #fff3cf; --ring-day-t: #1b170f; --ring-day-g: #f1d98a5c;
+  --ring-done-0: #1f5f4a; --ring-done-1: #9fd8bb; --ring-done-t: #0e1c16; --ring-done-g: #6fb89666;
+  --ring-move-0: #4e3314; --ring-move-1: #cf9550; --ring-move-t: #1a1109; --ring-move-g: #b97d3c66;
+  --ring-kcal-0: #7a5a1e; --ring-kcal-1: #f0cf63; --ring-kcal-t: #1d160b; --ring-kcal-g: #d4af3766;
+  --ring-pro-0: #8f7a4c; --ring-pro-1: #fff3cf; --ring-pro-t: #1b170f; --ring-pro-g: #f1d98a5c;
+  --ring-fib-0: #4e3314; --ring-fib-1: #cf9550; --ring-fib-t: #1a1109; --ring-fib-g: #b97d3c66;
+  --ring-water-0: #33534b; --ring-water-1: #b9d6c8; --ring-water-t: #0f1714; --ring-water-g: #96c8b452;
+  --cv-hp: #d4af37; --cv-kcal: #c9a13e; --cv-move: #b5844a;
+  --urg: var(--chrome-c); --fill: #f1d98a0d; --fill-2: #f1d98a17; --chrome: var(--leaf-v);
+  --r-sheet: 10px; --r-card: 3px; --r-group: 3px; --r-tile: 3px; --r-inset: 2px; --r-ctl: 2px; --r-badge: 2px;
+  --rim: inset 0 0 0 1px var(--hair), inset 0 1px 0 #f1d98a0f;
+  --lift: 0 22px 50px -26px #000000f2;
+  --mark-c1: #fbefc4; --mark-c2: #f1d98a; --mark-c3: #d4af37; --mark-c4: #8c6a2b; --mark-c5: #c9a13e; --mark-c6: #ecd283;
+  --mark-m1: #f1d98a; --mark-m2: #d4af37; --mark-m3: #a8822f; --mark-m4: #5e4416; --mark-rim-l: #fbefc4; --mark-rim-r: #f1d98a;
+  /* Food: protein champagne, carbs gold, fat bronze, apart by lightness; water verdigris. */
+  --f-protein: #ecd9a0; --f-protein-hi: #fff6dc; --f-carbs: #c49a3a; --f-carbs-hi: #e6c46a; --f-fat: #7d5a26; --f-fat-hi: #b0843f;
+  --f-unknown: #5a4e3a; --f-energy: #ecd9a0; --f-energy-hi: #fff6dc; --f-micro: #9c8a66; --f-micro-hi: #f1e3bd; --f-water: #6f948a; --f-water-hi: #bcd8cd;
+  --f-protein-rgb: 236, 217, 160; --f-carbs-rgb: 196, 154, 58; --f-fat-rgb: 125, 90, 38; --f-micro-rgb: 236, 217, 160; --f-water-rgb: 150, 190, 176;
+  --fc-lime: #ecd283; --fc-leaf: #c9a13e; --fc-hi: #fbefc4; --fc-ink: #140e05; --fc-rgb: 212, 175, 55; --f-good: #79b99a; --f-good-rgb: 121, 185, 154;
+  --fc-bubble-0: #19140d; --fc-bubble-1: #120e09; --fc-done-0: #1b1710; --fc-done-1: #13100a;
+  --f-bar: #d4af3766; --f-bar-prev: #d4af373d; --hatch: repeating-linear-gradient(45deg, #6e5d3c 0 1.6px, transparent 1.6px 4px);
+}
+:root[data-theme="sovereign"] :is(.page-food, .cchat-page) {
+  --card: #15110b; --inset: #1d1810; --raised: #241d13; --raised-hover: #2d2418; --sheet: #16120c;
+  --text: #efe4cc; --text-2: #b9a888; --text-3: #9c8a66;
+  --line: #2e2618; --line-soft: #221b11; --line-ctl: #7a6440; --line-strong: #8c7448;
+  --fill: #f1d98a0d; --fill-2: #f1d98a17; --rim: inset 0 0 0 1px var(--hair), inset 0 1px 0 #f1d98a0f;
+  --silver: #f5e9c9; --on-silver: #140e05; --focus: #f1d98a; --chrome-c: #cdb98c; --menthol: #79b99a; --cherry: #d9737c;
+  --burgundy: #d4af37; --burgundy-hi: #f1d98a; --burgundy-lo: #8c6a2b; --on-burgundy: #140e05;
+}
+
+/* -- Canvas: lacquer and one still sunburst (the body carries no colour, so it shows) -- */
+
+:root[data-theme="sovereign"] body { background: transparent; }
+:root[data-theme="sovereign"] body::before {
+  background: repeating-conic-gradient(from 90deg at 50% -6%, #d4af3713 0deg 0.35deg, transparent 0.35deg 7.5deg), radial-gradient(80vmax 50vmax at 50% -10%, #d4af3717, transparent 64%);
+  -webkit-mask-image: radial-gradient(110vmax 80vh at 50% 0%, #000, #00000059 55%, transparent 80%);
+}
+:root[data-theme="sovereign"] .gate::before { display: none; }
+:root[data-theme="sovereign"] ::selection { background: #d4af3766; color: #fff8e6; }
+:root[data-theme="sovereign"] :is(.linkish, .gh-link, .topbar-back) { color: var(--cg); text-decoration-color: #d4af3773; }
+
+/* -- Type -- */
+
+/* The page head: Didone in ivory over a gold double rule broken by a lozenge. */
+:root[data-theme="sovereign"] .lt { padding-bottom: 18px; margin-bottom: 6px; background: var(--rule); }
+:root[data-theme="sovereign"] :is(.lt-title, .goal-h) { font-family: var(--didone); font-weight: 400; letter-spacing: -0.005em; line-height: 1.06; background-image: linear-gradient(180deg, #fbf3e0 30%, #d8c59b 118%); }
+:root[data-theme="sovereign"] .lt-title { font-size: clamp(2.125rem, 1.5rem + 3.2vw, 2.625rem); }
+:root[data-theme="sovereign"] :is(.lt-title, .gh h2, .oath-title) em { font-family: var(--serif); color: var(--gold); }
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  :root[data-theme="sovereign"] .lt-title em { background-image: var(--leaf); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; padding-right: 0.06em; }
+}
+/* Labels: spaced Satoshi capitals. */
+:root[data-theme="sovereign"] :is(.lt-over, .eyebrow, .lg-label, .ov-h, .dock-label, .theme-line, .fusual-k, .fday-k, .ftake-k, .fwt-goal-k, .fc-total-top span, .frich-h, .rimp-k, .nf-h, .pane-h, .ml-rest-h, .need-h, .season-sub, .season-hp span, .pl-gh h3, .fc-daysep span, .tag) {
+  font-family: var(--font); font-weight: 650; letter-spacing: 0.16em; text-transform: uppercase;
+}
+:root[data-theme="sovereign"] :is(.lt-over, .eyebrow, .fusual-k, .fday-k, .ftake-k, .frich-h, .nf-h, .pane-h, .ml-rest-h, .need-h, .season-sub, .pl-gh h3, .fc-daysep span, .theme-line) { color: var(--gold-t); }
+:root[data-theme="sovereign"] .lt-over { font-size: 0.6875rem; margin-bottom: 8px; }
+:root[data-theme="sovereign"] .pl-group.overdue .pl-gh h3 { color: var(--cherry); }
+:root[data-theme="sovereign"] :is(.tl-time, .nx-time, .wk-l, .oc-axis, .oc-ref-label, .tl-now span, .msg time, .cal-ag-time, .cal-ev-s, .fheat-axis, .fc-axis, .wt-axis, .wt-y, .fwt-y) { font-family: var(--font); letter-spacing: 0.02em; }
+:root[data-theme="sovereign"] .msg time { letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.625rem; }
+:root[data-theme="sovereign"] :is(.field > span:first-child:not(.copy-row), .chips legend) { font-weight: 600; letter-spacing: 0.02em; color: var(--text-2); }
+
+/* Section heads: spaced Didone capitals after a gold lozenge. */
+:root[data-theme="sovereign"] .gh h2 { font-family: var(--didone); font-weight: 400; font-size: 1.0625rem; letter-spacing: 0.16em; text-transform: uppercase; color: #f3e6c4; }
+:root[data-theme="sovereign"] .gh h2::before {
+  content: ''; display: inline-block; width: 6px; height: 6px; margin: 0 12px 0 1px; vertical-align: 0.2em;
+  background: var(--gold); transform: rotate(45deg); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px #d4af3773;
+}
+:root[data-theme="sovereign"] .gh h3 { font-family: var(--didone); font-weight: 400; font-size: 0.9375rem; letter-spacing: 0.14em; text-transform: uppercase; color: #f3e6c4; }
+:root[data-theme="sovereign"] .gh-count { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); }
+@media (min-width: 900px) { :root[data-theme="sovereign"] .gh h2 { font-size: 1.125rem; } :root[data-theme="sovereign"] .lt-title { font-size: 2.875rem; } }
+
+/* Didone for headings and figures. */
+:root[data-theme="sovereign"] :is(.rings-center b, .lg-val, .ov-v, .clock, .goal-big, .li-side b, .now-title, .oath-title, .sheet-head h2, .confirm-title, .card h2, .card h3, .sheet h3, .dodge-title,
+  .pl-big, .pl-hero-ring b, .pl-stat b, .pl-date b, .season-hp b, .streaks b, .stat b, .wt-v, .dtile-val, .body-val, .bm-val, .fkpi b, .fmc-v, .fring-c b, .ft-kcal, .fprev-main b, .fmicro-i b,
+  .cov-stats .big, .ftrend-words b, .tg-stat b, .fburn-v b, .fwt-v b, .fburn-tile-v b, .fl-tile b, .fc-total-top b, .fc-hello h2, .goal-countdown b, .cal-label, .cal-wd b, .cal-head b,
+  .chd-head-text h1, .fc-head-text h1, .rate span, .wordmark, .tabbar-brand span, .topbar-title) {
+  font-family: var(--didone); font-weight: 400; letter-spacing: 0;
+}
+:root[data-theme="sovereign"] .cal-d-title { font-family: var(--didone); font-weight: 400 !important; letter-spacing: 0; }
+:root[data-theme="sovereign"] :is(.card h2, .card h3, .sheet h3, .topbar-title) { font-size: 1.1875rem; }
+:root[data-theme="sovereign"] :is(.pl-stat b, .dtile-val, .body-val, .bm-val, .fl-tile b, .fburn-tile-v b, .ftrend-words b) { font-size: 1.5rem; }
+:root[data-theme="sovereign"] .fmicro-i b { font-size: 1.25rem; }
+:root[data-theme="sovereign"] :is(.lg-val, .ov-v, .dtile-val, .wt-v, .pl-big, .fring-c) small { font-family: var(--font); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+
+/* -- Surfaces: lacquer panels in a gold hairline with corner caps -- */
+
+:root[data-theme="sovereign"] :is(.card, .goal-card, .dtile, .stat, .body-tile) { background: var(--caps), var(--panel); }
+:root[data-theme="sovereign"] .group { background: var(--caps), var(--card); }
+:root[data-theme="sovereign"] .card .group.flush { background: transparent; }
+:root[data-theme="sovereign"] .banner { box-shadow: inset 2px 0 0 var(--edge), inset 0 0 0 1px var(--hair); }
+:root[data-theme="sovereign"] .capacity.over { box-shadow: inset 2px 0 0 var(--amber), inset 0 0 0 1px var(--hair); }
+:root[data-theme="sovereign"] .note.bad { color: #f0c3c7; background: #7a1f2b47; box-shadow: inset 0 0 0 1px #d9737c66; }
+:root[data-theme="sovereign"] :is(code, .pchip, .sheet-move) { background: var(--inset); box-shadow: inset 0 0 0 1px var(--hair); color: var(--cg); }
+:root[data-theme="sovereign"] :is(.li-ic, .connect-ic, .setup-ic, .oath-ic, .sic, .fburn-tile-ic, .fl-unlock-ic) { border-radius: 2px; background: var(--inset); color: var(--gold); box-shadow: inset 0 0 0 1px #d4af3766; }
+:root[data-theme="sovereign"] .oath-ic { border-radius: 50%; }
+:root[data-theme="sovereign"] .chev { color: var(--bronze); }
+:root[data-theme="sovereign"] .tag.uni { background: #d4af371f; color: var(--cg); }
+:root[data-theme="sovereign"] .tag.bad { background: #7a1f2b66; color: #eca3aa; }
+:root[data-theme="sovereign"] .hp-chip { color: var(--ink); background: var(--lb); border-radius: 1px; font-weight: 800; letter-spacing: 0.04em; }
+:root[data-theme="sovereign"] .li[class*=" u-"]:not(.u-calm)::after { width: 2px; border-radius: 0; box-shadow: 0 0 6px var(--urg); }
+:root[data-theme="sovereign"] :is(.li-auto .ic, .pl-chip.auto .ic, .auto-h .ic, .ov-h > .ic:first-child, .rings-center .ic, .fcap-tool .ic, .briefs-btn .ic, .streaks b, .streaks .li-ic, .nx-row.on .nx-time, .tl-now span, .season-hp span, .lock-glyph, .strength.mid) { color: var(--gold); }
+
+/* Ticks: an open bronze ring; kept is emerald with a champagne check; a miss is garnet. */
+:root[data-theme="sovereign"] .chk { box-shadow: inset 0 0 0 1.5px var(--line-strong); }
+:root[data-theme="sovereign"] .chk svg { stroke: #f6e7b8; stroke-width: 2.4; }
+:root[data-theme="sovereign"] :is(.kept, .done) .chk { background: var(--emerald-dot); box-shadow: inset 0 0 0 1px #f1d98a8c, 0 0 10px -3px #6fb89699; }
+:root[data-theme="sovereign"] .heavy .chk { box-shadow: inset 0 0 0 1.5px var(--gold); }
+:root[data-theme="sovereign"] .missed .chk { background: var(--garnet); box-shadow: inset 0 0 0 1px #d9737c99; }
+:root[data-theme="sovereign"] .missed .chk::before, :root[data-theme="sovereign"] .missed .chk::after { background: #f3cdd0; }
+:root[data-theme="sovereign"] .pardoned .chk { box-shadow: inset 0 0 0 1.5px var(--bronze); background: repeating-linear-gradient(45deg, #d4af3766 0 1.5px, transparent 1.5px 5px); }
+:root[data-theme="sovereign"] .met .chk { box-shadow: inset 0 0 0 1.5px var(--menthol); }
+:root[data-theme="sovereign"] .met .chk svg { stroke: var(--menthol); }
+:root[data-theme="sovereign"] .li.pending:not(.missed) .chk::after { box-shadow: 0 0 0 1.5px var(--cg); }
+/* The tick's flash, recoloured gold. */
+:root[data-theme="sovereign"] .li.pending { animation-name: sov-flash; }
+@keyframes sov-flash { 0% { background-color: #d4af372e; } 100% { background-color: transparent; } }
+:root[data-theme="sovereign"] .swipe-bg { --sw: #79b99a; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+:root[data-theme="sovereign"] .swipe-bg[data-side="later"] { --sw: var(--gold); }
+:root[data-theme="sovereign"] :is(.swipe-bg.armed, .swipe-bg.armed[data-side="later"]) { color: var(--ink); }
+:root[data-theme="sovereign"] :is(.pbar, .np-bar, .focus-bar) { height: 4px; border-radius: 0; background: #f1d98a14; }
+:root[data-theme="sovereign"] .pbar.big { height: 6px; }
+:root[data-theme="sovereign"] :is(.pbar i, .np-bar i, .focus-bar i) { border-radius: 0; background: var(--leaf); box-shadow: none; }
+
+/* -- Controls -- */
+
+/* Buttons: hairline gold with champagne capitals; the primary and the key action in gold leaf. */
+:root[data-theme="sovereign"] .btn { background: #d4af3709; color: var(--cg); box-shadow: var(--g5); font-size: 0.875rem; font-weight: 650; letter-spacing: 0.1em; text-transform: uppercase; }
+:root[data-theme="sovereign"] .btn.small { font-size: 0.8125rem; letter-spacing: 0.08em; }
+:root[data-theme="sovereign"] .btn.big { font-size: 0.9375rem; letter-spacing: 0.14em; }
+:root[data-theme="sovereign"] .btn.tinted { background: #d4af370f; color: var(--cg); }
+:root[data-theme="sovereign"] :is(.btn.primary, .btn.chrome, .icon-btn.accent, .composer .send, .cc-mic, .fcap-cam, .fcap-send, .fc-cam, .cchat-page .btn.chrome) { background: var(--lb); color: var(--ink); box-shadow: var(--leaf-sh); text-shadow: 0 1px 0 #fff4d259; }
+:root[data-theme="sovereign"] .btn.chrome { font-weight: 750; box-shadow: var(--leaf-sh), 0 8px 24px -12px #d4af378c; }
+:root[data-theme="sovereign"] .btn.plain { background: transparent; color: var(--text-2); box-shadow: none; }
+:root[data-theme="sovereign"] .btn.danger { background: var(--garnet); color: #f8e1e3; box-shadow: inset 0 0 0 1px #d9737c80; }
+:root[data-theme="sovereign"] .btn.tinted.danger-text { box-shadow: inset 0 0 0 1px #d9737c73; }
+:root[data-theme="sovereign"] .icon-btn { background: var(--card); color: var(--cg); box-shadow: inset 0 0 0 1px #d4af3773; }
+@media (hover: hover) {
+  :root[data-theme="sovereign"] .btn:hover:not(:disabled) { background-color: #d4af371a; }
+  :root[data-theme="sovereign"] :is(.btn.primary, .btn.chrome, .icon-btn.accent):hover:not(:disabled) { background: var(--lb); filter: brightness(1.08); }
+  :root[data-theme="sovereign"] .btn.plain:hover:not(:disabled) { background: var(--fill); color: var(--cg); }
+  :root[data-theme="sovereign"] .btn.danger:hover:not(:disabled) { background: #8e2534; }
+  :root[data-theme="sovereign"] .icon-btn:hover { background: var(--raised); }
+}
+
+/* Fields: a deep warm well in a bronze hairline, champagne when focused. */
+:root[data-theme="sovereign"] .input { background-color: #120e09; box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="sovereign"] .input:focus { background-color: #16110b; box-shadow: inset 0 0 0 1px var(--cg), 0 0 0 3px #d4af3729; }
+:root[data-theme="sovereign"] :is(.input[readonly], .auto-field .input, .pardon-form .input) { background-color: var(--card); }
+:root[data-theme="sovereign"] :is(.composer textarea, .scan-type .input), :root[data-theme="sovereign"] :is(.composer textarea, .scan-type .input):focus { background-color: transparent; box-shadow: none; }
+:root[data-theme="sovereign"] select.input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23d4af37' stroke-width='1.4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 15px center; }
+:root[data-theme="sovereign"] :is(.check input, .switch) { background: #120e09; box-shadow: inset 0 0 0 1.5px var(--line-strong); }
+:root[data-theme="sovereign"] :is(.check input:checked, .switch:checked) { background: var(--lb); box-shadow: none; }
+:root[data-theme="sovereign"] .check input::after { border-color: var(--ink); }
+:root[data-theme="sovereign"] .radio-row input { accent-color: var(--gold); }
+:root[data-theme="sovereign"] .switch::after { background: #e8dcc0; }
+:root[data-theme="sovereign"] .switch:checked::after { background: #1a1308; }
+
+/* Chosen chips, days, ratings and filters are gold leaf; the rest lacquer in a hairline. */
+:root[data-theme="sovereign"] :is(.chip span, .days span, .rate span) { background: #120e09; box-shadow: inset 0 0 0 1px var(--line-ctl); color: var(--text-2); }
+:root[data-theme="sovereign"] .rate span { font-size: 1.375rem; }
+:root[data-theme="sovereign"] :is(.chip input:checked + span, .days input:checked + span, .rate input:checked + span, .pl-filters button[aria-selected="true"]) { background: var(--lb); color: var(--ink); box-shadow: inset 0 1px 0 #fff8dc80; }
+:root[data-theme="sovereign"] .pl-filters button[aria-selected="true"] span { color: #1a1206a8; }
+
+/* The segmented control: a lacquer well; the choice sits on a raised lacquer plate framed in gold. */
+:root[data-theme="sovereign"] .seg { background: #120e09; box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="sovereign"] :is(.seg span, .seg button, .seg-ind) { border-radius: 1px; }
+:root[data-theme="sovereign"] :is(.seg input:checked + span, .seg button[aria-selected="true"], .seg button.on, .seg button[aria-pressed="true"], .seg-ind) {
+  background: linear-gradient(180deg, #2f2616, #211a0f); color: var(--cg); box-shadow: inset 0 0 0 1px #d4af3799, inset 0 1px 0 #f1d98a2e, 0 2px 8px -2px #000000b3;
+}
+:root[data-theme="sovereign"] :is(.seg-live input:checked + span, .seg-live button[aria-selected="true"], .seg-live button.on, .seg-live button[aria-pressed="true"]) { background: transparent; box-shadow: none; }
+
+/* Squared corners for every pill, chip and small control. */
+:root[data-theme="sovereign"] :is(.btn, .btn.small, .btn.big, .tchip, .now-left, .nx-chip, .tl-chip, .pl-filters button, .pl-chip, .pl-pill, .pl-stat, .pl-date, .qchip, .fcap-tool, .fwater-btn, .fday-left, .pchip-btn, .fslot-chip, .ftag, .ftag-mini,
+  .fadv-why, .ftg-n, .fc-slot, .fc-log, .fc-act, .fc-ex, .fl-chip, .fconf, .cal-mk-chip, .cal-ev, .cal-chip, .ml-action, .ml-due, .ml-reason, .scan-status, .goal-status, .pace, .composer .send, .cc-mic, .cc-cam,
+  .cc-rec-x, .fcap-cam, .fcap-send, .fc-cam, .scan-type .btn, .receipts li, .fmicro-i, .ftl-c, .tg-stat, .ftg-list, .fc-items, .fc-day, .theme-shot, .tag, .scan-frame) { border-radius: 2px; }
+:root[data-theme="sovereign"] :is(.tchip, .pl-filters button, .fcap-tool, .fwater-btn, .pchip-btn, .fslot-chip, .fc-act, .fc-ex) { background: var(--card); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="sovereign"] :is(.tchip.act, .fcap-tool) { box-shadow: inset 0 0 0 1px #d4af378c; color: var(--cg); }
+:root[data-theme="sovereign"] .tchip.warn { box-shadow: inset 0 0 0 1px #e6c36a80; }
+
+/* -- Today -- */
+
+/* The rings as a watch dial: a chapter ring of fine ticks around gold, champagne and bronze. */
+:root[data-theme="sovereign"] .rings-card { background: var(--caps), radial-gradient(90% 70% at 22% 30%, #d4af3712, transparent 70%), var(--card); }
+:root[data-theme="sovereign"] .rings::after {
+  content: ''; position: absolute; inset: -9px; border-radius: 50%; pointer-events: none;
+  background: repeating-conic-gradient(#f1d98abf 0deg 1.4deg, transparent 1.4deg 30deg), repeating-conic-gradient(#d4af3752 0deg 0.6deg, transparent 0.6deg 6deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 5px));
+}
+:root[data-theme="sovereign"] .ring-shine { background: conic-gradient(transparent 0 70%, #fff4d2f2 93%, transparent 96%); }
+:root[data-theme="sovereign"] .rings-center b { font-size: calc(var(--size) * 0.24); }
+:root[data-theme="sovereign"] .rings-center > span { font-family: var(--font); font-weight: 700; letter-spacing: 0.24em; color: var(--gold); }
+:root[data-theme="sovereign"] :is(.rings-card.low .rings-center b, .lg.low .lg-val) { color: var(--cherry) !important; -webkit-text-fill-color: var(--cherry) !important; }
+:root[data-theme="sovereign"] :is(.rc-fuel, .rings-foot, .pl-week, .sheet-form) { border-color: var(--hair); }
+:root[data-theme="sovereign"] .lg-label { font-size: 0.625rem; }
+:root[data-theme="sovereign"] .lg-dot { width: 7px; height: 7px; margin: 0 1px; border-radius: 0; transform: rotate(45deg); box-shadow: 0 0 6px var(--rg); }
+:root[data-theme="sovereign"] .lg-val { font-size: 1.625rem; line-height: 1.1; }
+@media (min-width: 640px) { :root[data-theme="sovereign"] .lg-val { font-size: 1.75rem; } }
+
+/* Up next: a lacquer plate under a fine line in the countdown's colour. */
+:root[data-theme="sovereign"] .u-over { --urg: var(--cherry); }
+:root[data-theme="sovereign"] .now {
+  background: var(--caps), radial-gradient(110% 70% at 0% 0%, color-mix(in srgb, var(--urg) 10%, transparent), transparent 62%), linear-gradient(180deg, #19140d, var(--card) 70%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--urg) 34%, #d4af3738), var(--lift);
+}
+:root[data-theme="sovereign"] .now::before { height: 1px; background: linear-gradient(90deg, transparent, var(--urg) 20%, var(--urg) 80%, transparent); }
+:root[data-theme="sovereign"] .now-title.now-title { font-size: clamp(1.625rem, 1.25rem + 1.6vw, 1.9375rem); line-height: 1.12; }
+:root[data-theme="sovereign"] .now-left { background: var(--inset); box-shadow: inset 0 0 0 1px var(--hair); font-size: 0.75rem; font-weight: 650; letter-spacing: 0.12em; text-transform: uppercase; }
+:root[data-theme="sovereign"] .now[class*=" u-"]:not(.u-calm) .now-left { font-size: 0.8125rem; letter-spacing: 0.1em; }
+:root[data-theme="sovereign"] .np-bar i { box-shadow: 0 0 8px #d4af3766; }
+:root[data-theme="sovereign"] :is(.now-cue, .last-night) { background: var(--inset); box-shadow: inset 2px 0 0 var(--gold), inset 0 0 0 1px var(--line-soft); }
+:root[data-theme="sovereign"] .now.is-focus { box-shadow: inset 0 0 0 1px #f1d98ab3, var(--lift); }
+:root[data-theme="sovereign"] .now.secured { box-shadow: inset 0 0 0 1px #79b99a80, var(--lift); }
+:root[data-theme="sovereign"] .now.dodging { box-shadow: inset 0 0 0 1px #e6c36a80, var(--lift); }
+:root[data-theme="sovereign"] .now.in-focus { background: var(--caps), linear-gradient(180deg, #1b150d, var(--card) 80%); }
+@keyframes urge { 50% { box-shadow: inset 0 1px 0 #fff8dc99, 0 0 0 6px #d4af372e, 0 12px 30px -12px #d4af37b3; } }
+:root[data-theme="sovereign"] .next-dock { border-radius: 3px; background: #100c08e6; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--urg) 45%, #d4af374d), inset 2px 0 0 var(--urg), 0 14px 32px -12px #000000f2; }
+:root[data-theme="sovereign"] .dock-label { font-size: 0.5625rem; }
+:root[data-theme="sovereign"] .ask-coach { background: var(--card); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="sovereign"] :is(.ask-coach, .composer, .fc-composer, .fcap-bar, .scan-type):focus-within { box-shadow: inset 0 0 0 1px var(--cg), 0 0 0 3px #d4af3724; }
+:root[data-theme="sovereign"] .oath-mini { background: var(--caps), radial-gradient(90% 120% at 0% 0%, #d4af371a, transparent 60%), var(--card); }
+:root[data-theme="sovereign"] .oath-title.oath-title { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); }
+
+/* The overview tiles and the schedule. */
+:root[data-theme="sovereign"] .ov-h { font-size: 0.625rem; }
+:root[data-theme="sovereign"] .ov-v { font-size: 1.75rem; }
+:root[data-theme="sovereign"] .ov-hp.low .ov-v { color: var(--cherry); }
+:root[data-theme="sovereign"] .ov-steps { --ov-c: var(--c-move); }
+:root[data-theme="sovereign"] .oc-bar { fill: #2b2417; }
+:root[data-theme="sovereign"] .oc-bar.met { fill: color-mix(in oklab, var(--oc) 46%, #2b2417); }
+:root[data-theme="sovereign"] .sp-dot { background: var(--cg); box-shadow: 0 0 0 2px var(--card), 0 0 10px #d4af37cc; }
+:root[data-theme="sovereign"] :is(.wk-day.clean .wk-dot, .pl-day.clean .pl-dot) { background: var(--emerald-dot); color: #f6e7b8; box-shadow: inset 0 0 0 1px #f1d98a80; }
+:root[data-theme="sovereign"] :is(.wk-day.missed .wk-dot, .pl-day.missed .pl-dot) { background: var(--garnet); color: #f3cdd0; box-shadow: inset 0 0 0 1px #d9737c8c; }
+:root[data-theme="sovereign"] :is(.wk-day.kept .wk-dot, .pl-day.kept .pl-dot) { background: #1f5f4a59; box-shadow: inset 0 0 0 1.5px #79b99a99; }
+:root[data-theme="sovereign"] .pl-day.today .pl-dot { color: var(--cg); background: #d4af3714; }
+:root[data-theme="sovereign"] .ov-split { height: 6px; border-radius: 0; }
+:root[data-theme="sovereign"] .ov-key i { border-radius: 0; transform: rotate(45deg) scale(0.8); }
+:root[data-theme="sovereign"] .tl-now::before, :root[data-theme="sovereign"] .tl-now::after { background: var(--gold); }
+:root[data-theme="sovereign"] .tl-now::before { height: 1px; }
+:root[data-theme="sovereign"] .tl-now::after { left: 53px; width: 8px; height: 8px; border-radius: 0; transform: rotate(45deg); }
+:root[data-theme="sovereign"] .brief-text { color: #ddd1b6; }
+:root[data-theme="sovereign"] .update-bar { border-radius: 3px; background: #15110bf7; box-shadow: var(--g5), 0 16px 40px -12px #000000e6; }
+:root[data-theme="sovereign"] :is(.plan-card, .disclosure, .howto, .anytime) summary::after { border-color: var(--gold); border-width: 0 1.5px 1.5px 0; }
+
+/* -- Bars, sheets, the toast: lacquer under a gold rule -- */
+
+:root[data-theme="sovereign"] :is(.topbar, .chd-head, .fc-head, .cal-top) { background: #0a0806d9; box-shadow: 0 1px 0 var(--hair); }
+:root[data-theme="sovereign"] .sheet-backdrop { background: #060402b3; }
+:root[data-theme="sovereign"] .sheet { box-shadow: inset 0 1px 0 #d4af37b3, inset 0 0 0 1px #d4af3729, 0 -24px 64px #000c, 0 160px 0 0 var(--sheet); }
+:root[data-theme="sovereign"] .sheet :is(.input, .seg, .days span, .chip span) { background-color: #0f0c07; }
+:root[data-theme="sovereign"] .sheet :is(.chip input:checked + span, .days input:checked + span) { background: var(--lb); }
+:root[data-theme="sovereign"] .sheet-grab { width: 36px; height: 3px; border-radius: 0; background: var(--gold); opacity: 0.7; }
+:root[data-theme="sovereign"] :is(.sheet-head h2, .confirm-title) { font-size: 1.5rem; line-height: 1.15; }
+:root[data-theme="sovereign"] .dodge-sheet .dodge-title { font-size: 1.375rem; }
+@media (min-width: 900px) { :root[data-theme="sovereign"] .sheet { box-shadow: inset 0 0 0 1px #d4af3766, inset 0 1px 0 #f1d98a80, 0 40px 100px #000000d9; } }
+:root[data-theme="sovereign"] .toast { border-radius: 3px; background: #15110bf0; box-shadow: var(--g5), 0 20px 50px #000000bf; }
+:root[data-theme="sovereign"] .toast.bad { background: #320e13f7; color: #f6d6d9; box-shadow: inset 0 0 0 1px #d9737c99, 0 20px 50px #000000bf; }
+
+/* -- The tab bar, and the sidebar from 900 px -- */
+
+:root[data-theme="sovereign"] .tabbar { border-radius: 4px; background: #0c0906e6; box-shadow: inset 0 1px 0 var(--gold), inset 0 0 0 1px #d4af3738, 0 12px 34px -8px #000000d9; }
+:root[data-theme="sovereign"] .tab { color: #a8977a; }
+:root[data-theme="sovereign"] .tab > span:last-child { font-size: 0.5625rem; font-weight: 650; letter-spacing: 0.14em; text-transform: uppercase; }
+:root[data-theme="sovereign"] .tab .ic { stroke-width: 1.4; }
+:root[data-theme="sovereign"] .tab[aria-current="page"] { color: var(--gold); }
+:root[data-theme="sovereign"] .tab[aria-current="page"] .ic { color: var(--cg); stroke-width: 1.6; }
+:root[data-theme="sovereign"] .tab-pill { border-radius: 2px; background: linear-gradient(180deg, #d4af3733, #d4af3705 75%); box-shadow: inset 0 2px 0 var(--cg); }
+:root[data-theme="sovereign"] .tab-badge { color: var(--ink); background: var(--lb); border-radius: 1px; box-shadow: 0 0 0 1.5px #0c0906; }
+@media (max-width: 380px) { :root[data-theme="sovereign"] .tab > span:last-child { font-size: 0.5rem; letter-spacing: 0.08em; } }
+@media (min-width: 900px) {
+  :root[data-theme="sovereign"] .tabbar { border-radius: 0; background: linear-gradient(180deg, #d4af370d, transparent 260px), #0d0a07; box-shadow: inset -1px 0 0 #d4af3759, inset -4px 0 0 #0d0a07, inset -5px 0 0 #d4af371f; }
+  :root[data-theme="sovereign"] .tabbar-brand.wide-only { font-size: 1.5rem; letter-spacing: 0.24em; text-transform: uppercase; padding-bottom: 26px; }
+  :root[data-theme="sovereign"] .tab { color: var(--text-2); border-radius: 1px; }
+  :root[data-theme="sovereign"] .tab > span:last-child { font-size: 0.75rem; letter-spacing: 0.16em; }
+  :root[data-theme="sovereign"] .tab .ic { color: var(--bronze); }
+  :root[data-theme="sovereign"] .tab[aria-current="page"] { color: var(--cg); }
+  :root[data-theme="sovereign"] .tab[aria-current="page"] .ic { color: var(--gold); }
+  :root[data-theme="sovereign"] .tab-pill { border-radius: 1px; background: linear-gradient(90deg, #d4af3729, #d4af3705); box-shadow: inset 2px 0 0 var(--gold), inset 0 0 0 1px #d4af372e; }
+  :root[data-theme="sovereign"] .tabbar > a.tab:nth-of-type(8)::before { background: var(--hair); }
+}
+
+/* -- The way in and the lock -- */
+
+:root[data-theme="sovereign"] .gate-mark { filter: drop-shadow(0 0 22px #d4af3759); }
+:root[data-theme="sovereign"] .brand-lockup .wordmark { font-size: 3.25rem; letter-spacing: 0.26em; text-transform: uppercase; margin-right: -0.26em; }
+:root[data-theme="sovereign"] .lock .brand-lockup .wordmark { font-size: 2.875rem; }
+:root[data-theme="sovereign"] .brand-lockup::after {
+  content: ''; order: 2; width: 200px; height: 11px; margin-top: 4px;
+  background: var(--rule);
+}
+:root[data-theme="sovereign"] .tagline { order: 3; color: var(--cg); }
+:root[data-theme="sovereign"] :is(.gate, .lock) .recover summary { color: var(--text-2); }
+:root[data-theme="sovereign"] .lock-glyph::after { background: linear-gradient(90deg, transparent, var(--gold) 25%, #fff3cf 50%, var(--gold) 75%, transparent); box-shadow: 0 0 12px 1px #d4af3799; }
+:root[data-theme="sovereign"] .lock[data-state="unlocking"] .lock-glyph { color: var(--cg); filter: drop-shadow(0 0 14px #d4af3773); }
+:root[data-theme="sovereign"] .lock[data-state="scanning"] .lock-glyph { animation: none; }
+:root[data-theme="sovereign"] .ptr { background: #15110bf0; box-shadow: inset 0 0 0 1px var(--hair), 0 8px 20px -8px #000000e6; }
+:root[data-theme="sovereign"] .ptr-track { stroke: #d4af372e; }
+
+/* -- Empty states: a lozenge medallion -- */
+
+:root[data-theme="sovereign"] .empty-state { background: var(--caps), radial-gradient(70% 70% at 50% 0%, #d4af371a, transparent 70%), var(--card); }
+:root[data-theme="sovereign"] .empty-orb {
+  width: 48px; height: 48px; margin: 8px 0 22px; border-radius: 0; transform: rotate(45deg); color: var(--cg);
+  background: linear-gradient(135deg, #241c10, #120e08); box-shadow: inset 0 0 0 1px #d4af37b3, 0 0 0 5px var(--card), 0 0 0 6px #d4af374d;
+}
+:root[data-theme="sovereign"] .empty-orb .ic { width: 22px; height: 22px; stroke-width: 1.5; transform: rotate(-45deg); }
+:root[data-theme="sovereign"] .empty-state.small .empty-orb { width: 38px; height: 38px; margin: 6px 0 16px; }
+:root[data-theme="sovereign"] .empty-state.small .empty-orb .ic { width: 18px; height: 18px; }
+:root[data-theme="sovereign"] .empty-state h3 { font-size: 1.375rem; }
+
+/* -- Coach and the food chat -- */
+
+:root[data-theme="sovereign"] :is(.cchat-page, .fchat-page) { background: radial-gradient(70% 260px at 50% 0, #d4af3714, transparent 70%); }
+:root[data-theme="sovereign"] :is(.chd-av, .fc-av) { color: var(--ink); background: var(--leaf); box-shadow: inset 0 1px 0 #fff8dc99, 0 0 0 2px var(--bg), 0 0 0 3px #d4af3773; }
+:root[data-theme="sovereign"] :is(.chd-head-text h1, .fc-head-text h1) { font-size: 1.375rem; letter-spacing: 0.02em; }
+:root[data-theme="sovereign"] .msg { border-radius: 4px; }
+:root[data-theme="sovereign"] :is(.msg.user, .cchat .msg.user, .fchat .msg.user) { color: var(--ink); font-weight: 520; border-bottom-right-radius: 1px; background: linear-gradient(160deg, #f6e4a8, #e2c262 45%, #c9a13e); box-shadow: inset 0 1px 0 #fff8dc99; }
+:root[data-theme="sovereign"] :is(.msg.user, .cchat .msg.user, .fchat .msg.user) time { color: #1a1206b3; }
+:root[data-theme="sovereign"] :is(.msg.assistant, .cchat .msg.assistant, .fchat .msg.assistant) { color: #eadfc6; border-bottom-left-radius: 1px; background: linear-gradient(180deg, #19140d, #120e09); box-shadow: inset 0 0 0 1px var(--hair), inset 0 1px 0 #f1d98a0d; }
+:root[data-theme="sovereign"] .msg.user:has(+ .msg.user) { border-bottom-right-radius: 4px; }
+:root[data-theme="sovereign"] .msg.assistant:has(+ .msg.assistant) { border-bottom-left-radius: 4px; }
+:root[data-theme="sovereign"] .typing i { border-radius: 0; background: var(--gold); transform: rotate(45deg); }
+:root[data-theme="sovereign"] .cchat .typing i:nth-of-type(2) { background: var(--cg); }
+@keyframes typing { 0%, 60%, 100% { transform: rotate(45deg); opacity: 0.35; } 30% { transform: translateY(-5px) rotate(45deg); opacity: 1; } }
+:root[data-theme="sovereign"] :is(.confirm-row, .cchat .confirm-row) { background: #d4af3712; box-shadow: inset 0 0 0 1px #d4af3773; }
+:root[data-theme="sovereign"] :is(.composer, .cchat-page .composer, .fc-composer) { border-radius: 4px; background: #120e09f0; box-shadow: inset 0 0 0 1px #d4af3766, 0 18px 40px -16px #000000f2; }
+:root[data-theme="sovereign"] .composer-dock::before { background: linear-gradient(180deg, #0a080600, #0a0806eb 46%); }
+:root[data-theme="sovereign"] .fc-dock::before { background: linear-gradient(180deg, #0a080600, #0a0806f5 22px, #0a0806f5); }
+:root[data-theme="sovereign"] :is(.qchip, .cchat-page .qchip) { background: #15110bf5; color: var(--cg); box-shadow: inset 0 0 0 1px #d4af3759; }
+:root[data-theme="sovereign"] .cc-cam { color: var(--cg); background: #d4af370f; box-shadow: inset 0 0 0 1px #d4af374d; }
+:root[data-theme="sovereign"] :is(.cc-staged, .fc-staged) { border-radius: 3px; background: #15110bf2; box-shadow: inset 0 0 0 1px #d4af374d, 0 12px 30px -16px #000000e6; }
+:root[data-theme="sovereign"] .cc-staged-x { color: var(--ink); background: var(--gold); }
+:root[data-theme="sovereign"] .cc-play { color: var(--ink); background: var(--cg); }
+:root[data-theme="sovereign"] .cc-wave i { background: #1a12064d; }
+:root[data-theme="sovereign"] .cc-wave i.on { background: var(--ink); }
+:root[data-theme="sovereign"] .msg.assistant .cc-wave i { background: #f1d98a4d; }
+:root[data-theme="sovereign"] .msg.assistant .cc-wave i.on { background: var(--cg); }
+:root[data-theme="sovereign"] .msg.user :is(.cc-dur, .cc-note) { color: #1a1206c7; }
+:root[data-theme="sovereign"] .cc-rec-dot { background: var(--cherry); box-shadow: 0 0 0 4px #d9737c33; }
+:root[data-theme="sovereign"] .cc-rec-bars i { background: var(--gold); }
+:root[data-theme="sovereign"] .rich strong { color: var(--cg); font-weight: 650; }
+:root[data-theme="sovereign"] .rich ul > li::before { border-radius: 0; background: var(--gold); opacity: 0.9; transform: rotate(45deg); }
+:root[data-theme="sovereign"] .rich ol > li::marker { color: var(--gold); }
+:root[data-theme="sovereign"] .msg.user .rich strong { color: var(--ink); }
+:root[data-theme="sovereign"] .msg.user .rich ul > li::before { background: var(--ink); }
+:root[data-theme="sovereign"] :is(.fc-items, .fc-day) { background: #0000004d; }
+
+/* -- Food -- */
+
+:root[data-theme="sovereign"] .fcap-bar { border-radius: 3px; background: var(--caps), radial-gradient(80% 140% at 100% 50%, #d4af370f, transparent 60%), var(--card); box-shadow: inset 0 0 0 1px #d4af374d; }
+:root[data-theme="sovereign"] .fcap-dot { border-radius: 0; transform: rotate(45deg); }
+:root[data-theme="sovereign"] .fr-track { stroke: #f1d98a12; }
+:root[data-theme="sovereign"] .fh-line { fill: var(--text-3); }
+:root[data-theme="sovereign"] :is(.fmc-bar, .ri-bar, .rirow-bar, .fc-day-bar, .fmeal) { border-radius: 0; background: #f1d98a12; }
+:root[data-theme="sovereign"] :is(.fmc.over .fmc-of, .frank-h.bad) { color: #e0a463; }
+:root[data-theme="sovereign"] :is(.ftag, .ftag-mini) { background: #d4af3714; color: var(--cg); box-shadow: inset 0 0 0 1px #d4af373d; }
+:root[data-theme="sovereign"] :is(.ftag.t-warn, .ftag-mini.t-warn, .fadv-why.t-warn) { background: #cf8f451f; color: #e0a463; box-shadow: none; }
+:root[data-theme="sovereign"] .fst .ri-bar i { background: linear-gradient(90deg, var(--bronze), var(--cg)); }
+:root[data-theme="sovereign"] :is(.ri-bar.full i, .rirow.full .rirow-bar i) { background: linear-gradient(90deg, var(--bronze), var(--gold) 60%, var(--cg)); }
+:root[data-theme="sovereign"] :is(.fk-now, .fcmp-bar.cur i) { background: linear-gradient(90deg, var(--gold), var(--cg)); }
+:root[data-theme="sovereign"] .fheat-grid i { background: color-mix(in srgb, var(--gold) calc(var(--a, 0) * 100%), #f1d98a0d); }
+:root[data-theme="sovereign"] .fwater-btn { color: var(--ring-water-1); }
+:root[data-theme="sovereign"] .scan-type { border-radius: 3px; background: #15110bd1; box-shadow: inset 0 0 0 1px #d4af3766, var(--lift); }
+:root[data-theme="sovereign"] .scan-cam { background: radial-gradient(120% 70% at 50% 45%, #19140d, var(--bg) 70%); }
+:root[data-theme="sovereign"] .scan-status { background: #15110bc7; }
+
+/* -- Calendar, Plan, Goals, Review, Settings, Mail -- */
+
+:root[data-theme="sovereign"] .cal-label { font-size: 1.625rem; }
+:root[data-theme="sovereign"] :is(.cal-wd.today.sel b, .cal-head.today b, .cal-cell.today .cal-num) { background: var(--lb); color: var(--ink); }
+:root[data-theme="sovereign"] .cal-sync i { background: var(--menthol); }
+:root[data-theme="sovereign"] .cal-sync.bad i { background: var(--cherry); }
+:root[data-theme="sovereign"] :is(.cal-sync.bad, .cal-feed.bad small) { color: #eca3aa; }
+:root[data-theme="sovereign"] .cal-ev { background: color-mix(in srgb, var(--c) 14%, #15110b); box-shadow: inset 2px 0 0 var(--c), inset 0 0 0 1px color-mix(in srgb, var(--c) 30%, transparent), 0 0 0 1px #0a0806; }
+:root[data-theme="sovereign"] :is(.cal-chip, .cal-mc) { background: color-mix(in srgb, var(--c, var(--chrome-c)) 16%, #15110b); }
+:root[data-theme="sovereign"] :is(.cal-ev-s, .cal-ev-p) { color: color-mix(in srgb, var(--c) 22%, #efe4cc); }
+:root[data-theme="sovereign"] .cal-ev.own { background: color-mix(in srgb, var(--gold) 20%, #0a0806); box-shadow: inset 2px 0 0 var(--gold), 0 0 0 1px #0a0806; }
+:root[data-theme="sovereign"] :is(.cal-ev.free, .fc-daysep span) { background: transparent; }
+:root[data-theme="sovereign"] .cal-col.today { background: #d4af3709; }
+
+:root[data-theme="sovereign"] .pl-hero { background: var(--caps), radial-gradient(130% 100% at 100% 0%, #d4af3712, transparent 58%), var(--card); }
+:root[data-theme="sovereign"] .pl-big { font-size: 2.875rem; }
+:root[data-theme="sovereign"] .pl-habit.heavy { box-shadow: inset 2px 0 0 var(--gold), var(--rim); }
+:root[data-theme="sovereign"] .pl-date { box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="sovereign"] :is(.pl-chip.nn, .pl-chip.hard, .pl-chip.late, .pl-pill.missed) { color: #eca3aa; background: #7a1f2b59; }
+:root[data-theme="sovereign"] .pl-chip.streak { color: var(--gold); background: #d4af371a; }
+:root[data-theme="sovereign"] .pl-pill.done { color: var(--menthol); background: #1f5f4a4d; }
+:root[data-theme="sovereign"] :is(.pl-strip i, .heat i, .heat-key i) { border-radius: 1px; }
+:root[data-theme="sovereign"] :is(.pl-strip i.h-kept, .heat i.h-kept, .heat-key i.h-kept) { background: #3f8f70; }
+:root[data-theme="sovereign"] :is(.pl-strip i.h-min, .heat i.h-min, .heat-key i.h-min) { background: #79b99a73; }
+:root[data-theme="sovereign"] :is(.pl-strip i.h-missed, .heat i.h-missed, .heat-key i.h-missed) { background: #9c3040; }
+:root[data-theme="sovereign"] .pl-bar { border-radius: 1px; background: linear-gradient(180deg, #e9cf7f, #8c6a2b); }
+:root[data-theme="sovereign"] .pl-bar i { background: linear-gradient(180deg, #c5505d, var(--garnet)); }
+:root[data-theme="sovereign"] .pl-col.is-today .pl-bar:not(.zero) { background: linear-gradient(180deg, #fff3cf, var(--cg)); box-shadow: 0 0 12px #d4af3759; }
+
+:root[data-theme="sovereign"] .goal-ring { color: var(--gold); filter: drop-shadow(0 0 5px #d4af3759); }
+:root[data-theme="sovereign"] :is(.pace.pace-on, .pace.pace-ahead) { background: #1f5f4a4d; }
+:root[data-theme="sovereign"] .pace.pace-behind { color: #e0a463; background: #cf8f4524; }
+:root[data-theme="sovereign"] .goal-status.done { box-shadow: inset 0 0 0 1px #79b99a73; }
+:root[data-theme="sovereign"] .goal-bar .pbar i { box-shadow: 0 0 10px #d4af3759; }
+:root[data-theme="sovereign"] .goal-countdown b { color: var(--cg); }
+:root[data-theme="sovereign"] .next-step { box-shadow: inset 2px 0 0 var(--gold), var(--rim); background: var(--caps), radial-gradient(100% 80% at 0% 0%, #d4af3714, transparent 60%), var(--card); }
+:root[data-theme="sovereign"] .node-row.parent-sel { background: #d4af3712; box-shadow: inset 2px 0 0 var(--gold); }
+:root[data-theme="sovereign"] .node-box svg { stroke: #f6e7b8; }
+:root[data-theme="sovereign"] .map-node.task.done rect { fill: #10241c; }
+
+:root[data-theme="sovereign"] .season-card { background: var(--caps), radial-gradient(100% 80% at 100% 0%, #d4af371a, transparent 60%), var(--card); }
+:root[data-theme="sovereign"] .season-hp b { font-size: 3.75rem; }
+:root[data-theme="sovereign"] .season-card.low .season-hp b { color: var(--cherry); }
+:root[data-theme="sovereign"] .hp-line { stroke: var(--gold); filter: drop-shadow(0 0 3px #d4af3780); }
+/* Review's HP chart has its wash inline (review.js); only !important reaches it. */
+:root[data-theme="sovereign"] #hp-fill stop:first-child { stop-color: #d4af374d !important; }
+:root[data-theme="sovereign"] #hp-fill stop:last-child { stop-color: #d4af3700 !important; }
+:root[data-theme="sovereign"] .theme-card { border: 0; border-radius: 3px; background: var(--card); box-shadow: inset 0 0 0 1px var(--hair); }
+:root[data-theme="sovereign"] .theme-card.on { background: var(--caps), var(--card); box-shadow: inset 0 0 0 1px var(--gold), 0 18px 40px -22px #000000e6; }
+:root[data-theme="sovereign"] .theme-line { font-size: 0.5625rem; }
+:root[data-theme="sovereign"] .ml-due { color: var(--honey); box-shadow: inset 0 0 0 1px #e6c36a59; }
+
+/* -- Motion: the flash keeps its gold with reduced motion; nothing else here moves -- */
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="sovereign"] .li.pending { animation-name: sov-flash !important; }
+}
