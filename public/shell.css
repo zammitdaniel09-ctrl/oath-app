@@ -1,0 +1,494 @@
+/* The shell around every page: the tab bar and sidebar, the toast, the way in and the lock screen,
+   loading, the layouts for narrow phones, tablets and wide screens, empty states, moving between
+   screens, input and display preferences, and the livelier presses. After goals.css, so these
+   rules still come after the pages' own, as they did in one app.css. */
+
+/* ---------- Navigation ---------- */
+
+.tabbar {
+  position: fixed; z-index: 20;
+  left: calc(env(safe-area-inset-left) + 12px); right: calc(env(safe-area-inset-right) + 12px); bottom: calc(env(safe-area-inset-bottom) + 10px);
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); height: 64px; padding: 5px;
+  border-radius: 32px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03) 45%, rgba(255, 255, 255, 0.06)), rgba(28, 28, 32, 0.9);
+  box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.4), inset 0 0 0 0.5px rgba(255, 255, 255, 0.14), 0 10px 34px -8px rgba(0, 0, 0, 0.6);
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .tabbar {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 45%, rgba(255, 255, 255, 0.06)), rgba(30, 30, 34, 0.58);
+    -webkit-backdrop-filter: blur(26px) saturate(1.8); backdrop-filter: blur(26px) saturate(1.8);
+  }
+}
+.tab {
+  position: relative; display: grid; justify-items: center; align-content: center; gap: 2px; min-width: 0; padding: 4px 2px 3px;
+  color: rgba(255, 255, 255, 0.62); text-decoration: none; -webkit-user-select: none; user-select: none;
+}
+.tab .ic { width: 23px; height: 23px; stroke-width: 1.6; padding: 0; transition: color var(--t-ctl); }
+.tab-ic { position: relative; display: grid; place-items: center; isolation: isolate; transition: transform var(--spring-ms) var(--spring); }
+.tab:active .tab-ic { transform: scale(0.86); transition: transform var(--t-press) var(--ease); }
+/* On a narrow phone each slot is under 60 px: the lens stays inside its own. */
+@media (max-width: 360px) { .tabbar .tab-pill { inset: -6px -16px -23px; } }
+
+/* Food sits in the middle like any other tab: the bar is one quiet piece of glass. */
+.tab-centre .tab-pill { display: block; }
+/* The label sits above the lens. */
+.tab { isolation: isolate; }
+.tab > span:last-child { position: relative; z-index: 1; }
+/* The chosen tab sits in a clear glass lens filling its slot, which slides over from the last tab
+   (motion.js). */
+.tab-pill {
+  position: absolute; inset: -6px -21px -23px; z-index: -1; border-radius: 26px; pointer-events: none;
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.38), inset 0 0 0 0.5px rgba(255, 255, 255, 0.1);
+}
+.tab-badge {
+  position: absolute; top: -4px; left: 14px; min-width: 17px; height: 17px; padding: 0 5px; border-radius: 9px;
+  display: grid; place-items: center; font-size: 0.6875rem; font-weight: 700; line-height: 1; color: #fff;
+  background: #ff453a; box-shadow: 0 0 0 1.5px rgba(28, 28, 32, 0.9);
+}
+.tab > span:last-child { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.01em; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tab[aria-current="page"] { color: #fff; }
+.tab[aria-current="page"] .ic { stroke-width: 1.9; color: #fff; }
+.tab:focus-visible { outline-offset: -4px; border-radius: var(--r-ctl); }
+.tabbar-brand { display: none; }
+.wide-only { display: none !important; }
+.only-wide { display: none; }
+.only-narrow-flex { display: flex; }
+
+/* ---------- Toast, gate, loading ---------- */
+
+.toast {
+  position: fixed; left: 50%; z-index: 60; bottom: calc(var(--tabbar) + env(safe-area-inset-bottom) + 14px);
+  width: max-content; max-width: min(calc(100vw - 32px), 440px); padding: 13px 18px; border-radius: var(--r-tile);
+  background: rgba(24, 27, 34, 0.97); color: var(--text); font-size: 0.9375rem; font-weight: 560; line-height: 1.4; text-align: center;
+  box-shadow: inset 0 0 0 1px var(--line-ctl), inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 20px 50px rgba(0, 0, 0, 0.7);
+  transform: translate(-50%, 14px) scale(0.96); opacity: 0; pointer-events: none;
+  transition: opacity 220ms var(--ease), transform var(--spring-ms) var(--spring);
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .toast { background: rgba(24, 27, 34, 0.84); -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4); }
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.bad { background: rgba(48, 12, 17, 0.97); color: #ffd6d9; box-shadow: inset 0 0 0 1px rgba(255, 45, 85, 0.6), 0 20px 50px rgba(0, 0, 0, 0.7); }
+.toast.big { font-size: 1.0625rem; font-weight: 650; padding: 15px 20px; }
+.toast.link { pointer-events: auto; cursor: pointer; text-decoration: underline; text-decoration-color: var(--line-ctl); text-underline-offset: 3px; }
+/* An error toast says it can be reported; the whole toast is the button. */
+.toast.bad.link { text-decoration: none; pointer-events: none; }
+.toast-report { margin-left: 6px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.toast.bad.link .toast-report { position: relative; pointer-events: auto; }
+.toast.bad.link .toast-report::before { content: ''; position: absolute; inset: -12px -14px; }
+body:has(.fchat-page, .cchat-page) .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 72px); }
+body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(safe-area-inset-top) + 14px); }
+
+.gate {
+  min-height: 100dvh; display: grid; align-content: center; max-width: 400px; margin: 0 auto;
+  padding: calc(env(safe-area-inset-top) + 32px) calc(env(safe-area-inset-right) + 24px) calc(env(safe-area-inset-bottom) + 32px) calc(env(safe-area-inset-left) + 24px);
+}
+.wordmark { font-size: 4rem; font-weight: 780; letter-spacing: -0.045em; line-height: 1; }
+/* The way in: the mark glowing Merlot over black, chrome wordmark, the promise in Gambetta. */
+.gate::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(70vmax 55vmax at 50% 12%, rgba(225, 6, 0, 0.24), transparent 62%), radial-gradient(40vmax 30vmax at 90% 100%, rgba(255, 90, 31, 0.08), transparent 70%);
+}
+.brand-lockup { display: grid; justify-items: center; gap: 10px; text-align: center; }
+.gate-mark { margin-bottom: 8px; filter: drop-shadow(0 0 24px rgba(225, 6, 0, 0.55)); }
+.tagline { margin: 0; font-family: var(--serif); font-style: italic; font-size: 1.375rem; color: var(--chrome-c); }
+.gate > .brand-lockup + p { margin-top: 22px; }
+.gate > p { margin-top: 14px; color: var(--text-2); font-size: 1.0625rem; line-height: 1.5; text-align: center; text-wrap: balance; }
+.gate > p em { color: var(--text); }
+.gate form { margin-top: 16px; }
+.gate > .form-actions { margin-top: 24px; }
+.gate .note.bad { margin-top: 16px; }
+#faceid-slot .btn { margin-top: 28px; }
+#faceid-slot .note { text-align: center; }
+.gate .recover { margin-top: 32px; }
+.gate .recover summary {
+  display: flex; align-items: center; justify-content: center; min-height: 44px; cursor: pointer; list-style: none;
+  font-size: 0.9375rem; color: var(--text-2); border-radius: 10px; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px;
+}
+.gate .recover[open] summary { color: var(--text); }
+.gate.leaving { opacity: 0; transition: opacity 200ms var(--ease); }
+.shell.enter { animation: app-in 320ms var(--ease) both; }
+@keyframes app-in { from { opacity: 0; } }
+
+/* The lock screen. One layout for every state (the brand, a Face ID glyph, one line of status, one
+   button), so Face ID starting, being cancelled or succeeding never moves anything. The scan line and
+   the glow only run while Face ID is being waited for, and not at all with reduced motion. */
+.gate.lock {
+  align-content: start; justify-items: center; text-align: center; -webkit-user-select: none; user-select: none;
+  padding-top: max(calc(env(safe-area-inset-top) + 36px), calc((100dvh - 560px) / 2));
+}
+.lock[data-state="idle"], .lock[data-state="error"], .lock[data-state="offline"] { cursor: pointer; }
+.lock .brand-lockup { margin-bottom: 52px; }
+.lock .wordmark { font-size: 3.5rem; }
+.lock-stage {
+  display: grid; grid-template-rows: 88px 3.2rem 54px; justify-items: center; align-items: center; row-gap: 14px;
+  width: 100%; max-width: 340px;
+}
+.lock-glyph { position: relative; width: 88px; height: 88px; color: var(--chrome-c); transition: color 300ms var(--ease), filter 300ms var(--ease); }
+.lock-glyph .ic { display: block; width: 88px; height: 88px; stroke-width: 0.85; }
+.lock-glyph::after {
+  content: ''; position: absolute; left: 14%; right: 14%; top: 21%; height: 2px; border-radius: 2px; opacity: 0; pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--merlot-hi) 25%, #ff8a70 50%, var(--merlot-hi) 75%, transparent);
+  box-shadow: 0 0 12px 1px rgba(255, 42, 23, 0.7);
+}
+.lock[data-state="scanning"] .lock-glyph { animation: lock-glow 2.4s ease-in-out infinite alternate; }
+.lock[data-state="scanning"] .lock-glyph::after { animation: lock-scan 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
+.lock[data-state="idle"] .lock-glyph, .lock[data-state="error"] .lock-glyph, .lock[data-state="offline"] .lock-glyph { color: var(--text-3); }
+.lock[data-state="unlocking"] .lock-glyph { color: var(--menthol); filter: drop-shadow(0 0 14px rgba(63, 240, 185, 0.4)); animation: lock-ok 420ms var(--ease); }
+@keyframes lock-scan { 0% { transform: translateY(0); opacity: 0; } 14% { opacity: 1; } 86% { opacity: 1; } 100% { transform: translateY(50px); opacity: 0; } }
+@keyframes lock-glow { from { filter: drop-shadow(0 0 0 rgba(225, 6, 0, 0)); } to { filter: drop-shadow(0 0 10px rgba(225, 6, 0, 0.4)); } }
+@keyframes lock-ok { 40% { transform: scale(1.08); } }
+.lock-status { margin: 0; max-width: 26ch; color: var(--text-2); font-size: 1.0625rem; line-height: 1.5; text-wrap: balance; transition: color var(--t-layer) var(--ease); }
+.lock[data-state="unlocking"] .lock-status { color: var(--text); }
+.lock[data-state="error"] .lock-status { color: var(--cherry); }
+.lock-action { width: 100%; transition: opacity var(--t-layer) var(--ease), transform var(--t-layer) var(--ease); }
+.lock[data-state="scanning"] .lock-action, .lock[data-state="unlocking"] .lock-action {
+  opacity: 0; transform: translateY(6px); visibility: hidden; pointer-events: none;
+  transition: opacity 160ms var(--ease), transform 160ms var(--ease), visibility 0s 160ms;
+}
+.lock .recover { width: 100%; max-width: 340px; margin-top: 28px; text-align: left; }
+.lock .recover summary { font-size: 0.875rem; color: var(--text-3); }
+.lock .recover[open] summary { color: var(--text-2); }
+.lock .recover .note { text-align: center; }
+
+.skeleton { display: grid; gap: 12px; margin-top: 12px; }
+.skeleton i { display: block; height: 128px; border-radius: var(--r-card); background: var(--card); box-shadow: var(--rim); animation: breathe 1.4s ease-in-out infinite; }
+.skeleton i.short { height: 64px; }
+@keyframes breathe { 50% { opacity: 0.55; } }
+
+/* ---------- Narrow phones ---------- */
+
+@media (max-width: 380px) {
+  :root { --pad: 16px; --pad-sm: 12px; --gutter: 14px; }
+  .rings-card { padding: 18px 14px 14px; }
+  .rc-set { gap: 16px; }
+  .rings { --size: 148px; --sw: 14px; }
+  .ov { gap: 8px; }
+  .ov-tile { padding: 13px 12px 12px; }
+  .li { gap: 4px 12px; padding: 12px 14px; }
+  .li-min { padding-left: 56px; }
+  .facts > div { grid-template-columns: 1fr; gap: 0; }
+  .node-add { flex-wrap: wrap; }
+  .node-add .btn { flex: 1 1 100%; }
+}
+
+/* The smallest phones: smaller rings, so the legend keeps its room beside them. */
+@media (max-width: 340px) {
+  .rc-set { gap: 14px; }
+  .rings { --size: 124px; --sw: 12px; --rgap: 2px; }
+  .rings-center .ic { width: 18px; height: 18px; }
+  .lg-val { font-size: 1.25rem; }
+  .ov-v { font-size: 1.3125rem; }
+}
+
+/* Very narrow, as at 200% zoom: the rings sit above their legend, the tiles in one column. */
+@media (max-width: 300px) {
+  .rc-set, .rc-fuel { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+  .rc-fuel > .chev { display: none; }
+  .ov { grid-template-columns: minmax(0, 1fr); }
+  .lt { flex-wrap: wrap; }
+  .tab > span:last-child { font-size: 0.625rem; }
+  .now-foot .seg.mini { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  .now-foot .seg.mini button { min-width: 0; }
+}
+
+/* ---------- Tablet and desktop: a sidebar from 900px ---------- */
+
+/* While typing on a phone (app.js sets kb-open) the tab bar steps aside instead of riding up on top of
+   the keyboard, and everything placed above it (the chat composers, toasts) drops to the keyboard. */
+@media (max-width: 899px) {
+  html.kb-open { --tabbar: 0px; }
+  html.kb-open .tabbar { visibility: hidden; opacity: 0; pointer-events: none; transform: translateY(16px); transition: none; }
+  /* The chats fill the screen, so the composer always sits at its foot: above the tab bar, or right on
+     the keyboard while typing (iOS slides the screen up until the composer meets the keys). A short chat
+     no longer leaves it floating halfway up with empty space under it. Messages gather just above the
+     composer; the greeting of an empty chat sits in the middle. */
+  .page:has(> .fchat-page), .page:has(> .cchat-page) { display: flex; flex-direction: column; min-height: 100dvh; }
+  .fchat-page, .cchat-page { flex: 1 0 auto; display: flex; flex-direction: column; }
+  .fchat-page > .chat, .cchat-page > .chat { flex: 1 0 auto; align-content: end; }
+  .fchat-page > .chat:has(> .fc-hello:only-child), .cchat-page > .chat:has(> .empty-state:only-child) { align-content: center; }
+  html.kb-open .page:has(> .fchat-page), html.kb-open .page:has(> .cchat-page) { padding-bottom: 10px; }
+  html.kb-open .composer-dock { bottom: 10px; }
+  /* A sheet sits on top of the keyboard instead of going under it (--kb and --vvh, app.js), so Save, Log
+     and the rest stay in reach while typing, and it scrolls within the room left above the keys. */
+  html.kb-open .sheet { bottom: var(--kb, 0px); max-height: calc(var(--vvh, 100dvh) - env(safe-area-inset-top) - 12px); padding-bottom: 16px; }
+}
+/* Fields on a phone are at least 16 px: iOS zooms the whole page into anything smaller when it is tapped. */
+@media (pointer: coarse) {
+  .input.mono, .copy-row .input, .amount-row.small .input, .fc-amount .input { font-size: 1rem; }
+}
+@media (min-width: 900px) {
+  :root { --tabbar: 0px; --pad: 22px; --pad-sm: 16px; }
+  .shell:has(> .tabbar) { padding-left: var(--side); }
+  .page { max-width: 784px; padding: calc(env(safe-area-inset-top) + 24px) 32px 64px; }
+  .lt { padding-top: 22px; }
+  .lt-title { font-size: 2.5rem; }
+  .gh h2 { font-size: 1.3125rem; }
+  .tabbar {
+    overflow-y: auto; overscroll-behavior: contain;
+    top: 0; left: 0; right: auto; bottom: 0; width: var(--side); height: 100dvh; padding: calc(env(safe-area-inset-top) + 24px) 14px 24px calc(env(safe-area-inset-left) + 14px);
+    display: flex; flex-direction: column; gap: 2px; border-radius: 0; background: var(--card); box-shadow: 1px 0 0 var(--line);
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+  .tabbar-brand.wide-only { display: flex !important; align-items: center; gap: 10px; padding: 4px 10px 22px; font-size: 1.875rem; font-weight: 780; letter-spacing: -0.035em; }
+  .tab-badge { top: -6px; left: 13px; }
+  .tab {
+    grid-template-columns: 24px minmax(0, 1fr); justify-items: start; align-items: center; align-content: center; gap: 12px;
+    min-height: 46px; padding: 0 12px; border-radius: var(--r-ctl); color: var(--text-2);
+    transition: background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease);
+  }
+  .tab .ic { width: 21px; height: 21px; color: var(--text-3); }
+  .tab { position: static; }
+  .tab > span:last-child { font-size: 0.9375rem; font-weight: 580; letter-spacing: -0.005em; }
+  .tab[aria-current="page"] { color: var(--text); }
+  .tab[aria-current="page"] .ic { color: var(--silver); }
+  /* In the sidebar the capsule becomes the whole row, still sliding between rows. The icon box is a
+     fixed 24 px square in the middle of the 46 px row, so the capsule's insets land on the row edges. */
+  .tab-ic { width: 24px; height: 24px; }
+  .tab-pill {
+    inset: -11px auto -11px -12px; width: calc(var(--side) - 28px); border-radius: var(--r-ctl);
+    position: absolute; background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.22), inset 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+  }
+  .tab:active .tab-ic { transform: none; }
+  .tab:active { transform: scale(0.98); }
+  /* In the sidebar Food is a row like the others, its icon lit in Merlot. */
+  .tab-centre .tab-ic, .tab-centre[aria-current="page"] .tab-ic { width: 24px; height: 24px; margin-top: 0; border-radius: 0; background: none; box-shadow: none; }
+  .tab-centre .tab-ic .ic, .tab-centre[aria-current="page"] .tab-ic .ic { width: 21px; height: 21px; stroke-width: 1.9; }
+  .tab-centre .tab-pill { display: block; }
+  .tab-centre > span:last-child { margin-top: 0; }
+  .tab-centre:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; }
+  .tab-centre:focus-visible .tab-ic { outline: none; }
+  .tab { transition: background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease), transform var(--spring-ms) var(--spring); }
+  .tab.wide-only:first-of-type { margin-top: 0; }
+  .wide-only { display: grid !important; }
+  .tabbar > .tab.wide-only { margin-top: 0; }
+  .tabbar > a.tab:nth-of-type(8) { margin-top: 18px; position: relative; }
+  .tabbar > a.tab:nth-of-type(8)::before { content: ''; position: absolute; top: -10px; left: 12px; right: 12px; height: 1px; background: var(--line); }
+  .toast { bottom: 28px; margin-left: calc(var(--side) / 2); }
+  .composer-dock { bottom: 16px; }
+  /* Centred by margins, not a transform, so the transform is free for its entrance. */
+  .sheet {
+    left: 0; right: 0; top: 6dvh; bottom: auto; width: min(580px, calc(100vw - 48px)); max-height: 88dvh; margin: 0 auto;
+    border-radius: var(--r-sheet); padding: 18px 26px 26px;
+    box-shadow: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 40px 100px rgba(0, 0, 0, 0.8);
+  }
+  .sheet-head { top: -18px; margin: -18px -26px 0; padding: 18px 26px 12px; }
+  .sheet-grab { display: none; }
+  .confirm-sheet { top: 24dvh; }
+  .page-coach { max-width: 800px; }
+  .li-side { max-width: 260px; }
+  .node-meta { max-width: 240px; }
+}
+
+/* Plan shows one segment at a time until both columns fit; Goals is a segment only until then, as
+   the sidebar has its own row. */
+@media (max-width: 1239px) {
+  .plan-split:not(.tab-habits) .pane-habits, .plan-split:not(.tab-tasks) .pane-tasks, .plan-split:not(.tab-goals) .pane-goals { display: none; }
+}
+
+/* ---------- Wide: two columns only when both can breathe ---------- */
+
+@media (min-width: 1240px) {
+  .page { max-width: 1264px; }
+  .page-coach { max-width: 800px; }
+  .only-wide { display: block; }
+  .only-narrow, .only-narrow-flex { display: none !important; }
+  .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 380px); gap: 36px; align-items: start; }
+  .split > aside > .section:first-child > .gh:first-child,
+  .split > aside > .only-wide:first-child > .section:first-child > .gh:first-child { margin-top: 12px; }
+  .split > aside > .only-wide:first-child > .card:first-child { margin-top: 12px; }
+  .plan-split { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+  .plan-split .pane-goals { display: none; }
+  .page-plan .plan-split > aside > .section:first-child > .gh:first-child { margin-top: 34px; }
+  .goal-split { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .goal-split > aside { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 0 28px; align-items: start; }
+  .goal-split > aside > .woop-card { margin-top: 34px; align-self: start; }
+  .map-panes { grid-template-columns: minmax(320px, 0.75fr) minmax(0, 1.5fr); gap: 20px; align-items: start; }
+  .map-panes.view-outline .pane-map, .map-panes.view-map .pane-outline { display: block; }
+  .map-panes .pane-map { position: sticky; top: 24px; }
+  .page-settings .split { grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); }
+  .page-goals .goal-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ---------- Empty states ---------- */
+
+.empty-state {
+  display: grid; justify-items: center; text-align: center; padding: 30px 22px 26px;
+  background: radial-gradient(70% 70% at 50% 0%, rgba(225, 6, 0, 0.11), transparent 70%), var(--card);
+}
+.empty-orb {
+  width: 60px; height: 60px; margin-bottom: 16px; border-radius: 50%; display: grid; place-items: center; color: var(--silver);
+  background: radial-gradient(circle at 50% 30%, #2c303a, #14161c 72%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 0 0 1px var(--line), 0 0 0 7px rgba(225, 6, 0, 0.06), 0 12px 32px -12px rgba(225, 6, 0, 0.6);
+}
+.empty-orb .ic { width: 26px; height: 26px; stroke-width: 1.7; }
+.empty-state h3 { font-size: 1.1875rem; font-weight: 700; letter-spacing: -0.014em; }
+.empty-state p { margin-top: 6px; max-width: 44ch; line-height: 1.55; }
+.empty-state .form-actions { justify-content: center; margin-top: 18px; }
+.empty-state.small { padding: 22px 18px 20px; }
+.empty-state.small .empty-orb { width: 46px; height: 46px; margin-bottom: 12px; }
+.empty-state.small .empty-orb .ic { width: 21px; height: 21px; }
+.empty-state.small h3 { font-size: 1.0625rem; }
+
+/* ---------- Moving between screens ---------- */
+
+/* Screens change through the View Transitions API (motion.js sets html[data-nav]): deeper screens
+   push in from the right and pop back out the same way, the iOS drawer curve; tabs settle in with a
+   short rise. Snapshots move, never the live page, and taps go straight through to the new screen.
+   The tab bar is its own layer and stays put while its capsule slides. */
+.tabbar { view-transition-name: tabbar; }
+::view-transition { pointer-events: none; }
+::view-transition-group(tabbar) { animation: none; }
+::view-transition-old(tabbar) { animation: none; opacity: 0; }
+::view-transition-new(tabbar) { animation: none; }
+:root[data-nav]::view-transition-old(root),
+:root[data-nav]::view-transition-new(root) { mix-blend-mode: normal; }
+:root[data-nav="tab"]::view-transition-old(root) { animation: vt-out 140ms var(--ease) both; }
+:root[data-nav="tab"]::view-transition-new(root) { animation: vt-rise 300ms var(--ease) both; }
+:root[data-nav="fwd"]::view-transition-old(root) { animation: vt-under 380ms var(--ease-drawer) both; }
+:root[data-nav="fwd"]::view-transition-new(root) { animation: vt-push 380ms var(--ease-drawer) both; box-shadow: -24px 0 48px -18px rgba(0, 0, 0, 0.9); }
+:root[data-nav="back"]::view-transition-old(root) { z-index: 2; animation: vt-pop 340ms var(--ease-drawer) both; box-shadow: -24px 0 48px -18px rgba(0, 0, 0, 0.9); }
+:root[data-nav="back"]::view-transition-new(root) { animation: vt-ununder 340ms var(--ease-drawer) both; }
+:root[data-nav="fade"]::view-transition-old(root) { animation: vt-out 160ms ease both; }
+:root[data-nav="fade"]::view-transition-new(root) { animation: vt-in 160ms ease both; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; } }
+@keyframes vt-rise { from { opacity: 0; transform: translateY(8px); } }
+@keyframes vt-push { from { transform: translateX(100%); } }
+@keyframes vt-under { to { transform: translateX(-28%); opacity: 0.4; } }
+@keyframes vt-pop { to { transform: translateX(100%); } }
+@keyframes vt-ununder { from { transform: translateX(-28%); opacity: 0.4; } }
+
+/* Pull to refresh on Today: a ring that fills as you pull, Merlot once a release would refresh. */
+.ptr {
+  position: fixed; top: calc(env(safe-area-inset-top) + 6px); left: 50%; z-index: 30; width: 34px; height: 34px; padding: 4px;
+  border-radius: 50%; opacity: 0; pointer-events: none; color: var(--chrome-c); transform: translate3d(-50%, -30px, 0);
+  background: rgba(20, 22, 28, 0.92); box-shadow: inset 0 0 0 1px var(--line), 0 8px 20px -8px rgba(0, 0, 0, 0.9);
+}
+.ptr svg { display: block; width: 100%; height: 100%; }
+.ptr circle { fill: none; stroke-width: 2.6; }
+.ptr-track { stroke: rgba(255, 255, 255, 0.12); }
+.ptr-arc { stroke: currentColor; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; transform: rotate(-90deg); transform-origin: 50% 50%; }
+.ptr.armed { color: var(--merlot-hi); }
+.ptr.spin { color: var(--merlot-hi); }
+.ptr.spin svg { animation: ptr-spin 0.8s linear infinite; }
+.ptr.spin .ptr-arc { stroke-dashoffset: 72 !important; }
+@keyframes ptr-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Input, motion and display preferences ---------- */
+
+@media (pointer: coarse) {
+  .btn.small { min-height: 44px; }
+  .seg span, .seg button, .seg.small span, .seg.mini button { min-height: 44px; }
+}
+
+/* Reduced motion: nothing travels. What a change means is kept as colour and opacity: the typing dots
+   still breathe, a tick still washes Menthol, bars and toasts still fade. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation: none !important; scroll-behavior: auto !important; }
+  .typing i { animation: typing-fade 1.4s ease-in-out infinite !important; }
+  .li.pending { animation: tick-flash 0.8s ease !important; }
+  .topbar, .toast { transition-property: opacity, visibility !important; transition-duration: 160ms !important; }
+}
+
+@media (forced-colors: active) {
+  .card, .group, .btn, .icon-btn, .input, .seg, .banner, .capacity, .stat, .dtile, .body-tile, .goal-card, .outline, .map-wrap, .sheet, .toast, .composer, .tabbar, .topbar, .qchip {
+    border: 1px solid CanvasText;
+  }
+  .chrome:not(.btn), .wordmark, .tabbar-brand span, .clock, .goal-big, .lg.r-hp .lg-val, .rings-center b, .lt-title, .goal-h { -webkit-text-fill-color: CanvasText; color: CanvasText; background: none; }
+  .chk { border: 2px solid CanvasText; }
+  .seg input:checked + span, .seg button[aria-selected="true"], .seg button.on, .seg button[aria-pressed="true"], .days input:checked + span, .chip input:checked + span, .rate input:checked + span {
+    forced-color-adjust: none; background: Highlight; color: HighlightText;
+  }
+  .seg-ind, .tab-pill, .swipe-bg, .ptr, .composer-dock::before { display: none; }
+  .tab[aria-current="page"] { outline: 2px solid Highlight; }
+}
+
+/* ---------- Life: livelier presses, switches, sparks, rolling numbers, shimmer, scroll ---------- */
+
+/* Presses go in fast and come back on the livelier spring (--pop), a little past rest. */
+.btn { transition: background-color var(--t-ctl) var(--ease), transform var(--pop-ms) var(--pop), box-shadow var(--t-ctl) var(--ease), opacity var(--t-ctl); }
+.btn:active:not(:disabled) { transform: scale(0.95); }
+.btn.wide:active:not(:disabled), .btn.big:active:not(:disabled) { transform: scale(0.975); }
+.gh-link, .back, .topbar-back { transition: transform var(--pop-ms) var(--pop), background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease); }
+.gh-link:active, .back:active, .topbar-back:active { transform: scale(0.94); transition: transform var(--t-press) var(--ease), background-color var(--t-ctl) var(--ease), color var(--t-ctl) var(--ease); }
+/* A pressed row gives a little under the finger: its words sink, then spring back. */
+.li > .li-body { transform-origin: 0 50%; transition: transform var(--pop-ms) var(--pop); }
+button.li:active > .li-body, a.li:active > .li-body { transform: scale(0.98); transition: transform var(--t-press) var(--ease); }
+.li .chev { transition: transform var(--pop-ms) var(--pop); }
+button.li:active .chev, a.li:active .chev { transform: translateX(3px); transition: transform var(--t-press) var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  a.card:hover, .goal-card:hover { transform: translateY(-2px); }
+  a.card:active { transform: scale(0.985); }
+  .goal-card:active { transform: scale(0.98); }
+}
+.check input { transition: background-color var(--t-ctl), box-shadow var(--t-ctl), transform var(--pop-ms) var(--pop); }
+.check input::after { transform: rotate(45deg) scale(0.3); transition: opacity var(--t-ctl) var(--ease), transform var(--pop-ms) var(--pop); }
+.check input:checked::after { transform: rotate(45deg) scale(1); }
+.check:active input { transform: scale(0.88); transition: background-color var(--t-ctl), box-shadow var(--t-ctl), transform var(--t-press) var(--ease); }
+
+/* A switch: the knob travels on the spring, the track turns Menthol. Used for the Sounds setting. */
+.switch-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 52px; cursor: pointer; }
+.switch-text { display: grid; gap: 3px; min-width: 0; line-height: 1.45; }
+.switch-text b { font-weight: 650; }
+.switch {
+  -webkit-appearance: none; appearance: none; position: relative; flex: none; width: 52px; height: 32px; margin: 0; padding: 0;
+  border: 0; border-radius: 16px; cursor: pointer; background: var(--fill-2); box-shadow: inset 0 0 0 1px var(--line-ctl);
+  transition: background-color var(--t-layer) var(--ease), box-shadow var(--t-layer) var(--ease);
+}
+.switch::after {
+  content: ''; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: var(--silver);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); transition: transform var(--pop-ms) var(--pop);
+}
+.switch:checked { background: var(--menthol); box-shadow: none; }
+.switch:checked::after { transform: translateX(20px); }
+.switch-row:active .switch::after { transform: scale(0.9); transition-duration: var(--t-press); transition-timing-function: var(--ease); }
+.switch-row:active .switch:checked::after { transform: translateX(20px) scale(0.9); }
+.switch:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* Sparks leave a tick (motion.js): a layer of its own, above everything, that takes no touches. */
+.fx-spark-layer { position: fixed; inset: 0; z-index: 70; overflow: hidden; pointer-events: none; contain: layout paint; }
+.fx-spark { position: absolute; left: 0; top: 0; border-radius: 40%; will-change: transform, opacity; }
+
+/* A row that has gone from the list slips away from where it was. */
+.row-ghost { position: absolute; left: 0; right: 0; z-index: 0; pointer-events: none; }
+
+/* A number that changes rolls: the new one comes up behind the old (motion.js). */
+.roll { display: inline-grid; }
+.roll > * { grid-area: 1 / 1; }
+
+/* Loading: a soft light passes over the placeholders. Add .shimmer to any other placeholder. */
+.skeleton i, .shimmer { position: relative; overflow: hidden; }
+.skeleton i { animation: none; }
+.skeleton i::after, .shimmer::after {
+  content: ''; position: absolute; inset: 0; transform: translateX(-100%); pointer-events: none;
+  background: linear-gradient(100deg, transparent 25%, rgba(255, 255, 255, 0.06) 50%, transparent 75%);
+  animation: shimmer 1.8s var(--ease-in-out) infinite;
+}
+@keyframes shimmer { 0% { transform: translateX(-100%); } 70%, 100% { transform: translateX(100%); } }
+
+/* Between tabs the new screen drifts in from the side its tab is on. */
+:root[data-nav="tab"][data-dir="r"]::view-transition-old(root) { animation: vt-leave-l 140ms var(--ease) both; }
+:root[data-nav="tab"][data-dir="r"]::view-transition-new(root) { animation: vt-drift-r 300ms var(--ease) both; }
+:root[data-nav="tab"][data-dir="l"]::view-transition-old(root) { animation: vt-leave-r 140ms var(--ease) both; }
+:root[data-nav="tab"][data-dir="l"]::view-transition-new(root) { animation: vt-drift-l 300ms var(--ease) both; }
+@keyframes vt-leave-l { to { opacity: 0; transform: translateX(-10px); } }
+@keyframes vt-leave-r { to { opacity: 0; transform: translateX(10px); } }
+@keyframes vt-drift-r { from { opacity: 0; transform: translateX(22px); } }
+@keyframes vt-drift-l { from { opacity: 0; transform: translateX(-22px); } }
+
+/* Scrolling. Where the browser can tie an animation to scroll position (no script, no jank), the large
+   title lags, fades and blurs as it leaves, and blocks below the fold rise into view as they arrive.
+   Anything already in view is simply there. */
+@keyframes title-away { to { opacity: 0; transform: translateY(16px) scale(0.96); filter: blur(4px); } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(18px); } }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .lt-text, .goal-h { transform-origin: 0 100%; animation: title-away linear both; animation-timeline: view(block); animation-range: exit 0% exit 100%; }
+    :where(.page, .page > .section, .page > .split > *, .page > .split > * > .section) > :where(.card, .group) {
+      animation: rise-in linear both; animation-timeline: view(block); animation-range: entry 30px entry 170px;
+    }
+  }
+}

@@ -1,0 +1,78 @@
+/* Sheets, and the Plan pieces they show: the habit heatmap and its key. After today.css. */
+
+/* ---------- Plan ---------- */
+
+.plan-seg { margin: 6px 0 0; }
+.facts { margin: 10px 0 0; display: grid; gap: 4px; }
+.facts > div { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px; font-size: 0.875rem; line-height: 1.4; }
+.facts dt { color: var(--text-3); font-size: 0.75rem; font-weight: 560; padding-top: 2px; }
+.facts dd { margin: 0; overflow-wrap: anywhere; color: var(--text); }
+@keyframes heat-in { from { opacity: 0; transform: translateY(-4px); } }
+
+.heat { display: grid; grid-template-rows: repeat(7, 11px); grid-auto-flow: column; grid-auto-columns: 11px; gap: 3px; margin-top: 16px; overflow-x: auto; padding-bottom: 2px; }
+.heat i, .heat-key i { border-radius: 3px; background: var(--fill-2); }
+.heat i.h-pad, .heat i.h-off { background: transparent; }
+.heat i.h-none, .heat i.h-flex { background: var(--raised); }
+.heat i.h-kept, .heat-key i.h-kept { background: var(--green); }
+.heat i.h-min, .heat-key i.h-min { background: rgba(63, 240, 185, 0.45); }
+.heat i.h-pardoned, .heat-key i.h-pardoned { background: repeating-linear-gradient(45deg, var(--text-3) 0 2px, transparent 2px 4px); }
+.heat i.h-missed, .heat-key i.h-missed { background: var(--red); }
+.heat i.h-rest, .heat-key i.h-rest { background: transparent; box-shadow: inset 0 0 0 1.5px var(--blue); }
+.heat i.h-open, .heat-key i.h-open { background: transparent; box-shadow: inset 0 0 0 1.5px var(--silver); }
+.heat-key i.h-none, .heat-key i.h-flex { background: var(--raised); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.heat-key { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; font-size: 0.75rem; color: var(--text-2); }
+.heat-key span { display: inline-flex; align-items: center; gap: 5px; }
+.heat-key i { width: 10px; height: 10px; display: inline-block; }
+
+.rest-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 10px; margin-top: 16px; }
+.rest-form .btn { align-self: stretch; }
+
+/* ---------- Sheets ---------- */
+
+/* Sheets rise on a spring, follow the finger down, and leave the way they came; the backdrop fades
+   with them. All of it is in motion.js, for every sheet (.sheet), whoever draws it. The sheet carries
+   a slab of its own colour below its bottom edge, so a bounce past the top never shows a gap. */
+.sheet-backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(0, 0, 0, 0.62); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .sheet-backdrop { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+}
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; max-height: 92dvh; overflow: auto; overscroll-behavior: contain;
+  background: var(--sheet); border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+  padding: 8px calc(20px + env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom)) calc(20px + env(safe-area-inset-left));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 -24px 64px rgba(0, 0, 0, 0.7), 0 160px 0 0 var(--sheet);
+}
+.sheet.is-dragging { -webkit-user-select: none; user-select: none; will-change: transform; }
+.sheet-ghost, .sheet-ghost * { pointer-events: none !important; }
+.sheet .input { background: #0e1015; }
+.sheet .seg, .sheet .days span, .sheet .chip span { background: #0e1015; }
+.sheet-grab { position: relative; width: 40px; height: 5px; border-radius: 3px; background: var(--line-strong); margin: 2px auto 10px; }
+/* The grabber's reach is far wider than the bar itself. */
+.sheet-grab::before { content: ''; position: absolute; inset: -12px -80px -6px; }
+@media (max-width: 899px) {
+  .sheet-grab, .sheet-head { touch-action: none; cursor: grab; }
+}
+.dodge-sheet .dodge-title { font-size: 1.125rem; font-weight: 680; letter-spacing: -0.012em; overflow-wrap: anywhere; }
+.dodge-sheet > .btn.wide { margin-top: 16px; }
+.sheet-head {
+  position: sticky; top: -8px; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin: 0 -20px; padding: 8px 20px 10px; background: var(--sheet);
+}
+.sheet-head h2 { font-size: 1.25rem; font-weight: 720; letter-spacing: -0.02em; }
+.sheet h3 { font-size: 1.0625rem; font-weight: 680; }
+.sheet-actions { display: grid; gap: 10px; margin-top: 18px; }
+.sheet-actions > .btn { justify-content: flex-start; }
+.sheet-actions > .btn.danger-text { margin-top: 10px; }
+.sheet-actions .note { margin-top: 0; }
+.sheet-move { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; border-radius: var(--r-inset); background: var(--inset); box-shadow: inset 0 0 0 1px var(--line-soft); }
+.sheet-move .btn { flex: 1 1 auto; }
+.sheet-form { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 18px; }
+
+/* The confirm sheet (ui.js confirmSheet) has a layer of its own above the app and under the toast, so a redraw
+   underneath never takes it away. */
+.confirm-layer { position: fixed; inset: 0; z-index: 55; }
+.confirm-sheet { display: grid; gap: 6px; }
+.confirm-title { font-size: 1.25rem; font-weight: 720; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.confirm-text { overflow-wrap: anywhere; }
+.confirm-actions { display: grid; gap: 10px; margin-top: 14px; }
+.confirm-note { width: 100%; min-height: 84px; margin-top: 12px; resize: none; }

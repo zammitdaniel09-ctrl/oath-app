@@ -1,0 +1,59 @@
+/* Mail: the important mail, its rows and the setup. After shell.css. */
+
+/* ---------- Mail ---------- */
+
+/* Important email as cards: who, when, the subject, what it says, what to do and by when, then Done.
+   Everything else as quiet rows grouped by kind. The setup is a short card of three steps. */
+.ml-status { margin: 4px 0 0; font-size: 0.8125rem; color: var(--text-3); }
+.ml-cards { display: grid; gap: 10px; }
+.ml-card { margin-top: 0; padding: var(--pad-sm) var(--pad); display: grid; gap: 6px; }
+.ml-card.done { opacity: 0.6; }
+.ml-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.ml-from { min-width: 0; overflow: hidden; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.ml-top time, .ml-row time { flex: none; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.04em; color: var(--text-3); }
+.ml-subject { margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--text); overflow-wrap: anywhere; }
+.ml-summary { margin: 0; font-size: 0.9375rem; line-height: 1.45; color: var(--text-2); overflow-wrap: anywhere; }
+.ml-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.ml-action, .ml-due, .ml-reason {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 0.8125rem; font-weight: 620;
+  background: var(--fill); box-shadow: inset 0 0 0 1px var(--line);
+}
+.ml-action { color: var(--text); }
+.ml-action .ic, .ml-due .ic { width: 14px; height: 14px; }
+.ml-due { color: var(--amber); box-shadow: inset 0 0 0 1px rgba(255, 194, 51, 0.35); }
+.ml-reason { color: var(--text-2); }
+.ml-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; }
+.ml-open { margin-left: auto; }
+.ml-open .ic { width: 14px; height: 14px; }
+.ml-empty { margin-top: 0; padding: 18px var(--pad); color: var(--text-2); }
+.ml-empty p { margin: 0; }
+.ml-done { margin-top: 18px; }
+.ml-done summary { display: flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 650; color: var(--text-2); cursor: pointer; }
+.ml-rest { margin-top: 26px; }
+.ml-rest-h { margin: 0; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+.ml-group .gh { margin-top: 18px; }
+.ml-row { grid-template-columns: minmax(0, 1fr) auto; }
+.ml-row .li-title { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.ml-row .ml-from { font-weight: 640; }
+.ml-row .li-sub { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ml-row-btns { display: flex; align-items: center; gap: 2px; }
+.ml-row-btns .icon-btn { width: 36px; height: 36px; }
+.ml-row-btns .icon-btn .ic { width: 16px; height: 16px; }
+.ml-sorting { font-size: 0.75rem; color: var(--text-3); }
+.ml-more { margin: 6px 0 0 auto; display: flex; }
+.ml-setup { display: grid; gap: 10px; margin-top: 14px; }
+.ml-setup h2 { margin: 0; font-size: 1.25rem; font-weight: 740; letter-spacing: -0.02em; }
+.ml-setup p { margin: 0; line-height: 1.5; }
+.ml-steps { display: grid; gap: 8px; margin: 4px 0; padding-left: 1.3em; line-height: 1.5; }
+.ml-steps a { color: var(--text); font-weight: 650; text-underline-offset: 3px; }
+.ml-form { display: grid; gap: 12px; margin-top: 6px; }
+.ml-toggle { display: flex; align-items: center; gap: 10px; min-height: 40px; font-size: 0.9375rem; cursor: pointer; }
+.ml-toggle input { width: 20px; height: 20px; accent-color: var(--chrome-c); }
+.ml-fine { font-size: 0.8125rem; color: var(--text-3); }
+.ml-settings { margin-top: 26px; display: grid; gap: 4px; }
+
+@media (forced-colors: active) {
+  .switch { border: 1px solid CanvasText; }
+  .switch:checked { background: Highlight; }
+  .fx-spark-layer { display: none; }
+}
