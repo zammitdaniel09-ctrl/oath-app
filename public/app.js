@@ -30,7 +30,7 @@ import { refreshPushState, resyncPush } from './push.js';
 import { initUpdate, checkBuild, resumeFresh, watchForUpdates } from './update.js';
 
 // This copy of the app. sw.js carries the same name, and test/syntax.test.js keeps the two in step.
-const BUILD = 'oath-v36';
+const BUILD = 'oath-v37';
 
 // ---------- Shell ----------
 

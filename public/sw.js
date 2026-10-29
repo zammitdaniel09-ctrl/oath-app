@@ -1,5 +1,5 @@
 // Service worker: offline shell and push notifications.
-const CACHE = 'oath-v36';
+const CACHE = 'oath-v37';
 // The ZXing barcode reader in /vendor/ (about 1 MB) is left out on purpose: only phones without a
 // BarcodeDetector need it, and the fetch handler below keeps a copy the first time it loads.
 const SHELL = ['/', '/app.css', '/today.css', '/sheets.css', '/coach.css', '/settings.css', '/goals.css', '/shell.css', '/mail.css', '/app.js', '/ui.js', '/parse.js', '/goals.js', '/data.js', '/food.js', '/food-parts.js', '/food-sheets.js', '/food-recipes.js', '/food-trends.js', '/food-actions.js', '/food-energy.js', '/food-links.js', '/food-usual.js', '/food-next.js', '/food-import.js', '/food-chat.js', '/coach-media.js', '/food-tagdb.js', '/mail.js', '/food.css', '/food-body.css', '/scan.css', '/food-tools.css', '/food-chat.css', '/calendar.js', '/calendar.css', '/nutrition.js', '/food-tags.js', '/rich.js', '/motion.js', '/sound.js', '/today.js', '/today-list.js', '/plan.js', '/coach.js', '/review.js', '/settings.js', '/lock.js', '/push.js', '/passkeys.js', '/update.js', '/plan.css', '/manifest.webmanifest', '/icons/apple-touch-icon.png', '/icons/icon-192.png', '/icons/badge.png',
