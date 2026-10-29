@@ -1,0 +1,461 @@
+/* Liquid: smoke and chrome. Pure black under slow grey smoke, panels lit from above, frosted glass on
+   the bars, the sheets and the dock, light pills with a bevel, silver numbers. Monochrome first: green
+   only means done, gold and violet are rare. Every rule sits under :root[data-theme="liquid"]. */
+
+/* ---------- Tokens ---------- */
+
+:root[data-theme="liquid"],
+:root[data-theme="liquid"] .page-food,
+:root[data-theme="liquid"] .cchat-page {
+  --bg: #000; --card: #0c0c0e; --inset: #131316; --raised: #1b1b1f; --raised-hover: #242429; --sheet: #121214;
+  --text: #f5f5f7; --text-2: #c9c9d1; --text-3: #9a9aa6;
+  --line: #1f1f23; --line-soft: #18181b; --line-ctl: #60606a; --line-strong: #6e6e78;
+  --fill: rgba(255, 255, 255, 0.05); --fill-2: rgba(255, 255, 255, 0.09);
+  --silver: #f5f5f7; --on-silver: #0a0a0c; --focus: #f5f5f7; --chrome-c: #c9c9d1; --menthol: #28c840; --cherry: #ff5f57;
+  --rim: 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 28px 64px -20px rgba(0, 0, 0, 0.9);
+}
+:root[data-theme="liquid"] {
+  color-scheme: dark;
+  --font: 'Satoshi', -apple-system, 'Avenir Next', system-ui, sans-serif;
+  --serif: 'Gambetta', 'Iowan Old Style', 'Palatino', Georgia, serif;
+  --mono: 'Geist Mono', ui-monospace, Menlo, monospace;
+  --merlot: #3a3a42; --merlot-hi: #f5f5f7;
+  --honey: #febc2e; --blaze: #ff9f43; --ember: #ff6b4a;
+  --green: #28c840; --red: #ff5f57; --amber: #febc2e; --blue: #c9c9d1;
+  --c-hp: #f5f5f7; --c-day: #28c840; --c-move: #9d9da8;
+  /* Rings in metal: white chrome for HP, silver for the day (green once it is done), graphite for movement. */
+  --ring-hp-0: #55555e; --ring-hp-1: #fff; --ring-hp-t: #1c1c20; --ring-hp-g: rgba(255, 255, 255, 0.38);
+  --ring-day-0: #3d3d45; --ring-day-1: #c4c4cc; --ring-day-t: #161619; --ring-day-g: rgba(200, 212, 255, 0.3);
+  --ring-done-0: #106b22; --ring-done-1: #5ff07c; --ring-done-t: #0b1f0f; --ring-done-g: rgba(40, 200, 64, 0.5);
+  --ring-move-0: #2a2a30; --ring-move-1: #8e8e99; --ring-move-t: #121214; --ring-move-g: rgba(142, 142, 153, 0.3);
+  --ring-kcal-0: #4e4e57; --ring-kcal-1: #f5f5f7; --ring-kcal-t: #1a1a1d; --ring-kcal-g: rgba(255, 255, 255, 0.32);
+  --ring-pro-0: #3a3a42; --ring-pro-1: #c9c9d1; --ring-pro-t: #151518; --ring-pro-g: rgba(201, 201, 209, 0.28);
+  --ring-fib-0: #29292f; --ring-fib-1: #9d9da8; --ring-fib-t: #111113; --ring-fib-g: rgba(157, 157, 168, 0.24);
+  --ring-water-0: #2b3242; --ring-water-1: #c8d4ff; --ring-water-t: #0f1218; --ring-water-g: rgba(200, 212, 255, 0.34);
+  --cv-hp: #e6e6ec; --cv-kcal: #b4b4be; --cv-move: #7c7c88; --urg: var(--chrome-c);
+
+  --chrome: linear-gradient(180deg, #fff 0%, #ececf1 34%, #9d9da8 58%, #e6e6ec 82%, #c4c4cc 100%);
+  --gold: linear-gradient(135deg, #b8860b, #daa520 22%, #ffd700 50%, #daa520 78%, #b8860b);
+  --violet: linear-gradient(135deg, #3b0764, #6d28d9 38%, #a855f7 50%, #6d28d9 62%, #3b0764);
+  --panel: linear-gradient(180deg, #141417, #0b0b0d);
+  --glass: rgba(255, 255, 255, 0.07);
+  --bar: rgba(16, 16, 18, 0.74);
+  --frost: blur(14px) saturate(1.2);
+  --hair: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --bevel: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.65), 0 12px 28px rgba(0, 0, 0, 0.95);
+  --light: linear-gradient(180deg, #fff 0%, #f5f5f7 48%, #dcdce2 100%);
+  --light-bevel: inset 0 0 0 0.5px rgba(0, 0, 0, 0.22), inset 0 1px 0 #fff, inset 0 -1px 0 rgba(0, 0, 0, 0.22), 0 1px 1px rgba(0, 0, 0, 0.65), 0 12px 28px rgba(0, 0, 0, 0.95);
+  --halo: 0 0 0 4px rgba(245, 245, 247, 0.16), 0 0 18px 2px rgba(200, 212, 255, 0.45);
+  --window: 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 28px 64px -20px rgba(0, 0, 0, 0.9);
+  --float: 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 28px 64px -20px rgba(0, 0, 0, 0.9), 0 12px 28px rgba(0, 0, 0, 0.75);
+  --lift: 0 28px 64px -20px rgba(0, 0, 0, 0.9);
+  --label: 500 0.65625rem/1.3 var(--mono);
+  --lights: radial-gradient(circle at 6px 6px, #ff5f57 5px, transparent 5.6px), radial-gradient(circle at 26px 6px, #febc2e 5px, transparent 5.6px), radial-gradient(circle at 46px 6px, #28c840 5px, transparent 5.6px);
+  --r-sheet: 22px; --r-card: 18px; --r-group: 18px; --r-tile: 16px; --r-inset: 12px; --r-ctl: 12px; --r-badge: 7px;
+
+  /* The mark: polished chrome on the left, darker graphite chrome on the right. */
+  --mark-c1: #fff; --mark-c2: #ececf1; --mark-c3: #a4a4ae; --mark-c4: #4a4a52; --mark-c5: #c4c4cc; --mark-c6: #eeeef2;
+  --mark-m1: #a0a0aa; --mark-m2: #55555e; --mark-m3: #26262b; --mark-m4: #6e6e78;
+  --mark-rim-l: #fff; --mark-rim-r: #b4b4bc;
+
+  /* Food in the same metal: protein bright, carbs silver, fat graphite, water a cool silver. */
+  --f-protein: #ececf1; --f-protein-hi: #fff; --f-carbs: #a3a3ae; --f-carbs-hi: #d4d4dc; --f-fat: #686874; --f-fat-hi: #9a9aa6;
+  --f-unknown: #48484f; --f-energy: #e6e6ec; --f-energy-hi: #fff; --f-micro: #8e8e99; --f-micro-hi: #ececf1; --f-water: #7f8ba0; --f-water-hi: #c8d4ff;
+  --f-protein-rgb: 236, 236, 241; --f-carbs-rgb: 163, 163, 174; --f-fat-rgb: 104, 104, 116; --f-micro-rgb: 230, 230, 236; --f-water-rgb: 200, 212, 255;
+  --fc-lime: #f5f5f7; --fc-leaf: #c4c4cc; --fc-hi: #fff; --fc-ink: #0a0a0c; --fc-rgb: 245, 245, 247;
+  --f-good: #28c840; --f-good-rgb: 40, 200, 64;
+  --fc-bubble-0: #17171a; --fc-bubble-1: #0e0e10; --fc-done-0: #151518; --fc-done-1: #0c0c0e;
+  --f-bar: rgba(245, 245, 247, 0.42); --f-bar-prev: rgba(245, 245, 247, 0.22);
+  --hatch: repeating-linear-gradient(45deg, #6e6e78 0 1.6px, transparent 1.6px 4px);
+}
+:root[data-theme="liquid"] .cchat-page { --burgundy: #3a3a42; --burgundy-hi: #f5f5f7; --burgundy-lo: #1b1b1f; --on-burgundy: #0a0a0c; background: none; }
+
+/* ---------- Canvas: black under slow liquid smoke ---------- */
+
+:root[data-theme="liquid"], :root[data-theme="liquid"]:has(.page-food), :root[data-theme="liquid"]:has(.cchat-page) { background: #000; }
+:root[data-theme="liquid"] body, :root[data-theme="liquid"] body:has(.page-food), :root[data-theme="liquid"] body:has(.cchat-page) { background: transparent; letter-spacing: -0.003em; }
+/* One fixed layer: grey swirls drawn once from noise, drifting on transform only. Full strength on the
+   way in, quieter behind the pages so words on the canvas keep their contrast. */
+:root[data-theme="liquid"] body::before {
+  inset: -6%; opacity: 0.55;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 700' preserveAspectRatio='none'%3E%3Cfilter id='s' x='-30%25' y='-30%25' width='160%25' height='160%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0034 .0024' numOctaves='3' seed='41' result='t'/%3E%3CfeDisplacementMap in='t' in2='t' scale='200' xChannelSelector='R' yChannelSelector='G'/%3E%3CfeColorMatrix values='0 0 0 0 .86 0 0 0 0 .86 0 0 0 0 .9 0 0 1.25 0 -.58'/%3E%3C/filter%3E%3Crect width='400' height='700' filter='url(%23s)'/%3E%3C/svg%3E") center / 100% 100% no-repeat,
+    radial-gradient(46% 28% at 30% 8%, rgba(160, 160, 170, 0.14), transparent 70%),
+    radial-gradient(36% 30% at 82% 22%, rgba(130, 130, 140, 0.1), transparent 72%), #000;
+  -webkit-mask-image: linear-gradient(180deg, #000, rgba(0, 0, 0, 0.8) 46%, rgba(0, 0, 0, 0.42));
+  mask-image: linear-gradient(180deg, #000, rgba(0, 0, 0, 0.8) 46%, rgba(0, 0, 0, 0.42));
+  will-change: transform;
+  animation: lq-drift 70s ease-in-out infinite alternate;
+}
+:root[data-theme="liquid"] body:has(.gate)::before { opacity: 1; }
+@keyframes lq-drift {
+  from { transform: translate3d(-2.5%, -1.8%, 0); }
+  50% { transform: translate3d(1.2%, 1.6%, 0); }
+  to { transform: translate3d(2.6%, -0.8%, 0); }
+}
+:root[data-theme="liquid"] ::selection { background: rgba(200, 212, 255, 0.32); color: #fff; }
+:root[data-theme="liquid"] a { color: var(--text); }
+
+/* ---------- Type: Satoshi 900 display, Geist Mono labels, one Gambetta accent ---------- */
+
+:root[data-theme="liquid"] :is(.lt-over, .eyebrow, .lg-label, .ov-h, .dock-label, .wk-l, .oc-axis, .tl-time, .nx-time, .theme-line, .gh-count) {
+  font: var(--label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-2);
+}
+:root[data-theme="liquid"] :is(.lt-over, .gh-count, .wk-l, .oc-axis, .tl-time, .nx-time, .theme-line) { color: var(--text-3); }
+:root[data-theme="liquid"] :is(.lt-over, .gh-count, .gh h2) { text-shadow: 0 1px 10px #000; }
+:root[data-theme="liquid"] .lt { position: relative; padding-bottom: 12px; }
+:root[data-theme="liquid"] :is(.lt-title, .goal-h) { font-weight: 900; letter-spacing: -0.04em; line-height: 1.04; }
+:root[data-theme="liquid"] :is(.lt-title, .oath-title, .gh h2) em { font-family: var(--serif); font-weight: 400; font-style: italic; letter-spacing: -0.01em; }
+:root[data-theme="liquid"] .gh h2 { font-weight: 640; letter-spacing: -0.02em; }
+:root[data-theme="liquid"] :is(.gh h3, .card h3, .sheet h3, .empty-state h3) { font-weight: 620; letter-spacing: -0.02em; }
+:root[data-theme="liquid"] .gh-link { color: var(--text); font-weight: 600; }
+/* The horizon: a thin luminous planet edge under every page head, only its crown showing. */
+:root[data-theme="liquid"] .lt::after {
+  content: ''; position: absolute; z-index: -1; left: 0; right: 0; top: calc(100% - 6px); height: 120px; pointer-events: none;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: radial-gradient(60% 70% at 50% 0%, rgba(255, 255, 255, 0.07), transparent 70%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 8px 18px -10px rgba(220, 226, 255, 0.35), 0 -10px 30px -12px rgba(220, 226, 255, 0.28);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent), linear-gradient(180deg, #000 10px, transparent 46px);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent), linear-gradient(180deg, #000 10px, transparent 46px);
+  mask-composite: intersect;
+}
+@media (min-width: 1240px) { :root[data-theme="liquid"] .page:has(> .split) > .lt::after { right: 416px; } }
+
+/* Chrome type: numbers and large titles in polished metal. */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  :root[data-theme="liquid"] :is(.lt-title, .goal-h, .rings-center b, .lg-val, .ov-v, .clock, .goal-big, .wordmark, .tabbar-brand span, .chrome:not(.btn), .fring-c b, .goal-countdown b, .season-hp b, .fkpi b) {
+    background-image: var(--chrome); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
+  }
+  :root[data-theme="liquid"] :is(.lg-val, .ov-v, .goal-big, .fring-c, .fkpi b) small { -webkit-text-fill-color: var(--text-3); }
+  :root[data-theme="liquid"] .streaks b { background-image: var(--gold); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+}
+:root[data-theme="liquid"] :is(.rings-center b, .lg-val, .ov-v, .clock, .goal-big, .wordmark, .fring-c b) { font-weight: 860; letter-spacing: -0.04em; }
+:root[data-theme="liquid"] :is(.rings-card.low .rings-center b, .ov-hp.low .ov-v, .lg.low .lg-val, .season-card.low .season-hp b) {
+  background: none !important; color: var(--red) !important; -webkit-text-fill-color: var(--red) !important;
+}
+
+/* ---------- Surfaces: panels lit from above, a hairline and a deep shadow ---------- */
+
+:root[data-theme="liquid"] .group { background: var(--panel); }
+:root[data-theme="liquid"] .card .group.flush { background: transparent; }
+:root[data-theme="liquid"] .banner { box-shadow: inset 2px 0 0 var(--edge), var(--rim); }
+:root[data-theme="liquid"] .capacity.over { box-shadow: inset 2px 0 0 var(--amber), var(--rim); }
+:root[data-theme="liquid"] :is(.oath .capacity, .now-cue, .last-night, .sheet-move, .auto-field, .pardon-form) {
+  background: rgba(255, 255, 255, 0.035); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+}
+:root[data-theme="liquid"] :is(.li-ic, .oath-ic, .connect-ic, .setup-ic) {
+  background: linear-gradient(180deg, #232328, #141417); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+:root[data-theme="liquid"] :is(.connect-ic, .oath-ic) { color: var(--text); }
+:root[data-theme="liquid"] :is(.li + .li, .li + form.li, form.li + .li)::before { background: rgba(255, 255, 255, 0.06); }
+:root[data-theme="liquid"] .li-title { font-weight: 560; letter-spacing: -0.01em; }
+:root[data-theme="liquid"] .li-side b { font-weight: 800; letter-spacing: -0.03em; }
+:root[data-theme="liquid"] code { background: var(--glass); box-shadow: var(--hair); }
+:root[data-theme="liquid"] .note.bad { color: #ffc2bf; background: rgba(255, 95, 87, 0.08); box-shadow: inset 0 0 0 1px rgba(255, 95, 87, 0.3); }
+:root[data-theme="liquid"] .tag.uni { background: rgba(255, 255, 255, 0.08); color: var(--text-2); }
+:root[data-theme="liquid"] .tag.bad { background: rgba(255, 95, 87, 0.12); }
+:root[data-theme="liquid"] :is(.pbar, .np-bar, .focus-bar, .fmc-bar, .fmeal, .ri-bar, .rirow-bar, .fc-day-bar) { background: rgba(255, 255, 255, 0.07); }
+:root[data-theme="liquid"] :is(.pbar i, .focus-bar i, .goal-bar .pbar i) { background: linear-gradient(90deg, #6e6e78, #fff); box-shadow: 0 0 10px rgba(220, 226, 255, 0.35); }
+:root[data-theme="liquid"] .pbar.auto i { background: var(--red); box-shadow: none; }
+:root[data-theme="liquid"] .pbar.none { background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.09) 0 6px, transparent 6px 10px); }
+:root[data-theme="liquid"] .empty-state { background: radial-gradient(70% 70% at 50% 0%, rgba(255, 255, 255, 0.07), transparent 70%), var(--panel); }
+:root[data-theme="liquid"] .empty-orb {
+  color: #fff; background: radial-gradient(circle at 50% 28%, #4a4a52, #16161a 70%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), var(--hair), 0 0 0 7px rgba(255, 255, 255, 0.03), 0 12px 32px -10px rgba(200, 212, 255, 0.35);
+}
+:root[data-theme="liquid"] .skeleton i { background: var(--panel); box-shadow: var(--window); }
+
+/* ---------- Ticks ---------- */
+
+:root[data-theme="liquid"] .chk { box-shadow: inset 0 0 0 1.5px #6e6e78, 0 1px 0 rgba(255, 255, 255, 0.06); }
+:root[data-theme="liquid"] .heavy .chk { box-shadow: inset 0 0 0 1.5px var(--red); }
+:root[data-theme="liquid"] :is(.kept, .done) .chk,
+:root[data-theme="liquid"] :is(.wk-day.clean .wk-dot, .pl-day.clean .pl-dot) {
+  background: radial-gradient(circle at 50% 30%, #5ff07c, #28c840 60%, #1a9a30); color: #03200a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 14px -2px rgba(40, 200, 64, 0.6);
+}
+:root[data-theme="liquid"] .chk svg { stroke: #03200a; }
+:root[data-theme="liquid"] .met .chk svg { stroke: var(--green); }
+:root[data-theme="liquid"] .missed .chk { background: rgba(255, 95, 87, 0.12); }
+:root[data-theme="liquid"] .pardoned .chk { background: repeating-linear-gradient(45deg, rgba(201, 201, 209, 0.4) 0 2px, transparent 2px 5px); }
+:root[data-theme="liquid"] .li.pending:not(.missed) .chk::after { box-shadow: 0 0 0 2px rgba(245, 245, 247, 0.85); }
+:root[data-theme="liquid"] .li[class*=" u-"]:not(.u-calm)::after { width: 2px; }
+:root[data-theme="liquid"] .add-ic { box-shadow: inset 0 0 0 1.5px #6e6e78; }
+:root[data-theme="liquid"] .pchip { border-radius: 999px; background: var(--glass); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14); }
+/* Gold, rarely: HP at stake and a streak. */
+:root[data-theme="liquid"] :is(.hp-chip, .pl-chip.streak) { background: var(--gold); color: #1d1400; font-weight: 800; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25); }
+:root[data-theme="liquid"] .hp-chip { border-radius: 999px; padding: 0 7px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 0 10px -2px rgba(218, 165, 32, 0.55); }
+:root[data-theme="liquid"] .streaks .li-ic { color: #ffd700; }
+:root[data-theme="liquid"] .swipe-bg { --sw: var(--green); }
+:root[data-theme="liquid"] .swipe-bg[data-side="later"] { --sw: var(--honey); }
+
+/* ---------- Buttons: pills with a bevel ---------- */
+
+:root[data-theme="liquid"] :is(.btn, .btn.small, .btn.big) { border-radius: 999px; }
+:root[data-theme="liquid"] .btn, :root[data-theme="liquid"] .icon-btn, :root[data-theme="liquid"] .fcap-tool { background: var(--glass); box-shadow: var(--hair), var(--bevel); }
+:root[data-theme="liquid"] .btn { font-weight: 600; letter-spacing: -0.01em; }
+:root[data-theme="liquid"] :is(.btn.primary, .btn.chrome, .icon-btn.accent, .fcap-cam, .fcap-send, .composer .send, .cc-mic) {
+  background: var(--light); color: #0a0a0c; text-shadow: none; box-shadow: var(--light-bevel);
+}
+/* The key action of a screen: the same light pill, polished deeper, with a cool halo. */
+:root[data-theme="liquid"] .btn.chrome {
+  background: linear-gradient(180deg, #fff 0%, #ececf1 40%, #b9b9c2 100%); box-shadow: var(--light-bevel), 0 0 22px -4px rgba(200, 212, 255, 0.4);
+}
+:root[data-theme="liquid"] .btn.plain { background: transparent; color: var(--text-2); box-shadow: none; }
+:root[data-theme="liquid"] .btn.danger { background: linear-gradient(180deg, rgba(255, 95, 87, 0.2), rgba(255, 95, 87, 0.1)); color: #ff8f89; box-shadow: inset 0 0 0 1px rgba(255, 95, 87, 0.5), var(--bevel); }
+:root[data-theme="liquid"] .btn.tinted.danger-text { box-shadow: inset 0 0 0 1px rgba(255, 95, 87, 0.32), var(--bevel); }
+:root[data-theme="liquid"] :is(.btn, .icon-btn, .tchip, .qchip, .fcap-tool):focus-visible { outline: none; box-shadow: inset 0 0 0 1px #f5f5f7, var(--halo); }
+@media (hover: hover) {
+  :root[data-theme="liquid"] :is(.btn, .icon-btn):hover:not(:disabled) { background-color: rgba(255, 255, 255, 0.12); }
+  :root[data-theme="liquid"] :is(.btn.primary, .btn.chrome, .icon-btn.accent):hover:not(:disabled) { background: #fff; }
+  :root[data-theme="liquid"] .btn.plain:hover:not(:disabled) { background: var(--fill); }
+  :root[data-theme="liquid"] :is(button.li, a.li, a.card, .goal-card, .goal-mini-row):hover { background-color: rgba(255, 255, 255, 0.03); }
+}
+:root[data-theme="liquid"] .linkish { color: var(--text); text-decoration-color: rgba(255, 255, 255, 0.35); }
+
+/* ---------- Fields and choices ---------- */
+
+:root[data-theme="liquid"] .input, :root[data-theme="liquid"] .sheet .input { background-color: #0e0e10; box-shadow: inset 0 0 0 1px var(--line-ctl), inset 0 1px 2px rgba(0, 0, 0, 0.5); }
+:root[data-theme="liquid"] .input:focus { background-color: #121215; box-shadow: inset 0 0 0 1px #f5f5f7, var(--halo); }
+:root[data-theme="liquid"] .input[readonly] { background-color: #0a0a0c; }
+:root[data-theme="liquid"] :is(.composer textarea, .scan-type .input), :root[data-theme="liquid"] :is(.composer textarea, .scan-type .input):focus { background-color: transparent; box-shadow: none; }
+:root[data-theme="liquid"] .field > span:first-child:not(.copy-row) { font-weight: 540; }
+:root[data-theme="liquid"] .check input { border-radius: 7px; background: rgba(255, 255, 255, 0.04); box-shadow: inset 0 0 0 1.5px var(--line-strong); }
+:root[data-theme="liquid"] .check input:checked { background: linear-gradient(180deg, #fff, #d4d4dc); box-shadow: inset 0 1px 0 #fff; }
+:root[data-theme="liquid"] :is(.chip span, .days span, .rate span, .sheet .chip span, .sheet .days span) { background: rgba(255, 255, 255, 0.045); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); }
+:root[data-theme="liquid"] .chip span { border-radius: 999px; }
+:root[data-theme="liquid"] :is(.chip input:checked + span, .days input:checked + span, .rate input:checked + span) {
+  background: linear-gradient(180deg, #fff, #e2e2e8); color: #0a0a0c; box-shadow: inset 0 1px 0 #fff, 0 6px 16px -8px rgba(200, 212, 255, 0.5);
+}
+:root[data-theme="liquid"] :is(.seg, .sheet .seg) { border-radius: 23px; background: #0c0c0e; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 3px rgba(0, 0, 0, 0.6); }
+:root[data-theme="liquid"] :is(.seg span, .seg button, .seg-ind) { border-radius: 999px; }
+:root[data-theme="liquid"] :is(.seg input:checked + span, .seg button[aria-selected="true"], .seg button.on, .seg button[aria-pressed="true"], .seg-ind) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 4px 12px -4px rgba(0, 0, 0, 0.8);
+}
+:root[data-theme="liquid"] :is(.seg-live input:checked + span, .seg-live button[aria-selected="true"], .seg-live button.on, .seg-live button[aria-pressed="true"]) { background: transparent; box-shadow: none; }
+:root[data-theme="liquid"] .switch { background: rgba(255, 255, 255, 0.1); box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="liquid"] .switch::after { background: linear-gradient(180deg, #fff, #d4d4dc); }
+:root[data-theme="liquid"] .switch:checked { background: var(--green); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3); }
+:root[data-theme="liquid"] :is(.radio-row input, .ropt) { accent-color: #f5f5f7; }
+
+/* ---------- Bars: page head, tab bar and sidebar, the dock, the toast ---------- */
+
+:root[data-theme="liquid"] :is(.topbar, .chd-head, .fc-head, .cal-top) {
+  background: rgba(0, 0, 0, 0.55); box-shadow: 0 0.5px 0 rgba(255, 255, 255, 0.12); -webkit-backdrop-filter: var(--frost); backdrop-filter: var(--frost);
+}
+:root[data-theme="liquid"] .topbar-title { font-weight: 700; letter-spacing: -0.02em; }
+:root[data-theme="liquid"] .topbar-back { color: var(--text); }
+:root[data-theme="liquid"] :is(.tabbar, .next-dock, .toast, .composer, .fcap-bar, .ask-coach, .fc-composer) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)), var(--bar); box-shadow: var(--float);
+}
+:root[data-theme="liquid"] :is(.tabbar, .next-dock, .toast, .composer) { -webkit-backdrop-filter: var(--frost); backdrop-filter: var(--frost); }
+:root[data-theme="liquid"] .tab { color: #8e8e99; }
+:root[data-theme="liquid"] .tab[aria-current="page"], :root[data-theme="liquid"] .tab[aria-current="page"] .ic { color: #fff; }
+:root[data-theme="liquid"] .tab > span:last-child { font-weight: 600; letter-spacing: 0; }
+:root[data-theme="liquid"] .tab-pill {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(0, 0, 0, 0.4), 0 6px 16px -6px rgba(0, 0, 0, 0.9);
+}
+:root[data-theme="liquid"] .tab-badge { background: #d63a31; box-shadow: 0 0 0 1.5px #101012; }
+@media (min-width: 900px) {
+  :root[data-theme="liquid"] .tabbar { background: linear-gradient(180deg, rgba(20, 20, 23, 0.9), rgba(6, 6, 7, 0.94)); box-shadow: 1px 0 0 rgba(255, 255, 255, 0.08); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  :root[data-theme="liquid"] .tab { color: var(--text-2); }
+  :root[data-theme="liquid"] .tab .ic { color: var(--text-3); }
+  :root[data-theme="liquid"] .tab[aria-current="page"] .ic { color: #fff; }
+  :root[data-theme="liquid"] .tab-pill { border-radius: 999px; }
+  :root[data-theme="liquid"] .tabbar-brand.wide-only { font-weight: 900; letter-spacing: -0.04em; }
+  :root[data-theme="liquid"] .tabbar > a.tab:nth-of-type(8)::before { background: rgba(255, 255, 255, 0.08); }
+}
+:root[data-theme="liquid"] :is(.next-dock, .toast, .ask-coach, .fcap-bar) { border-radius: 999px; }
+:root[data-theme="liquid"] .next-dock { padding-left: 18px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--urg) 30%, rgba(255, 255, 255, 0.1)), inset 0 1px 0 rgba(255, 255, 255, 0.12), var(--lift), 0 12px 28px rgba(0, 0, 0, 0.8); }
+:root[data-theme="liquid"] .dock-label { color: var(--urg); }
+:root[data-theme="liquid"] .next-dock.u-calm .dock-label { color: var(--text-3); }
+:root[data-theme="liquid"] .toast.bad { background: rgba(40, 10, 10, 0.92); color: #ffd2cf; box-shadow: 0 0 0 1px rgba(255, 95, 87, 0.55), 0 20px 50px rgba(0, 0, 0, 0.8); }
+:root[data-theme="liquid"] .update-bar, :root[data-theme="liquid"] .ptr { background: rgba(16, 16, 18, 0.96); box-shadow: var(--float); }
+:root[data-theme="liquid"] :is(.ptr.armed, .ptr.spin) { color: #fff; }
+:root[data-theme="liquid"] :is(.ask-coach, .composer, .fc-composer, .fcap-bar):focus-within { box-shadow: 0 0 0 1px #f5f5f7, var(--halo); }
+:root[data-theme="liquid"] .ask-ic .mark { filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.25)); }
+
+/* ---------- Today: rings, Up next, chips, tiles ---------- */
+
+:root[data-theme="liquid"] .rings-card { background: radial-gradient(90% 60% at 30% 0%, rgba(255, 255, 255, 0.06), transparent 70%), var(--panel); }
+:root[data-theme="liquid"] :is(.rc-fuel, .rings-foot) { border-color: rgba(255, 255, 255, 0.07); }
+:root[data-theme="liquid"] .rings-center > span { color: var(--text-3); }
+:root[data-theme="liquid"] .lg-dot { background: linear-gradient(180deg, var(--r1), var(--r0)); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 0 8px var(--rg); }
+:root[data-theme="liquid"] .lg-val { font-size: 1.5rem; }
+:root[data-theme="liquid"] .lethal { color: var(--red); }
+:root[data-theme="liquid"] .u-calm { --urg: #c9c9d1; }
+:root[data-theme="liquid"] .u-over { --urg: #ff5f57; }
+:root[data-theme="liquid"] .now {
+  background: radial-gradient(120% 70% at 0% 0%, color-mix(in srgb, var(--urg) 9%, transparent), transparent 62%), var(--panel);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--urg) 26%, rgba(255, 255, 255, 0.08)), inset 0 1px 0 rgba(255, 255, 255, 0.08), var(--lift);
+}
+:root[data-theme="liquid"] .now::before { height: 1px; background: linear-gradient(90deg, transparent, var(--urg) 30%, transparent 90%); box-shadow: 0 0 12px var(--urg); }
+:root[data-theme="liquid"] .now-left { background: var(--glass); box-shadow: var(--hair); }
+:root[data-theme="liquid"] .now[class*=" u-"]:not(.u-calm) .now-left { background: color-mix(in srgb, var(--urg) 10%, transparent); }
+:root[data-theme="liquid"] .now-title { font-weight: 800; letter-spacing: -0.035em; }
+:root[data-theme="liquid"] .np-bar i { background: linear-gradient(90deg, #1a9a30, #4fe06a); box-shadow: 0 0 10px rgba(40, 200, 64, 0.5); }
+:root[data-theme="liquid"] .now.in-focus { --urg: #f5f5f7; background: var(--panel); }
+:root[data-theme="liquid"] .now.is-focus { box-shadow: 0 0 0 1px rgba(245, 245, 247, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08), var(--lift); }
+:root[data-theme="liquid"] .now.secured { box-shadow: 0 0 0 1px rgba(40, 200, 64, 0.4), var(--lift); }
+:root[data-theme="liquid"] .now.dodging { box-shadow: 0 0 0 1px rgba(254, 188, 46, 0.4), var(--lift); }
+/* Near the deadline the Done pill breathes a red ring, on opacity alone. */
+:root[data-theme="liquid"] :is(.now.u-ember, .now.u-over) .btn.chrome { position: relative; animation: none; }
+:root[data-theme="liquid"] :is(.now.u-ember, .now.u-over) .btn.chrome::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+  box-shadow: 0 0 0 6px rgba(255, 95, 87, 0.22), 0 0 24px rgba(255, 95, 87, 0.35); animation: lq-urge 1.6s ease-in-out infinite;
+}
+@keyframes lq-urge { 50% { opacity: 1; } }
+:root[data-theme="liquid"] :is(.tchip, .tl-chip, .nx-chip, .now-left) { border-radius: 999px; }
+:root[data-theme="liquid"] :is(.tchip, .tl-chip, .nx-chip) { background: var(--glass); box-shadow: var(--hair), inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+:root[data-theme="liquid"] .tchip.act { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.1); }
+:root[data-theme="liquid"] .tchip.warn { box-shadow: inset 0 0 0 1px rgba(254, 188, 46, 0.4); }
+:root[data-theme="liquid"] .oath-mini { background: radial-gradient(90% 120% at 0% 0%, rgba(255, 255, 255, 0.06), transparent 60%), var(--panel); }
+:root[data-theme="liquid"] .nx-row.on .nx-time { color: var(--green); }
+:root[data-theme="liquid"] .tl-now::before, :root[data-theme="liquid"] .tl-now::after { background: #f5f5f7; }
+:root[data-theme="liquid"] .tl-now span { color: var(--text); }
+:root[data-theme="liquid"] .ov-hp { --ov-c: #f5f5f7; }
+:root[data-theme="liquid"] .ov-steps { --ov-c: #9d9da8; }
+:root[data-theme="liquid"] .ov-week { --ov-c: var(--green); }
+:root[data-theme="liquid"] :is(.ov-food, .ov-energy) { --ov-c: #c9c9d1; }
+:root[data-theme="liquid"] .oc-bar { fill: #26262b; }
+:root[data-theme="liquid"] .oc-bar.met { fill: color-mix(in oklab, var(--oc) 40%, #26262b); }
+:root[data-theme="liquid"] .sp-dot { background: #fff; box-shadow: 0 0 0 2px #0f0f11, 0 0 10px rgba(220, 226, 255, 0.85); }
+:root[data-theme="liquid"] .wk-day.kept .wk-dot { background: rgba(40, 200, 64, 0.12); box-shadow: inset 0 0 0 1.5px rgba(40, 200, 64, 0.55); }
+:root[data-theme="liquid"] :is(.wk-day.missed .wk-dot, .pl-day.missed .pl-dot) { background: rgba(255, 95, 87, 0.14); color: var(--red); box-shadow: inset 0 0 0 1.5px var(--red); }
+:root[data-theme="liquid"] :is(.brief-text, .plan-text) { color: #dcdce2; }
+
+/* ---------- Sheets: frosted windows with traffic lights ---------- */
+
+:root[data-theme="liquid"] .sheet-backdrop { background: rgba(0, 0, 0, 0.66); }
+:root[data-theme="liquid"] .sheet {
+  background: linear-gradient(180deg, rgba(24, 24, 27, 0.9), rgba(16, 16, 18, 0.94) 160px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 -24px 64px rgba(0, 0, 0, 0.8), 0 160px 0 0 #101012;
+  -webkit-backdrop-filter: var(--frost); backdrop-filter: var(--frost);
+}
+:root[data-theme="liquid"] .sheet-grab { background: rgba(255, 255, 255, 0.24); }
+:root[data-theme="liquid"] .sheet-head { background: #17171a; }
+:root[data-theme="liquid"] .sheet-head::before { content: ''; flex: none; order: -1; width: 52px; height: 12px; background: var(--lights); }
+:root[data-theme="liquid"] .sheet-head h2 { flex: 1; min-width: 0; text-align: center; font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.02em; }
+:root[data-theme="liquid"] .confirm-sheet::before { content: ''; position: absolute; top: 10px; left: 20px; width: 52px; height: 12px; background: var(--lights); }
+:root[data-theme="liquid"] :is(.confirm-title, .dodge-sheet .dodge-title) { font-weight: 800; letter-spacing: -0.03em; }
+:root[data-theme="liquid"] .sheet-form { border-top-color: rgba(255, 255, 255, 0.07); }
+@media (min-width: 900px) {
+  :root[data-theme="liquid"] .sheet { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 40px 100px rgba(0, 0, 0, 0.85); }
+  :root[data-theme="liquid"] .confirm-sheet { padding-top: 40px; }
+  :root[data-theme="liquid"] .confirm-sheet::before { top: 16px; left: 22px; }
+}
+:root[data-theme="liquid"] :is(.heat i.h-min, .heat-key i.h-min, .pl-strip i.h-min) { background: rgba(40, 200, 64, 0.45); }
+:root[data-theme="liquid"] :is(.heat i.h-none, .heat i.h-flex) { background: #1b1b1f; }
+
+/* ---------- The way in and the lock ---------- */
+
+:root[data-theme="liquid"] .gate::before { display: none; }
+/* A pool of darkness in the smoke, so the words read. */
+:root[data-theme="liquid"] .gate { background: radial-gradient(46% 38% at 50% 50%, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.4) 60%, transparent); }
+:root[data-theme="liquid"] .gate-mark { filter: drop-shadow(0 0 28px rgba(220, 226, 255, 0.28)) drop-shadow(0 18px 24px rgba(0, 0, 0, 0.9)); }
+:root[data-theme="liquid"] .wordmark { font-weight: 900; }
+:root[data-theme="liquid"] :is(.tagline, .gate > p) { color: var(--text-2); text-shadow: 0 1px 12px #000; }
+:root[data-theme="liquid"] .lock-glyph { color: #c9c9d1; }
+:root[data-theme="liquid"] .lock-glyph::after { background: linear-gradient(90deg, transparent, #c8d4ff 25%, #fff 50%, #c8d4ff 75%, transparent); box-shadow: 0 0 12px 1px rgba(200, 212, 255, 0.7); }
+:root[data-theme="liquid"] .lock[data-state="scanning"] .lock-glyph { animation: none; filter: drop-shadow(0 0 10px rgba(200, 212, 255, 0.35)); }
+:root[data-theme="liquid"] .lock[data-state="unlocking"] .lock-glyph { color: var(--green); }
+
+/* ---------- Coach: light words for you, the coach on a dark panel, violet for its face ---------- */
+
+:root[data-theme="liquid"] .chd-av { color: #fff; background: var(--violet); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 18px -4px rgba(168, 85, 247, 0.6); }
+:root[data-theme="liquid"] .chd-head-text h1 { font-weight: 800; letter-spacing: -0.03em; }
+:root[data-theme="liquid"] :is(.msg.user, .cchat .msg.user, .fchat .msg.user) {
+  color: #0a0a0c; background: linear-gradient(180deg, #fff, #e4e4ea); box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(0, 0, 0, 0.12), 0 12px 28px -14px rgba(0, 0, 0, 0.9);
+}
+:root[data-theme="liquid"] :is(.msg.user, .cchat .msg.user, .fchat .msg.user) time { color: #55555e; }
+:root[data-theme="liquid"] :is(.msg.assistant, .cchat .msg.assistant, .fchat .msg.assistant) {
+  color: #e6e6ec; background: var(--panel); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+:root[data-theme="liquid"] :is(.typing i, .cchat .typing i, .cchat .typing i:nth-of-type(2), .cc-rec-bars i) { background: #f5f5f7; }
+:root[data-theme="liquid"] :is(.confirm-row, .cchat .confirm-row) { background: rgba(255, 255, 255, 0.04); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18); }
+:root[data-theme="liquid"] .composer { border-radius: 26px; }
+:root[data-theme="liquid"] .composer-dock::before { background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.9) 46%); }
+:root[data-theme="liquid"] :is(.qchip, .cchat-page .qchip) { background: rgba(22, 22, 25, 0.96); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+:root[data-theme="liquid"] :is(.qchip-food .ic, .briefs-btn .ic, .ftake-k .ic) { color: var(--text-2); }
+:root[data-theme="liquid"] :is(.cc-cam, .cc-rec-x, .fburn-tile-ic) { background: var(--glass); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14); }
+:root[data-theme="liquid"] .cc-staged { background: rgba(16, 16, 18, 0.94); box-shadow: var(--float); }
+:root[data-theme="liquid"] :is(.cc-staged-x, .cc-play) { color: #0a0a0c; background: #f5f5f7; }
+:root[data-theme="liquid"] .cc-wave i { background: rgba(10, 10, 12, 0.3); }
+:root[data-theme="liquid"] .cc-wave i.on { background: #0a0a0c; }
+:root[data-theme="liquid"] :is(.cc-dur, .cc-note) { color: #3a3a42; }
+:root[data-theme="liquid"] .msg.assistant :is(.cc-dur, .cc-note) { color: var(--text-2); }
+:root[data-theme="liquid"] .receipts .ic { color: var(--green); }
+
+/* ---------- Food: the same black and metal ---------- */
+
+:root[data-theme="liquid"] .fday { background: radial-gradient(70% 46% at 50% 0%, rgba(255, 255, 255, 0.06), transparent 70%), var(--panel); }
+:root[data-theme="liquid"] .fr-track { stroke: rgba(255, 255, 255, 0.07); }
+:root[data-theme="liquid"] .fh-line { fill: #8e8e99; }
+:root[data-theme="liquid"] .fday-hero .fring-c b { font-weight: 900; }
+:root[data-theme="liquid"] :is(.fmc.over .fmc-of, .ftag.t-warn, .ftag-mini.t-warn, .fadv-why.t-warn, .frank-h.bad) { color: var(--blaze); }
+:root[data-theme="liquid"] :is(.tag.ftag-product, .ftag, .ftag-mini) { background: rgba(255, 255, 255, 0.07); color: var(--text-2); }
+:root[data-theme="liquid"] :is(.tag.ftag-label, .tag.ftag-custom) { background: rgba(40, 200, 64, 0.12); color: var(--green); }
+:root[data-theme="liquid"] :is(.fburn, .fweight, .fburn-tile) { --f-burn: #c9c9d1; }
+:root[data-theme="liquid"] .fheat-grid i { background: color-mix(in srgb, #f5f5f7 calc(var(--a, 0) * 100%), rgba(255, 255, 255, 0.05)); }
+:root[data-theme="liquid"] .fc-dock::before { background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.94) 22px, rgba(0, 0, 0, 0.94)); }
+/* The scanner: a white scan line instead of red. */
+:root[data-theme="liquid"] .scan-cam { background: radial-gradient(120% 70% at 50% 45%, #141417 0%, #000 70%); }
+:root[data-theme="liquid"] .scan-line {
+  background: linear-gradient(90deg, transparent, #fff 16%, #fff 84%, transparent) top / 100% 2px no-repeat, linear-gradient(180deg, rgba(200, 212, 255, 0.24), transparent) 0 2px / 100% 12px no-repeat;
+}
+:root[data-theme="liquid"] .scan-status.is-bad { background: rgba(40, 10, 10, 0.86); }
+
+/* ---------- Calendar: the event's own colour kept, quieter ---------- */
+
+:root[data-theme="liquid"] :is(.cal-wd.today.sel b, .cal-head.today b, .cal-cell.today .cal-num) { background: linear-gradient(180deg, #fff, #dcdce2); color: #0a0a0c; box-shadow: 0 0 12px -2px rgba(200, 212, 255, 0.5); }
+:root[data-theme="liquid"] :is(.cal-wd.today b, .cal-head.today span) { color: #fff; }
+:root[data-theme="liquid"] .cal-ev { background: color-mix(in srgb, var(--c) 16%, #0e0e11); box-shadow: inset 2px 0 0 var(--c), inset 0 0 0 1px rgba(255, 255, 255, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 0 1px #000; }
+:root[data-theme="liquid"] .cal-chip { background: color-mix(in srgb, var(--c, #c9c9d1) 20%, #101013); }
+:root[data-theme="liquid"] :is(.cal-chip.own, .cal-mc.own) { --c: #8e8e99; box-shadow: inset 3px 0 0 #f5f5f7; }
+:root[data-theme="liquid"] .cal-ev.own { --c: #8e8e99; background: color-mix(in srgb, #8e8e99 24%, #0a0a0c); box-shadow: inset 3px 0 0 #f5f5f7, 0 0 0 1px #000; }
+:root[data-theme="liquid"] :is(.cal-mk.habit, .cal-ag-row.own, .cal-d-feed.mark.habit) { --c: #f5f5f7; }
+:root[data-theme="liquid"] .cal-now { border-top-color: #fff; box-shadow: 0 0 8px rgba(200, 212, 255, 0.6); }
+:root[data-theme="liquid"] .cal-now::before { background: #fff; }
+:root[data-theme="liquid"] .cal-sync i { background: var(--green); }
+
+/* ---------- Goals, Plan, Review, Settings ---------- */
+
+:root[data-theme="liquid"] .goal-ring { color: #f5f5f7; filter: drop-shadow(0 0 6px rgba(220, 226, 255, 0.4)); }
+:root[data-theme="liquid"] .next-step { background: radial-gradient(100% 80% at 0% 0%, rgba(255, 255, 255, 0.06), transparent 60%), var(--panel); box-shadow: inset 2px 0 0 #f5f5f7, var(--window); }
+:root[data-theme="liquid"] :is(.pace.pace-on, .pace.pace-ahead, .pl-pill.done) { background: rgba(40, 200, 64, 0.12); }
+:root[data-theme="liquid"] .pace.pace-behind { background: rgba(255, 107, 74, 0.14); }
+:root[data-theme="liquid"] .node-row.parent-sel { background: rgba(255, 255, 255, 0.06); }
+:root[data-theme="liquid"] .map-node.task.done rect { fill: #0b1f0f; }
+:root[data-theme="liquid"] .pl-day.kept .pl-dot { background: rgba(40, 200, 64, 0.1); }
+:root[data-theme="liquid"] .pl-day.today .pl-dot { background: rgba(255, 255, 255, 0.08); }
+:root[data-theme="liquid"] .pl-bar { background: linear-gradient(180deg, #d4d4dc, #6e6e78); }
+:root[data-theme="liquid"] .pl-bar i { background: linear-gradient(180deg, #ff7a73, #c8322b); }
+:root[data-theme="liquid"] .pl-col.is-today .pl-bar:not(.zero) { background: linear-gradient(180deg, #fff, #c9c9d1); box-shadow: 0 0 12px rgba(220, 226, 255, 0.4); }
+/* Review: HP over the season in silver; its stops are inline, so they need the weight. */
+:root[data-theme="liquid"] .season-card { background: radial-gradient(100% 80% at 100% 0%, rgba(218, 165, 32, 0.1), transparent 60%), var(--panel); }
+:root[data-theme="liquid"] .season-hp span { color: #daa520; }
+:root[data-theme="liquid"] .hp-line { stroke: #f5f5f7; filter: drop-shadow(0 0 4px rgba(220, 226, 255, 0.6)); }
+:root[data-theme="liquid"] .hp-area stop:first-child { stop-color: rgba(220, 226, 255, 0.24) !important; }
+:root[data-theme="liquid"] .hp-area stop:last-child { stop-color: rgba(220, 226, 255, 0) !important; }
+:root[data-theme="liquid"] .theme-card { border: 0; background: var(--panel); box-shadow: var(--window); }
+:root[data-theme="liquid"] .theme-card.on { box-shadow: 0 0 0 1px rgba(245, 245, 247, 0.85), var(--halo), var(--lift); }
+:root[data-theme="liquid"] .theme-name { font-weight: 800; letter-spacing: -0.03em; }
+
+/* ---------- Repairs, preferences ---------- */
+
+/* A hidden file input inside a sideways row stays inside it, so the page never scrolls sideways. */
+:root[data-theme="liquid"] :is(.qchip, .fc-act) { position: relative; }
+/* With a sheet open the toast moves to the top; never let the dock's bottom offset stretch it into a tall capsule. */
+:root[data-theme="liquid"] :is(body.sheet-open, body.confirm-open) .toast { bottom: auto; }
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="liquid"] body::before, :root[data-theme="liquid"] :is(.now.u-ember, .now.u-over) .btn.chrome::after { animation: none; }
+}
+@media (forced-colors: active) {
+  :root[data-theme="liquid"] :is(.lt-title, .goal-h, .rings-center b, .lg-val, .ov-v, .clock, .goal-big, .wordmark, .tabbar-brand span, .chrome:not(.btn), .fring-c b, .goal-countdown b, .season-hp b, .fkpi b, .streaks b) {
+    background: none; color: CanvasText; -webkit-text-fill-color: CanvasText;
+  }
+  :root[data-theme="liquid"] .lt::after, :root[data-theme="liquid"] body::before { display: none; }
+}
