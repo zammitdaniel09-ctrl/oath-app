@@ -1,0 +1,491 @@
+/* Tape: reading the tape. A trading desk terminal: amber phosphor on black, square bordered panels with
+   a title strip, every glyph in Geist Mono, uppercase labels with tracking, tabular figures. Green is
+   kept (up), red is missed (down), cyan is a link or a selection, white only for the numbers that
+   matter most. One static scanline layer is the only atmosphere. Loaded last, only while chosen. */
+
+/* ---------- Tokens ---------- */
+
+:root[data-theme="tape"] {
+  color-scheme: dark;
+  --font: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --serif: var(--font);
+  --mono: var(--font);
+  --bg: #050505; --card: #0d0b07; --inset: #070604; --raised: #16110a; --raised-hover: #211909; --sheet: #0b0906;
+  --text: #ffb000; --text-2: #c88d14; --text-3: #a07a2c;
+  --hi: #f2f2f2; --cyan: #4cc9f0; --strip: #1a1306;
+  --line: #3a2a0c; --line-soft: #251b08; --line-ctl: #7a5a1c; --line-strong: #8a6620;
+  --merlot: #ffb000; --merlot-hi: #ff4d4d; --chrome-c: #ffb000; --menthol: #26d07c; --cherry: #ff4d4d;
+  --honey: #ffd23f; --blaze: #ff8c1a; --ember: #ff5f2e;
+  --silver: #ffb000; --on-silver: #000; --focus: #4cc9f0; --blue: #4cc9f0;
+  --c-move: #4cc9f0;
+  --ring-hp-0: #7a5000; --ring-hp-1: #ffb000; --ring-hp-t: #1c1405; --ring-hp-g: rgba(255, 176, 0, 0.4);
+  --ring-day-0: #11683f; --ring-day-1: #26d07c; --ring-day-t: #0a1c12; --ring-day-g: rgba(38, 208, 124, 0.4);
+  --ring-done-0: #1fb36a; --ring-done-1: #8affc4; --ring-done-t: #0a1c12; --ring-done-g: rgba(38, 208, 124, 0.6);
+  --ring-move-0: #17647c; --ring-move-1: #4cc9f0; --ring-move-t: #071a20; --ring-move-g: rgba(76, 201, 240, 0.4);
+  --ring-kcal-0: #7a5000; --ring-kcal-1: #ffb000; --ring-kcal-t: #1c1405; --ring-kcal-g: rgba(255, 176, 0, 0.4);
+  --ring-pro-0: #17647c; --ring-pro-1: #4cc9f0; --ring-pro-t: #071a20; --ring-pro-g: rgba(76, 201, 240, 0.4);
+  --ring-fib-0: #11683f; --ring-fib-1: #26d07c; --ring-fib-t: #0a1c12; --ring-fib-g: rgba(38, 208, 124, 0.4);
+  --ring-water-0: #4a6380; --ring-water-1: #a9c8ea; --ring-water-t: #0c131c; --ring-water-g: rgba(169, 200, 234, 0.35);
+  --cv-hp: #ffb000; --cv-kcal: #ffb000; --cv-move: #4cc9f0;
+  --fill: rgba(255, 176, 0, 0.05); --fill-2: rgba(255, 176, 0, 0.1);
+  --chrome: linear-gradient(#f2f2f2, #f2f2f2);
+  --r-sheet: 0; --r-card: 0; --r-group: 0; --r-tile: 0; --r-inset: 0; --r-ctl: 0; --r-badge: 0;
+  --pad: 14px; --pad-sm: 12px;
+  --rim: inset 0 0 0 1px var(--line);
+  --lift: 0 0 #0000;
+  --seg: repeating-conic-gradient(#000 0 7.4deg, transparent 7.4deg 10deg);
+  /* The mark: amber phosphor on the left, the green of a kept day on the right. */
+  --mark-c1: #ffe2a0; --mark-c2: #ffc23a; --mark-c3: #ffb000; --mark-c4: #a86c00; --mark-c5: #e09a00; --mark-c6: #ffbf2e;
+  --mark-m1: #9dffcc; --mark-m2: #26d07c; --mark-m3: #149a5a; --mark-m4: #0a5c34;
+  --mark-rim-l: #ffd27a; --mark-rim-r: #8affc4;
+  /* Food: protein cyan, carbs amber, fat a pale grey; told apart by hue and by lightness. */
+  --f-protein: #4cc9f0; --f-protein-hi: #a6e6fa; --f-carbs: #ffb000; --f-carbs-hi: #ffd27a; --f-fat: #b8b8b8; --f-fat-hi: #f2f2f2;
+  --f-unknown: #4a3a1a; --f-energy: #ffb000; --f-energy-hi: #ffd27a; --f-micro: #a07a2c; --f-micro-hi: #ffd27a;
+  --f-water: #6f93ba; --f-water-hi: #a9c8ea;
+  --f-protein-rgb: 76, 201, 240; --f-carbs-rgb: 255, 176, 0; --f-fat-rgb: 184, 184, 184; --f-micro-rgb: 255, 176, 0; --f-water-rgb: 169, 200, 234;
+  --fc-lime: #ffb000; --fc-leaf: #c88d14; --fc-hi: #ffd27a; --fc-ink: #000; --fc-rgb: 255, 176, 0;
+  --f-good: #26d07c; --f-good-rgb: 38, 208, 124;
+  --fc-bubble-0: #0d0b07; --fc-bubble-1: #0d0b07; --fc-done-0: #0a140d; --fc-done-1: #0a140d;
+  --f-bar: rgba(255, 176, 0, 0.42); --f-bar-prev: rgba(255, 176, 0, 0.24);
+  --hatch: repeating-linear-gradient(45deg, #6a4c12 0 1.6px, transparent 1.6px 4px);
+}
+/* The Food section and the Coach keep the terminal: their own palettes give way to the tape's. */
+:root[data-theme="tape"] :is(.page-food, .cchat-page) {
+  --card: #0d0b07; --inset: #070604; --raised: #16110a; --raised-hover: #211909; --sheet: #0b0906;
+  --text: #ffb000; --text-2: #c88d14; --text-3: #a07a2c;
+  --line: #3a2a0c; --line-soft: #251b08; --line-ctl: #7a5a1c; --line-strong: #8a6620;
+  --fill: rgba(255, 176, 0, 0.05); --fill-2: rgba(255, 176, 0, 0.1);
+  --silver: #ffb000; --on-silver: #000; --focus: #4cc9f0; --chrome-c: #ffb000; --menthol: #26d07c; --cherry: #ff4d4d;
+  --rim: inset 0 0 0 1px var(--line);
+  --burgundy: #ffb000; --burgundy-hi: #ffc640; --burgundy-lo: #7a5000; --on-burgundy: #000;
+}
+:root[data-theme="tape"], :root[data-theme="tape"] body, :root[data-theme="tape"]:has(.page-food, .cchat-page) body { background: var(--bg); }
+:root[data-theme="tape"]:has(.page-food, .cchat-page) { background: var(--bg); }
+
+/* ---------- Base: square, mono, phosphor ---------- */
+
+:root[data-theme="tape"] :not(.theme-shot, .theme-shot *, .ring, .ring *),
+:root[data-theme="tape"] :not(.theme-shot, .theme-shot *)::before,
+:root[data-theme="tape"] :not(.theme-shot, .theme-shot *)::after { border-radius: 0 !important; }
+:root[data-theme="tape"] body { font-family: var(--font); font-size: 0.9375rem; font-variant-numeric: tabular-nums slashed-zero; letter-spacing: 0; }
+/* The one atmosphere layer: still scanlines over everything, never touched. */
+:root[data-theme="tape"] body::before {
+  z-index: 100; transform: translateZ(0);
+  background: repeating-linear-gradient(180deg, rgba(255, 176, 0, 0.018) 0 1px, rgba(0, 0, 0, 0.1) 1px 2px, transparent 2px 3px);
+}
+:root[data-theme="tape"] .gate::before { display: none; }
+:root[data-theme="tape"] a { color: inherit; }
+:root[data-theme="tape"] :is(p, li, .note, .muted, .small, .ml-steps) > a:not([class]) { color: var(--cyan); }
+:root[data-theme="tape"] ::selection { background: rgba(76, 201, 240, 0.35); color: #fff; }
+:root[data-theme="tape"] :focus-visible { outline-color: var(--cyan); }
+:root[data-theme="tape"] :is(.serif, .lt-title em, .gh h2 em, .oath-title em) { font-family: var(--font); font-style: normal; font-weight: inherit; letter-spacing: inherit; }
+:root[data-theme="tape"] :is(.lt-title em, .oath-title em) { color: var(--hi); }
+:root[data-theme="tape"] .linkish { color: var(--cyan); text-decoration-color: rgba(76, 201, 240, 0.45); }
+:root[data-theme="tape"] .good { color: var(--green); }
+:root[data-theme="tape"] code { background: var(--inset); color: var(--cyan); }
+/* Chrome type: white for the figures that matter, nothing metallic. */
+:root[data-theme="tape"] :is(.chrome:not(.btn), .clock, .goal-big, .lg.r-hp .lg-val, .rings-center b) {
+  background: none; color: var(--hi); -webkit-text-fill-color: currentColor;
+}
+
+/* ---------- Large titles and section strips ---------- */
+
+:root[data-theme="tape"] .lt { padding-top: 14px; }
+:root[data-theme="tape"] .lt-over { color: var(--text-3); letter-spacing: 0.14em; font-size: 0.6875rem; }
+:root[data-theme="tape"] .lt-over::before { content: '\25A0'; margin-right: 8px; color: var(--green); }
+:root[data-theme="tape"] :is(.lt-title, .goal-h) {
+  background: none; color: var(--text); -webkit-text-fill-color: currentColor;
+  font-size: clamp(1.5rem, 1.05rem + 2vw, 2rem); font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; line-height: 1.12;
+  text-shadow: 0 0 18px rgba(255, 176, 0, 0.28);
+}
+:root[data-theme="tape"] :is(.lt-title, .goal-h)::after {
+  content: ''; display: inline-block; width: 0.5em; height: 0.82em; margin-left: 0.14em; vertical-align: -0.06em;
+  background: var(--text); animation: tape-cursor 1.1s steps(1, end) infinite;
+}
+@keyframes tape-cursor { 50% { opacity: 0; } }
+:root[data-theme="tape"] .topbar { background: rgba(5, 5, 5, 0.94); box-shadow: 0 1px 0 var(--line); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="tape"] .topbar { background: rgba(5, 5, 5, 0.78); }
+}
+:root[data-theme="tape"] .topbar-title { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+:root[data-theme="tape"] :is(.topbar-back, .back) { color: var(--cyan); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* A section heading is the title strip of the panel under it. */
+:root[data-theme="tape"] .gh {
+  align-items: center; min-height: 30px; margin: 26px 0 0; padding: 4px 10px; gap: 2px 12px;
+  background: var(--strip); box-shadow: inset 0 0 0 1px var(--line), inset 3px 0 0 var(--text);
+}
+:root[data-theme="tape"] .gh.sub { margin-top: 20px; }
+:root[data-theme="tape"] :is(.gh h2, .gh h3, .pane-h, .pl-gh h3) { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text); }
+:root[data-theme="tape"] .gh-count { font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+:root[data-theme="tape"] .gh + :is(.card, .group, .goal-mini, .goal-list, .capacity, .stats, .dtiles, .body-grid, .ml-cards, .timeline) { margin-top: -1px; }
+:root[data-theme="tape"] .gh-link { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan); }
+:root[data-theme="tape"] .gh-link::after { content: '<GO>'; color: var(--green); font-size: 0.625rem; letter-spacing: 0.04em; }
+:root[data-theme="tape"] .gh-link .ic { display: none; }
+:root[data-theme="tape"] :is(.eyebrow, .ov-h, .lg-label, .need-h, .fday-k, .nf-h, .frich-h, .ml-rest-h, .season-sub, .fwt-goal-k, .fusual-k) { letter-spacing: 0.14em; }
+:root[data-theme="tape"] .eyebrow::before { content: '\25B8'; color: var(--text); }
+
+/* ---------- Panels ---------- */
+
+:root[data-theme="tape"] :is(.card, .stat, .dtile, .body-tile, .goal-card, .season-card, .empty-state, .oath-mini, .theme-card) {
+  background: var(--card); box-shadow: var(--rim);
+}
+:root[data-theme="tape"] .card { margin-top: 8px; }
+:root[data-theme="tape"] :is(.card h3, .sheet h3, .empty-state h3, .ml-setup h2) { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+:root[data-theme="tape"] .group { margin-top: 8px; background: var(--card); box-shadow: var(--rim); }
+:root[data-theme="tape"] :is(.li + .li, .li + form.li, form.li + .li, .li-min + .li, .li-plain + .li-plain, .li-plain:has(.li-ic) + .li, .goal-mini-row + .goal-mini-row, .tri-row + .tri-row, .tri-more, .tri-more .tri-row)::before { left: 0; background: var(--line-soft); }
+:root[data-theme="tape"] .li-title { font-size: 0.9375rem; font-weight: 500; letter-spacing: 0; }
+:root[data-theme="tape"] .li-sub { font-size: 0.8125rem; }
+:root[data-theme="tape"] .li-side b { color: var(--hi); font-weight: 600; }
+:root[data-theme="tape"] :is(.li-ic, .connect-ic, .setup-ic, .oath-ic) { background: transparent; box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="tape"] :is(button.li, a.li):active { background: var(--raised); }
+@media (hover: hover) {
+  :root[data-theme="tape"] :is(button.li, a.li, a.card, .goal-card, .goal-mini-row):hover { background-color: var(--raised); }
+}
+
+/* Ticks: a bracketed box. Kept fills green, missed is a red cross, pardoned hatched. */
+:root[data-theme="tape"] .chk { width: 24px; height: 24px; box-shadow: inset 0 0 0 1.5px var(--line-strong); }
+:root[data-theme="tape"] .chk svg { stroke: #000; stroke-width: 3; }
+:root[data-theme="tape"] :is(.kept, .done) .chk { background: var(--green); box-shadow: 0 0 10px -2px rgba(38, 208, 124, 0.6); }
+:root[data-theme="tape"] .missed .chk { background: rgba(255, 77, 77, 0.12); box-shadow: inset 0 0 0 1.5px var(--red); }
+:root[data-theme="tape"] .pardoned .chk { box-shadow: inset 0 0 0 1.5px var(--text-3); background: var(--hatch); }
+:root[data-theme="tape"] .heavy .chk { box-shadow: inset 0 0 0 1.5px var(--red); }
+:root[data-theme="tape"] .met .chk { box-shadow: inset 0 0 0 1.5px var(--green); }
+:root[data-theme="tape"] .li.pending:not(.missed) .chk::after { box-shadow: 0 0 0 1.5px var(--green); }
+:root[data-theme="tape"] .hp-chip { color: #000; background: var(--text); font-weight: 700; }
+:root[data-theme="tape"] .tag { letter-spacing: 0.08em; }
+:root[data-theme="tape"] .tag.uni { background: rgba(76, 201, 240, 0.12); color: var(--cyan); }
+:root[data-theme="tape"] .pchip { background: transparent; color: var(--cyan); box-shadow: inset 0 0 0 1px rgba(76, 201, 240, 0.5); }
+:root[data-theme="tape"] .add-ic { box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--text); }
+:root[data-theme="tape"] .add-input { caret-color: var(--cyan); }
+
+/* Bars: LED segments. */
+:root[data-theme="tape"] :is(.pbar, .np-bar, .focus-bar, .fmc-bar, .ri-bar, .rirow-bar, .fc-day-bar, .fwater-bar, .fmeal) {
+  -webkit-mask: repeating-linear-gradient(90deg, #000 0 5px, transparent 5px 7px); mask: repeating-linear-gradient(90deg, #000 0 5px, transparent 5px 7px);
+  background: var(--fill-2);
+}
+:root[data-theme="tape"] :is(.np-bar i, .goal-bar .pbar i, .focus-bar i) { background: var(--green); box-shadow: none; }
+:root[data-theme="tape"] .focus-bar i { background: var(--text); }
+
+/* ---------- Buttons and controls ---------- */
+
+:root[data-theme="tape"] .btn {
+  background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px var(--line-ctl);
+  font-size: 0.8125rem; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase;
+}
+:root[data-theme="tape"] .btn.small { font-size: 0.75rem; }
+:root[data-theme="tape"] .btn.big { font-size: 0.875rem; }
+:root[data-theme="tape"] .btn.tinted { background: var(--raised); color: var(--text); }
+:root[data-theme="tape"] :is(.btn.primary, .btn.chrome, .icon-btn.accent, .cchat-page .btn.chrome, .cchat-page .composer .send) {
+  background: var(--text); color: #000; box-shadow: inset 0 0 0 1px var(--text), 0 0 16px -6px rgba(255, 176, 0, 0.7); text-shadow: none;
+}
+:root[data-theme="tape"] .btn.plain { background: transparent; color: var(--text-2); box-shadow: none; }
+:root[data-theme="tape"] .btn.danger { background: var(--red); color: #000; }
+:root[data-theme="tape"] .btn.tinted.danger-text { box-shadow: inset 0 0 0 1px rgba(255, 77, 77, 0.55); }
+@media (hover: hover) {
+  :root[data-theme="tape"] .btn:hover:not(:disabled) { background-color: var(--fill-2); }
+  :root[data-theme="tape"] :is(.btn.primary, .btn.chrome):hover:not(:disabled) { background: #ffc233; }
+  :root[data-theme="tape"] .btn.danger:hover:not(:disabled) { background: #ff6b6b; }
+  :root[data-theme="tape"] .icon-btn:hover { background: var(--fill-2); }
+}
+:root[data-theme="tape"] .icon-btn { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px var(--line-ctl); }
+
+:root[data-theme="tape"] .field > span:first-child:not(.copy-row), :root[data-theme="tape"] :is(.chips legend, .facts dt) {
+  font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-2);
+}
+@media (pointer: coarse) {
+  :root[data-theme="tape"] :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { font-size: max(16px, 1em); }
+}
+:root[data-theme="tape"] .input { background: #000; color: var(--hi); box-shadow: inset 0 0 0 1px var(--line-ctl); caret-color: var(--cyan); font-size: 1rem; }
+:root[data-theme="tape"] .input:focus { background: #000; box-shadow: inset 0 0 0 1px var(--cyan), 0 0 0 3px rgba(76, 201, 240, 0.14); }
+:root[data-theme="tape"] .input[readonly] { background: var(--card); }
+:root[data-theme="tape"] select.input {
+  background-repeat: no-repeat; background-position: right 15px center; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23ffb000' stroke-width='1.6'/%3E%3C/svg%3E");
+}
+:root[data-theme="tape"] :is(.sheet .input, .sheet .seg, .sheet .days span, .sheet .chip span) { background: #000; }
+:root[data-theme="tape"] .check input { width: 22px; height: 22px; background: #000; box-shadow: inset 0 0 0 1.5px var(--line-strong); }
+:root[data-theme="tape"] .check input:checked { background: var(--text); }
+:root[data-theme="tape"] .radio-row input { -webkit-appearance: none; appearance: none; background: #000; box-shadow: inset 0 0 0 1.5px var(--line-strong); }
+:root[data-theme="tape"] .radio-row input:checked { background: var(--text); box-shadow: inset 0 0 0 1.5px var(--text), inset 0 0 0 5px #000; }
+
+/* Segmented: inverse video for the choice. */
+:root[data-theme="tape"] .seg { padding: 2px; gap: 2px; background: #000; box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="tape"] :is(.seg span, .seg button) { padding-left: 6px; padding-right: 6px; font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-2); }
+:root[data-theme="tape"] :is(.seg input:checked + span, .seg button[aria-selected="true"], .seg button.on, .seg button[aria-pressed="true"], .seg-ind) {
+  background: var(--text); color: #000; box-shadow: none;
+}
+:root[data-theme="tape"] :is(.seg-live input:checked + span, .seg-live button[aria-selected="true"], .seg-live button.on, .seg-live button[aria-pressed="true"]) { background: transparent; color: #000; }
+:root[data-theme="tape"] :is(.chip span, .days span, .rate span) { background: #000; box-shadow: inset 0 0 0 1px var(--line-ctl); color: var(--text-2); }
+:root[data-theme="tape"] .chip span { font-size: 0.8125rem; }
+:root[data-theme="tape"] :is(.chip input:checked + span, .days input:checked + span, .rate input:checked + span) { background: var(--text); color: #000; box-shadow: none; }
+:root[data-theme="tape"] .switch { background: #000; box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="tape"] .switch::after { background: var(--text-2); box-shadow: none; }
+:root[data-theme="tape"] .switch:checked { background: var(--green); }
+:root[data-theme="tape"] .switch:checked::after { background: #000; }
+
+/* ---------- Today: rings as a stepped tape ---------- */
+
+:root[data-theme="tape"] :is(.ring-track, .ring-arc, .ring-lap) {
+  -webkit-mask: var(--band), var(--seg); -webkit-mask-composite: source-in;
+  mask: var(--band), var(--seg); mask-composite: intersect;
+}
+:root[data-theme="tape"] .ring-arc { background: conic-gradient(var(--r0), var(--r1) calc(min(var(--ring-p), 1) * 1turn), transparent 0); }
+:root[data-theme="tape"] :is(.ring-cap, .ring-head) { display: none; }
+:root[data-theme="tape"] .rings-center b { font-weight: 700; letter-spacing: -0.04em; text-shadow: 0 0 14px rgba(242, 242, 242, 0.25); }
+:root[data-theme="tape"] .rings-center > span { color: var(--text); letter-spacing: 0.2em; }
+:root[data-theme="tape"] .rings-center .ic { color: var(--text-2); }
+:root[data-theme="tape"] .lg-dot { width: 8px; height: 8px; background: var(--r1); box-shadow: 0 0 6px var(--rg); }
+:root[data-theme="tape"] .lg-val { color: var(--hi); font-size: 1.25rem; font-weight: 650; letter-spacing: -0.03em; }
+:root[data-theme="tape"] :is(.lg-val small, .ov-v small, .dtile-val small) { color: var(--text-3); font-weight: 500; letter-spacing: 0; }
+:root[data-theme="tape"] .lg-sub { color: var(--text-2); }
+:root[data-theme="tape"] .rings-card.low .rings-center b { color: var(--red) !important; -webkit-text-fill-color: var(--red) !important; }
+
+/* Up next: a position ticket in the colour of its countdown. */
+:root[data-theme="tape"] .now { background: var(--card); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--urg) 45%, var(--line)); }
+:root[data-theme="tape"] .now::before { height: 2px; background: var(--urg); }
+:root[data-theme="tape"] .now-left { background: transparent; box-shadow: inset 0 0 0 1px var(--line-ctl); font-size: 0.8125rem; font-weight: 600; color: var(--text-2); }
+:root[data-theme="tape"] .now[class*=" u-"]:not(.u-calm) .now-left { background: color-mix(in srgb, var(--urg) 12%, #000); font-size: 0.875rem; }
+:root[data-theme="tape"] .now-title { font-size: clamp(1.25rem, 1rem + 1.2vw, 1.5rem); font-weight: 650; letter-spacing: -0.01em; color: var(--text); text-shadow: 0 0 16px rgba(255, 176, 0, 0.22); }
+:root[data-theme="tape"] .now-cue { background: #000; box-shadow: inset 2px 0 0 var(--cyan), inset 0 0 0 1px var(--line-soft); }
+:root[data-theme="tape"] :is(.now.is-focus, .now.secured, .now.dodging) { background: var(--card); }
+:root[data-theme="tape"] .now.is-focus .eyebrow { color: var(--text); }
+:root[data-theme="tape"] .clock { font-weight: 600; letter-spacing: -0.04em; text-shadow: 0 0 22px rgba(242, 242, 242, 0.22); }
+:root[data-theme="tape"] .now.u-ember .btn.chrome, :root[data-theme="tape"] .now.u-over .btn.chrome { animation: tape-urge 1.6s steps(2, end) infinite; }
+@keyframes tape-urge { 50% { opacity: 0.78; } }
+
+:root[data-theme="tape"] .next-dock { background: rgba(5, 5, 5, 0.96); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--urg) 55%, var(--line)), inset 3px 0 0 var(--urg); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="tape"] .next-dock { background: rgba(5, 5, 5, 0.82); }
+}
+:root[data-theme="tape"] .dock-text b { font-size: 0.875rem; font-weight: 600; color: var(--hi); }
+:root[data-theme="tape"] :is(.tchip, .nx-chip, .tl-chip, .ml-action, .ml-due, .ml-reason, .fconf, .pl-pill) { background: transparent; }
+:root[data-theme="tape"] .tchip { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="tape"] .tchip.warn { box-shadow: inset 0 0 0 1px rgba(255, 210, 63, 0.5); }
+:root[data-theme="tape"] .ask-coach { background: #000; box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="tape"] .ask-coach:focus-within { box-shadow: inset 0 0 0 1px var(--cyan), 0 0 0 3px rgba(76, 201, 240, 0.14); }
+:root[data-theme="tape"] .ask-input { color: var(--hi); caret-color: var(--cyan); font-size: 1rem; }
+:root[data-theme="tape"] .oath-mini { background: var(--card); }
+:root[data-theme="tape"] :is(.last-night, .oath .capacity, .now-cue, .sheet-move, .auto-field, .pardon-form) { background: #000; }
+:root[data-theme="tape"] :is(.brief-text, .plan-text) { color: var(--text); font-size: 0.875rem; line-height: 1.7; }
+
+/* Overview tiles: each a small window with its own title strip. */
+:root[data-theme="tape"] .ov { gap: 8px; }
+:root[data-theme="tape"] .ov-tile { padding: 0 12px 12px; }
+:root[data-theme="tape"] .ov-h { margin: 1px -11px 4px; padding: 7px 12px; background: var(--strip); box-shadow: inset 0 -1px 0 var(--line); color: var(--text-2); }
+:root[data-theme="tape"] :is(.ov-v, .dtile-val, .stat b, .goal-big, .pl-big, .body-val, .fkpi b, .season-hp b, .fday-hero .fring-c b) { color: var(--hi); font-weight: 650; letter-spacing: -0.03em; }
+:root[data-theme="tape"] .ov-hp { --ov-c: var(--text); }
+:root[data-theme="tape"] .ov-hp.low .ov-v { color: var(--red); }
+:root[data-theme="tape"] .oc-bar { fill: #2a1f0a; }
+:root[data-theme="tape"] :is(.oc-bar, .oc-none, .fc-bar, .fc-unk, .fd-bar, .gx) { rx: 0; ry: 0; }
+:root[data-theme="tape"] .oc-bar.met { fill: color-mix(in oklab, var(--oc) 42%, #2a1f0a); }
+:root[data-theme="tape"] .oc-ref { stroke: var(--text-3); stroke-dasharray: 2 3; }
+:root[data-theme="tape"] .sp-dot { background: var(--text); box-shadow: 0 0 0 2px var(--card), 0 0 10px rgba(255, 176, 0, 0.8); }
+:root[data-theme="tape"] .wk-dot { box-shadow: inset 0 0 0 1px var(--line-strong); }
+:root[data-theme="tape"] .wk-day.clean .wk-dot { background: var(--green); color: #000; box-shadow: 0 0 8px -1px rgba(38, 208, 124, 0.55); }
+:root[data-theme="tape"] .wk-day.missed .wk-dot { background: rgba(255, 77, 77, 0.14); color: var(--red); box-shadow: inset 0 0 0 1px var(--red); }
+:root[data-theme="tape"] .wk-day.kept .wk-dot { background: rgba(38, 208, 124, 0.12); box-shadow: inset 0 0 0 1px rgba(38, 208, 124, 0.6); }
+:root[data-theme="tape"] .wk-day.today .wk-l, :root[data-theme="tape"] .oc-axis .cur { color: var(--hi); }
+
+/* Schedule */
+:root[data-theme="tape"] .tl-now::before { height: 1px; }
+:root[data-theme="tape"] .tl-now::after { width: 8px; height: 8px; left: 53px; }
+:root[data-theme="tape"] .tl-title { font-size: 0.875rem; font-weight: 500; }
+:root[data-theme="tape"] .tl-chip { box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="tape"] .nx-body b { font-weight: 500; }
+:root[data-theme="tape"] .update-bar { background: #000; box-shadow: inset 0 0 0 1px var(--text); }
+
+/* ---------- Sheets, confirm, toast ---------- */
+
+:root[data-theme="tape"] .sheet-backdrop { background: rgba(0, 0, 0, 0.74); }
+:root[data-theme="tape"] .sheet { box-shadow: inset 0 1px 0 var(--line-strong), 0 -24px 64px rgba(0, 0, 0, 0.8), 0 160px 0 0 var(--sheet); }
+:root[data-theme="tape"] .sheet-grab { width: 36px; height: 3px; background: var(--line-strong); }
+:root[data-theme="tape"] .sheet-head { box-shadow: 0 1px 0 var(--line); }
+:root[data-theme="tape"] :is(.sheet-head h2, .confirm-title, .dodge-sheet .dodge-title) { font-size: 1rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+:root[data-theme="tape"] .sheet-form { border-top-color: var(--line); }
+@media (min-width: 900px) {
+  :root[data-theme="tape"] .sheet { box-shadow: inset 0 0 0 1px var(--line-strong), inset 0 2px 0 var(--text), 0 40px 100px rgba(0, 0, 0, 0.85); }
+}
+:root[data-theme="tape"] .toast { background: rgba(0, 0, 0, 0.96); color: var(--text); font-size: 0.875rem; box-shadow: inset 0 0 0 1px var(--text), 0 20px 50px rgba(0, 0, 0, 0.8); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="tape"] .toast { background: rgba(0, 0, 0, 0.86); }
+}
+:root[data-theme="tape"] .toast.bad { background: #140404; color: #ffb3b3; box-shadow: inset 0 0 0 1px var(--red), 0 20px 50px rgba(0, 0, 0, 0.8); }
+:root[data-theme="tape"] .note.bad { color: #ffb3b3; background: rgba(255, 77, 77, 0.08); box-shadow: inset 0 0 0 1px rgba(255, 77, 77, 0.4); }
+:root[data-theme="tape"] .banner { background: var(--card); }
+:root[data-theme="tape"] .ptr { background: #000; box-shadow: inset 0 0 0 1px var(--line-ctl); color: var(--text); }
+:root[data-theme="tape"] :is(.ptr.armed, .ptr.spin) { color: var(--green); }
+
+/* ---------- Tab bar: function keys ---------- */
+
+:root[data-theme="tape"] .tabbar {
+  counter-reset: fkey; gap: 4px; padding: 4px; background: rgba(5, 5, 5, 0.96);
+  box-shadow: inset 0 0 0 1px var(--line-strong), 0 10px 30px -8px rgba(0, 0, 0, 0.9);
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="tape"] .tabbar { background: rgba(5, 5, 5, 0.8); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+}
+:root[data-theme="tape"] .tab { counter-increment: fkey; color: var(--text-2); box-shadow: inset 0 0 0 1px var(--line); }
+:root[data-theme="tape"] .tab::after {
+  content: 'F' counter(fkey); position: absolute; top: 3px; left: 5px; z-index: 1;
+  font-size: 0.5625rem; font-weight: 600; letter-spacing: 0.04em; line-height: 1; color: var(--text-3);
+}
+:root[data-theme="tape"] .tab .ic { width: 20px; height: 20px; stroke-width: 1.7; }
+:root[data-theme="tape"] .tab-ic { position: static; }
+:root[data-theme="tape"] .tab > span:last-child { font-size: 0.5625rem; font-weight: 650; letter-spacing: 0.1em; text-transform: uppercase; }
+:root[data-theme="tape"] .tab-pill, :root[data-theme="tape"] .tabbar .tab-pill { inset: 0; background: var(--text); box-shadow: 0 0 14px -4px rgba(255, 176, 0, 0.7); }
+:root[data-theme="tape"] .tab[aria-current="page"], :root[data-theme="tape"] .tab[aria-current="page"] .ic, :root[data-theme="tape"] .tab[aria-current="page"]::after { color: #000; }
+:root[data-theme="tape"] .tab-badge { top: 3px; right: 4px; left: auto; height: 15px; min-width: 15px; padding: 0 4px; font-size: 0.625rem; color: #000; background: var(--red); box-shadow: none; z-index: 2; }
+:root[data-theme="tape"] .tabbar-brand span { background: none; color: var(--text); -webkit-text-fill-color: currentColor; font-size: 1.375rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+@media (min-width: 900px) {
+  :root[data-theme="tape"] .tabbar { gap: 2px; padding-left: calc(env(safe-area-inset-left) + 12px); padding-right: 12px; background: #080705; box-shadow: 1px 0 0 var(--line); }
+  :root[data-theme="tape"] .tab { position: relative; min-height: 44px; box-shadow: none; color: var(--text-2); }
+  :root[data-theme="tape"] .tab::after { top: 50%; left: auto; right: 10px; transform: translateY(-50%); font-size: 0.625rem; }
+  :root[data-theme="tape"] .tab .ic { color: var(--text-3); }
+  :root[data-theme="tape"] .tab > span:last-child { font-size: 0.75rem; letter-spacing: 0.12em; }
+  :root[data-theme="tape"] .tab[aria-current="page"] { color: #000; }
+  :root[data-theme="tape"] .tab-pill { inset: 0; width: auto; }
+  :root[data-theme="tape"] .tab-badge { top: 50%; right: 34px; transform: translateY(-50%); }
+  :root[data-theme="tape"] .tabbar > a.tab:nth-of-type(8)::before { left: 0; right: 0; }
+  :root[data-theme="tape"] .tabbar-brand.wide-only { padding: 2px 6px 20px; margin-bottom: 8px; box-shadow: 0 1px 0 var(--line); }
+}
+
+/* ---------- The way in and the lock ---------- */
+
+:root[data-theme="tape"] .wordmark { background: none; color: var(--text); -webkit-text-fill-color: currentColor; font-size: 3rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; text-shadow: 0 0 24px rgba(255, 176, 0, 0.35); }
+:root[data-theme="tape"] .wordmark::after { content: ''; display: inline-block; width: 0.5em; height: 0.8em; margin-left: 0.06em; vertical-align: -0.04em; background: var(--text); animation: tape-cursor 1.1s steps(1, end) infinite; }
+:root[data-theme="tape"] .gate-mark { filter: drop-shadow(0 0 18px rgba(255, 176, 0, 0.45)); }
+:root[data-theme="tape"] .tagline { font-family: var(--font); font-style: normal; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-2); }
+:root[data-theme="tape"] .gate > p { font-size: 0.9375rem; }
+:root[data-theme="tape"] .gate .recover summary { color: var(--cyan); text-decoration-color: rgba(76, 201, 240, 0.4); }
+:root[data-theme="tape"] .lock-glyph { color: var(--text); }
+:root[data-theme="tape"] .lock-glyph::after { background: var(--text); box-shadow: 0 0 10px 1px rgba(255, 176, 0, 0.7); }
+:root[data-theme="tape"] .lock[data-state="unlocking"] .lock-glyph { color: var(--green); filter: drop-shadow(0 0 12px rgba(38, 208, 124, 0.45)); }
+:root[data-theme="tape"] .skeleton i { background: var(--card); }
+
+/* ---------- Empty states ---------- */
+
+:root[data-theme="tape"] .empty-state { background: repeating-linear-gradient(180deg, transparent 0 23px, var(--line-soft) 23px 24px), var(--card); }
+:root[data-theme="tape"] .empty-orb { background: #000; color: var(--text); box-shadow: inset 0 0 0 1px var(--text), 0 0 18px -6px rgba(255, 176, 0, 0.6); }
+:root[data-theme="tape"] .empty-state p { font-size: 0.875rem; }
+
+/* ---------- Coach ---------- */
+
+:root[data-theme="tape"] .cchat-page { background: none; }
+:root[data-theme="tape"] .chd-head { background: rgba(5, 5, 5, 0.94); box-shadow: 0 1px 0 var(--line); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="tape"] .chd-head { background: rgba(5, 5, 5, 0.78); }
+}
+:root[data-theme="tape"] :is(.chd-av, .fc-av) { font: 700 1.25rem/1 var(--font); color: #000; background: var(--text); box-shadow: 0 0 14px -4px rgba(255, 176, 0, 0.7); }
+:root[data-theme="tape"] .fc-av.big { font-size: 2.25rem; }
+:root[data-theme="tape"] :is(.fc-hello h2, .fcard-head h2, .fday-head h2) { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+:root[data-theme="tape"] .fc-hello h2 { font-size: 1.125rem; }
+:root[data-theme="tape"] .fcard-head { align-items: center; margin: calc(1px - var(--pad)) calc(1px - var(--pad)) 14px; padding: 8px calc(var(--pad) - 1px); background: var(--strip); box-shadow: inset 0 -1px 0 var(--line); }
+:root[data-theme="tape"] .fchat .msg:not(.user)::before { content: 'FOOD>'; }
+:root[data-theme="tape"] .fc-daysep span { background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
+:root[data-theme="tape"] :is(.chd-head-text h1, .fc-head-text h1) { font-size: 1rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+:root[data-theme="tape"] .msg { padding: 10px 12px; font-size: 0.875rem; line-height: 1.6; }
+:root[data-theme="tape"] .msg::before { content: 'COACH>'; display: block; margin-bottom: 4px; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.16em; color: var(--text-3); }
+:root[data-theme="tape"] .msg.user::before { content: 'YOU>'; color: rgba(76, 201, 240, 0.75); }
+:root[data-theme="tape"] :is(.msg.assistant, .cchat .msg.assistant, .fchat .fc-say) { color: var(--text); background: var(--card); box-shadow: inset 0 0 0 1px var(--line); }
+:root[data-theme="tape"] :is(.msg.user, .cchat .msg.user, .fchat .msg.user) { color: var(--cyan); background: rgba(76, 201, 240, 0.06); box-shadow: inset 0 0 0 1px rgba(76, 201, 240, 0.4); }
+:root[data-theme="tape"] :is(.msg.user time, .cchat .msg.user time, .fchat .msg.user time) { color: rgba(76, 201, 240, 0.7); }
+:root[data-theme="tape"] .rich strong { color: var(--hi); }
+:root[data-theme="tape"] .rich ul > li::before { width: 5px; height: 5px; }
+:root[data-theme="tape"] :is(.typing i, .cchat .typing i, .cchat .typing i:nth-of-type(2), .frich-wait i) { background: var(--text); }
+:root[data-theme="tape"] .receipts li { background: #000; }
+:root[data-theme="tape"] :is(.confirm-row, .cchat .confirm-row) { background: rgba(255, 176, 0, 0.06); box-shadow: inset 0 0 0 1px var(--line-strong); }
+:root[data-theme="tape"] .composer-dock::before { background: linear-gradient(180deg, rgba(5, 5, 5, 0), rgba(5, 5, 5, 0.92) 46%); }
+:root[data-theme="tape"] :is(.composer, .cchat-page .composer, .fc-composer) { background: rgba(0, 0, 0, 0.94); box-shadow: inset 0 0 0 1px var(--line-strong); }
+:root[data-theme="tape"] :is(.composer:focus-within, .cchat-page .composer:focus-within, .fc-composer:focus-within) { box-shadow: inset 0 0 0 1px var(--cyan), 0 0 0 3px rgba(76, 201, 240, 0.12); }
+:root[data-theme="tape"] .composer textarea, :root[data-theme="tape"] .composer textarea:focus { color: var(--hi); caret-color: var(--cyan); background: transparent; box-shadow: none; }
+:root[data-theme="tape"] :is(.qchip, .cchat-page .qchip) { position: relative; background: rgba(0, 0, 0, 0.94); color: var(--text); font-size: 0.8125rem; box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="tape"] .cc-cam { color: var(--text); background: transparent; box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="tape"] .cc-mic, :root[data-theme="tape"] .cc-staged-x { color: #000; background: var(--text); box-shadow: none; }
+:root[data-theme="tape"] .cc-staged { background: #000; box-shadow: inset 0 0 0 1px var(--line-strong); }
+:root[data-theme="tape"] .cc-play { color: #000; background: var(--cyan); }
+:root[data-theme="tape"] .cc-wave i { background: rgba(76, 201, 240, 0.35); }
+:root[data-theme="tape"] .cc-wave i.on { background: var(--cyan); }
+:root[data-theme="tape"] :is(.cc-dur, .cc-note) { color: var(--cyan); }
+:root[data-theme="tape"] .cc-rec-dot { background: var(--red); box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.2); }
+:root[data-theme="tape"] .cc-rec-bars i { background: var(--text); }
+:root[data-theme="tape"] .briefs-btn .ic { color: var(--text); }
+
+/* ---------- Food ---------- */
+
+:root[data-theme="tape"] .fcap-bar { background: #000; box-shadow: inset 0 0 0 1px var(--line-strong); }
+:root[data-theme="tape"] :is(.fcap-cam, .fcap-send, .fc-cam, .fc-send) { color: #000; background: var(--text); box-shadow: none; }
+:root[data-theme="tape"] .fcap-q { color: var(--text); font-size: 0.9375rem; }
+:root[data-theme="tape"] :is(.fcap-tool, .fc-chip, .fc-act) { background: transparent; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: inset 0 0 0 1px var(--line-ctl); }
+:root[data-theme="tape"] .fcap-tool .ic { color: var(--text); }
+:root[data-theme="tape"] .fcap .tray-chip { background: var(--card); }
+:root[data-theme="tape"] .fslot-btn { width: 30px; height: 30px; margin: -4px -10px -4px 0; color: var(--text); background: var(--fill-2); box-shadow: inset 1px 0 0 var(--line); }
+:root[data-theme="tape"] .fslot-btn::before { inset: -7px; }
+:root[data-theme="tape"] .fmeal { height: 4px; margin: 0; }
+:root[data-theme="tape"] .fmeal + .group { margin-top: -1px; }
+:root[data-theme="tape"] :is(.fday-hero .fring, .dtile-ring, .goal-ring, .pl-hero-ring, .pl-ring, .goal-mini-row) .mring, :root[data-theme="tape"] .fday-hero .fring svg { -webkit-mask: var(--seg); mask: var(--seg); }
+:root[data-theme="tape"] .hp-area stop { stop-color: #ffb000 !important; stop-opacity: 0.3; }
+:root[data-theme="tape"] .hp-area stop + stop { stop-opacity: 0; }
+:root[data-theme="tape"] .fr-track { stroke: #1c1405; }
+:root[data-theme="tape"] .fh-bg { fill: rgba(255, 176, 0, 0.03); }
+:root[data-theme="tape"] .fh-line { fill: var(--text-3); }
+:root[data-theme="tape"] :is(.fmc-bar, .ri-bar, .rirow-bar, .fc-day-bar, .fmeal) { background: rgba(255, 176, 0, 0.1); }
+:root[data-theme="tape"] .fmc.over .fmc-of, :root[data-theme="tape"] .frank-h.bad { color: var(--blaze); }
+:root[data-theme="tape"] :is(.fk-now, .fcmp-bar.cur i) { background: var(--hi); }
+:root[data-theme="tape"] .fst .ri-bar i { background: var(--text); }
+:root[data-theme="tape"] :is(.ri-bar.full i, .rirow.full .rirow-bar i) { background: var(--green); }
+:root[data-theme="tape"] .fheat-grid i { background: color-mix(in srgb, var(--text) calc(var(--a, 0) * 100%), rgba(255, 176, 0, 0.05)); }
+:root[data-theme="tape"] .fc-head { background: rgba(5, 5, 5, 0.9); box-shadow: 0 1px 0 var(--line); }
+:root[data-theme="tape"] .fc-dock::before { background: linear-gradient(180deg, rgba(5, 5, 5, 0), rgba(5, 5, 5, 0.96) 22px); }
+:root[data-theme="tape"] :is(.fc-items, .fc-pick) { background: #000; }
+:root[data-theme="tape"] .fchat-page { background: none; }
+:root[data-theme="tape"] .scan-cam { background: #000; }
+:root[data-theme="tape"] .scan-line { background: linear-gradient(90deg, transparent, var(--text) 16%, var(--text) 84%, transparent) top / 100% 2px no-repeat, linear-gradient(180deg, rgba(255, 176, 0, 0.22), transparent) 0 2px / 100% 12px no-repeat; }
+:root[data-theme="tape"] .scan-status { background: rgba(0, 0, 0, 0.82); }
+
+/* ---------- Calendar ---------- */
+
+:root[data-theme="tape"] .cal-top { background: rgba(5, 5, 5, 0.96); box-shadow: 0 1px 0 var(--line); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :root[data-theme="tape"] .cal-top { background: rgba(5, 5, 5, 0.84); }
+}
+:root[data-theme="tape"] .cal-label { font-size: 1.125rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+:root[data-theme="tape"] .cal-sync i { background: var(--green); }
+:root[data-theme="tape"] .cal-sync.bad i { background: var(--red); }
+:root[data-theme="tape"] :is(.cal-sync.bad, .cal-feed.bad small) { color: #ff8a8a; }
+:root[data-theme="tape"] :is(.cal-wd.today.sel b, .cal-head.today b, .cal-cell.today .cal-num, .cal-now-l, .cal-now span) { background: var(--text); color: #000; }
+:root[data-theme="tape"] .cal-ev-t { font-size: 0.6875rem; font-weight: 600; letter-spacing: -0.01em; }
+:root[data-theme="tape"] .cal-col.today { background: rgba(255, 176, 0, 0.03); }
+:root[data-theme="tape"] .cal-ev { background: color-mix(in srgb, var(--c) 18%, #050505); box-shadow: inset 2px 0 0 var(--c), inset 0 0 0 1px color-mix(in srgb, var(--c) 35%, transparent); }
+:root[data-theme="tape"] .cal-ev.own { --c: var(--text); background: color-mix(in srgb, var(--text) 14%, #050505); box-shadow: inset 2px 0 0 var(--text), inset 0 0 0 1px rgba(255, 176, 0, 0.35); }
+:root[data-theme="tape"] .cal-now::before { background: var(--text); }
+
+/* ---------- Goals, Plan, Health, Settings ---------- */
+
+:root[data-theme="tape"] .goal-ring { color: var(--text); filter: drop-shadow(0 0 5px rgba(255, 176, 0, 0.45)); }
+:root[data-theme="tape"] .next-step { background: var(--card); box-shadow: inset 2px 0 0 var(--text), var(--rim); }
+:root[data-theme="tape"] .node-row.parent-sel { background: rgba(255, 176, 0, 0.07); box-shadow: inset 2px 0 0 var(--text); }
+:root[data-theme="tape"] .map-node text { font-size: 11px; }
+:root[data-theme="tape"] .map-node.task.done rect { fill: #06200f; }
+:root[data-theme="tape"] .pl-day.clean .pl-dot { background: var(--green); color: #000; box-shadow: none; }
+:root[data-theme="tape"] .pl-day.missed .pl-dot { background: rgba(255, 77, 77, 0.14); color: var(--red); box-shadow: inset 0 0 0 1px var(--red); }
+:root[data-theme="tape"] .pl-day.today .pl-dot { background: var(--fill-2); color: var(--text); }
+:root[data-theme="tape"] .pl-filters button { background: transparent; box-shadow: inset 0 0 0 1px var(--line-ctl); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
+:root[data-theme="tape"] .pl-filters button[aria-selected="true"] { background: var(--text); color: #000; box-shadow: none; }
+:root[data-theme="tape"] .pl-bar { background: #3a2a0c; }
+:root[data-theme="tape"] .pl-col.is-today .pl-bar:not(.zero) { background: var(--text); box-shadow: 0 0 10px rgba(255, 176, 0, 0.4); }
+:root[data-theme="tape"] .pl-bar i { background: var(--red); }
+:root[data-theme="tape"] .season-card { background: var(--card); }
+:root[data-theme="tape"] .season-hp span { color: var(--text); }
+:root[data-theme="tape"] .hp-line { stroke: var(--text); filter: drop-shadow(0 0 3px rgba(255, 176, 0, 0.6)); }
+:root[data-theme="tape"] :is(.stat, .dtile, .body-tile) { box-shadow: var(--rim); }
+:root[data-theme="tape"] .theme-card.on { box-shadow: inset 0 0 0 1px var(--text), 0 0 18px -8px rgba(255, 176, 0, 0.6); }
+:root[data-theme="tape"] .theme-name { color: var(--hi); }
+:root[data-theme="tape"] .theme-card { border: 0; }
+:root[data-theme="tape"] .theme-shot[style*="--p-r:0px"]::after { border-radius: 0; }
+:root[data-theme="tape"] .theme-shot[style*="--p-r:0px"] { border-radius: 0; }
+
+/* ---------- Motion off ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="tape"] :is(.lt-title, .goal-h, .wordmark)::after, :root[data-theme="tape"] .now .btn.chrome { animation: none !important; }
+}
