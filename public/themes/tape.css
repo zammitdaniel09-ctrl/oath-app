@@ -130,7 +130,7 @@
 :root[data-theme="tape"] .gh-count { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
 :root[data-theme="tape"] .gh-link { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
 :root[data-theme="tape"] .gh-link .ic { color: var(--acc); }
-:root[data-theme="tape"] .page > :is(p, .muted, .note:not(.bad)), :root[data-theme="tape"] :is(.theme-foot, .anytime > summary, .fusual-k, .fslot-chip, .back-inline, .gate > p, .gate em) { color: var(--ink); }
+:root[data-theme="tape"] .page > :is(p, .muted, .note:not(.bad)), :root[data-theme="tape"] :is(.theme-foot, .appicon-row p, .anytime > summary, .fusual-k, .fslot-chip, .back-inline, .gate > p, .gate em) { color: var(--ink); }
 :root[data-theme="tape"] :is(.gh span:not(.gh-count), .fusual-k small, .fslot-empty > span, .cal-allday-l, .cal-hour, .gate .note, .gate .field > span:first-child) { color: var(--ink-2); }
 :root[data-theme="tape"] :is(.eyebrow, .ov-h, .lg-label, .need-h, .fday-k, .nf-h, .frich-h, .ml-rest-h, .season-sub, .fwt-goal-k, .fusual-k, .pane-h) {
   font-family: var(--font); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2);
@@ -363,6 +363,7 @@
 :root[data-theme="tape"] .gate > p { font-size: 0.9375rem; color: var(--ink); }
 :root[data-theme="tape"] .gate .recover summary { color: var(--ink); text-decoration-color: rgba(42, 33, 29, 0.4); }
 :root[data-theme="tape"] .gate :is(.card, form) .muted { color: var(--text-3); }
+:root[data-theme="tape"] .gate .field > span:first-child:not(.copy-row) { color: var(--ink-2); }
 :root[data-theme="tape"] .lock-glyph { color: var(--ink); }
 :root[data-theme="tape"] .lock-glyph::after { background: var(--acc); box-shadow: 0 0 10px 1px rgba(255, 59, 31, 0.6); }
 :root[data-theme="tape"] .lock[data-state="unlocking"] .lock-glyph { color: #fff; }

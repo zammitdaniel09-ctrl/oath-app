@@ -68,6 +68,7 @@
 
 :root[data-theme="atelier"], :root[data-theme="atelier"]:has(.page-food, .cchat-page) { background: var(--bg); }
 :root[data-theme="atelier"] body, :root[data-theme="atelier"]:has(.page-food, .cchat-page) body { background: transparent; }
+:root[data-theme="atelier"] .gate::before { display: none; }
 :root[data-theme="atelier"] body::before {
   transform: translateZ(0);
   background:
