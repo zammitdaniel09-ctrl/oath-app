@@ -27,9 +27,9 @@ export const THEMES = [
     p: { bg: '#eeb08a', card: '#1e1d1c', text: '#fffaf5', sub: '#5a4337', a: '#ff3b1f', b: '#ffffff', c: '#a39c94', font: "'Oath Dot', 'Geist Mono', ui-monospace, monospace", r: '12px', fx: 'tape' },
   },
   {
-    id: 'sovereign', name: 'Sovereign', line: 'Black lacquer, gold leaf', note: 'Lacquered black and hand-laid gold, Didone capitals and deco rules.',
-    color: '#0a0806', light: false,
-    p: { bg: '#0a0806', card: '#15110b', text: '#efe4cc', sub: '#9c8a66', a: '#d4af37', b: '#f1d98a', c: '#8c6a2b', font: "'Didot', 'Bodoni 72', 'Bodoni MT', ui-serif, serif", r: '4px' },
+    id: 'sovereign', name: 'Blueprint', line: 'Cobalt on white', note: 'White drafting paper, cobalt line work on a grid, serif capitals and technical panels.',
+    color: '#f7f8fc', light: true,
+    p: { bg: '#f7f8fc', card: '#ffffff', text: '#2341c4', sub: '#5a69b6', a: '#2341c4', b: '#5b7cff', c: '#3a9ae0', font: "'New York', 'Iowan Old Style', ui-serif, Georgia, serif", r: '2px', fx: 'blueprint' },
   },
 ];
 const BY_ID = Object.fromEntries(THEMES.map((t) => [t.id, t]));
