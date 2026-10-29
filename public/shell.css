@@ -91,7 +91,7 @@ body.sheet-open .toast, body.confirm-open .toast { bottom: auto; top: calc(env(s
   background: radial-gradient(70vmax 55vmax at 50% 12%, rgba(225, 6, 0, 0.24), transparent 62%), radial-gradient(40vmax 30vmax at 90% 100%, rgba(255, 90, 31, 0.08), transparent 70%);
 }
 .brand-lockup { display: grid; justify-items: center; gap: 10px; text-align: center; }
-.gate-mark { margin-bottom: 8px; filter: drop-shadow(0 0 24px rgba(225, 6, 0, 0.55)); }
+.gate-mark { margin-bottom: 8px; }
 .tagline { margin: 0; font-family: var(--serif); font-style: italic; font-size: 1.375rem; color: var(--chrome-c); }
 .gate > .brand-lockup + p { margin-top: 22px; }
 .gate > p { margin-top: 14px; color: var(--text-2); font-size: 1.0625rem; line-height: 1.5; text-align: center; text-wrap: balance; }

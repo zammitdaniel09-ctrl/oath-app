@@ -1,6 +1,7 @@
 // The way in: the setup and login forms and the lock screen that asks for Face ID by itself.
-import { brandMark, state, closeConfirm, $app, icon, esc, api, reduced, hooks, form2obj, toast } from './ui.js';
+import { state, closeConfirm, $app, icon, esc, api, reduced, hooks, form2obj, toast } from './ui.js';
 import { deviceName, fresh, getOptions, credentialJSON } from './passkeys.js';
+import { appIcon } from './app-icon.js';
 import { leaveChat } from './coach-media.js';
 import { resyncPush } from './push.js';
 import { flushFood } from './food.js';
@@ -10,9 +11,9 @@ export function initLock(c) {
   ctx = { ...ctx, ...c };
 }
 
-// The face of Oath: the mark, the chrome wordmark and the promise, centred.
+// The face of Oath: the app icon charging, the wordmark and the promise, centred.
 export function brandLockup(size = 76) {
-  return `<div class="brand-lockup">${brandMark(size, 'gate-mark')}<div class="wordmark">Oath</div><p class="tagline">Keep your word.</p></div>`;
+  return `<div class="brand-lockup">${appIcon(Math.round(size * 1.45), 'gate-mark')}<div class="wordmark">Oath</div><p class="tagline">Keep your word.</p></div>`;
 }
 
 const pause = (ms) => new Promise((r) => setTimeout(r, ms));

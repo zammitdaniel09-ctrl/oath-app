@@ -1,8 +1,9 @@
 // Themes: the whole app in another hand. A theme is one stylesheet, /themes/<id>.css, with every rule
-// under :root[data-theme="<id>"]; only the chosen one is loaded. Its icons, its manifest and the status
-// bar colour follow it. index.html applies the saved theme before the first paint (from this phone's
+// under :root[data-theme="<id>"]; only the chosen one is loaded. The status bar colour follows it; the app
+// icon (app-icon.js) is the same in every theme. index.html applies the saved theme before the first paint (from this phone's
 // memory); this module switches, saves to the server, and follows a choice made on another device.
 import { state, api, esc, reduced, toast, haptic } from './ui.js';
+import { appIcon } from './app-icon.js';
 
 // p: the colours, type and corner of the small preview in Settings, drawn without loading the theme.
 export const THEMES = [
@@ -38,10 +39,8 @@ const KEY = 'oath.theme';
 export const themeOf = (id) => BY_ID[id] || BY_ID.oath;
 export const currentTheme = () => themeOf(document.documentElement.dataset.theme);
 
-// Where a theme's files live. The original keeps the app's own icons and manifest.
-const files = (t) => (t.id === 'oath'
-  ? { css: '', manifest: '/manifest.webmanifest', icon: '/icons/favicon.png?v=2', touch: '/icons/apple-touch-icon.png?v=2' }
-  : { css: `/themes/${t.id}.css`, manifest: `/themes/${t.id}.webmanifest`, icon: `/icons/themes/${t.id}/favicon.png`, touch: `/icons/themes/${t.id}/apple-touch-icon.png` });
+// A theme's stylesheet. The original has none.
+const cssOf = (t) => (t.id === 'oath' ? '' : `/themes/${t.id}.css`);
 
 const setAttr = (sel, attr, value) => document.querySelector(sel)?.setAttribute(attr, value);
 
@@ -65,23 +64,19 @@ function loadCss(href) {
 }
 
 function swap(t, link) {
-  const f = files(t);
   const old = document.getElementById('theme-css');
   if (link && link !== old) { old?.remove(); link.id = 'theme-css'; }
-  if (!f.css) old?.remove();
+  if (!cssOf(t)) old?.remove();
   document.documentElement.dataset.theme = t.id;
   setAttr('meta[name="theme-color"]', 'content', t.color);
   setAttr('meta[name="apple-mobile-web-app-status-bar-style"]', 'content', t.light ? 'default' : 'black');
-  setAttr('link[rel="icon"]', 'href', f.icon);
-  setAttr('link[rel="apple-touch-icon"]', 'href', f.touch);
-  setAttr('link[rel="manifest"]', 'href', f.manifest);
 }
 
 // Puts a theme on: loads its stylesheet, then changes everything at once, cross-fading where the
 // browser can. save sends it to the server so every device follows.
 export async function applyTheme(id, { save = true } = {}) {
   const t = themeOf(id);
-  const link = await loadCss(files(t).css);
+  const link = await loadCss(cssOf(t));
   const go = () => swap(t, link);
   if (document.startViewTransition && !reduced() && document.documentElement.dataset.theme !== t.id) {
     await document.startViewTransition(go).finished.catch(() => {});
@@ -121,7 +116,8 @@ export function themesSection() {
     </button>`).join('');
   return `<section class="section themes" id="themes"><div class="gh"><h2>Themes</h2><span class="gh-count">${THEMES.length} looks</span></div>
     <div class="theme-rail" role="group" aria-label="Themes">${cards}</div>
-    <p class="muted small theme-foot">Every page, the icon and the status bar change with it, on every device. On iPhone and iPad the Home Screen icon is fixed when Oath is added: to see the new one there, remove Oath from the Home Screen and add it again from Safari.</p>
+    <p class="muted small theme-foot">Every page and the status bar change with it, on every device.</p>
+    <div class="appicon-row">${appIcon(64)}<p class="muted small">The app icon, the same in every theme. Here it drains and fills like a charge; on the Home Screen it rests full, as iOS keeps an icon still once Oath is added.</p></div>
   </section>`;
 }
 

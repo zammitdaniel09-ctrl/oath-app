@@ -1,0 +1,64 @@
+/* The app icon in the app (app-icon.js): an 8 second charge. Full and green, it drains to a red sliver
+   (15% to 37.5%), sloshes there, fills again (57.5% to 75%) and settles. The colour follows the level:
+   each layer above red fades as the liquid falls past it. Only transform and opacity move. */
+
+.appicon { position: relative; display: inline-grid; width: var(--ai); height: var(--ai); flex: none; isolation: isolate; }
+.appicon .ai-svg { position: relative; display: block; width: 100%; height: 100%; filter: drop-shadow(0 calc(var(--ai) * 0.06) calc(var(--ai) * 0.12) rgba(0, 0, 0, 0.45)); }
+.ai-glow { position: absolute; z-index: -1; inset: 40% -16% -18%; border-radius: 50%; opacity: 0; pointer-events: none; }
+.ai-gg { background: radial-gradient(closest-side, rgba(70, 230, 30, 0.5), rgba(70, 230, 30, 0.14) 60%, transparent); opacity: 1; }
+.ai-gy { background: radial-gradient(closest-side, rgba(240, 192, 0, 0.5), rgba(240, 192, 0, 0.14) 60%, transparent); }
+.ai-go { background: radial-gradient(closest-side, rgba(255, 96, 0, 0.5), rgba(255, 96, 0, 0.14) 60%, transparent); }
+.ai-gr { background: radial-gradient(closest-side, rgba(255, 34, 22, 0.55), rgba(255, 34, 22, 0.16) 60%, transparent); }
+
+.appicon:not(.still) .ai-liq { animation: ai-level 8s infinite; }
+.appicon:not(.still) .ai-slosh { transform-box: fill-box; transform-origin: 100% 50%; animation: ai-slosh 8s infinite; }
+.appicon:not(.still) :is(.ai-g, .ai-gh) { animation: ai-l-g 8s infinite; }
+.appicon:not(.still) :is(.ai-y, .ai-yh) { animation: ai-l-y 8s infinite; }
+.appicon:not(.still) :is(.ai-o, .ai-oh) { animation: ai-l-o 8s infinite; }
+.appicon:not(.still) .ai-gg { animation: ai-h-g 8s infinite; }
+.appicon:not(.still) .ai-gy { animation: ai-h-y 8s infinite; }
+.appicon:not(.still) .ai-go { animation: ai-h-o 8s infinite; }
+.appicon:not(.still) .ai-gr { animation: ai-h-r 8s infinite; }
+
+/* The level: the front of the liquid, in the drawing's units (912 full, 192 a tenth). */
+@keyframes ai-level {
+  0%, 15% { transform: translateX(912px); animation-timing-function: cubic-bezier(0.55, 0, 0.45, 1); }
+  37.5%, 57.5% { transform: translateX(192px); animation-timing-function: cubic-bezier(0.3, 0.6, 0.25, 1); }
+  75%, 100% { transform: translateX(912px); }
+}
+/* The surface leans as it moves and rocks to rest after each stop. */
+@keyframes ai-slosh {
+  0%, 15% { transform: skewX(0deg); }
+  21% { transform: skewX(-6deg); }
+  37.5% { transform: skewX(-3deg); }
+  41% { transform: skewX(7deg); }
+  45% { transform: skewX(-4.5deg); }
+  49% { transform: skewX(2.6deg); }
+  53% { transform: skewX(-1.2deg); }
+  57.5% { transform: skewX(0deg); }
+  62% { transform: skewX(6deg); }
+  75% { transform: skewX(3deg); }
+  78.5% { transform: skewX(-7deg); }
+  82% { transform: skewX(4.5deg); }
+  86% { transform: skewX(-2.6deg); }
+  90% { transform: skewX(1.2deg); }
+  94%, 100% { transform: skewX(0deg); }
+}
+/* Liquid layers, stacked red, orange, yellow, green: the top ones fade as it falls past them. */
+@keyframes ai-l-g { 0%, 17% { opacity: 1; } 21%, 70% { opacity: 0; } 74%, 100% { opacity: 1; } }
+@keyframes ai-l-y { 0%, 23% { opacity: 1; } 27%, 65% { opacity: 0; } 69%, 100% { opacity: 1; } }
+@keyframes ai-l-o { 0%, 29% { opacity: 1; } 33%, 59% { opacity: 0; } 63%, 100% { opacity: 1; } }
+/* The glow under the tile, one colour at a time. */
+@keyframes ai-h-g { 0%, 17% { opacity: 1; } 21%, 70% { opacity: 0; } 74%, 100% { opacity: 1; } }
+@keyframes ai-h-y { 0%, 17% { opacity: 0; } 21%, 23% { opacity: 1; } 27%, 65% { opacity: 0; } 69%, 70% { opacity: 1; } 74%, 100% { opacity: 0; } }
+@keyframes ai-h-o { 0%, 23% { opacity: 0; } 27%, 29% { opacity: 1; } 33%, 59% { opacity: 0; } 63%, 65% { opacity: 1; } 69%, 100% { opacity: 0; } }
+@keyframes ai-h-r { 0%, 29% { opacity: 0; } 33%, 59% { opacity: 1; } 63%, 100% { opacity: 0; } }
+
+/* Settings: the icon beside a line about it. */
+.appicon-row { display: flex; align-items: center; gap: 16px; margin-top: 14px; }
+.appicon-row p { margin: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .appicon:not(.still) :is(.ai-liq, .ai-slosh, .ai-g, .ai-y, .ai-o, .ai-gh, .ai-yh, .ai-oh, .ai-glow) { animation: none; }
+  .appicon:not(.still) :is(.ai-gy, .ai-go, .ai-gr) { opacity: 0; }
+}

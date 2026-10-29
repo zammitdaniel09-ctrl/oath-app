@@ -14,8 +14,8 @@
   <link rel="preload" href="/fonts/satoshi-variable.woff2" as="font" type="font/woff2" crossorigin>
   <meta name="robots" content="noindex, nofollow">
   <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="icon" href="/icons/favicon.png?v=2" type="image/png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=2">
+  <link rel="icon" href="/icons/favicon.png?v=3" type="image/png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?v=3">
   <link rel="stylesheet" href="/app.css">
   <link rel="stylesheet" href="/today.css">
   <link rel="stylesheet" href="/sheets.css">
@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/settings.css">
   <link rel="stylesheet" href="/goals.css">
   <link rel="stylesheet" href="/shell.css">
+  <link rel="stylesheet" href="/app-icon.css">
   <link rel="stylesheet" href="/mail.css">
   <link rel="stylesheet" href="/food.css">
   <link rel="stylesheet" href="/food-body.css">
@@ -32,7 +33,7 @@
   <link rel="stylesheet" href="/calendar.css">
   <link rel="stylesheet" href="/plan.css">
   <script>
-    // The saved theme before the first paint (theme.js switches and saves): its stylesheet, colours and icons.
+    // The saved theme before the first paint (theme.js switches and saves): its stylesheet and colours. The icon is one for every theme.
     try {
       var t = JSON.parse(localStorage.getItem('oath.theme') || 'null'), d = document;
       if (t && /^[a-z]+$/.test(t.id) && t.id !== 'oath') {
@@ -40,9 +41,6 @@
         d.write('<link rel="stylesheet" id="theme-css" href="/themes/' + t.id + '.css">');
         if (/^#[0-9a-f]{6}$/i.test(t.color)) d.querySelector('meta[name="theme-color"]').content = t.color;
         if (t.light) d.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').content = 'default';
-        d.querySelector('link[rel="icon"]').href = '/icons/themes/' + t.id + '/favicon.png';
-        d.querySelector('link[rel="apple-touch-icon"]').href = '/icons/themes/' + t.id + '/apple-touch-icon.png';
-        d.querySelector('link[rel="manifest"]').href = '/themes/' + t.id + '.webmanifest';
       }
     } catch (e) { /* no saved theme */ }
   </script>

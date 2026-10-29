@@ -22,7 +22,7 @@ start the work, so each piece fits in a small context. Write what the audit foun
 
 ## Themes
 
-- `public/theme.js` lists the themes and switches them; `index.html` applies the saved one before the first paint. A theme is `public/themes/<id>.css` (every selector under `:root[data-theme="<id>"]`, about 45 KB at most, only transform and opacity animate, at most one fixed background layer), `public/icons/themes/<id>/` and `public/themes/<id>.webmanifest`; its id also goes in `src/settings.js`.
+- `public/theme.js` lists the themes and switches them; `index.html` applies the saved one before the first paint. A theme is `public/themes/<id>.css` (every selector under `:root[data-theme="<id>"]`, about 45 KB at most, only transform and opacity animate, at most one fixed background layer) and an entry in `THEMES`; its id also goes in `src/settings.js`. Themes have no icons or manifests of their own: the app icon is `public/app-icon.js`, the same in every theme, and its PNGs are rendered from it by `../tools/themekit/render-app-icon.cjs`.
 - When base code needs a colour a theme must change, give it a variable with the old value as fallback (as `--mark-*` in `brandMark` and `--hp-area-*` in `review.js`), never a hard-coded colour in an inline style.
 - A change to a shared component is seen in five looks: shoot it in each theme before calling it done.
 
