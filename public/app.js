@@ -23,7 +23,7 @@ import {
 import { initReview, viewReview, reviewClick, reviewSubmit } from './review.js';
 import { initSettings, viewSettings, settingsClick, settingsSubmit } from './settings.js';
 import {
-  initLock, brandLockup, door, lockEl, setLock, showLock, lockApp, abortFaceId, renderLogin, rememberLockMode,
+  initLock, brandLockup, door, lockEl, setLock, showLock, lockApp, abortFaceId, renderLogin, rememberLockMode, rememberPasswordAlone,
   lockModeRemembered, renderSetup, lockClick, lockSubmit,
 } from './lock.js';
 import { refreshPushState, resyncPush } from './push.js';
@@ -199,6 +199,7 @@ async function fetchToday() {
     state.today = await api('GET', '/api/today');
     state.offline = null;
     followTheme(state.today.settings?.theme);
+    rememberPasswordAlone(state.today.settings?.passwordAlone === true);
     cacheToday(state.today);
   } catch (err) {
     const c = err.status === 0 ? cachedToday() : null;

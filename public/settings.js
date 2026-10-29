@@ -8,7 +8,7 @@ import { NUTRIENT, energyText, ACTIVITY, GOALS } from './nutrition.js';
 import { soundsOn, setSounds } from './sound.js';
 import { setupRows } from './today-list.js';
 import { fresh, createOptions, credentialJSON, deviceName } from './passkeys.js';
-import { rememberLockMode, forgetMemory, renderLogin } from './lock.js';
+import { rememberLockMode, rememberPasswordAlone, forgetMemory, renderLogin } from './lock.js';
 import { pushOn, refreshPushState, pushOff } from './push.js';
 import { themesSection, themeClick } from './theme.js';
 
@@ -264,7 +264,7 @@ export function viewSettings() {
         </form>`)}
       ${settingsCard('lock', 'Password', `<form data-form="password">
           <label class="field"><span>Current password</span><input class="input" type="password" name="current" autocomplete="current-password" required></label>
-          <label class="field"><span>New password</span><input class="input" type="password" name="next" autocomplete="new-password" minlength="10" required></label>
+          <label class="field"><span>New password</span><input class="input" type="password" name="next" autocomplete="new-password" minlength="8" required></label>
           <div class="form-actions"><button class="btn primary" type="submit">Change password</button><button class="btn tinted" type="button" data-action="logout">Log out</button></div>
         </form>`)}
     </div>
@@ -301,10 +301,14 @@ function faceIdCard() {
       <span class="li-sub">Added ${fmtDay(String(k.createdAt).slice(0, 10))}${k.lastUsed ? `, last used ${ago(k.lastUsed)}` : ', not used yet'}</span></span>
       <button class="btn tinted small" data-action="faceid-remove" data-id="${esc(k.id)}">Remove</button></div>`).join('');
   const lockOn = state.settings?.faceIdLock !== false;
-  // The one line kept: with the lock on, the password alone is not enough to get back in.
-  const text = keys.length && lockOn ? 'Password login then needs the recovery code.' : '';
+  const pwOn = state.settings?.passwordAlone === true;
+  // The one line kept: with the lock on, the password alone is not enough to get back in, unless allowed on a computer.
+  const text = keys.length && lockOn
+    ? (pwOn ? 'On a computer the password alone opens Oath too. iPhone and iPad keep Face ID, and the password there needs the recovery code.' : 'Password login then needs the recovery code.')
+    : '';
   const lock = keys.length
-    ? `<label class="check"><input type="checkbox" data-action="faceid-lock"${lockOn ? ' checked' : ''}> Face ID every time Oath opens</label>`
+    ? `<label class="check"><input type="checkbox" data-action="faceid-lock"${lockOn ? ' checked' : ''}> Face ID every time Oath opens</label>
+      ${lockOn ? `<label class="check"><input type="checkbox" data-action="password-alone"${pwOn ? ' checked' : ''}> Or the password alone, on a computer</label>` : ''}`
     : '';
   return settingsCard('faceid', 'Face ID', `${text ? `<p class="muted small">${text}</p>` : ''}
     ${rows ? `<div class="group flush">${rows}</div>` : ''}${lock}
@@ -356,6 +360,17 @@ export async function settingsClick(a, el) {
     if (r) {
       state.settings = r;
       rememberLockMode(on && (state.passkeys || []).length > 0);
+      ctx.render();
+    } else {
+      el.checked = !on;
+    }
+  } else if (a === 'password-alone') {
+    const on = el.checked;
+    const r = await act(() => api('PATCH', '/api/settings', { passwordAlone: on }),
+      on ? 'On a computer, the password opens Oath on its own.' : 'The password needs the recovery code again.');
+    if (r) {
+      state.settings = r;
+      rememberPasswordAlone(on);
       ctx.render();
     } else {
       el.checked = !on;

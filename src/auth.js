@@ -33,6 +33,9 @@ export async function verifyPassword(password, stored) {
 
 const sha256 = (s) => crypto.createHash('sha256').update(s).digest('hex');
 
+// The shortest password Oath takes; his choice, so it is easy to type on a computer.
+export const MIN_PASSWORD = 8;
+
 export async function ownerExists() {
   const rows = await db()`select 1 from owner where id = 1`;
   return rows.length > 0;
@@ -42,6 +45,12 @@ export async function ownerExists() {
 export async function faceIdOnly() {
   if ((await getSettings()).faceIdLock === false) return false;
   return (await passkeyCount()) > 0;
+}
+
+// With Face ID only, the password still opens Oath on its own when he has switched this on in Settings
+// (for a computer, where Face ID means his phone); otherwise it needs the recovery code too.
+export async function passwordAlone() {
+  return (await getSettings()).passwordAlone === true;
 }
 
 const unlockedUntil = () => nowUTC().plus({ minutes: UNLOCKED_MIN }).toJSDate();
@@ -119,8 +128,8 @@ export async function setup(c, { code, password }) {
     recordFailure(ip);
     return { error: 'This setup link is not valid.', status: 403 };
   }
-  if (typeof password !== 'string' || password.length < 10) {
-    return { error: 'Use at least 10 characters.', status: 400 };
+  if (typeof password !== 'string' || password.length < MIN_PASSWORD) {
+    return { error: `Use at least ${MIN_PASSWORD} characters.`, status: 400 };
   }
   await db()`insert into owner (id, password_hash) values (1, ${await hashPassword(password)})`;
   await startSession(c);
@@ -141,9 +150,9 @@ export async function login(c, { password, recovery }) {
   if (locked) return { error: locked, status: 429 };
   const rows = await db()`select password_hash from owner where id = 1`;
   if (!rows.length) return { error: 'Setup has not been done yet.', status: 409 };
-  // With Face ID only, the password alone is not enough: it needs the recovery code too, which is
-  // SETUP_CODE in Railway, for the day Face ID is lost.
-  if (await faceIdOnly()) {
+  // With Face ID only, the password alone is not enough unless he allows it: it needs the recovery code
+  // too, which is SETUP_CODE in Railway, for the day Face ID is lost.
+  if ((await faceIdOnly()) && !(await passwordAlone())) {
     const expected = process.env.SETUP_CODE || '';
     // Without SETUP_CODE in Railway there is no recovery code to match; that is not his mistake, so it is
     // not counted against him.
@@ -189,7 +198,7 @@ export async function changePassword(current, next) {
   if (!rows.length || !(await verifyPassword(String(current || ''), rows[0].password_hash))) {
     return { error: 'Current password is wrong.', status: 401 };
   }
-  if (typeof next !== 'string' || next.length < 10) return { error: 'Use at least 10 characters.', status: 400 };
+  if (typeof next !== 'string' || next.length < MIN_PASSWORD) return { error: `Use at least ${MIN_PASSWORD} characters.`, status: 400 };
   await db()`update owner set password_hash = ${await hashPassword(next)} where id = 1`;
   return { ok: true };
 }

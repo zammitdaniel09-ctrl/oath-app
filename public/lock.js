@@ -1,5 +1,5 @@
 // The way in: the setup and login forms and the lock screen that asks for Face ID by itself.
-import { state, closeConfirm, $app, icon, esc, api, reduced, hooks, form2obj, toast } from './ui.js';
+import { state, closeConfirm, $app, icon, esc, api, reduced, hooks, form2obj, toast, isIOS } from './ui.js';
 import { deviceName, fresh, getOptions, credentialJSON } from './passkeys.js';
 import { appIcon } from './app-icon.js';
 import { leaveChat } from './coach-media.js';
@@ -69,9 +69,15 @@ export function forgetMemory() {
   });
 }
 
+// On a computer, when he allows it, the password opens Oath on its own: the lock screen offers it beside
+// Face ID and waits for him instead of starting Face ID, which there means reaching for the phone.
+const passwordHere = () => !isIOS() && passwordAloneRemembered();
+
 export function showLock({ auto = true, offline = false } = {}) {
   if (lockEl()) return;
   closeConfirm();
+  const pw = passwordHere();
+  if (pw) auto = false;
   // A voice note being recorded stops with the lock (nothing is sent), and so does playback.
   leaveChat();
   abortFaceId();
@@ -87,10 +93,10 @@ export function showLock({ auto = true, offline = false } = {}) {
       <p class="lock-status" role="status" aria-live="polite">${esc(LOCK_TEXT[phase]())}</p>
       <div class="lock-action"><button class="btn chrome big wide" type="button" data-action="faceid-login">${icon('faceid')}<span class="lock-btn-label">${offline ? 'Try again' : 'Unlock with Face ID'}</span></button></div>
     </div>
-    <details class="recover"><summary>Lost Face ID?</summary>
+    <details class="recover"${pw ? ' open' : ''}><summary>${pw ? 'Or use your password' : 'Lost Face ID?'}</summary>
       <form data-form="login">
         <label class="field"><span>Password</span><input class="input" type="password" name="password" autocomplete="current-password" required></label>
-        <label class="field"><span>Recovery code (SETUP_CODE in Railway)</span><input class="input" name="recovery" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required></label>
+        ${pw ? '' : '<label class="field"><span>Recovery code (SETUP_CODE in Railway)</span><input class="input" name="recovery" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required></label>'}
         <div class="form-actions"><button class="btn primary big wide" type="submit">Open with password</button></div>
       </form>
       <p class="note bad" id="gate-error" role="alert" hidden></p></details>
@@ -249,6 +255,7 @@ export function renderLogin(session = null, { auto = true } = {}) {
     return;
   }
   rememberLockMode(session.faceIdOnly);
+  rememberPasswordAlone(session.passwordAlone);
   if (session.faceIdOnly) {
     showLock({ auto });
     return;
@@ -284,6 +291,13 @@ export function rememberLockMode(on) {
 export function lockModeRemembered() {
   try { return localStorage.getItem('oath.faceIdOnly') === '1'; } catch { return false; }
 }
+// Whether the password opens Oath on its own, remembered for the lock screen the app raises by itself.
+export function rememberPasswordAlone(on) {
+  try { localStorage.setItem('oath.passwordAlone', on ? '1' : '0'); } catch { /* storage unavailable */ }
+}
+function passwordAloneRemembered() {
+  try { return localStorage.getItem('oath.passwordAlone') === '1'; } catch { return false; }
+}
 // A stray 401 behind a gate that is already up must not rebuild it, or Face ID would start over.
 hooks.onUnauthed = () => { if (!document.querySelector('.gate')) renderLogin(); };
 
@@ -292,8 +306,8 @@ export function renderSetup(code) {
     ${brandLockup()}
     <p>Choose the password you will use to open Oath on your iPhone and iPad.</p>
     <form data-form="setup" data-code="${esc(code)}">
-      <label class="field"><span>Password, at least 10 characters</span><input class="input" type="password" name="password" autocomplete="new-password" minlength="10" required autofocus></label>
-      <label class="field"><span>Same password again</span><input class="input" type="password" name="again" autocomplete="new-password" minlength="10" required></label>
+      <label class="field"><span>Password, at least 8 characters</span><input class="input" type="password" name="password" autocomplete="new-password" minlength="8" required autofocus></label>
+      <label class="field"><span>Same password again</span><input class="input" type="password" name="again" autocomplete="new-password" minlength="8" required></label>
       <div class="form-actions"><button class="btn primary big wide" type="submit">Set password</button></div>
       <p class="note bad" id="gate-error" role="alert" hidden></p>
     </form></div>`;

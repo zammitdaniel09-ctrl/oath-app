@@ -36,6 +36,7 @@ export const DEFAULT_SETTINGS = {
   alerts: 'both',
   ownerName: 'Daniel',
   faceIdLock: true,
+  passwordAlone: false,
   theme: 'oath',
 };
 

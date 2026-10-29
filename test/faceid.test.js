@@ -269,6 +269,24 @@ test('turning the lock off makes the password work alone and stops locking', asy
   assert.equal((await call('PATCH', '/api/settings', { faceIdLock: true })).status, 200);
 });
 
+test('the password alone opens Oath when he allows it, and eight characters are enough', async () => {
+  const before = (await call('GET', '/api/session')).data;
+  assert.equal(before.faceIdOnly, true);
+  assert.equal(before.passwordAlone, false, 'off by default');
+  assert.equal((await call('PATCH', '/api/settings', { passwordAlone: 'yes' })).status, 400);
+  assert.equal((await call('PATCH', '/api/settings', { passwordAlone: true })).status, 200);
+  assert.equal((await call('GET', '/api/session')).data.passwordAlone, true);
+  await call('POST', '/api/logout', {});
+  assert.equal((await call('POST', '/api/login', { password: 'long-enough-pass' })).status, 200, 'no recovery code needed');
+  assert.equal((await call('POST', '/api/password', { current: 'long-enough-pass', next: 'seven77' })).status, 400);
+  assert.equal((await call('POST', '/api/password', { current: 'long-enough-pass', next: 'eight888' })).status, 200);
+  assert.equal((await call('POST', '/api/password', { current: 'eight888', next: 'long-enough-pass' })).status, 200);
+  assert.equal((await call('PATCH', '/api/settings', { passwordAlone: false })).status, 200);
+  await call('POST', '/api/logout', {});
+  assert.equal((await call('POST', '/api/login', { password: 'long-enough-pass' })).status, 403, 'off again: the recovery code is back');
+  assert.equal((await call('POST', '/api/login', owner)).status, 200);
+});
+
 test('a theme is saved with the settings, comes back with the day, and an unknown one is refused', async () => {
   assert.equal((await call('GET', '/api/settings')).data.theme, 'oath', 'the original look by default');
   const r = await call('PATCH', '/api/settings', { theme: 'atelier' });

@@ -57,6 +57,10 @@ export function cleanPatch(b = {}) {
     if (typeof b.faceIdLock !== 'boolean') throw new RuleError('Face ID lock is on or off.');
     patch.faceIdLock = b.faceIdLock;
   }
+  if (b.passwordAlone !== undefined) {
+    if (typeof b.passwordAlone !== 'boolean') throw new RuleError('Password alone is on or off.');
+    patch.passwordAlone = b.passwordAlone;
+  }
   for (const k of Object.keys(RULES)) {
     if (b[k] !== undefined) patch[k] = ruleValue(k, b[k]);
   }

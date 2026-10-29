@@ -117,6 +117,7 @@ app.get('/api/session', async (c) => {
     setupDone: await auth.ownerExists(),
     faceId: (await passkeys.passkeyCount()) > 0,
     faceIdOnly,
+    passwordAlone: faceIdOnly && (await auth.passwordAlone()),
     locked: faceIdOnly && !authed && (await auth.hasSession(c)),
   });
 });
