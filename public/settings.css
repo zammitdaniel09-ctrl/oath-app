@@ -202,7 +202,7 @@
 }
 .theme-card {
   scroll-snap-align: start; display: flex; flex-direction: column; gap: 10px; padding: 10px 10px 12px;
-  text-align: left; color: var(--text); background: var(--card); border-radius: var(--r-card);
+  text-align: left; border: 0; color: var(--text); background: var(--card); border-radius: var(--r-card);
   box-shadow: inset 0 0 0 1px var(--line); transition: transform var(--t-press), box-shadow 0.3s var(--ease);
 }
 .theme-card:active { transform: scale(0.97); }

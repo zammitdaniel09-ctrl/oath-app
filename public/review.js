@@ -71,7 +71,7 @@ function hpArea(days, maxHp) {
   const low = days.reduce((a, d) => (d.hp_end < a.hp_end ? d : a), days[0]);
   const label = `HP at the end of each of the last ${days.length} days, from ${days[0].hp_end} to ${days[days.length - 1].hp_end}, lowest ${low.hp_end} on ${fmtDay(low.date)}.`;
   return `<svg class="hp-area" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="${label}">
-    <defs><linearGradient id="hp-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:rgba(225,6,0,0.45)"/><stop offset="1" style="stop-color:rgba(225,6,0,0)"/></linearGradient></defs>
+    <defs><linearGradient id="hp-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--hp-area-0, rgba(225,6,0,0.45))"/><stop offset="1" style="stop-color:var(--hp-area-1, rgba(225,6,0,0))"/></linearGradient></defs>
     ${deaths}<path d="${line} L${w} ${h} L0 ${h} Z" fill="url(#hp-fill)"/><path d="${line}" class="hp-line"/></svg>
     <div class="bc-axis" aria-hidden="true"><span>${fmtDay(days[0].date)}</span><span class="last">${fmtDay(days[days.length - 1].date)}</span></div>`;
 }
