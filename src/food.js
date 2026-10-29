@@ -10,14 +10,29 @@ import { db, logEvent } from './db.js';
 import { nowUTC, addDays, validDate, validTime } from './time.js';
 import { localNow, RuleError } from './engine.js';
 import {
-  KEYS, NUTRIENT, NUTRIENTS, norm, scale, total, complete, line, recipeTotals, shareOf, batchPortion, batchLeft, unknown, round, amountText, unitsFor, resolve, show,
-  portionName,
+  KEYS, NUTRIENT, NUTRIENTS, norm, scale, total, line, batchPortion, unknown, round, amountText, unitsFor, resolve,
+  show, portionName,
 } from '../public/nutrition.js';
 // Grades come from the shared maths when it has them; read through the namespace so the
 // diary still works on a build without them.
 import * as NUT from '../public/nutrition.js';
 import { foodTags, tagKeys, cleanFacts, TAGS_VERSION } from '../public/food-tags.js';
 import { needRefs } from './body.js';
+import { foodHistory } from './food-history.js';
+import {
+  cleanMealLines, priceLines, listMeals, getMeal, saveMeal, deleteMeal, logMeal, listRecipes, getRecipe, saveRecipe,
+  duplicateRecipe, deleteRecipe, logRecipe, shapeBatch, batchAmountText, cookBatch, getBatch, listBatches, logBatch,
+  finishBatch, addPlan, listPlans, deletePlan, eatPlan,
+} from './food-recipes.js';
+
+// Moved to food-history.js; still exported here for the modules and tests that import them from this file.
+export { HISTORY_SPANS, dayStats, foodHistory, SOURCE_KEYS } from './food-history.js';
+// Moved to food-recipes.js; still exported here for the modules and tests that import them from this file.
+export {
+  listMeals, getMeal, saveMeal, deleteMeal, logMeal, loadGraph, listRecipes, getRecipe, RECIPE_STATUSES, saveRecipe,
+  duplicateRecipe, deleteRecipe, logRecipe, cookBatch, getBatch, listBatches, logBatch, finishBatch, addPlan, listPlans,
+  deletePlan, eatPlan,
+} from './food-recipes.js';
 
 // ---------- Schema ----------
 
@@ -278,9 +293,9 @@ const SOURCE_TEXT = {
   brand: 'Published by the brand',
 };
 
-const n = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
-const clean = (s, max = 200) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
-const ts = () => nowUTC().toJSDate();
+export const n = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
+export const clean = (s, max = 200) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
+export const ts = () => nowUTC().toJSDate();
 
 // The most a value can believably be per 100 g or ml: energy tops out near pure fat, grams at the basis,
 // mg and µg far higher.
@@ -698,7 +713,7 @@ export async function setFavourite(key, on) {
 // ---------- Diary ----------
 
 const idOk = (id) => typeof id === 'string' && /^[A-Za-z0-9_-]{8,64}$/.test(id);
-const newId = () => crypto.randomUUID();
+export const newId = () => crypto.randomUUID();
 
 function slotFor(local, liquid) {
   if (liquid) return 'drinks';
@@ -710,7 +725,7 @@ function slotFor(local, liquid) {
 }
 
 // When and where an entry goes. A date in the future is a plan, not a log.
-async function placeEntry(input, liquid) {
+export async function placeEntry(input, liquid) {
   const { local, today, tz } = await localNow();
   const date = input.date ? String(input.date) : today;
   if (!validDate(date)) throw new RuleError('Bad date.');
@@ -725,7 +740,7 @@ async function placeEntry(input, liquid) {
   return { date, at: at.toUTC().toJSDate(), slot };
 }
 
-const shapeEntry = (r) => ({
+export const shapeEntry = (r) => ({
   id: r.id,
   date: r.date,
   at: r.at,
@@ -757,7 +772,7 @@ const shapeEntry = (r) => ({
 });
 
 // Writes one entry once. The id comes from the phone, so an offline entry replayed later lands once.
-async function insertEntry(e, tx = db()) {
+export async function insertEntry(e, tx = db()) {
   const filled = (Array.isArray(e.filled) ? e.filled : []).filter((k) => KEYS.includes(k));
   // A repeated day copies its entries' fills and provenance with them.
   const rows = await tx`
@@ -774,7 +789,7 @@ async function insertEntry(e, tx = db()) {
   return { entry: shapeEntry(existing), duplicate: true };
 }
 
-async function existingEntry(id) {
+export async function existingEntry(id) {
   if (!id) return null;
   if (!idOk(id)) throw new RuleError('Bad entry id.');
   const [r] = await db()`select * from food_log where id = ${id}`;
@@ -859,7 +874,7 @@ let afterLog = null;
 export function setAfterLog(fn) {
   afterLog = typeof fn === 'function' ? fn : null;
 }
-function logged(out) {
+export function logged(out) {
   if (!out.duplicate && afterLog) {
     try {
       afterLog(out.entry);
@@ -1080,7 +1095,7 @@ function per100(e) {
 // Adds grade, nova and tags to diary entries. A catalogue food is graded as the food it is (the
 // source's own Nutri-Score first, then the shared maths on its per-100 values); a recipe, meal or
 // batch is graded on what was eaten, per 100 g. Anything without a weight stays ungraded.
-async function gradeEntries(entries) {
+export async function gradeEntries(entries) {
   const keys = [...new Set(entries.filter((e) => e.kind === 'item' && e.refKey).map((e) => e.refKey))];
   // The tagger needs the same fields shapeItem gives it: state for whole foods, density, portions,
   // serving and pack for the per-100 ml and drinks-portion rules.
@@ -1104,7 +1119,7 @@ async function gradeEntries(entries) {
 }
 
 // Energy by grade: { a, b, c, d, e, none } in kcal. Entries with no known energy add nothing.
-function gradeMix(entries) {
+export function gradeMix(entries) {
   const out = { a: 0, b: 0, c: 0, d: 0, e: 0, none: 0 };
   for (const e of entries) {
     const k = n(e.nutrients?.kcal);
@@ -1137,822 +1152,6 @@ export async function foodDay(date) {
     // What 100% stands for on this screen: his daily needs, or null for the EU reference intakes.
     needs: await needRefs(),
   };
-}
-
-// ---------- History: the Trends screen ----------
-
-const HISTORY_KEYS = ['kcal', 'protein', 'carbs', 'sugars', 'fat', 'fibre', 'salt', 'caffeine'];
-export const HISTORY_SPANS = [7, 30, 90];
-
-// One day's totals. A day with nothing logged is a gap: every value null, never zero. `incomplete`
-// means some lines had no value for a core nutrient, so those totals are floors. Real burn
-// (food-energy.js) reads its days through this too.
-export function dayStats(date, list) {
-  if (!list.length) {
-    return { date, logged: false, entries: 0, ...Object.fromEntries(HISTORY_KEYS.map((k) => [k, null])), drinksMl: null, incomplete: false, estimates: 0 };
-  }
-  const t = total(list.map((e) => e.nutrients));
-  const missing = Object.fromEntries(HISTORY_KEYS.filter((k) => t.missing?.[k]).map((k) => [k, t.missing[k]]));
-  return {
-    date,
-    logged: true,
-    entries: list.length,
-    ...Object.fromEntries(HISTORY_KEYS.map((k) => [k, t[k] === null ? null : round(t[k], 2)])),
-    drinksMl: round(list.filter((e) => e.liquid && e.ml).reduce((a, e) => a + e.ml, 0), 0),
-    incomplete: !complete(t),
-    estimates: list.filter((e) => e.estimate).length,
-    ...(Object.keys(missing).length ? { missing } : {}),
-  };
-}
-
-// Averages over the days that have logs only. A nutrient's `missing` count is how many of those days
-// were unknown or partial for it, so the screen can mark the average as a floor.
-function periodAverages(days) {
-  const logged = days.filter((d) => d.logged);
-  const avg = {};
-  const missing = {};
-  for (const k of [...HISTORY_KEYS, 'drinksMl']) {
-    const vals = logged.filter((d) => d[k] !== null).map((d) => d[k]);
-    avg[k] = vals.length ? round(vals.reduce((a, v) => a + v, 0) / vals.length, 2) : null;
-    const m = logged.filter((d) => d[k] === null || d.missing?.[k]).length;
-    if (m) missing[k] = m;
-  }
-  if (Object.keys(missing).length) avg.missing = missing;
-  return { loggedDays: logged.length, avg };
-}
-
-// Per-day totals for the last `days` days (7, 30 or 90) ending today, averages over logged days and
-// the same for the period before, the most logged foods, and caffeine and drinks by hour for one day.
-// Today is still going, so it is drawn but left out of the averages.
-export async function foodHistory({ days = 7, date = null } = {}) {
-  const span = HISTORY_SPANS.includes(Number(days)) ? Number(days) : 7;
-  const { today, tz } = await localNow();
-  const from = addDays(today, -(span - 1), tz);
-  const prevFrom = addDays(from, -span, tz);
-  const prevTo = addDays(from, -1, tz);
-  if (date && !validDate(String(date))) throw new RuleError('Bad date.');
-  const chosen = date && String(date) <= today ? String(date) : today;
-  const lo = chosen < prevFrom ? chosen : prevFrom;
-  const rows = (await db()`select * from food_log where deleted_at is null and date >= ${lo} and date <= ${today} order by at, created_at`).map(shapeEntry);
-  const byDate = new Map();
-  for (const r of rows) byDate.set(r.date, [...(byDate.get(r.date) || []), r]);
-  const run = (start, n) => Array.from({ length: n }, (_, i) => {
-    const d = addDays(start, i, tz);
-    return dayStats(d, byDate.get(d) || []);
-  });
-  const series = run(from, span);
-  const prevSeries = run(prevFrom, span);
-  const current = periodAverages(series.filter((d) => d.date !== today));
-  const prev = periodAverages(prevSeries);
-
-  // Most logged: catalogue foods and recipes by record, everything else by name.
-  const counts = new Map();
-  for (const r of rows.filter((x) => x.date >= from)) {
-    const key = ['item', 'recipe'].includes(r.kind) && r.refKey ? `${r.kind}:${r.refKey}` : `name:${norm(r.name)}`;
-    const c = counts.get(key) || { name: r.name, kind: r.kind, count: 0 };
-    c.count += 1;
-    c.name = r.name;
-    counts.set(key, c);
-  }
-  const top = [...counts.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)).slice(0, 6);
-  const refs = await needRefs();
-  const insights = periodInsights(await gradeEntries(rows.filter((r) => r.date >= from)), { series, today, tz, refs });
-
-  // The chosen day by local hour. A drink with no caffeine value is counted apart, not as zero.
-  const dayRows = byDate.get(chosen) || [];
-  const hours = { caffeine: Array(24).fill(0), caffeineUnknown: Array(24).fill(0), drinksMl: Array(24).fill(0) };
-  for (const r of dayRows) {
-    const h = DateTime.fromJSDate(new Date(r.at)).setZone(tz).hour;
-    const caf = r.nutrients?.caffeine;
-    if (typeof caf === 'number') hours.caffeine[h] = round(hours.caffeine[h] + caf, 1);
-    else if (r.liquid) hours.caffeineUnknown[h] += 1;
-    if (r.liquid && r.ml) hours.drinksMl[h] = round(hours.drinksMl[h] + r.ml, 0);
-  }
-  return {
-    days: span, today, from, to: today, prevFrom, prevTo,
-    series,
-    ...current,
-    prev,
-    top,
-    ...insights,
-    chosen: { ...dayStats(chosen, dayRows), today: chosen === today, hours },
-    needs: refs,
-  };
-}
-
-// ---------- Insights: what the period's food adds up to ----------
-
-// The nutrients with a daily amount to measure against: his own needs when his body is set, else the EU RIs.
-const refList = (refs) => NUTRIENTS.filter((x) => NUT.refOf(x.key, refs));
-export const SOURCE_KEYS = ['sugars', 'salt', 'satfat', 'protein', 'fibre'];
-const LIMIT_KEYS = ['sugars', 'salt', 'satfat'];
-const weekday = (date) => (new Date(`${date}T12:00:00Z`).getUTCDay() + 6) % 7; // Monday 0
-
-// One row per food eaten in the period: how often, its grade, and what it added up to.
-function foodsEaten(entries) {
-  const foods = new Map();
-  for (const e of entries) {
-    const key = ['item', 'recipe'].includes(e.kind) && e.refKey ? `${e.kind}:${e.refKey}` : `${e.kind === 'quick' ? 'name' : e.kind}:${norm(e.name)}`;
-    const f = foods.get(key) || { key, name: e.name, brand: e.brand || null, kind: e.kind, grade: null, nova: null, tags: [], count: 0, sums: {}, known: {} };
-    f.count += 1;
-    f.name = e.name;
-    f.grade = e.grade || f.grade;
-    f.nova = e.nova ?? f.nova;
-    if (e.tags?.length) f.tags = e.tags;
-    for (const k of KEYS) {
-      const v = n(e.nutrients?.[k]);
-      if (v === null) continue;
-      f.sums[k] = (f.sums[k] || 0) + v;
-      f.known[k] = (f.known[k] || 0) + 1;
-    }
-    foods.set(key, f);
-  }
-  return [...foods.values()];
-}
-
-// Average % of his daily need (or the EU reference intake) per nutrient over complete logged days. A day with no value
-// for a nutrient is left out of its average, and `partial` counts the days that were unknown or a
-// floor, so the screen can say the average is at least that. `est` is the share of it, in %, that was
-// filled (from a similar USDA food, the web or an estimate) rather than on the records themselves.
-function coverageOf(totals, est = {}, refs = null) {
-  return refList(refs).map((x) => {
-    const ri = NUT.refOf(x.key, refs);
-    const vals = totals.map((t) => n(t[x.key])).filter((v) => v !== null);
-    const avg = vals.length ? vals.reduce((a, v) => a + v, 0) / vals.length : null;
-    return {
-      key: x.key, label: x.label, group: x.group, unit: x.unit, ri,
-      avg: avg === null ? null : round(avg, 3),
-      pct: avg === null ? null : round((avg / ri) * 100, 1),
-      days: vals.length,
-      partial: totals.filter((t) => n(t[x.key]) === null || t.missing?.[x.key]).length,
-      est: avg === null ? 0 : est[x.key] || 0,
-    };
-  });
-}
-
-// Per nutrient, the % of what the entries brought that was filled rather than on record. A nutrient
-// whose filled values add up to nothing (zeros) still counts as estimated when any were filled.
-function filledShare(entries) {
-  const all = {};
-  const est = {};
-  const count = {};
-  for (const e of entries) {
-    const fl = new Set(e.filled || []);
-    for (const k of KEYS) {
-      const v = n(e.nutrients?.[k]);
-      if (v === null) continue;
-      all[k] = (all[k] || 0) + v;
-      if (fl.has(k)) {
-        est[k] = (est[k] || 0) + v;
-        count[k] = (count[k] || 0) + 1;
-      }
-    }
-  }
-  return Object.fromEntries(KEYS.filter((k) => count[k]).map((k) => [k, all[k] > 0 ? Math.max(1, round(((est[k] || 0) / all[k]) * 100, 0)) : 100]));
-}
-
-// "Eat more of": for his least-covered vitamins and minerals, the food he already eats that brings
-// the most of each per time (never one graded D or E). "Eat less of": the top source of any of
-// sugars, salt or saturates whose average day is over its reference intake, then D and E foods he
-// had more than once. Nothing is invented: every reason is his own data against an official measure.
-function adviceFrom(foods, coverage, sources) {
-  const more = [];
-  const seen = new Set();
-  const low = coverage.filter((c) => ['mineral', 'vitamin'].includes(c.group) && c.pct !== null && c.pct < 100).sort((a, b) => a.pct - b.pct).slice(0, 4);
-  for (const c of low) {
-    const best = foods.filter((f) => !['d', 'e'].includes(f.grade) && f.sums[c.key] > 0 && !seen.has(f.key))
-      .map((f) => ({ f, per: f.sums[c.key] / f.count })).sort((a, b) => b.per - a.per)[0];
-    if (!best) continue;
-    seen.add(best.f.key);
-    more.push({ key: best.f.key, name: best.f.name, grade: best.f.grade, nutrient: c.key, reason: c.label, pct: round((best.per / c.ri) * 100, 0), avgPct: c.pct });
-  }
-  if (!more.length) {
-    for (const f of foods.filter((x) => x.grade === 'a').sort((a, b) => b.count - a.count).slice(0, 3)) more.push({ key: f.key, name: f.name, grade: f.grade, reason: 'Nutri-Score A', count: f.count });
-  }
-  const less = [];
-  const out = new Set();
-  for (const k of LIMIT_KEYS) {
-    const c = coverage.find((x) => x.key === k);
-    const top = sources[k]?.items[0];
-    if (!c || !(c.pct > 100) || !top || out.has(top.key)) continue;
-    out.add(top.key);
-    less.push({ key: top.key, name: top.name, grade: top.grade, nutrient: k, reason: NUTRIENT[k].label, share: top.share, avgPct: c.pct });
-  }
-  for (const f of foods.filter((x) => ['d', 'e'].includes(x.grade) && x.count > 1).sort((a, b) => b.count - a.count || (b.sums.kcal || 0) - (a.sums.kcal || 0))) {
-    if (out.has(f.key)) continue;
-    out.add(f.key);
-    less.push({ key: f.key, name: f.name, grade: f.grade, reason: `Nutri-Score ${f.grade.toUpperCase()}`, count: f.count });
-  }
-  return { more: more.slice(0, 5), less: less.slice(0, 5) };
-}
-
-// Everything the Trends screen draws past the energy bars: reference-intake coverage, the grade mix
-// by day, best and worst foods, top sources, eat more or less, meal timing and weekday averages.
-// Averages use complete logged days (not today); counts, sources and grades use the whole period.
-function periodInsights(entries, { series, today, tz, refs = null }) {
-  const completeDates = new Set(series.filter((d) => d.logged && d.date !== today).map((d) => d.date));
-  const byDate = new Map();
-  for (const e of entries) byDate.set(e.date, [...(byDate.get(e.date) || []), e]);
-  const totals = [...completeDates].map((d) => total((byDate.get(d) || []).map((e) => e.nutrients)));
-  const est = filledShare([...completeDates].flatMap((d) => byDate.get(d) || []));
-  const coverage = coverageOf(totals, est, refs);
-  const label = labelOf(totals, est);
-
-  const grades = { total: gradeMix(entries), days: series.map((d) => ({ date: d.date, ...gradeMix(byDate.get(d.date) || []) })) };
-
-  const foods = foodsEaten(entries);
-  const card = (f) => ({ key: f.key, name: f.name, brand: f.brand, kind: f.kind, grade: f.grade, nova: f.nova, count: f.count, kcal: round(f.sums.kcal ?? null, 0), tags: f.tags.slice(0, 3) });
-  const byCount = (a, b) => b.count - a.count || (b.sums.kcal || 0) - (a.sums.kcal || 0) || a.name.localeCompare(b.name);
-  const rank = {
-    best: foods.filter((f) => ['a', 'b'].includes(f.grade)).sort((a, b) => a.grade.localeCompare(b.grade) || byCount(a, b)).slice(0, 5).map(card),
-    worst: foods.filter((f) => ['d', 'e'].includes(f.grade)).sort((a, b) => b.grade.localeCompare(a.grade) || byCount(a, b)).slice(0, 5).map(card),
-    graded: foods.filter((f) => f.grade).length,
-    foods: foods.length,
-  };
-
-  const sources = {};
-  for (const k of SOURCE_KEYS) {
-    const sum = foods.reduce((a, f) => a + (f.sums[k] || 0), 0);
-    sources[k] = {
-      total: round(sum, 2),
-      items: foods.filter((f) => f.sums[k] > 0).sort((a, b) => b.sums[k] - a.sums[k]).slice(0, 5)
-        .map((f) => ({ key: f.key, name: f.name, grade: f.grade, count: f.count, amount: round(f.sums[k], 2), share: sum ? round((f.sums[k] / sum) * 100, 1) : null })),
-    };
-  }
-
-  // Meal timing: average kcal by weekday and local hour, over complete days.
-  const heat = Array.from({ length: 7 }, () => Array(24).fill(0));
-  const perWeekday = Array(7).fill(0);
-  for (const d of completeDates) perWeekday[weekday(d)] += 1;
-  for (const e of entries) {
-    if (!completeDates.has(e.date)) continue;
-    const k = n(e.nutrients?.kcal);
-    if (!k) continue;
-    heat[weekday(e.date)][DateTime.fromJSDate(new Date(e.at)).setZone(tz).hour] += k;
-  }
-  const timing = { kcal: heat.map((row, w) => row.map((v) => (perWeekday[w] ? round(v / perWeekday[w], 0) : null))), days: perWeekday };
-
-  const weekdays = Array.from({ length: 7 }, (_, w) => {
-    const list = series.filter((d) => completeDates.has(d.date) && weekday(d.date) === w);
-    const avg = (k) => {
-      const vals = list.map((d) => d[k]).filter((v) => v !== null);
-      return vals.length ? round(vals.reduce((a, v) => a + v, 0) / vals.length, 1) : null;
-    };
-    return { day: w, n: list.length, kcal: avg('kcal'), protein: avg('protein'), carbs: avg('carbs'), fat: avg('fat'), sugars: avg('sugars') };
-  });
-
-  return { coverage, label, grades, rank, sources, advice: adviceFrom(foods, coverage, sources), timing, weekdays };
-}
-
-// The average day as a nutrition label: every nutrient averaged over the complete days with a value
-// for it. `missing` counts the days it was unknown or a floor (so the average is at least that), and
-// `filled` names the nutrients partly filled by estimate. Null when no day is complete.
-function labelOf(totals, est) {
-  if (!totals.length) return null;
-  const out = { days: totals.length, missing: {}, filled: Object.keys(est) };
-  for (const k of KEYS) {
-    const vals = totals.map((t) => n(t[k])).filter((v) => v !== null);
-    out[k] = vals.length ? round(vals.reduce((a, v) => a + v, 0) / vals.length, 3) : null;
-    const m = totals.filter((t) => n(t[k]) === null || t.missing?.[k]).length;
-    if (m) out.missing[k] = m;
-  }
-  return out;
-}
-
-// ---------- Saved meals: shakes, fruit bowls, plates and anything else logged together ----------
-
-const MEAL_KINDS = ['meal', 'shake', 'bowl', 'plate'];
-
-// What a food of his own in a meal may carry: the values for the amount he had.
-const OWN_KEYS = ['kcal', 'protein', 'carbs', 'sugars', 'fat', 'satfat', 'fibre', 'salt', 'caffeine', 'alcohol'];
-
-// A food in a logged meal that is not a catalogue record: one he gave his own values for, or one only
-// estimated from a photo or a description. { name, amount, grams | ml, kcal, protein, ..., fill, estimate }:
-// the values are for the amount he had, `fill` (an estimate per 100) fills the rest when the weight is
-// known, and anything still missing stays unknown.
-function cleanOwnLine(l) {
-  const name = clean(l.name, 120);
-  if (!name) throw new RuleError('Each food needs a name.');
-  const size = (x) => (Number(x) > 0 && Number(x) <= 10000 ? Number(x) : null);
-  const grams = size(l.grams);
-  const ml = grams ? null : size(l.ml);
-  const nutrients = NUT.unknown();
-  for (const k of OWN_KEYS) {
-    if (l[k] === undefined || l[k] === null || l[k] === '') continue;
-    const v = Number(l[k]);
-    if (!(v >= 0) || v > (k === 'kcal' ? 10000 : 2000)) throw new RuleError(`${name}: ${k === 'kcal' ? 'the calories' : k} must be zero or more.`);
-    nutrients[k] = v;
-  }
-  const fill = cleanFill(l.fill, ml ? 'ml' : 'g');
-  if (fillGaps(nutrients, grams ?? ml, fill, FILL_KEYS).nutrients.kcal === null) throw new RuleError(`${name}: give the calories.`);
-  return { ref: 'own', name, amount: clean(l.amount, 60), grams, ml, nutrients, ...(fill ? { fill } : {}), estimate: Boolean(l.estimate) };
-}
-
-// A meal's lines. `own` lets in foods of his own (only a meal logged straight from a plate or a chat
-// card; a saved meal stays made of catalogue records). Catalogue lines may bring an estimate per 100
-// (`fill`) for the values their record is missing.
-function cleanMealLines(lines, { own = false } = {}) {
-  if (!Array.isArray(lines) || !lines.length) throw new RuleError('A saved meal needs at least one food.');
-  if (lines.length > 40) throw new RuleError('Too many lines.');
-  return lines.map((l) => {
-    if (own && (l.ref === 'own' || l.ref === 'custom')) return cleanOwnLine(l);
-    const ref = l.ref === 'recipe' ? 'recipe' : 'item';
-    if (!l.ref_key) throw new RuleError('Each line needs a food.');
-    const qty = Number(l.qty);
-    if (!(qty > 0)) throw new RuleError('Each line needs an amount.');
-    return { ref, ref_key: String(l.ref_key), qty, unit: String(l.unit || (ref === 'recipe' ? 'serving' : 'g')), optional: Boolean(l.optional), grp: clean(l.grp, 30),
-      ...(own && ref === 'item' && l.fill ? { fill: l.fill } : {}) };
-  });
-}
-
-// A food of his own as a priced row, scaled by the share of the meal he had.
-function ownRow(l, factor) {
-  const g = l.grams ? l.grams * factor : null;
-  const ml = l.ml ? l.ml * factor : null;
-  const { nutrients, filled } = fillGaps(NUT.scale(l.nutrients, factor, 1), g ?? ml, l.fill, FILL_KEYS);
-  return {
-    ref: 'own', ref_key: null, name: l.name, qty: null, unit: null,
-    amount_text: l.amount || (g ? `${round(g, 0)} g` : ml ? `${round(ml, 0)} ml` : ''),
-    g, ml, liquid: Boolean(ml), nutrients, filled, estimate: l.estimate, error: null,
-  };
-}
-
-// Works out a meal's lines against the catalogue: [{ name, amount_text, nutrients, ... }]. Foods of his
-// own are priced from their own values and keep their place in the list; a catalogue line with an
-// estimate per 100 has the values its record is missing filled from it, listed in `filled`.
-async function priceLines(lines, opts = {}) {
-  const at = [];
-  const listed = lines.filter((l, i) => (l.ref === 'own' ? false : at.push(i) > 0));
-  const back = new Map(at.map((orig, j) => [orig, j]));
-  const moved = (list) => (list || []).map(Number).filter((i) => back.has(i)).map((i) => back.get(i));
-  const swap = Object.fromEntries(Object.entries(opts.swap || {}).filter(([i]) => back.has(Number(i))).map(([i, s]) => [back.get(Number(i)), s]));
-  const sub = { ...opts, skip: moved(opts.skip), with: moved(opts.with), swap };
-  const all = [...listed, ...Object.values(swap)];
-  const graph = await loadGraph(all.filter((l) => l.ref === 'recipe').map((l) => l.ref_key), all.filter((l) => l.ref !== 'recipe').map((l) => l.ref_key));
-  const t = recipeTotals({ key: '__meal__', servings: 1, lines: listed }, graph.get, sub);
-  const rows = t.rows.map((r) => {
-    const it = r.ref === 'recipe' ? graph.recipes.get(r.ref_key) : graph.items.get(r.ref_key);
-    const g = r.g ?? (r.basis === 'g' ? r.amount : null);
-    const ml = r.ml ?? null;
-    const fill = r.ref === 'item' && it ? cleanFill(listed[r.index]?.fill, it.basis) : null;
-    const { nutrients, filled } = fillGaps(r.nutrients, fill?.basis === 'ml' ? (ml ?? g) : (g ?? ml), fill, FILL_KEYS);
-    return {
-      index: at[r.index], ref: r.ref, ref_key: r.ref_key, name: it?.name || r.ref_key, qty: r.qty, unit: r.unit,
-      amount_text: r.ref === 'recipe' ? amountText(r.qty, r.unit) : it ? amountText(r.qty, r.unit, it) : '',
-      g, ml, liquid: Boolean(it?.liquid), nutrients, ...(filled.length ? { filled } : {}), error: r.error,
-    };
-  });
-  const skipped = new Set((opts.skip || []).map(Number));
-  lines.forEach((l, i) => { if (l.ref === 'own' && !skipped.has(i)) rows.push({ index: i, ...ownRow(l, Number(opts.factor) > 0 ? Number(opts.factor) : 1) }); });
-  rows.sort((a, b) => a.index - b.index);
-  for (const r of rows) delete r.index;
-  return { rows, nutrients: NUT.total(rows.map((r) => r.nutrients)), errors: rows.filter((r) => r.error).map((r) => r.error) };
-}
-
-const shapeMeal = (r, priced) => ({
-  id: r.id, name: r.name, kind: r.kind, lines: r.lines, favourite: r.favourite, uses: r.uses,
-  ...(priced ? { priced: priced.rows, nutrients: priced.nutrients, errors: priced.errors } : {}),
-});
-
-export async function listMeals() {
-  const rows = await db()`select * from food_meals where deleted_at is null order by favourite desc, last_used desc nulls last, name`;
-  const out = [];
-  for (const r of rows) out.push(shapeMeal(r, await priceLines(r.lines)));
-  return out;
-}
-
-export async function getMeal(id) {
-  const [r] = await db()`select * from food_meals where id = ${Number(id)} and deleted_at is null`;
-  if (!r) throw new RuleError('That saved meal is gone.', 404);
-  return shapeMeal(r, await priceLines(r.lines));
-}
-
-export async function saveMeal(input) {
-  const name = clean(input.name, 100);
-  if (!name) throw new RuleError('Give it a name.');
-  const kind = MEAL_KINDS.includes(input.kind) ? input.kind : 'meal';
-  const lines = cleanMealLines(input.lines);
-  const priced = await priceLines(lines);
-  if (priced.errors.length) throw new RuleError(priced.errors[0]);
-  const sql = db();
-  const [r] = input.id
-    ? await sql`update food_meals set name = ${name}, kind = ${kind}, lines = ${sql.json(lines)}, updated_at = now() where id = ${Number(input.id)} and deleted_at is null returning *`
-    : await sql`insert into food_meals (name, kind, lines) values (${name}, ${kind}, ${sql.json(lines)}) returning *`;
-  if (!r) throw new RuleError('That saved meal is gone.', 404);
-  return shapeMeal(r, priced);
-}
-
-export async function deleteMeal(id) {
-  await db()`update food_meals set deleted_at = now() where id = ${Number(id)}`;
-  return { ok: true };
-}
-
-// Logs a saved meal or an unsaved builder: { meal_id | lines, name, factor, skip, swap, id, date, slot }.
-// The lines are frozen into the entry, so later edits to the meal never change this day.
-export async function logMeal(input, source = 'you') {
-  const again = await existingEntry(input.id);
-  if (again) return again;
-  let lines;
-  let name = clean(input.name, 120);
-  let mealId = null;
-  if (input.meal_id) {
-    const [m] = await db()`select * from food_meals where id = ${Number(input.meal_id)} and deleted_at is null`;
-    if (!m) throw new RuleError('That saved meal is gone.', 404);
-    lines = m.lines;
-    name = name || m.name;
-    mealId = m.id;
-  } else lines = cleanMealLines(input.lines, { own: true });
-  if (!name) name = 'Meal';
-  const factor = input.factor === undefined ? 1 : Number(input.factor);
-  if (!(factor > 0) || factor > 20) throw new RuleError('The share must be more than zero.');
-  const swap = {};
-  for (const [i, s] of Object.entries(input.swap || {})) swap[i] = cleanMealLines([{ ...lines[i], ...s }])[0];
-  const priced = await priceLines(lines, { factor, skip: input.skip || [], with: input.with || [], swap });
-  if (priced.errors.length) throw new RuleError(priced.errors[0]);
-  const ml = priced.rows.filter((r) => r.liquid && r.ml).reduce((a, r) => a + r.ml, 0);
-  const g = priced.rows.reduce((a, r) => a + (r.g || 0), 0);
-  const place = await placeEntry(input, priced.rows.every((r) => r.liquid));
-  const out = await insertEntry({
-    id: input.id || newId(),
-    ...place,
-    kind: 'meal',
-    ref_id: mealId,
-    name,
-    qty: factor,
-    unit: 'share',
-    amount_text: factor === 1 ? `${priced.rows.length} items` : `${round(factor, 2)} of it, ${priced.rows.length} items`,
-    grams: g || null,
-    ml: ml || null,
-    liquid: ml > 0 && priced.rows.every((r) => r.liquid || !r.g),
-    nutrients: priced.nutrients,
-    lines: priced.rows,
-    // Values estimated for any of its foods: the diary marks those totals with "~".
-    filled: [...new Set(priced.rows.flatMap((r) => r.filled || []))],
-    estimate: Boolean(input.estimate) || priced.rows.some((r) => r.estimate),
-    source,
-    note: input.note,
-    plan_id: input.plan_id,
-  });
-  if (!out.duplicate && mealId) await db()`update food_meals set uses = uses + 1, last_used = now() where id = ${mealId}`;
-  return out;
-}
-
-// ---------- Recipes ----------
-
-// Loads recipes and items reachable from the given keys, following sub-recipes, so the maths can run
-// without further queries.
-export async function loadGraph(recipeKeys = [], itemKeys = []) {
-  const sql = db();
-  const recipes = new Map();
-  const items = new Map();
-  let todoR = [...new Set(recipeKeys)];
-  const needI = new Set(itemKeys);
-  while (todoR.length) {
-    const rows = await sql`select * from recipes where key in ${sql(todoR)} and deleted_at is null`;
-    const ids = rows.map((r) => r.id);
-    const lines = ids.length ? await sql`select * from recipe_lines where recipe_id in ${sql(ids)} order by recipe_id, sort` : [];
-    const next = [];
-    for (const r of rows) {
-      const ls = lines.filter((l) => l.recipe_id === r.id).map((l) => ({ ref: l.ref, ref_key: l.ref_key, qty: l.qty, unit: l.unit, optional: l.optional, grp: l.grp, label: l.label, note: l.note }));
-      recipes.set(r.key, { ...r, lines: ls });
-      for (const l of ls) {
-        if (l.ref === 'recipe') { if (!recipes.has(l.ref_key)) next.push(l.ref_key); } else needI.add(l.ref_key);
-      }
-    }
-    todoR = [...new Set(next)].filter((k) => !recipes.has(k));
-  }
-  const keys = [...needI];
-  if (keys.length) for (const r of await sql`select * from food_items where key in ${sql(keys)}`) items.set(r.key, shapeItem(r));
-  return { recipes, items, get: { item: (k) => items.get(k), recipe: (k) => recipes.get(k) } };
-}
-
-const shapeRecipeRow = (r) => ({
-  id: r.id, key: r.key, name: r.name, name_mt: r.name_mt, family: r.family, type: r.type, parent_key: r.parent_key, version: r.version,
-  summary: r.summary, servings: r.servings, final_weight: r.final_weight, prep_min: r.prep_min, cook_min: r.cook_min, equipment: r.equipment,
-  tags: r.tags, source: r.source, status: r.status, favourite: r.favourite, uses: r.uses, req: r.req,
-  source_url: r.source_url || null, source_name: r.source_name || null,
-});
-
-export async function listRecipes({ q = '', family = '', type = '', limit = 2000 } = {}) {
-  const sql = db();
-  const words = norm(q).split(' ').filter(Boolean).slice(0, 6);
-  const all = words.reduce((acc, w) => sql`${acc} and search like ${`%${w}%`}`, sql``);
-  const rows = await sql`select r.*, (select count(*)::int from recipe_lines l where l.recipe_id = r.id) as line_count
-    from recipes r where deleted_at is null ${all}
-    ${family ? sql`and family = ${family}` : sql``} ${type ? sql`and type = ${type}` : sql``}
-    order by favourite desc, uses desc, (type = 'base') desc, name limit ${Math.min(Number(limit) || 2000, 2000)}`;
-  // Totals for the list come from one graph load.
-  const graph = await loadGraph(rows.map((r) => r.key));
-  return rows.map((r) => {
-    let per = null;
-    try {
-      const t = recipeTotals(graph.recipes.get(r.key), graph.get);
-      per = t.perServing;
-    } catch { per = null; }
-    return { ...shapeRecipeRow(r), lines: r.line_count, perServing: per };
-  });
-}
-
-export async function getRecipe(ref, opts = {}) {
-  const sql = db();
-  const [r] = typeof ref === 'number' || /^\d+$/.test(String(ref))
-    ? await sql`select * from recipes where id = ${Number(ref)} and deleted_at is null`
-    : await sql`select * from recipes where key = ${String(ref)} and deleted_at is null`;
-  if (!r) throw new RuleError('That recipe is gone.', 404);
-  const swaps = Object.values(opts.swap || {});
-  const graph = await loadGraph([r.key, ...swaps.filter((s) => s.ref === 'recipe').map((s) => s.ref_key)], swaps.filter((s) => s.ref !== 'recipe').map((s) => s.ref_key));
-  const rec = graph.recipes.get(r.key);
-  let t;
-  try {
-    t = recipeTotals(rec, graph.get, opts);
-  } catch (err) {
-    throw new RuleError(err.message);
-  }
-  const lines = rec.lines.map((l, i) => {
-    const row = t.rows.find((x) => x.index === i);
-    const it = l.ref === 'recipe' ? graph.recipes.get(l.ref_key) : graph.items.get(l.ref_key);
-    return {
-      ...l, index: i, name: it?.name || `Missing: ${l.ref_key}`, missing: !it,
-      amount_text: l.ref === 'recipe' ? amountText(l.qty, l.unit) : it ? amountText(l.qty, l.unit, it) : `${l.qty} ${l.unit}`,
-      skipped: !row, nutrients: row?.nutrients || null, error: row?.error || null, units: it && l.ref !== 'recipe' ? it.units : null,
-    };
-  });
-  const variants = await sql`select key, name from recipes where parent_key = ${r.key} and deleted_at is null order by name`;
-  const parent = r.parent_key ? (await sql`select key, name from recipes where key = ${r.parent_key}`)[0] || null : null;
-  const batches = await sql`select id, cooked_on, final_weight, servings from food_batches where recipe_key = ${r.key} and finished_at is null order by id desc`;
-  return {
-    ...shapeRecipeRow(r), method: r.method, notes: r.notes, licence: r.licence, lines,
-    totals: t.nutrients, perServing: t.perServing, per100: t.per100, rawWeight: t.raw_weight, errors: t.errors,
-    variants, parent, openBatches: batches.length,
-  };
-}
-
-const slug = (s) => norm(s).replace(/ /g, '-').slice(0, 50);
-
-// Where a recipe stands: written by Oath and not cooked yet, checked by him, cooked and confirmed, or
-// imported from a page he linked (food-import.js).
-export const RECIPE_STATUSES = ['ai-untested', 'user-reviewed', 'tested', 'imported'];
-
-// The page a recipe came from: a web address only, with the site's name for the credit on its card.
-function sourceLink(input) {
-  try {
-    const u = new URL(String(input.source_url || ''));
-    if (u.protocol !== 'http:' && u.protocol !== 'https:') return { url: null, name: null };
-    return { url: u.toString().slice(0, 1000), name: clean(input.source_name, 80) || u.hostname.replace(/^www\./, '') };
-  } catch {
-    return { url: null, name: null };
-  }
-}
-
-// Saves a recipe of Daniel's: name, ingredients and servings are enough. Editing makes a new version;
-// batches and diary entries keep the version they were made from.
-export async function saveRecipe(input, { source = 'you' } = {}) {
-  const name = clean(input.name, 120);
-  if (!name) throw new RuleError('Give the recipe a name.');
-  const servings = Number(input.servings);
-  if (!(servings > 0) || servings > 200) throw new RuleError('How many servings does it make?');
-  const finalWeight = input.final_weight === undefined || input.final_weight === null || input.final_weight === '' ? null : Number(input.final_weight);
-  if (finalWeight !== null && !(finalWeight > 0)) throw new RuleError('The finished weight must be more than zero.');
-  const lines = (input.lines || []).map((l, i) => ({
-    sort: i, grp: clean(l.grp, 40), ref: l.ref === 'recipe' ? 'recipe' : 'item', ref_key: String(l.ref_key || ''),
-    qty: Number(l.qty), unit: String(l.unit || 'g'), optional: Boolean(l.optional), label: clean(l.label, 60), note: clean(l.note, 120),
-  }));
-  if (!lines.length) throw new RuleError('Add at least one ingredient.');
-  for (const l of lines) if (!l.ref_key || !(l.qty > 0)) throw new RuleError('Each ingredient needs a food and an amount.');
-  const method = (input.method || []).map((s) => clean(s, 600)).filter(Boolean);
-  const sql = db();
-  const existing = input.key ? (await sql`select * from recipes where key = ${input.key} and deleted_at is null`)[0] : null;
-  const key = existing?.key || input.key || `my:${slug(name)}-${crypto.randomBytes(3).toString('hex')}`;
-  // Check it adds up (and has no loops) before saving.
-  const graph = await loadGraph(lines.filter((l) => l.ref === 'recipe').map((l) => l.ref_key), lines.filter((l) => l.ref === 'item').map((l) => l.ref_key));
-  try {
-    const t = recipeTotals({ key, servings, final_weight: finalWeight, lines }, graph.get);
-    if (t.errors.length) throw new RuleError(t.errors[0]);
-  } catch (err) {
-    throw err instanceof RuleError ? err : new RuleError(err.message);
-  }
-  const fields = {
-    name, name_mt: input.name_mt ? clean(input.name_mt, 120) : null, family: clean(input.family, 40), type: ['base', 'variant', 'component', 'template'].includes(input.type) ? input.type : 'base',
-    parent_key: input.parent_key || null, summary: clean(input.summary, 400), servings, final_weight: finalWeight,
-    prep_min: Number(input.prep_min) > 0 ? Math.round(input.prep_min) : null, cook_min: Number(input.cook_min) > 0 ? Math.round(input.cook_min) : null,
-    equipment: (input.equipment || []).map((x) => clean(x, 40)).filter(Boolean), tags: (input.tags || []).map((x) => clean(x, 30)).filter(Boolean),
-    notes: clean(input.notes, 1000), req: (input.req || []).map((x) => clean(x, 120)),
-    search: [norm(name), norm(input.name_mt), norm((input.tags || []).join(' ')), norm(input.family)].filter(Boolean).join(' '),
-  };
-  // An edit that does not mention the page keeps it.
-  const link = sourceLink(input);
-  return sql.begin(async (tx) => {
-    let row;
-    if (existing) {
-      [row] = await tx`update recipes set name = ${fields.name}, name_mt = ${fields.name_mt}, family = ${fields.family}, type = ${fields.type},
-        parent_key = ${fields.parent_key}, summary = ${fields.summary}, servings = ${fields.servings}, final_weight = ${fields.final_weight},
-        prep_min = ${fields.prep_min}, cook_min = ${fields.cook_min}, equipment = ${fields.equipment}::text[], tags = ${fields.tags}::text[],
-        method = ${tx.json(method)}, notes = ${fields.notes}, req = ${fields.req}::text[], search = ${fields.search},
-        version = version + 1, edited = ${source === 'you'}, status = ${source === 'you' && existing.status === 'ai-untested' ? 'user-reviewed' : existing.status},
-        source_url = coalesce(${link.url}, source_url), source_name = coalesce(${link.name}, source_name),
-        updated_at = now() where id = ${existing.id} returning *`;
-      await tx`delete from recipe_lines where recipe_id = ${existing.id}`;
-    } else {
-      [row] = await tx`insert into recipes (key, name, name_mt, family, type, parent_key, summary, servings, final_weight, prep_min, cook_min,
-        equipment, tags, method, notes, req, search, source, licence, status, source_url, source_name)
-        values (${key}, ${fields.name}, ${fields.name_mt}, ${fields.family}, ${fields.type}, ${fields.parent_key}, ${fields.summary}, ${fields.servings},
-        ${fields.final_weight}, ${fields.prep_min}, ${fields.cook_min}, ${fields.equipment}::text[], ${fields.tags}::text[], ${tx.json(method)},
-        ${fields.notes}, ${fields.req}::text[], ${fields.search}, ${source}, ${input.licence || null},
-        ${RECIPE_STATUSES.includes(input.status) ? input.status : source === 'you' ? 'user-reviewed' : 'ai-untested'}, ${link.url}, ${link.url ? link.name : null})
-        returning *`;
-    }
-    for (const l of lines) {
-      await tx`insert into recipe_lines (recipe_id, sort, grp, ref, ref_key, qty, unit, optional, label, note)
-        values (${row.id}, ${l.sort}, ${l.grp}, ${l.ref}, ${l.ref_key}, ${l.qty}, ${l.unit}, ${l.optional}, ${l.label}, ${l.note})`;
-    }
-    return { key: row.key, id: row.id, version: row.version };
-  });
-}
-
-// A copy to change freely: a variant linked to its parent.
-export async function duplicateRecipe(key, name) {
-  const r = await getRecipe(key);
-  return saveRecipe({
-    name: clean(name, 120) || `${r.name} (my version)`, family: r.family, type: 'variant', parent_key: r.key, summary: r.summary,
-    servings: r.servings, final_weight: r.final_weight, prep_min: r.prep_min, cook_min: r.cook_min, equipment: r.equipment, tags: r.tags,
-    method: r.method, notes: r.notes,
-    lines: r.lines.map((l) => ({ ref: l.ref, ref_key: l.ref_key, qty: l.qty, unit: l.unit, optional: l.optional, grp: l.grp, label: l.label, note: l.note })),
-  });
-}
-
-export async function deleteRecipe(key) {
-  const sql = db();
-  const used = await sql`select r.key from recipe_lines l join recipes r on r.id = l.recipe_id where l.ref = 'recipe' and l.ref_key = ${key} and r.deleted_at is null limit 1`;
-  if (used.length) throw new RuleError(`Another recipe uses this one (${used[0].key}). Change that one first.`);
-  await sql`update recipes set deleted_at = now() where key = ${key}`;
-  return { ok: true };
-}
-
-// Logs servings (or grams of the finished dish) of a recipe straight from the card, with any
-// swaps and skipped optional items. The worked-out lines are frozen into the entry.
-export async function logRecipe(input, source = 'you') {
-  const again = await existingEntry(input.id);
-  if (again) return again;
-  const r = await getRecipe(input.key || input.recipe_id, { skip: input.skip || [], with: input.with || [], swap: input.swap || {}, factor: input.factor || 1 });
-  if (r.errors.length) throw new RuleError(r.errors[0]);
-  const unit = input.unit === 'g' ? 'g' : 'serving';
-  const s = shareOf({ servings: r.servings * (input.factor || 1), final_weight: r.final_weight ? r.final_weight * (input.factor || 1) : null }, input.qty ?? 1, unit);
-  if (s.error) throw new RuleError(s.error);
-  const nutrients = scale(r.totals, s.share, 1);
-  const place = await placeEntry(input, false);
-  const out = await insertEntry({
-    id: input.id || newId(),
-    ...place,
-    kind: 'recipe',
-    ref_id: r.id,
-    ref_key: r.key,
-    name: r.name,
-    qty: Number(input.qty ?? 1),
-    unit,
-    amount_text: amountText(Number(input.qty ?? 1), unit),
-    grams: unit === 'g' ? Number(input.qty) : r.final_weight ? round(s.share * r.final_weight * (input.factor || 1), 1) : null,
-    share: s.share,
-    nutrients,
-    lines: r.lines.filter((l) => !l.skipped).map((l) => ({ name: l.name, amount_text: l.amount_text, ref_key: l.ref_key, nutrients: l.nutrients ? scale(l.nutrients, s.share, 1) : null })),
-    source,
-    note: input.note || `Recipe version ${r.version}`,
-    plan_id: input.plan_id,
-  });
-  if (!out.duplicate) await db()`update recipes set uses = uses + 1, last_used = now() where id = ${r.id}`;
-  return out;
-}
-
-// ---------- Batches ----------
-
-function shapeBatch(b) {
-  return b ? { ...b, final_weight: b.final_weight, servings: b.servings } : null;
-}
-const batchAmountText = (qty, unit) => (unit === 'g' ? `${round(qty, 0)} g of the batch` : unit === 'serving' ? `${round(qty, 2)} ${Number(qty) === 1 ? 'serving' : 'servings'}` : `${round(qty * 100, 0)}% of the batch`);
-
-// One cooked batch: what actually went in (after swaps), its total, and the finished weight.
-export async function cookBatch(input) {
-  const r = await getRecipe(input.key, { skip: input.skip || [], with: input.with || [], swap: input.swap || {}, factor: input.factor || 1 });
-  if (r.errors.length) throw new RuleError(r.errors[0]);
-  const finalWeight = input.final_weight === undefined || input.final_weight === '' || input.final_weight === null ? null : Number(input.final_weight);
-  if (finalWeight !== null && !(finalWeight > 0)) throw new RuleError('The finished weight must be more than zero.');
-  const servings = Number(input.servings || r.servings * (input.factor || 1));
-  if (!(servings > 0)) throw new RuleError('How many servings did it make?');
-  if (finalWeight === null && !input.servings && !r.servings) throw new RuleError('Weigh the finished batch or give the servings.');
-  const { today } = await localNow();
-  const lines = r.lines.filter((l) => !l.skipped).map((l) => ({ name: l.name, ref: l.ref, ref_key: l.ref_key, qty: l.qty * (input.factor || 1), unit: l.unit, amount_text: l.amount_text, nutrients: l.nutrients }));
-  const sql = db();
-  const [b] = await sql`insert into food_batches (recipe_key, recipe_version, name, cooked_on, lines, nutrients, final_weight, servings, note)
-    values (${r.key}, ${r.version}, ${clean(input.name, 120) || r.name}, ${input.cooked_on && validDate(input.cooked_on) ? input.cooked_on : today},
-      ${sql.json(lines)}, ${sql.json(r.totals)}, ${finalWeight}, ${servings}, ${clean(input.note, 300)}) returning *`;
-  await logEvent('food_batch_cooked', { id: b.id, recipe: r.key });
-  return getBatch(b.id);
-}
-
-export async function getBatch(id) {
-  const [b] = await db()`select * from food_batches where id = ${Number(id)}`;
-  if (!b) throw new RuleError('That batch is gone.', 404);
-  const used = await db()`select id, date, share, amount_text from food_log where kind = 'batch' and ref_id = ${b.id} and deleted_at is null order by at`;
-  const left = batchLeft(b, used.map((u) => u.share));
-  return {
-    id: b.id, name: b.name, recipeKey: b.recipe_key, recipeVersion: b.recipe_version, cookedOn: b.cooked_on, lines: b.lines, nutrients: b.nutrients,
-    final_weight: b.final_weight, servings: b.servings, note: b.note, finished: Boolean(b.finished_at), used, left,
-    perServing: b.servings ? scale(b.nutrients, 1, b.servings) : null, per100: b.final_weight ? scale(b.nutrients, 100, b.final_weight) : null,
-  };
-}
-
-export async function listBatches({ open = true } = {}) {
-  const sql = db();
-  const rows = await sql`select id from food_batches ${open ? sql`where finished_at is null` : sql``} order by id desc limit 50`;
-  const out = [];
-  for (const r of rows) out.push(await getBatch(r.id));
-  return out;
-}
-
-export async function logBatch(input, source = 'you') {
-  const again = await existingEntry(input.id);
-  if (again) return again;
-  const b = await getBatch(input.batch_id);
-  if (b.finished) throw new RuleError('That batch is marked finished.');
-  const unit = ['g', 'serving', 'share'].includes(input.unit) ? input.unit : b.final_weight ? 'g' : 'serving';
-  const p = batchPortion(b, input.qty, unit);
-  if (p.error) throw new RuleError(p.error);
-  if (p.share > b.left.share + 1e-9) {
-    const left = b.left.g !== null ? `${round(b.left.g, 0)} g` : `${round(b.left.servings, 2)} servings`;
-    throw new RuleError(`Only ${left} of this batch is left.`);
-  }
-  const place = await placeEntry(input, false);
-  const out = await insertEntry({
-    id: input.id || newId(),
-    ...place,
-    kind: 'batch',
-    ref_id: b.id,
-    ref_key: b.recipeKey,
-    name: b.name,
-    qty: Number(input.qty),
-    unit,
-    amount_text: batchAmountText(Number(input.qty), unit),
-    grams: p.g,
-    share: p.share,
-    nutrients: p.nutrients,
-    source,
-    note: input.note || `Batch cooked ${b.cookedOn}`,
-    plan_id: input.plan_id,
-  });
-  return { ...out, batch: await getBatch(b.id) };
-}
-
-export async function finishBatch(id, done = true) {
-  await db()`update food_batches set finished_at = ${done ? ts() : null} where id = ${Number(id)}`;
-  return getBatch(id);
-}
-
-// ---------- Plans: food meant for later, never counted as eaten ----------
-
-const shapePlan = (p) => ({ id: p.id, date: p.date, slot: p.slot, kind: p.kind, refKey: p.ref_key, refId: p.ref_id, name: p.name, qty: p.qty, unit: p.unit, note: p.note, loggedId: p.logged_id });
-
-export async function addPlan(input) {
-  const { today } = await localNow();
-  const date = input.date || today;
-  if (!validDate(date)) throw new RuleError('Bad date.');
-  const slot = SLOTS.includes(input.slot) ? input.slot : 'lunch';
-  const kind = ['item', 'recipe', 'meal', 'batch'].includes(input.kind) ? input.kind : 'item';
-  let name = clean(input.name, 120);
-  if (kind === 'item') name = name || (await getFood({ key: input.ref_key })).name;
-  if (kind === 'recipe') name = name || (await getRecipe(input.ref_key)).name;
-  if (kind === 'meal') name = name || (await getMeal(input.ref_id)).name;
-  if (kind === 'batch') name = name || (await getBatch(input.ref_id)).name;
-  const [p] = await db()`insert into food_plans (date, slot, kind, ref_key, ref_id, name, qty, unit, note)
-    values (${date}, ${slot}, ${kind}, ${input.ref_key || null}, ${input.ref_id ? Number(input.ref_id) : null}, ${name},
-      ${input.qty === undefined ? null : Number(input.qty)}, ${input.unit || null}, ${clean(input.note, 300)}) returning *`;
-  return shapePlan(p);
-}
-
-export async function listPlans(from, to) {
-  const rows = await db()`select * from food_plans where date >= ${from} and date <= ${to} and deleted_at is null order by date, id`;
-  return rows.map(shapePlan);
-}
-
-export async function deletePlan(id) {
-  await db()`update food_plans set deleted_at = now() where id = ${Number(id)}`;
-  return { ok: true };
-}
-
-// Eaten: the plan becomes a real diary entry (today unless said otherwise) and stays linked to it.
-export async function eatPlan(id, input = {}) {
-  const [p] = await db()`select * from food_plans where id = ${Number(id)} and deleted_at is null`;
-  if (!p) throw new RuleError('That plan is gone.', 404);
-  if (p.logged_id) {
-    const [e] = await db()`select * from food_log where id = ${p.logged_id} and deleted_at is null`;
-    if (e) return { entry: shapeEntry(e), duplicate: true };
-  }
-  const base = { id: input.id, date: input.date, time: input.time, slot: input.slot || p.slot, plan_id: p.id, qty: input.qty ?? p.qty, unit: input.unit ?? p.unit };
-  let out;
-  if (p.kind === 'item') out = await logFood({ ...base, key: p.ref_key }, 'plan');
-  else if (p.kind === 'recipe') out = await logRecipe({ ...base, key: p.ref_key, qty: base.qty ?? 1, unit: base.unit || 'serving' }, 'plan');
-  else if (p.kind === 'meal') out = await logMeal({ ...base, meal_id: p.ref_id, factor: base.qty ?? 1 }, 'plan');
-  else out = await logBatch({ ...base, batch_id: p.ref_id }, 'plan');
-  await db()`update food_plans set logged_id = ${out.entry.id} where id = ${p.id}`;
-  return out;
 }
 
 // ---------- Coverage report ----------
