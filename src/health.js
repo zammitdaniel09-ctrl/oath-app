@@ -17,7 +17,6 @@
 // Fairness: a miss can only be overturned by data that proves the habit was done before its
 // deadline. Workouts must have started before it; for totals, hourly samples count up to the
 // deadline and a whole-day number counts only if it was reported before the deadline.
-import crypto from 'node:crypto';
 import { Hono } from 'hono';
 import { DateTime } from 'luxon';
 import { db, getKV, setKV, logEvent } from './db.js';
