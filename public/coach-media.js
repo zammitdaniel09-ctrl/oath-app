@@ -3,7 +3,7 @@
 // when he taps send, coming back transcribed. Played back here too. The chat itself is in coach.js: this
 // module draws its pieces and hands finished messages to ctx.send.
 import { $app, state, esc, api, toast, icon, haptic } from './ui.js';
-import { shrink } from './food.js';
+import { shrink } from './food-actions.js';
 import { chatToEnd } from './motion.js';
 
 let ctx = { render: () => {}, send: async () => {}, addMessage: () => {} };

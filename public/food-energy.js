@@ -3,14 +3,12 @@
 // eaten on fully logged days, less what the weight trend says was stored, blended with the formula by
 // how sure it is. Every figure says what it rests on; a day left out is drawn faded, never as zero.
 import { state, esc, api, act, toast, icon, num, fmtDay, haptic, plural } from './ui.js';
+// The striped fill the other charts use, for days that are not counted.
+import { nextId, hatchDef } from './food-parts.js';
 
 const F = () => state.food || (state.food = { date: null });
 const fmt = (v, dec = 0) => (num(v) === null ? '–' : new Intl.NumberFormat('en-GB', { minimumFractionDigits: dec, maximumFractionDigits: dec }).format(v));
 const dayMonth = (d) => fmtDay(d, { day: 'numeric', month: 'short' });
-let uid = 0;
-const nextId = (p) => `${p}${(uid += 1)}`;
-// The same striped fill the other charts use (food.js hatchDef) for days that are not counted.
-const hatchDef = (id) => `<pattern id="${id}" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" class="fh-bg"/><rect width="1.8" height="5" class="fh-line"/></pattern>`;
 
 const CONF = { none: 'Not enough data yet', low: 'Low confidence', medium: 'Medium confidence', high: 'High confidence' };
 const NEED = { days: 10, weighIns: 5, span: 14 }; // src/food-energy.js CONFIDENCE.low
