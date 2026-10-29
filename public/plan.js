@@ -1,10 +1,16 @@
 // Plan: the week at a glance, habits grouped with their strength, today's state and the last two weeks,
 // tasks by when they fall due with a check to tick them off, and rest days. Plain strings, drawn on every
-// redraw; a habit opened for its details stays open (this phone remembers it).
-import { state, esc, icon, fmtDay, fmtMin, fmtInt, addDays, daysBetween, scheduleText, miniRing, CHECK, localNowHM, plural } from './ui.js';
+// redraw; a habit opened for its details stays open (this phone remembers it). Also the page around them, the
+// habit and task forms, and adding, changing and removing habits, tasks and rest days.
+import {
+  state, esc, icon, fmtDay, fmtMin, fmtInt, addDays, daysBetween, scheduleText, miniRing, CHECK, localNowHM, plural,
+  DAY_NAMES, emptyState, pageHead, act, api, toast, confirmSheet, form2obj,
+} from './ui.js';
 import { AUTO_LABELS } from './data.js';
+import { goalsBody } from './goals.js';
+import { askCoach, quickAdd } from './today-list.js';
 
-let ctx = { heatmap: () => '', quickAdd: () => '' };
+let ctx = { shell: () => {}, skeleton: () => {}, render: () => {}, refreshCurrent: () => {}, go: () => {} };
 export function initPlan(c) {
   ctx = { ...ctx, ...c };
 }
@@ -175,7 +181,7 @@ function habitRow(h, p) {
   const pending = h.nextRulesFrom ? `<p class="note">From ${fmtDay(h.nextRulesFrom)}: ${r.weekly_target ? timesAWeek(r.weekly_target).toLowerCase() : scheduleText(r.days, r.deadline)}${r.minimum ? `, minimum "${esc(r.minimum)}"` : ''}.</p>` : '';
   const building = h.strength < 80 ? `Day ${h.buildingDay} of building` : 'Established';
   const record = h.sched14 ? `Kept ${h.kept14} of ${h.sched14} in the last two weeks.` : '';
-  const heat = ctx.heatmap(h.heat, p.today);
+  const heat = heatmap(h.heat, p.today);
   return `<article class="card pl-habit${h.non_negotiable ? ' heavy' : ''}${h.archivedFrom ? ' leaving' : ''}${open ? ' open' : ''}" data-habit="${h.id}">
     <button class="pl-h-main" data-action="habit-open" data-id="${h.id}" aria-expanded="${open}" aria-controls="hm-${h.id}">
       <span class="pl-ring ${level(h.strength)}" role="img" aria-label="Strength ${h.strength}%">${miniRing(h.strength, 46)}<b>${h.strength}<small>%</small></b></span>
@@ -318,14 +324,14 @@ export function planTasks(p) {
   }).join('');
   return `<section class="section"><div class="gh"><h2>Tasks</h2><button class="gh-link" data-action="sheet" data-kind="task">${icon('plus')}New task</button></div>
     <div class="card pl-loadcard"><p class="pl-sum">${summary}</p>${loadChart(p)}</div>
-    <div class="group pl-add">${ctx.quickAdd('plan-quick')}</div>
+    <div class="group pl-add">${quickAdd('plan-quick')}</div>
     ${lists || '<p class="pl-none">No open tasks. Add one above, or tell the coach.</p>'}
   </section>`;
 }
 
 // ---------- Taps ----------
 
-export function planClick(a, el, $app) {
+export async function planClick(a, el, $app) {
   if (a === 'plan-filter') {
     state.planFilter = el.dataset.filter;
     ctx.render();
@@ -343,5 +349,227 @@ export function planClick(a, el, $app) {
     el.setAttribute('aria-expanded', String(open));
     return true;
   }
-  return false;
+  const id = Number(el.dataset.id);
+  if (a === 'plan-tab') {
+    state.planTab = el.dataset.tab;
+    ctx.render();
+  } else if (a === 'rest-cancel') {
+    if (await act(() => api('DELETE', `/api/rest/${el.dataset.date}`), 'Rest day cancelled.')) await ctx.refreshCurrent();
+  } else if (a === 'remove-habit') {
+    // One tap, no dialog: Undo sits on the Plan screen until the next change.
+    const r = await act(() => api('DELETE', `/api/habits/${id}`));
+    if (r) {
+      state.sheet = null;
+      state.removed = { id, name: r.name, at: Date.now() };
+      await ctx.go();
+    }
+  } else if (a === 'restore-habit') {
+    const r = await act(() => api('POST', `/api/habits/${id}/restore`, {}));
+    if (r) { state.removed = null; toast(`Kept ${r.name}.`); await ctx.go(); }
+  } else if (a === 'delete-task') {
+    if (!await confirmSheet('Delete this task?')) return true;
+    if (await act(() => api('DELETE', `/api/tasks/${id}`), 'Deleted.')) { state.sheet = null; await ctx.go(); }
+  } else return false;
+  return true;
+}
+
+// ---------- The page, the forms and the changes ----------
+
+function heatmap(heat, today) {
+  if (!heat?.length) return '';
+  // Only the habit's own history, one column per week, Monday on top. Hidden in the first week.
+  const firstActive = heat.findIndex((s) => s !== 'off');
+  if (firstActive < 0 || heat.length - firstActive < 7) return '';
+  const days = heat.slice(firstActive);
+  const first = new Date(`${today}T12:00:00Z`);
+  first.setUTCDate(first.getUTCDate() - (days.length - 1));
+  const offset = (first.getUTCDay() + 6) % 7;
+  const cells = [...Array(offset).fill('<i class="h-pad"></i>'), ...days.map((s) => `<i class="h-${s}"></i>`)].join('');
+  // A key for the states this habit actually has.
+  const names = { kept: 'Kept', min: 'Minimum', missed: 'Missed', pardoned: 'Pardoned', rest: 'Rest', open: 'Today', none: 'No record', flex: 'Not done' };
+  const key = Object.entries(names).filter(([s]) => days.includes(s)).map(([s, l]) => `<span><i class="h-${s}"></i>${l}</span>`).join('');
+  return `<div class="heat" role="img" aria-label="Since it started: ${days.filter((s) => s === 'kept' || s === 'min' || s === 'pardoned').length} kept, ${days.filter((s) => s === 'missed').length} missed">${cells}</div>
+    <div class="heat-key" aria-hidden="true">${key}</div>`;
+}
+
+function goalOptions(selected) {
+  const goals = state.plan?.goals || [];
+  if (!goals.length) return '';
+  return `<label class="field"><span>Serves goal</span><select class="input" name="goal_id">
+    <option value="">None</option>${goals.map((g) => `<option value="${g.id}"${Number(selected) === g.id ? ' selected' : ''}>${esc(g.title)}</option>`).join('')}</select></label>`;
+}
+
+function autoFields(h) {
+  const a = h?.auto || null;
+  const opts = [['', 'Off, I tick it myself'], ...Object.entries(AUTO_LABELS).map(([k, v]) => [k, v.name])]
+    .map(([k, label]) => `<option value="${k}"${(a?.metric || '') === k ? ' selected' : ''}>${label}</option>`).join('');
+  return `<div class="auto-field">
+    <p class="auto-h">${icon('heart')}Tick it off from Apple Health</p>
+    <div class="grid2">
+      <label class="field"><span>Measure</span><select class="input" name="auto_metric">${opts}</select></label>
+      <label class="field auto-on"><span>Target</span><input class="input" name="auto_target" inputmode="decimal" value="${esc(a?.target ?? '')}" placeholder="10000"></label>
+    </div>
+    <label class="field auto-workout"><span>Workout type contains (optional)</span><input class="input" name="auto_filter" maxlength="60" value="${esc(a?.filter || '')}" placeholder="strength, run, swim"></label>
+  </div>`;
+}
+
+export function habitForm(h) {
+  const r = h ? { ...h, ...(h.nextRules || {}), weeklyTarget: h.nextRules ? h.nextRules.weekly_target : h.weeklyTarget, minimum: h.nextRules ? h.nextRules.minimum : h.minimum } : { deadline: '21:00', non_negotiable: false, penalty: '' };
+  const days = r.days || [1, 2, 3, 4, 5, 6, 7];
+  const weekly = Boolean(r.weeklyTarget);
+  const dayBoxes = DAY_NAMES.map((n, i) => `<label><input type="checkbox" name="days" value="${i + 1}"${days.includes(i + 1) ? ' checked' : ''}><span>${n.slice(0, 2)}</span></label>`).join('');
+  const nnCount = (state.plan?.habits || []).filter((x) => x.non_negotiable && x.id !== h?.id).length;
+  const cap = state.plan?.settings?.maxNonNegotiables ?? 3;
+  return `<form class="habit-form" data-form="${h ? 'edit-habit' : 'new-habit'}"${h ? ` data-id="${h.id}"` : ''}>
+    <label class="field"><span>Habit</span><input class="input" name="name" maxlength="120" required value="${esc(h?.name || '')}" placeholder="20 push-ups"></label>
+    <label class="field"><span>After I... (an existing routine it follows)</span><input class="input" name="cue" maxlength="120" value="${esc(h?.cue || '')}" placeholder="pour my morning coffee"></label>
+    <div class="seg" role="radiogroup" aria-label="How often">
+      <label><input type="radio" name="freq" value="fixed"${weekly ? '' : ' checked'}><span>Fixed days</span></label>
+      <label><input type="radio" name="freq" value="weekly"${weekly ? ' checked' : ''}><span>Times a week</span></label>
+    </div>
+    <div class="field fixed-only"><span>Days</span><div class="days">${dayBoxes}</div></div>
+    <label class="field weekly-only"><span>Times a week, settled Sunday night</span><input class="input" type="number" name="weekly_target" min="1" max="7" inputmode="numeric" value="${esc(r.weeklyTarget || 3)}"></label>
+    <div class="grid2">
+      <label class="field"><span><span class="fixed-only">Due by</span><span class="weekly-only">Log by</span></span><input class="input" type="time" name="deadline" required value="${esc(r.deadline || '21:00')}"></label>
+      <label class="field"><span>Cue reminder at</span><input class="input" type="time" name="remind_at" value="${esc(h?.remindAt || '')}"></label>
+    </div>
+    <label class="field"><span>Minimum version for a bad day (optional)</span><input class="input" name="minimum" maxlength="120" value="${esc(r.minimum || '')}" placeholder="5 push-ups"></label>
+    <label class="field"><span>If-then plan for the obstacle (optional)</span><input class="input" name="if_then" maxlength="300" value="${esc(h?.ifThen || '')}" placeholder="If I skip the morning, then I do it before dinner"></label>
+    <div class="grid2">
+      <label class="check"><input type="checkbox" name="non_negotiable"${r.non_negotiable ? ' checked' : ''}> Non-negotiable</label>
+      <label class="field"><span>HP lost on a miss</span><input class="input" type="number" name="penalty" min="1" max="100" inputmode="numeric" value="${esc(r.penalty)}" placeholder="25 or 10"></label>
+    </div>
+    ${!h?.non_negotiable && nnCount >= cap ? `<p class="note">${nnCount} of ${cap} non-negotiables in use.</p>` : ''}
+    ${autoFields(h)}
+    ${goalOptions(h?.goalId)}
+    <label class="field"><span>Notes</span><input class="input" name="notes" maxlength="1000" value="${esc(h?.notes || '')}" placeholder="Optional"></label>
+    ${h && h.nextRulesFrom ? `<p class="note">New rules from ${fmtDay(h.nextRulesFrom)}.</p>` : ''}
+    <div class="form-actions">
+      <button class="btn primary" type="submit">${h ? 'Save habit' : 'Add habit'}</button>
+      ${h && !h.archivedFrom ? `<button class="btn tinted danger-text" type="button" data-action="remove-habit" data-id="${h.id}">Remove habit</button>` : ''}
+    </div>
+  </form>`;
+}
+
+export function taskForm(k) {
+  const locked = k?.locked;
+  return `<form class="task-form" data-form="${k ? 'edit-task' : 'new-task'}"${k ? ` data-id="${k.id}"` : ''}>
+    <label class="field"><span>Task</span><input class="input" name="title" maxlength="200" required value="${esc(k?.title || '')}"></label>
+    <div class="grid2">
+      <label class="field"><span>Due date</span><input class="input" type="date" name="due_date" value="${esc(k?.dueDate || '')}"${locked ? ' disabled' : ''}></label>
+      <label class="field"><span>Time</span><input class="input" type="time" name="deadline" value="${esc(k?.deadline || '')}"${locked ? ' disabled' : ''}></label>
+    </div>
+    <label class="field"><span>Estimate in minutes</span><input class="input" type="number" name="estimate_min" min="5" max="600" step="5" inputmode="numeric" value="${esc(k?.estimate || '')}" placeholder="30"></label>
+    ${goalOptions(k?.goalId)}
+    <label class="check"><input type="checkbox" name="hard"${k?.hard ? ' checked' : ''}${locked ? ' disabled' : ''}> Hard task: costs HP if not done by the deadline</label>
+    <label class="field hard-only"><span>First step: the very first physical action</span><input class="input" name="first_step" maxlength="200" value="${esc(k?.firstStep || '')}" placeholder="Open the VAT portal and log in"></label>
+    ${locked ? '<p class="note">Locked while due.</p>' : ''}
+    <div class="form-actions">
+      <button class="btn primary" type="submit">${k ? 'Save task' : 'Add task'}</button>
+      ${k && !locked ? `<button class="btn tinted danger-text" type="button" data-action="delete-task" data-id="${k.id}">Delete</button>` : ''}
+    </div>
+  </form>`;
+}
+
+// A habit that left the list at once can come back for a couple of minutes; one leaving tomorrow
+// shows Keep it on its own card instead.
+const undoable = (p) => state.removed && Date.now() - state.removed.at < 120000 && !p.habits.some((h) => h.id === state.removed.id);
+
+export function viewPlan() {
+  const p = state.plan;
+  if (!p) return ctx.shell(ctx.skeleton('Plan'));
+  const tab = state.planTab || 'habits';
+  const wide = window.matchMedia('(min-width: 1240px)').matches;
+  // Goals are Plan's third segment on the phone; the sidebar keeps its own Goals row.
+  const goals = state.goals || p.goals;
+  const activeGoals = goals.filter((g) => g.status === 'active').length;
+  const segBtn = (id, label, n) => `<button role="tab" aria-selected="${tab === id}" data-action="plan-tab" data-tab="${id}">${label}<span class="seg-n">${n}</span></button>`;
+  const seg = `<div class="seg plan-seg only-narrow-flex" role="tablist" aria-label="Show">
+      ${segBtn('habits', 'Habits', p.habits.length)}${segBtn('tasks', 'Tasks', p.tasks.length)}${segBtn('goals', 'Goals', activeGoals)}
+    </div>`;
+  // Two columns from 1240px show habits and tasks, so + adds a habit there.
+  const add = tab === 'goals' && !wide
+    ? `<a class="icon-btn accent" href="#/goals/new" aria-label="New goal">${icon('plus')}</a>`
+    : `<button class="icon-btn accent" data-action="sheet" data-kind="${tab === 'tasks' ? 'task' : 'habit'}" aria-label="New ${tab === 'tasks' ? 'task' : 'habit'}">${icon('plus')}</button>`;
+  const undo = undoable(p) ? `<div class="banner food-undo"><span>Removed ${esc(state.removed.name)}.</span><button class="btn tinted small" data-action="restore-habit" data-id="${state.removed.id}">Undo</button></div>` : '';
+  const empty = emptyState({ icon: 'plan', title: 'No habits yet', actions: '<button class="btn primary" data-action="sheet" data-kind="habit">Add the first habit</button>' });
+
+  ctx.shell(`${pageHead('Plan', { over: `${p.habits.length} habits, ${p.tasks.length} tasks, ${activeGoals} ${activeGoals === 1 ? 'goal' : 'goals'}`, actions: add })}
+    ${tab === 'goals' && !wide ? '' : planHero(p)}
+    ${seg}
+    ${askCoach('plan')}
+    <div class="split plan-split tab-${tab}">
+    <div class="pane-habits">${planHabits(p, { undo, empty })}${planRest(p)}</div>
+    <aside class="pane-tasks">${planTasks(p)}</aside>
+    <div class="pane-goals">${goalsBody(goals, '<div class="gh"><h2>Goals</h2><a class="gh-link" href="#/goals/new">New goal</a></div>')}</div>
+  </div>`);
+}
+
+function habitPayload(form) {
+  const f = new FormData(form);
+  const penalty = f.get('penalty');
+  const weekly = f.get('freq') === 'weekly';
+  return {
+    name: f.get('name'),
+    cue: f.get('cue') || '',
+    deadline: f.get('deadline'),
+    remind_at: f.get('remind_at') || null,
+    days: weekly ? undefined : f.getAll('days').map(Number),
+    weekly_target: weekly ? Number(f.get('weekly_target')) : null,
+    non_negotiable: f.get('non_negotiable') === 'on',
+    penalty: penalty === '' ? undefined : Number(penalty),
+    minimum: f.get('minimum') || '',
+    if_then: f.get('if_then') || '',
+    goal_id: f.has('goal_id') ? f.get('goal_id') || null : undefined,
+    notes: f.get('notes') || '',
+  };
+}
+
+// Link (or unlink) a habit to an Apple Health measure, only when that part of the form changed.
+async function saveAuto(habitId, form, before) {
+  const f = new FormData(form);
+  const metric = f.get('auto_metric') || '';
+  const target = String(f.get('auto_target') || '').trim();
+  const filter = String(f.get('auto_filter') || '').trim();
+  const was = before?.auto || null;
+  const same = (was?.metric || '') === metric && (!metric || (String(was?.target ?? '') === target && (was?.filter || '') === filter));
+  if (same) return true;
+  const r = await act(() => api('PATCH', `/api/health/habits/${habitId}`, { metric: metric || null, target: target || null, filter }));
+  if (r?.keptNow) toast('Apple Health already shows it done today. Kept.');
+  return Boolean(r);
+}
+
+function taskPayload(form) {
+  const f = new FormData(form);
+  const out = { title: f.get('title') };
+  if (f.has('due_date')) out.due_date = f.get('due_date') || null;
+  if (f.has('deadline')) out.deadline = f.get('deadline') || null;
+  if (!form.querySelector('[name="hard"]').disabled) out.hard = f.get('hard') === 'on';
+  out.first_step = f.get('first_step') || '';
+  out.estimate_min = f.get('estimate_min') || null;
+  if (f.has('goal_id')) out.goal_id = f.get('goal_id') || null;
+  return out;
+}
+
+export async function planSubmit(kind, form) {
+  if (kind === 'new-habit') {
+    const r = await act(() => api('POST', '/api/habits', habitPayload(form)), (x) => (x.startsToday ? 'Habit added. It counts from today.' : 'Habit added. Today\'s deadline has passed, so it starts tomorrow.'));
+    if (r) {
+      await saveAuto(r.habit.id, form, null);
+      state.sheet = null;
+      await ctx.go();
+    }
+  } else if (kind === 'edit-habit') {
+    const before = state.plan?.habits.find((h) => h.id === Number(form.dataset.id));
+    const r = await act(() => api('PATCH', `/api/habits/${form.dataset.id}`, habitPayload(form)), (x) => (x.effective === 'now' ? 'Saved.' : `Saved. New rules start ${fmtDay(x.effective)}.`));
+    if (r && (await saveAuto(Number(form.dataset.id), form, before))) { state.sheet = null; await ctx.go(); }
+  } else if (kind === 'new-task') {
+    if (await act(() => api('POST', '/api/tasks', taskPayload(form)), 'Task added.')) { state.sheet = null; await ctx.go(); }
+  } else if (kind === 'edit-task') {
+    if (await act(() => api('PATCH', `/api/tasks/${form.dataset.id}`, taskPayload(form)), 'Saved.')) { state.sheet = null; await ctx.go(); }
+  } else if (kind === 'rest') {
+    const f = form2obj(form);
+    if (await act(() => api('POST', '/api/rest', f), `Rest day booked for ${fmtDay(f.date)}.`)) await ctx.refreshCurrent();
+  } else return false;
+  return true;
 }

@@ -2,14 +2,14 @@
 const CACHE = 'oath-v36';
 // The ZXing barcode reader in /vendor/ (about 1 MB) is left out on purpose: only phones without a
 // BarcodeDetector need it, and the fetch handler below keeps a copy the first time it loads.
-const SHELL = ['/', '/app.css', '/app.js', '/ui.js', '/parse.js', '/goals.js', '/data.js', '/food.js', '/food-energy.js', '/food-links.js', '/food-usual.js', '/food-next.js', '/food-import.js', '/food-chat.js', '/coach-media.js', '/food-tagdb.js', '/mail.js', '/food.css', '/calendar.js', '/calendar.css', '/nutrition.js', '/food-tags.js', '/rich.js', '/motion.js', '/sound.js', '/today.js', '/plan.js', '/plan.css', '/manifest.webmanifest', '/icons/apple-touch-icon.png', '/icons/icon-192.png', '/icons/badge.png',
+const SHELL = ['/', '/app.css', '/app.js', '/ui.js', '/parse.js', '/goals.js', '/data.js', '/food.js', '/food-energy.js', '/food-links.js', '/food-usual.js', '/food-next.js', '/food-import.js', '/food-chat.js', '/coach-media.js', '/food-tagdb.js', '/mail.js', '/food.css', '/calendar.js', '/calendar.css', '/nutrition.js', '/food-tags.js', '/rich.js', '/motion.js', '/sound.js', '/today.js', '/today-list.js', '/plan.js', '/coach.js', '/review.js', '/settings.js', '/lock.js', '/push.js', '/passkeys.js', '/update.js', '/plan.css', '/manifest.webmanifest', '/icons/apple-touch-icon.png', '/icons/icon-192.png', '/icons/badge.png',
   '/fonts/satoshi-variable.woff2', '/fonts/gambetta-italic.woff2', '/fonts/geist-mono-variable.woff2', '/scan.js', '/barcode.js'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
 
-// Keeping an open copy of the app on the newest version is the app's own job (app.js): on an iPhone the
+// Keeping an open copy of the app on the newest version is the app's own job (update.js): on an iPhone the
 // worker's handover does not reach a page resumed from memory.
 self.addEventListener('activate', (event) => {
   event.waitUntil(

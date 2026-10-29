@@ -32,7 +32,7 @@ export const state = {
   push: { supported: false, permission: 'default', subscribed: false },
 };
 
-// Set by the modules that own them: onUnauthed (app.js) shows the way in, busy (motion.js) says a drag
+// Set by the modules that own them: onUnauthed (lock.js) shows the way in, busy (motion.js) says a drag
 // or swipe is under way, idle (app.js) draws a screen that was left stale.
 export const hooks = { onUnauthed: () => {}, busy: () => false, idle: () => {}, onBuild: () => {} };
 
@@ -288,6 +288,17 @@ export function confirmSheet(title, text = '', yes = 'Delete', { note = null, da
 }
 
 export const form2obj = (form) => Object.fromEntries(new FormData(form).entries());
+
+// What counts as typing: a field that brings up the keyboard.
+export const TEXT_FIELDS = 'input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]), textarea, select, [contenteditable="true"]';
+
+// base64url (as the server and Web Push send keys and challenges) to bytes.
+export function b64ToBytes(base64) {
+  const padding = '='.repeat((4 - (base64.length % 4)) % 4);
+  const raw = atob((base64 + padding).replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from([...raw].map((c) => c.charCodeAt(0)));
+}
+
 
 export const tz = () => state.today?.timezone || 'Europe/Malta';
 

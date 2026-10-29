@@ -1,5 +1,5 @@
 // Today's overview: the ring hero and the small charts under it. Each tile opens the page with the
-// detail; the day's own lists follow below them (app.js). Plain strings, drawn on every redraw, so
+// detail; the day's own lists follow below them (today-list.js). Plain strings, drawn on every redraw, so
 // anything that moves remembers where it was and never replays on a redraw.
 import { state, esc, api, icon, num, reduced, addDays, rings, RING_MS, ringEase, ringFx, fmtInt, fmtDay, fmtHours, daysBetween, miniRing, safeColor, redrawIfIdle } from './ui.js';
 import { NUTRIENT, refOf, drinksRef } from './nutrition.js';
@@ -272,7 +272,7 @@ const dayLetter = (date) => fmtDay(date, { weekday: 'narrow' });
 // ---------- Tiles ----------
 
 // What is left of today on the calendar: events still on or ahead, and the deadlines among them.
-// rows come from the schedule (app.js), already in time order.
+// rows come from the schedule (today-list.js), already in time order.
 export function nextTile(rows, allDay, now) {
   const ahead = rows.filter((r) => !r.past);
   const shown = ahead.slice(0, 3);

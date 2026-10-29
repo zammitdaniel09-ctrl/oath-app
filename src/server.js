@@ -41,7 +41,7 @@ import { conditionalGet, publicFile } from './static.js';
 
 const PUBLIC = './public';
 // The version of the web app being served: the service worker's cache name. Every reply carries it and
-// /version answers it alone, so an open copy of the app can tell when it is behind (app.js).
+// /version answers it alone, so an open copy of the app can tell when it is behind (update.js).
 const LIVE_BUILD = (() => {
   try {
     return readFileSync(`${PUBLIC}/sw.js`, 'utf8').match(/oath-v\d+/)?.[0] || '';

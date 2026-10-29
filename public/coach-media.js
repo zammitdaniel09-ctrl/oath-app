@@ -1,6 +1,6 @@
 // Photos and voice notes in the coach chat. A photo (camera or library) waits above the composer and
 // uploads the moment it is picked, so Send is quick; a voice note records in the composer and uploads
-// when he taps send, coming back transcribed. Played back here too. The chat itself is in app.js: this
+// when he taps send, coming back transcribed. Played back here too. The chat itself is in coach.js: this
 // module draws its pieces and hands finished messages to ctx.send.
 import { $app, state, esc, api, toast, icon, haptic } from './ui.js';
 import { shrink } from './food.js';
