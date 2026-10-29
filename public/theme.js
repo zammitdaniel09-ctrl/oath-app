@@ -22,9 +22,9 @@ export const THEMES = [
     p: { bg: '#f3eee4', card: '#fbf8f2', text: '#1b1712', sub: '#7a7064', a: '#7b1e1e', b: '#1b1712', c: '#b08a3e', font: "'Iowan Old Style', 'Palatino', ui-serif, Georgia, serif", r: '2px' },
   },
   {
-    id: 'tape', name: 'Tape', line: 'Reading the tape', note: 'A trading terminal: amber phosphor on black, square corners, every number in mono.',
-    color: '#050505', light: false,
-    p: { bg: '#050505', card: '#0d0b07', text: '#ffb000', sub: '#8a6a2a', a: '#ffb000', b: '#26d07c', c: '#ff4d4d', font: "'Geist Mono', ui-monospace, monospace", r: '0px' },
+    id: 'tape', name: 'Tape', line: 'Dot-matrix dashboard', note: 'Charcoal tiles on a warm peach ground, figures in dots and one orange-red signal.',
+    color: '#f2bc95', light: true,
+    p: { bg: '#eeb08a', card: '#1e1d1c', text: '#fffaf5', sub: '#5a4337', a: '#ff3b1f', b: '#ffffff', c: '#a39c94', font: "'Oath Dot', 'Geist Mono', ui-monospace, monospace", r: '12px', fx: 'tape' },
   },
   {
     id: 'sovereign', name: 'Sovereign', line: 'Black lacquer, gold leaf', note: 'Lacquered black and hand-laid gold, Didone capitals and deco rules.',
