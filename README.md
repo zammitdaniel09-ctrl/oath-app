@@ -52,11 +52,15 @@ Face ID login uses passkeys, which belong to the app's address (`PUBLIC_HOST`, e
 - `src/engine.js`: HP, misses, deaths, pardons, rule changes, the tick
 - `src/state.js`: read models for the screens and the coach's snapshot
 - `src/coach.js`: Claude chat with tools, morning brief and evening check
-- `src/food.js`, `src/food-seed.js`, `src/food-photo.js`, `src/off.js`: the food diary, catalogue seeding, photo reading and Open Food Facts
+- `src/food.js`, `src/food-recipes.js`, `src/food-history.js`, `src/food-seed.js`, `src/food-photo.js`, `src/off.js`: the food diary, meals and recipes, the Trends history, catalogue seeding, photo reading and Open Food Facts
+- `src/calendar.js`, `src/ics.js`, `src/calendar-fetch.js`: feeds and events, the iCalendar parser, safe fetching
+- `src/health.js`, `src/health-parse.js`: Apple Health storage and reads, and the export formats
 - `public/nutrition.js`: the food maths, shared by the app and the server
 - `src/loop.js`: the 30-second loop, reminders and scheduled briefs
 - `src/push.js`: Web Push
-- `public/`: the web app (no build step)
+- `public/`: the web app (no build step). `app.js` is the shell, routing and boot; each page is a module with `initX(ctx)` and its own view, click and submit functions (`today-list.js`, `plan.js`, `coach.js`, `food.js` and its `food-*.js` parts, and so on). Stylesheets are cut per page and linked in `index.html` in cascade order: a new one goes where its rules belong in that order.
+
+**Refactor first.** Before any big launch or update, split files over about 1,000 lines or mixing unrelated parts, and remove dead code, in a commit that changes no behaviour (same tests, same screenshots). Then do the work. Each piece of work should fit in a small context. The last pass is in `docs/audit-2026-10-29.md`.
 
 ## Tests
 
