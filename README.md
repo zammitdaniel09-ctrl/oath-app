@@ -58,11 +58,10 @@ Face ID login uses passkeys, which belong to the app's address (`PUBLIC_HOST`, e
 - `public/nutrition.js`: the food maths, shared by the app and the server
 - `src/loop.js`: the 30-second loop, reminders and scheduled briefs
 - `src/push.js`: Web Push
-- `public/`: the web app (no build step). `app.js` is the shell, routing and boot; each page is a module with `initX(ctx)` and its own view, click and submit functions (`today-list.js`, `plan.js`, `coach.js`, `food.js` and its `food-*.js` parts, and so on). Stylesheets are cut per page and linked in `index.html` in cascade order: a new one goes where its rules belong in that order.
-
+- `public/`: the web app (no build step). `app.js` is the shell, routing and boot; each page is a module with `initX(ctx)` and its own view, click and submit functions (`today-list.js`, `plan.js`, `coach.js`, `food.js` and its `food-*.js` parts, and so on). `motion.js` decides what moves; sheets, row swipes and pull to refresh are in `motion-sheets.js` and `motion-touch.js`, built from `motion-core.js`. Stylesheets are cut per page and linked in `index.html` in cascade order: a new one goes where its rules belong in that order.
 - Themes: `public/theme.js` holds the list, switches and saves the choice (the `theme` setting, so every device follows). Each theme is one stylesheet, `public/themes/<id>.css`, with every selector under `:root[data-theme="<id>"]`, loaded only while chosen, plus its icons in `public/icons/themes/<id>/` and `public/themes/<id>.webmanifest`. A new theme needs those files, an entry in `THEMES` and its id in `src/settings.js`.
 
-**Refactor first.** Before any big launch or update, split files over about 1,000 lines or mixing unrelated parts, and remove dead code, in a commit that changes no behaviour (same tests, same screenshots). Then do the work. Each piece of work should fit in a small context. The last pass is in `docs/audit-2026-10-29.md`.
+**Refactor first.** Before any big launch or update, refactor first, in its own commit that changes no behaviour: split every file over about 1,000 lines or mixing unrelated parts, and remove dead code and copies. The same tests must pass and the screenshots must match. Only then start the work. This keeps every piece small enough to work on without excessive context. The passes so far are in `docs/audit-2026-10-29.md`.
 
 ## Tests
 

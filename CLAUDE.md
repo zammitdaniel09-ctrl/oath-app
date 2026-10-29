@@ -4,9 +4,12 @@ Oath is the owner's personal habit, task, food and health PWA. Replies to him ar
 
 ## Refactor first
 
-Before any big launch or update, split files over about 1,000 lines or mixing unrelated parts, and
-remove dead code, in a commit that changes no behaviour (same tests, same screenshots against `main`).
-Then do the work, so each piece fits in a small context. The last audit is `docs/audit-2026-10-29.md`.
+Before any big launch or update, refactor first, to avoid excessive context: in its own commit that
+changes no behaviour, split every file over about 1,000 lines or mixing unrelated parts, and remove dead
+code and copies. The same tests must pass and the screenshots must match the branch before it. Only then
+start the work, so each piece fits in a small context. Write what the audit found and did in
+`docs/audit-2026-10-29.md` (the passes so far). The tools are in `../tools/refactor-kit/` (`deadcode.cjs`,
+`links.cjs`, `xref.cjs`, `split.cjs`, `prune.cjs`, `cssmove.cjs`, `compare.cjs`).
 
 - Front end: a page is a module with `initX(ctx)` and exported view, click and submit functions
   (see `public/plan.js`, `public/today-list.js`). `app.js` keeps the shell, routing and boot.
