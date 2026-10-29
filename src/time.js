@@ -11,10 +11,6 @@ export function nowUTC() {
   return override ? override() : DateTime.utc();
 }
 
-export function nowIn(zone) {
-  return nowUTC().setZone(zone);
-}
-
 export function isoDate(dt) {
   return dt.toISODate();
 }

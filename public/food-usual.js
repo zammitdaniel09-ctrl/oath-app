@@ -2,7 +2,7 @@
 // usually has at this time, at his usual amount), one-tap water, copy or add per meal, Repeat yesterday, and swipe an
 // entry to remove it. Every log goes through the offline queue with an id made here, so a tap lands
 // once, and each one can be undone.
-import { $app, state, esc, api, act, toast, icon, haptic, localToday, num, fmtDay, addDays } from './ui.js';
+import { $app, state, esc, api, act, toast, icon, haptic, localToday, num, fmtDay, addDays, cap } from './ui.js';
 import { norm, line, round } from './nutrition.js';
 import * as N from './nutrition.js';
 
@@ -13,7 +13,6 @@ const CACHE = 'oath.foodUsual';
 // A cached set of chips is offered for two hours at most: after that the time of day has moved on.
 const FRESH = 2 * 3600e3;
 const fmt = (v) => new Intl.NumberFormat('en-GB', { maximumFractionDigits: 0 }).format(Math.round(v));
-const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
 // ---------- "Usually now" ----------
 

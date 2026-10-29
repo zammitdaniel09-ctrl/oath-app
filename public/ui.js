@@ -38,6 +38,18 @@ export const hooks = { onUnauthed: () => {}, busy: () => false, idle: () => {}, 
 
 export const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 export const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
+export const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+export const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+export const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`);
+// Phone storage that never throws: private browsing or a full disk reads as nothing saved.
+export const store = {
+  get(key, fallback) {
+    try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; }
+  },
+  set(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage unavailable */ }
+  },
+};
 
 export const esc =(s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 

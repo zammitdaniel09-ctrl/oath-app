@@ -2,11 +2,10 @@
 // and a small tile on the diary. The numbers come from /api/food/energy (src/food-energy.js): energy
 // eaten on fully logged days, less what the weight trend says was stored, blended with the formula by
 // how sure it is. Every figure says what it rests on; a day left out is drawn faded, never as zero.
-import { state, esc, api, act, toast, icon, num, fmtDay, haptic } from './ui.js';
+import { state, esc, api, act, toast, icon, num, fmtDay, haptic, plural } from './ui.js';
 
 const F = () => state.food || (state.food = { date: null });
 const fmt = (v, dec = 0) => (num(v) === null ? '–' : new Intl.NumberFormat('en-GB', { minimumFractionDigits: dec, maximumFractionDigits: dec }).format(v));
-const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 const dayMonth = (d) => fmtDay(d, { day: 'numeric', month: 'short' });
 let uid = 0;
 const nextId = (p) => `${p}${(uid += 1)}`;

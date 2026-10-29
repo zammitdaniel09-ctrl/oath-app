@@ -4,7 +4,7 @@
 // "–" is a value nobody has sourced, "+" a total missing some lines, "~" a value filled by estimate.
 import {
   $app, state, esc, api, act, toast, fmtDay, icon, pageHead, haptic, localToday, localNowHM, form2obj,
-  reduced, num, shortDay, confirmSheet, redrawIfIdle,
+  reduced, num, shortDay, confirmSheet, redrawIfIdle, uuid, store, cap,
 } from './ui.js';
 import { NUTRIENT, NUTRIENTS, line, total, scale, show, unitsFor, round, amountText, norm } from './nutrition.js';
 // Grades and tags come from the shared maths when it has them.
@@ -52,20 +52,10 @@ const BUILDERS = {
 
 const f = () => state.food || (state.food = { date: null });
 const enc = encodeURIComponent;
-const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`);
 const kcal = (n) => show(n, 'kcal');
-const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
 // ---------- Phone storage: the offline queue and the last copies of what the tray needs ----------
 
-const store = {
-  get(key, fallback) {
-    try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; }
-  },
-  set(key, value) {
-    try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage unavailable */ }
-  },
-};
 const QUEUE = 'oath.foodQueue';
 const queue = () => store.get(QUEUE, []);
 

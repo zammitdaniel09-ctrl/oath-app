@@ -90,8 +90,6 @@ function lockedOut(ip, known = false) {
   return null;
 }
 
-export const loginLocked = (ip = 'unknown') => lockedOut(ip) !== null;
-
 function recordFailure(ip) {
   const now = clock();
   allFailures.push(now);

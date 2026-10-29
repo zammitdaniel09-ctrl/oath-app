@@ -60,13 +60,3 @@ export function weekStakes(habits, weekStart, tz) {
     stake: habits.filter((h) => isScheduled(h, date, tz)).reduce((n, h) => n + rulesOn(h, date).penalty, 0),
   }));
 }
-
-// The scheduled day before this one, for "never miss twice".
-export function previousOccurrence(habit, date, tz, rest = null) {
-  let d = addDays(date, -1, tz);
-  for (let i = 0; i < 28 && d >= habit.start_date; i += 1) {
-    if (isScheduled(habit, d, tz, rest)) return d;
-    d = addDays(d, -1, tz);
-  }
-  return null;
-}

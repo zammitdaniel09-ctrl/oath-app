@@ -57,7 +57,6 @@
   --c-hp: var(--merlot);
   --c-day: var(--menthol);
   --c-move: var(--blaze);
-  --c-sleep: var(--cherry);
   /* Today's rings: a deep start (0), a bright head (1), a dark track (t) and a glow (g) each. Merlot is
      HP; Chrome is the day, turning Menthol once everything due is done; Sky is movement. Fuel: Honey
      for energy, the Food page's teal for protein, Lime for fibre. */
@@ -73,7 +72,6 @@
   --cv-hp: #e8180a;
   --cv-kcal: #e88a0c;
   --cv-move: #2f8af2;
-  --cv-sleep: var(--c-sleep);
   /* Urgency: the current item's colour, set per element by class. */
   --urg: var(--chrome-c);
 
@@ -1055,7 +1053,6 @@ button.tchip:active, a.tchip:active { transform: scale(0.96); transition: backgr
 .oc-axis .cur { color: var(--text); font-weight: 600; }
 .c-kcal { --oc: var(--cv-kcal); }
 .c-move { --oc: var(--cv-move); }
-.c-sleep { --oc: var(--cv-sleep); }
 
 /* HP: a line on a fixed 0 to 100 scale, a wash under it and a lit dot on now. */
 .ov-spark { position: relative; height: 48px; margin-top: 8px; }
@@ -1617,7 +1614,6 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .dtile.c-move .dtile-ring { color: var(--c-move); }
 .dtile.c-day .dtile-ring { color: var(--c-day); }
 .dtile.c-hp .dtile-ring { color: var(--c-hp); }
-.dtile.c-sleep .dtile-ring { color: var(--c-sleep); }
 .dtile > div:last-child { min-width: 0; }
 .dtile-label { display: flex; align-items: center; gap: 6px; font-size: 0.8125rem; color: var(--text-2); }
 .dtile-label .ic { width: 15px; height: 15px; }
@@ -1633,7 +1629,6 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .bchart svg { display: block; width: 100%; overflow: visible; }
 .bchart .bc-bar { fill: var(--c-move); opacity: 0.5; }
 .bchart .bc-bar.met { opacity: 1; }
-.bchart.c-sleep .bc-bar, .bchart.c-sleep .bc-zero { fill: var(--c-sleep); }
 .bchart .bc-zero { fill: var(--c-move); }
 .bchart .bc-empty { fill: none; stroke: var(--text-3); stroke-width: 1; stroke-dasharray: 2 2; vector-effect: non-scaling-stroke; }
 .bchart .bc-goal { stroke: var(--text-3); stroke-width: 1; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; }
@@ -1644,16 +1639,6 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .bc-axis { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.6875rem; color: var(--text-3); }
 .bc-axis span { flex: 1; text-align: center; min-width: 0; }
 .bc-axis span.last { color: var(--text); font-weight: 750; text-decoration: underline; text-underline-offset: 3px; }
-.stages { display: flex; gap: 2px; height: 12px; margin-top: 8px; border-radius: 6px; overflow: hidden; }
-.stages i { display: block; min-width: 2px; }
-.st-deep { background: #b3123b; color: #ff7d97; }
-.st-core { background: var(--c-sleep); color: var(--c-sleep); }
-.st-rem { background: var(--menthol); color: var(--menthol); }
-.st-awake { background: var(--amber); color: var(--amber); }
-.stages-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 0.8125rem; }
-.stages-legend span { display: inline-flex; align-items: center; gap: 6px; background: none; font-weight: 600; }
-.stages-legend span::before { content: ''; width: 9px; height: 9px; border-radius: 3px; background: currentColor; }
-.stages-label { margin-top: 14px; font-size: 0.8125rem; color: var(--text-2); }
 .body-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 10px; }
 .body-tile { display: grid; gap: 3px; padding: var(--pad-sm); border-radius: var(--r-tile); background: var(--card); box-shadow: var(--rim); min-width: 0; }
 .body-val { font-size: 1.375rem; font-weight: 720; letter-spacing: -0.015em; }

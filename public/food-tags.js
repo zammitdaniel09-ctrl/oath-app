@@ -935,9 +935,3 @@ export function foodTags(item) {
 // Just the keys, without the diary's habits: what the server stores on a catalogue record.
 export const tagKeys = (item) => foodTags({ ...item, habits: null }).map((t) => t.key);
 
-// Tags grouped for a screen: [{ key, label, tags: [...] }] in the catalogue's group order.
-export function groupTags(tags) {
-  const by = new Map(TAG_GROUPS.map((g) => [g.key, { ...g, tags: [] }]));
-  for (const t of tags || []) by.get(t.group || TAG[t.key]?.group)?.tags.push(t);
-  return [...by.values()].filter((g) => g.tags.length);
-}

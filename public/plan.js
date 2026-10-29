@@ -1,7 +1,7 @@
 // Plan: the week at a glance, habits grouped with their strength, today's state and the last two weeks,
 // tasks by when they fall due with a check to tick them off, and rest days. Plain strings, drawn on every
 // redraw; a habit opened for its details stays open (this phone remembers it).
-import { state, esc, icon, fmtDay, fmtMin, fmtInt, addDays, daysBetween, scheduleText, miniRing, CHECK, localNowHM } from './ui.js';
+import { state, esc, icon, fmtDay, fmtMin, fmtInt, addDays, daysBetween, scheduleText, miniRing, CHECK, localNowHM, plural } from './ui.js';
 import { AUTO_LABELS } from './data.js';
 
 let ctx = { heatmap: () => '', quickAdd: () => '' };
@@ -13,7 +13,6 @@ const DONE = new Set(['kept', 'min', 'pardoned']);
 const JUDGED = new Set(['kept', 'min', 'pardoned', 'missed', 'open', 'none']);
 const level = (s) => (s >= 80 ? 'strong' : s >= 40 ? 'mid' : 'new');
 const sum = (list, f) => list.reduce((n, x) => n + (f(x) || 0), 0);
-const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 const chip = (cls, ic, text) => `<span class="pl-chip ${cls}">${ic ? icon(ic) : ''}${text}</span>`;
 const timesAWeek = (n) => (n === 1 ? 'Once a week' : `${n} times a week`);
 

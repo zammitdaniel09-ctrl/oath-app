@@ -2,7 +2,7 @@
 // today's gaps against his needs, his own foods at his usual amount and a few common foods with
 // sourced portions. Here they are drawn, logged in one tap through the diary's offline queue with an
 // Undo, and opened in the food sheet to change the amount.
-import { state, esc, api, act, toast, icon, num, localToday } from './ui.js';
+import { state, esc, api, act, toast, icon, num, localToday, uuid, store } from './ui.js';
 import { NUTRIENT, round } from './nutrition.js';
 
 // The diary's own helpers (openSheet, foodPost, afterLog ...), handed over by food.js at start.
@@ -13,15 +13,6 @@ export function initNext(deps) {
 
 const f = () => state.food || (state.food = { date: null });
 const enc = encodeURIComponent;
-const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`);
-const store = {
-  get(key, fallback) {
-    try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; }
-  },
-  set(key, value) {
-    try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage unavailable */ }
-  },
-};
 const CACHE = 'oath.foodNext';
 const UNDO_MS = 10000;
 // The card waits for the day to start: something logged, or late morning.

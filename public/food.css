@@ -1231,8 +1231,6 @@ html.scan-open, html.scan-open body { overflow: hidden; }
 .swipe-bg.remove.armed { color: #fff; }
 
 @media (max-width: 360px) {
-  .fleft-row { grid-template-columns: 50px minmax(28px, 1fr) auto; gap: 8px; }
-  .fleft-row.part .fleft-v { white-space: normal; max-width: 128px; line-height: 1.25; }
   .fwater-btn { padding: 0 10px; }
   .fu { max-width: 214px; }
 }

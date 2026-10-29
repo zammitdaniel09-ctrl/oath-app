@@ -1512,7 +1512,6 @@ const hhmm = (x) => {
   }
   return `${String(h).padStart(2, '0')}:${m[2] || '00'}`;
 };
-const minutesOf = (hm) => Number(hm.slice(0, 2)) * 60 + Number(hm.slice(3));
 const notesText = (x) => String(x ?? '').replace(/\r\n?/g, '\n').trim().slice(0, 1000);
 
 // A stored event as the local date and times it was entered with.

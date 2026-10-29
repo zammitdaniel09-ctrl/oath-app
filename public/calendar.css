@@ -307,9 +307,6 @@
 .cal-sub .sheet-actions + .field { margin-top: 18px; }
 .cal-sub .field + .sheet-actions { margin-top: 14px; }
 
-/* The Dashboard's calendar header: the way into this page next to Sync now. */
-.gh-links { display: inline-flex; align-items: baseline; gap: 18px; }
-
 @media (prefers-reduced-motion: reduce) {
   .cal-wd b, .cal-num, .cal-ev { transition: none; }
 }

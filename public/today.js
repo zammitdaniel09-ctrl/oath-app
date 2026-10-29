@@ -1,7 +1,7 @@
 // Today's overview: the ring hero and the small charts under it. Each tile opens the page with the
 // detail; the day's own lists follow below them (app.js). Plain strings, drawn on every redraw, so
 // anything that moves remembers where it was and never replays on a redraw.
-import { state, esc, api, icon, rings, RING_MS, ringEase, ringFx, fmtInt, fmtDay, fmtHours, daysBetween, miniRing, safeColor, redrawIfIdle } from './ui.js';
+import { state, esc, api, icon, num, reduced, addDays, rings, RING_MS, ringEase, ringFx, fmtInt, fmtDay, fmtHours, daysBetween, miniRing, safeColor, redrawIfIdle } from './ui.js';
 import { NUTRIENT, refOf, drinksRef } from './nutrition.js';
 
 let ctx = { render: () => {} };
@@ -9,8 +9,6 @@ export function initToday(c) {
   ctx = { ...ctx, ...c };
 }
 
-const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
 // One formatter per number of decimals, kept: counts format every frame.
 const formats = new Map();
 const fmtN = (v, d = 0) => {
@@ -18,11 +16,6 @@ const fmtN = (v, d = 0) => {
   return formats.get(d).format(v);
 };
 const compact = (v) => (v >= 1000 ? `${fmtN(v / 1000, v % 1000 ? 1 : 0)}k` : fmtN(v));
-const addDay = (date, n) => {
-  const d = new Date(`${date}T12:00:00Z`);
-  d.setUTCDate(d.getUTCDate() + n);
-  return d.toISOString().slice(0, 10);
-};
 
 // Fibre has no EU reference intake; 25 g is EFSA's adequate intake for adults, shown as a reference.
 const FIBRE_REF = 25;
@@ -323,7 +316,7 @@ function foodTile(food) {
 // Energy over the last seven days, today live, against the average of the days before it. A day the
 // history has not brought yet is a gap like a day with nothing logged.
 function energyTile(t, food, hist) {
-  const dates = Array.from({ length: 7 }, (_, i) => addDay(t.today, i - 6));
+  const dates = Array.from({ length: 7 }, (_, i) => addDays(t.today, i - 6));
   const byDate = new Map((hist?.series || []).map((d) => [d.date, d]));
   const today = food?.entries?.length ? num(food.total?.kcal) : null;
   const values = dates.map((d) => (d === t.today ? today : num(byDate.get(d)?.kcal)));
@@ -356,10 +349,10 @@ function hpTile(t) {
 function weekTile(t) {
   const byDate = new Map((t.recentDays || []).map((d) => [d.date, d]));
   const dow = (new Date(`${t.today}T12:00:00Z`).getUTCDay() + 6) % 7;
-  const start = addDay(t.today, -dow);
+  const start = addDays(t.today, -dow);
   const p = t.progress;
   const cells = Array.from({ length: 7 }, (_, i) => {
-    const date = addDay(start, i);
+    const date = addDays(start, i);
     if (date > t.today) return { date, s: 'future', label: 'To come' };
     if (date === t.today) {
       if (t.rest) return { date, s: 'rest today', label: 'Rest day' };
