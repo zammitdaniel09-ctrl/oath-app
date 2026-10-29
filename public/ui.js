@@ -516,14 +516,14 @@ let markCount = 0;
 export function brandMark(size = 32, cls = '') {
   markCount += 1;
   const g = `bm${markCount}`;
-  // R 21, stroke 10.5, a 2.4 gap and a 5.6 step.
-  const half = (side, stroke, r = 21, w = 10.5, extra = '') => `<g clip-path="url(#${g}${side})" transform="translate(0 ${side === 'L' ? 2.8 : -2.8})"><circle cx="32" cy="32" r="${r}" fill="none" stroke="${stroke}" stroke-width="${w}"${extra}/></g>`;
+  // R 21, stroke 10.5, a 2.4 gap and a 5.6 step. Its colours are --mark-* variables a theme can set.
+  const half = (side, stroke, r = 21, w = 10.5, extra = '') => `<g clip-path="url(#${g}${side})" transform="translate(0 ${side === 'L' ? 2.8 : -2.8})"><circle cx="32" cy="32" r="${r}" fill="none" style="stroke:${stroke}" stroke-width="${w}"${extra}/></g>`;
   return `<svg class="mark${cls ? ` ${cls}` : ''}" width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true">
     <defs><clipPath id="${g}L"><rect width="30.8" height="64"/></clipPath><clipPath id="${g}R"><rect x="33.2" width="30.8" height="64"/></clipPath>
-    <linearGradient id="${g}c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#ffffff"/><stop offset="0.32" style="stop-color:#e7eaef"/><stop offset="0.5" style="stop-color:#aeb4bf"/><stop offset="0.57" style="stop-color:#7b8290"/><stop offset="0.76" style="stop-color:#abb1bc"/><stop offset="1" style="stop-color:#d2d6dd"/></linearGradient>
-    <linearGradient id="${g}m" gradientUnits="userSpaceOnUse" x1="34" y1="6" x2="57" y2="58"><stop offset="0" style="stop-color:#ff5a3f"/><stop offset="0.36" style="stop-color:#ee1004"/><stop offset="0.72" style="stop-color:#c30500"/><stop offset="1" style="stop-color:#7f0300"/></linearGradient></defs>
+    <linearGradient id="${g}c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--mark-c1, #ffffff)"/><stop offset="0.32" style="stop-color:var(--mark-c2, #e7eaef)"/><stop offset="0.5" style="stop-color:var(--mark-c3, #aeb4bf)"/><stop offset="0.57" style="stop-color:var(--mark-c4, #7b8290)"/><stop offset="0.76" style="stop-color:var(--mark-c5, #abb1bc)"/><stop offset="1" style="stop-color:var(--mark-c6, #d2d6dd)"/></linearGradient>
+    <linearGradient id="${g}m" gradientUnits="userSpaceOnUse" x1="34" y1="6" x2="57" y2="58"><stop offset="0" style="stop-color:var(--mark-m1, #ff5a3f)"/><stop offset="0.36" style="stop-color:var(--mark-m2, #ee1004)"/><stop offset="0.72" style="stop-color:var(--mark-m3, #c30500)"/><stop offset="1" style="stop-color:var(--mark-m4, #7f0300)"/></linearGradient></defs>
     ${half('L', `url(#${g}c)`)}${half('R', `url(#${g}m)`)}
-    ${half('L', '#fff', 25.75, 1, ' stroke-opacity="0.5"')}${half('R', '#ffb8a8', 25.75, 1, ' stroke-opacity="0.55"')}
+    ${half('L', 'var(--mark-rim-l, #fff)', 25.75, 1, ' stroke-opacity="0.5"')}${half('R', 'var(--mark-rim-r, #ffb8a8)', 25.75, 1, ' stroke-opacity="0.55"')}
   </svg>`;
 }
 

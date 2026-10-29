@@ -10,6 +10,7 @@ import { setupRows } from './today-list.js';
 import { fresh, createOptions, credentialJSON, deviceName } from './passkeys.js';
 import { rememberLockMode, forgetMemory, renderLogin } from './lock.js';
 import { pushOn, refreshPushState, pushOff } from './push.js';
+import { themesSection, themeClick } from './theme.js';
 
 let ctx = { shell: () => {}, skeleton: () => {}, load: () => {}, render: () => {}, wipePhone: () => {}, go: () => {} };
 export function initSettings(c) {
@@ -239,6 +240,7 @@ export function viewSettings() {
       ${src('Coverage report', 'What the catalogue holds', '', '#/food/report')}
     </div>`, 'data-sources');
   ctx.shell(`${pageHead('Settings')}
+    ${themesSection()}
     <div class="split"><div>
       ${bodyCard()}
       ${connections}
@@ -310,6 +312,10 @@ function faceIdCard() {
 }
 
 export async function settingsClick(a, el) {
+  if (await themeClick(a, el)) {
+    ctx.render();
+    return true;
+  }
   if (a === 'body-energy') {
     const to = el.dataset.value;
     if (to === (state.body?.body?.energyFrom || 'auto')) return true;

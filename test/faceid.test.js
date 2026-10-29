@@ -269,6 +269,17 @@ test('turning the lock off makes the password work alone and stops locking', asy
   assert.equal((await call('PATCH', '/api/settings', { faceIdLock: true })).status, 200);
 });
 
+test('a theme is saved with the settings, comes back with the day, and an unknown one is refused', async () => {
+  assert.equal((await call('GET', '/api/settings')).data.theme, 'oath', 'the original look by default');
+  const r = await call('PATCH', '/api/settings', { theme: 'atelier' });
+  assert.equal(r.status, 200);
+  assert.equal(r.data.theme, 'atelier');
+  assert.equal((await call('GET', '/api/today')).data.settings.theme, 'atelier', 'other devices follow it');
+  assert.equal((await call('PATCH', '/api/settings', { theme: 'neon' })).status, 400);
+  assert.equal((await call('GET', '/api/settings')).data.theme, 'atelier');
+  assert.equal((await call('PATCH', '/api/settings', { theme: 'oath' })).status, 200);
+});
+
 test('removing the last passkey ends Face ID only, so the password works alone again', async () => {
   const [key] = (await call('GET', '/api/passkeys')).data.passkeys;
   assert.equal((await call('DELETE', `/api/passkeys/${encodeURIComponent(key.id)}`)).status, 200);

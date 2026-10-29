@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="oath">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -31,6 +31,21 @@
   <link rel="stylesheet" href="/food-chat.css">
   <link rel="stylesheet" href="/calendar.css">
   <link rel="stylesheet" href="/plan.css">
+  <script>
+    // The saved theme before the first paint (theme.js switches and saves): its stylesheet, colours and icons.
+    try {
+      var t = JSON.parse(localStorage.getItem('oath.theme') || 'null'), d = document;
+      if (t && /^[a-z]+$/.test(t.id) && t.id !== 'oath') {
+        d.documentElement.setAttribute('data-theme', t.id);
+        d.write('<link rel="stylesheet" id="theme-css" href="/themes/' + t.id + '.css">');
+        if (/^#[0-9a-f]{6}$/i.test(t.color)) d.querySelector('meta[name="theme-color"]').content = t.color;
+        if (t.light) d.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').content = 'default';
+        d.querySelector('link[rel="icon"]').href = '/icons/themes/' + t.id + '/favicon.png';
+        d.querySelector('link[rel="apple-touch-icon"]').href = '/icons/themes/' + t.id + '/apple-touch-icon.png';
+        d.querySelector('link[rel="manifest"]').href = '/themes/' + t.id + '.webmanifest';
+      }
+    } catch (e) { /* no saved theme */ }
+  </script>
 </head>
 <body>
   <div id="app" class="shell"></div>
