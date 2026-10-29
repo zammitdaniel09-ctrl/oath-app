@@ -17,6 +17,12 @@ Then do the work, so each piece fits in a small context. The last audit is `docs
 - When moving code, carry its default imports too: Node's global `crypto` hides a missing
   `import crypto from 'node:crypto'` until `randomBytes` or `createHash` is called.
 
+## Themes
+
+- `public/theme.js` lists the themes and switches them; `index.html` applies the saved one before the first paint. A theme is `public/themes/<id>.css` (every selector under `:root[data-theme="<id>"]`, about 45 KB at most, only transform and opacity animate, at most one fixed background layer), `public/icons/themes/<id>/` and `public/themes/<id>.webmanifest`; its id also goes in `src/settings.js`.
+- When base code needs a colour a theme must change, give it a variable with the old value as fallback (as `--mark-*` in `brandMark` and `--hp-area-*` in `review.js`), never a hard-coded colour in an inline style.
+- A change to a shared component is seen in five looks: shoot it in each theme before calling it done.
+
 ## Rules
 
 - The repository is public. Never commit personal data: body stats, birth date, emails, tokens,
@@ -42,8 +48,8 @@ Then do the work, so each piece fits in a small context. The last audit is `docs
 - `npm test` runs on embedded Postgres. After any `npm install`, run
   `npm i --no-save embedded-postgres@18.4.0-beta.17` again (npm prunes it).
 - Set `OATH_PORT_SHIFT` (2500 by default) so parallel checkouts and a running preview do not share
-  ports. A preview on 4600 clashes with shift 2500 (the mail test's server lands on 4600): stop it or
-  use another shift. A crashed run on Windows can leave a port listening with no process behind it;
+  ports. Stop any preview on 4600 before the suite: test servers land on it at some shifts (2500, 3300) and the clash
+  crashes test files and strands ports. A crashed run on Windows can leave a port listening with no process behind it;
   pick another shift rather than killing anything.
 - `test/business.test.js` "refresh asks every site at once" can fail under load and passes alone.
 - Preview: copy `../tools/preview-merged.mjs` into the repo as `preview-tmp.mjs` (never commit it, delete
