@@ -1,0 +1,45 @@
+/* Review: the stats and tables it shares with the recipe coverage report, the season card (HP over 30 days)
+   and the longest streaks. After coach.css. */
+
+/* ---------- Stats and tables ---------- */
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); gap: 10px; margin-top: 12px; }
+.stats.four { grid-template-columns: repeat(auto-fit, minmax(min(100%, 136px), 1fr)); }
+.stat { display: grid; align-content: start; gap: 4px; min-width: 0; padding: var(--pad-sm); border-radius: var(--r-tile); background: var(--card); box-shadow: var(--rim); }
+.card .stat { background: var(--inset); box-shadow: inset 0 0 0 1px var(--line-soft); }
+.stat b { display: block; font-weight: 720; font-size: 1.625rem; line-height: 1.1; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.stats.four .stat b { font-size: 1.375rem; }
+.stat span { font-size: 0.8125rem; color: var(--text-2); line-height: 1.35; }
+.review .plan-text { margin: 0 0 16px; padding: 0; }
+.review h3 { margin-top: 22px; }
+.review-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.review-row > div:first-child { flex: 1 1 240px; min-width: 0; display: grid; gap: 3px; }
+.review-row .seg { margin-top: 0; flex: none; }
+.table-wrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.table th { text-align: left; font-weight: 560; font-size: 0.8125rem; color: var(--text-2); padding: 10px 16px; }
+.table td { padding: 11px 16px; border-top: 1px solid var(--line-soft); }
+.table td.num, .table th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* ---------- The season at the top, HP over 30 days and the longest streaks ---------- */
+
+.season-card { padding: var(--pad); background: radial-gradient(100% 80% at 100% 0%, rgba(225, 6, 0, 0.12), transparent 60%), var(--card); }
+.season-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px 24px; }
+.season-hp { display: grid; line-height: 1; }
+.season-hp b { font-size: 3.25rem; font-weight: 780; letter-spacing: -0.045em; color: var(--text); }
+.season-card.low .season-hp b { color: var(--merlot-hi); }
+.season-hp span { margin-top: 6px; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--merlot-hi); }
+.season-stats { display: grid; gap: 4px; margin: 0; font-size: 0.875rem; color: var(--text-2); }
+.season-stats > div { display: flex; gap: 8px; }
+.season-stats dt { min-width: 74px; color: var(--text-3); }
+.season-stats dd { margin: 0; }
+.season-stats b { color: var(--text); font-weight: 700; }
+.hp-area { display: block; width: 100%; height: 96px; margin-top: 18px; overflow: visible; }
+.hp-line { fill: none; stroke: var(--merlot-hi); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: round; filter: drop-shadow(0 0 4px rgba(225, 6, 0, 0.7)); }
+.hp-death { stroke: var(--cherry); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+.season-sub { margin-top: 18px; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+.streaks { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+.streaks li { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto auto; align-items: center; gap: 10px; }
+.streaks .li-ic { color: var(--blaze); }
+.streak-name { min-width: 0; overflow-wrap: anywhere; font-weight: 580; }
+.streaks b { font-size: 1.25rem; font-weight: 760; color: var(--blaze); }
