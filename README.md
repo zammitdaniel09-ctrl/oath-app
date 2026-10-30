@@ -62,7 +62,7 @@ Face ID login uses passkeys, which belong to the app's address (`PUBLIC_HOST`, e
 - Themes: `public/theme.js` holds the list, switches and saves the choice (the `theme` setting, so every device follows). Each theme is one stylesheet, `public/themes/<id>.css`, with every selector under `:root[data-theme="<id>"]`, loaded only while chosen. A new theme needs that file, an entry in `THEMES` and its id in `src/settings.js`.
 - The app icon is one for every theme: `public/app-icon.js` draws it (moving on the login and lock screens and in Settings, `app-icon.css`), and the PNGs in `public/icons` are that drawing at rest, rendered by `../tools/themekit/render-app-icon.cjs`. Tape's dot-matrix face is built by `scripts/build-dot-font.mjs`.
 
-**Refactor first.** Before any big launch or update, refactor first, in its own commit that changes no behaviour: split every file over about 1,000 lines or mixing unrelated parts, and remove dead code and copies. The same tests must pass and the screenshots must match. Only then start the work. This keeps every piece small enough to work on without excessive context. The passes so far are in `docs/audit-2026-10-29.md`.
+**Refactor first.** Code is refactored before any big launch or update, to avoid excessive context. Audit the code, then, in a commit of its own that changes no behaviour, split every file over about 1,000 lines or mixing unrelated parts and remove dead code and copies: the same tests pass and the screenshots match. Only then does the launch or update start. Each pass is written up in `docs/audit-2026-10-29.md`.
 
 ## Tests
 
