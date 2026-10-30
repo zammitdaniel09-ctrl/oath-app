@@ -295,6 +295,9 @@
 :root[data-theme="liquid"] .now::before { height: 1px; background: linear-gradient(90deg, transparent, var(--urg) 30%, transparent 90%); box-shadow: 0 0 12px var(--urg); }
 :root[data-theme="liquid"] .now-left { background: var(--glass); box-shadow: var(--hair); }
 :root[data-theme="liquid"] .now[class*=" u-"]:not(.u-calm) .now-left { background: color-mix(in srgb, var(--urg) 10%, transparent); }
+/* The streak moment: smoke lit from inside, not Merlot. */
+:root[data-theme="liquid"] .glow-card { background: radial-gradient(70% 60% at 50% 42%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.07) 55%, transparent 80%), var(--card); }
+:root[data-theme="liquid"] .now.glow-card::before { content: none; }
 :root[data-theme="liquid"] .now-title { font-weight: 800; letter-spacing: -0.035em; }
 :root[data-theme="liquid"] .np-bar i { background: linear-gradient(90deg, #1a9a30, #4fe06a); box-shadow: 0 0 10px rgba(40, 200, 64, 0.5); }
 :root[data-theme="liquid"] .now.in-focus { --urg: #f5f5f7; background: var(--panel); }
@@ -322,7 +325,6 @@
 :root[data-theme="liquid"] :is(.ov-food, .ov-energy) { --ov-c: #c9c9d1; }
 :root[data-theme="liquid"] .oc-bar { fill: #26262b; }
 :root[data-theme="liquid"] .oc-bar.met { fill: color-mix(in oklab, var(--oc) 40%, #26262b); }
-:root[data-theme="liquid"] .sp-dot { background: #fff; box-shadow: 0 0 0 2px #0f0f11, 0 0 10px rgba(220, 226, 255, 0.85); }
 :root[data-theme="liquid"] .wk-day.kept .wk-dot { background: rgba(40, 200, 64, 0.12); box-shadow: inset 0 0 0 1.5px rgba(40, 200, 64, 0.55); }
 :root[data-theme="liquid"] :is(.wk-day.missed .wk-dot, .pl-day.missed .pl-dot) { background: rgba(255, 95, 87, 0.14); color: var(--red); box-shadow: inset 0 0 0 1.5px var(--red); }
 :root[data-theme="liquid"] :is(.brief-text, .plan-text) { color: #dcdce2; }
@@ -347,7 +349,7 @@
   :root[data-theme="liquid"] .confirm-sheet { padding-top: 40px; }
   :root[data-theme="liquid"] .confirm-sheet::before { top: 16px; left: 22px; }
 }
-:root[data-theme="liquid"] :is(.heat i.h-min, .heat-key i.h-min, .pl-strip i.h-min) { background: rgba(40, 200, 64, 0.45); }
+:root[data-theme="liquid"] :is(.heat i.h-min, .heat-key i.h-min, .pl-weeks i.h-min) { background: rgba(40, 200, 64, 0.45); }
 :root[data-theme="liquid"] :is(.heat i.h-none, .heat i.h-flex) { background: #1b1b1f; }
 
 /* ---------- The way in and the lock ---------- */

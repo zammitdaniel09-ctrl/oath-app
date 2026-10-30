@@ -1,7 +1,7 @@
 // Oath web app. Plain modules, no build step.
 import {
   $app, state, hooks, esc, api, toast, fmtDay, left, fmtMin, isIOS, localToday, localNowHM, icon, drawRings, pageHead,
-  rememberKey, urgency, URGENCY, brandMark, canRedraw, redrawIfIdle, reportProblem, TEXT_FIELDS,
+  rememberKey, urgency, URGENCY, brandMark, canRedraw, redrawIfIdle, reportProblem, TEXT_FIELDS, dayShare,
 } from './ui.js';
 import * as motion from './motion.js';
 import { parseCapture } from './parse.js';
@@ -514,6 +514,8 @@ setInterval(() => {
     el.classList.remove('soon', 'gone');
     if (l.cls) el.classList.add(l.cls);
   });
+  // Up next's gauge: its knob moves on towards the deadline.
+  document.querySelectorAll('[data-gauge-due]').forEach((el) => { el.style.setProperty('--v', dayShare(el.dataset.gaugeDue).toFixed(3)); });
   // Rows, Up next and the dock warm through Honey, Blaze and Ember as their deadlines near.
   document.querySelectorAll('[data-due]').forEach((el) => {
     const u = `u-${urgency(el.dataset.due)}`;

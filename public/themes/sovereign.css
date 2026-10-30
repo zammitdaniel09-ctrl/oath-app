@@ -262,16 +262,12 @@
 :root[data-theme="sovereign"] .oc-bar.met { fill: color-mix(in oklab, var(--oc) 55%, #dfe5fa); }
 :root[data-theme="sovereign"] :is(.oc-bar, .oc-none, .fc-bar, .fc-unk, .fd-bar, .gx) { rx: 0; ry: 0; }
 :root[data-theme="sovereign"] .oc-ref { stroke: var(--blue); stroke-dasharray: 2 3; }
-:root[data-theme="sovereign"] .sp-dot { background: var(--blue); box-shadow: 0 0 0 2px var(--card); border-radius: 0; }
-:root[data-theme="sovereign"] .sp-w0 { stop-opacity: 0.14; }
 :root[data-theme="sovereign"] :is(.wk-dot, .pl-dot) { border-radius: 2px; }
 :root[data-theme="sovereign"] .wk-day.clean .wk-dot, :root[data-theme="sovereign"] .pl-day.clean .pl-dot { background: var(--blue); color: #fff; box-shadow: none; }
 :root[data-theme="sovereign"] .wk-day.missed .wk-dot, :root[data-theme="sovereign"] .pl-day.missed .pl-dot { background: rgba(217, 58, 38, 0.06); color: var(--cherry); box-shadow: inset 0 0 0 1.5px var(--cherry); }
 :root[data-theme="sovereign"] .wk-day.kept .wk-dot, :root[data-theme="sovereign"] .pl-day.kept .pl-dot { background: var(--fill-2); box-shadow: inset 0 0 0 1.5px var(--blue); }
 :root[data-theme="sovereign"] .pl-day.today .pl-dot { background: var(--fill); box-shadow: inset 0 0 0 1px var(--line-strong); }
 :root[data-theme="sovereign"] .wk-dot .mring, :root[data-theme="sovereign"] .goal-mini-row .mring { color: var(--blue); }
-:root[data-theme="sovereign"] .ov-split { border-radius: 0; }
-:root[data-theme="sovereign"] .ov-key i { border-radius: 0; }
 
 /* ---------- Sheets: a panel under a cobalt strip; the toast a cobalt slip ---------- */
 
@@ -435,7 +431,7 @@
 :root[data-theme="sovereign"] :is(.pl-chip.nn, .pl-chip.hard, .pl-chip.late, .pl-pill.missed) { background: rgba(217, 58, 38, 0.07); }
 :root[data-theme="sovereign"] :is(.pl-chip.streak, .pl-chip.due.ember, .pl-chip.due.over) { background: rgba(196, 86, 26, 0.08); }
 :root[data-theme="sovereign"] .pl-pill.done { background: var(--fill-2); }
-:root[data-theme="sovereign"] .pl-strip i.h-min, :root[data-theme="sovereign"] :is(.heat i.h-min, .heat-key i.h-min) { background: rgba(35, 65, 196, 0.45); }
+:root[data-theme="sovereign"] .pl-weeks i.h-min, :root[data-theme="sovereign"] :is(.heat i.h-min, .heat-key i.h-min) { background: rgba(35, 65, 196, 0.45); }
 :root[data-theme="sovereign"] :is(.heat i.h-none, .heat i.h-flex, .heat-key i.h-none, .heat-key i.h-flex) { background: var(--inset); }
 :root[data-theme="sovereign"] .pl-bar { background: #dfe5fa; border-radius: 0; }
 :root[data-theme="sovereign"] .pl-bar i { background: var(--cherry); }

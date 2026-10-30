@@ -13,6 +13,8 @@ Write the pass up as a new section of `docs/audit-2026-10-29.md`. The tools are 
 
 - Front end: a page is a module with `initX(ctx)` and exported view, click and submit functions
   (see `public/plan.js`, `public/today-list.js`). `app.js` keeps the shell, routing and boot.
+- Shared display pieces (status chip, gauge, day track, tooltip pill, aurora floor, streak card) are in
+  `public/kit.css`, from colour tokens only; reuse them rather than drawing a page's own.
 - Stylesheets are cut per page and linked in `public/index.html` in cascade order. Moving a rule to
   another file changes which rule wins; keep the order, or check every pair it jumps over.
 - Server: pure parts (parsers, schema) go in their own module; the old module re-exports what it

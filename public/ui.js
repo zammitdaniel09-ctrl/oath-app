@@ -340,6 +340,14 @@ export function left(iso) {
   return { text, cls: min <= 60 ? 'soon' : '' };
 }
 
+// How far now is between the start of today and a deadline, from 0 to 1: where a deadline gauge's knob sits.
+export function dayShare(iso) {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const due = new Date(iso).getTime();
+  return due > start.getTime() ? Math.max(0, Math.min(1, (Date.now() - start.getTime()) / (due - start.getTime()))) : 1;
+}
+
 // How hot a deadline is: calm, then Honey within 3 hours, Blaze within 1, Ember within 30 minutes,
 // Merlot once it has passed.
 export function urgency(iso) {
@@ -414,6 +422,25 @@ export const safeColor = (c) => (/^(#[0-9a-f]{3,8}|[a-z]{3,20}|rgba?\([\d\s.,%]+
 export function strengthChip(s) {
   const level = s >= 80 ? 'strong' : s >= 40 ? 'mid' : 'new';
   return `<span class="strength ${level}" title="Habit strength ${s}%">${miniRing(s)}<b>${s}<small>%</small></b></span>`;
+}
+
+// A smooth line through points [x, y] as an SVG path: each stretch a cubic curve whose handles follow
+// the neighbours (Catmull-Rom), held between the two points' heights so it never overshoots a low or a peak.
+export function smoothPath(pts) {
+  const f = (v) => v.toFixed(1);
+  if (pts.length < 3) return `M${pts.map((p) => `${f(p[0])} ${f(p[1])}`).join(' L')}`;
+  const hold = (v, a, b) => Math.min(Math.max(a, b), Math.max(Math.min(a, b), v));
+  let d = `M${f(pts[0][0])} ${f(pts[0][1])}`;
+  for (let i = 0; i < pts.length - 1; i += 1) {
+    const p0 = pts[i - 1] || pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] || p2;
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, hold(p1[1] + (p2[1] - p0[1]) / 6, p1[1], p2[1])];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, hold(p2[1] - (p3[1] - p1[1]) / 6, p1[1], p2[1])];
+    d += ` C${f(c1[0])} ${f(c1[1])} ${f(c2[0])} ${f(c2[1])} ${f(p2[0])} ${f(p2[1])}`;
+  }
+  return d;
 }
 
 export function miniRing(pct, size = 22) {
@@ -690,7 +717,7 @@ export function barChart(values, { goal = null, labels = [], titles = labels, cl
     if (!v) return `<rect x="${x(i)}" y="${h - 1.5}" width="${bw.toFixed(1)}" height="1.5" class="bc-zero">${tip}</rect>`;
     const bh = ((h - top) * v) / max;
     const met = goal && v >= goal;
-    return `<rect x="${x(i)}" y="${(h - bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${Math.min(5, bw / 2).toFixed(1)}" class="bc-bar${met ? ' met' : ''}">${tip}</rect>`;
+    return `<rect x="${x(i)}" y="${(h - bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${(bw / 2).toFixed(1)}" class="bc-bar${met ? ' met' : ''}">${tip}</rect>`;
   }).join('');
   const gy = goal ? h - ((h - top) * goal) / max : null;
   const goalLine = goal ? `<line x1="0" x2="${w}" y1="${gy.toFixed(1)}" y2="${gy.toFixed(1)}" class="bc-goal"/>` : '';

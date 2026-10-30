@@ -225,7 +225,6 @@
 :root[data-theme="atelier"] .ov-v { font-size: 2rem; }
 :root[data-theme="atelier"] .oc-bar { fill: rgba(255, 255, 255, 0.1); }
 :root[data-theme="atelier"] .oc-bar.met { fill: var(--oc, var(--lime)); }
-:root[data-theme="atelier"] .sp-dot { background: var(--amber); box-shadow: 0 0 0 3px #141414, 0 0 12px rgba(255, 197, 61, 0.8); }
 /* Days as a heatmap: each kept day a lit square. */
 :root[data-theme="atelier"] :is(.wk-dot, .pl-dot) { border-radius: 9px; }
 :root[data-theme="atelier"] .wk-day.clean .wk-dot, :root[data-theme="atelier"] .pl-day.clean .pl-dot { background: var(--lime); color: #0a0a0a; box-shadow: 0 0 12px -3px rgba(198, 240, 58, 0.7); }

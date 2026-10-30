@@ -1,7 +1,7 @@
 // Health: Apple Health in detail, the business sites, and the calendars Oath reads.
 import {
-  state, esc, api, act, toast, fmtDay, icon, pageHead, iconLink, fmtInt, fmtDec, fmtHours, ago,
-  miniRing, barChart, sparkline, localToday, keyBlock, form2obj, haptic, safeColor, emptyState, addDays, confirmSheet,
+  state, esc, api, act, toast, fmtDay, icon, pageHead, iconLink, fmtInt, fmtDec, ago, barChart, sparkline, keyBlock,
+  form2obj, haptic, safeColor, confirmSheet,
 } from './ui.js';
 
 let ctx = { shell: () => {}, render: () => {}, go: async () => {} };
@@ -53,13 +53,16 @@ export async function loadHealth() {
 
 const shortDay = (d) => new Intl.DateTimeFormat('en-GB', { weekday: 'narrow', timeZone: 'UTC' }).format(new Date(`${d}T12:00:00Z`));
 
+// A glossy capsule: the number big, and a gauge filled to the day's goal with the icon on its knob.
 function tile(ic, cls, label, value, unit, goal, display) {
-  const pct = value === null || value === undefined || !goal ? 0 : (value / goal) * 100;
-  return `<div class="dtile ${cls}">
-    <div class="dtile-ring">${miniRing(pct, 44)}<span>${icon(ic)}</span></div>
-    <div><span class="dtile-label">${label}</span>${value === null || value === undefined
-      ? `<span class="dtile-val na">–</span><span class="dtile-goal">No reading yet${goal ? `, goal ${display(goal)}${unit}` : ''}</span>`
-      : `<span class="dtile-val">${display(value)}<small>${unit}</small></span><span class="dtile-goal">${goal ? `of ${display(goal)}${unit}` : ''}</span>`}</div>
+  const none = value === null || value === undefined;
+  const v = none || !goal ? 0 : Math.min(1, value / goal);
+  const met = !none && goal && value >= goal;
+  return `<div class="dtile ${cls}${met ? ' met' : ''}">
+    <span class="dtile-label">${icon(ic)}${label}${met ? '<span class="st ok">Goal met</span>' : ''}</span>
+    ${none ? '<span class="dtile-val na">–</span>' : `<span class="dtile-val">${display(value)}<small>${unit}</small></span>`}
+    <div class="gauge${none ? ' empty' : ''}" style="--v:${v.toFixed(3)}" role="img" aria-label="${esc(none ? `${label}: no reading yet` : `${label} ${display(value)}${unit}${goal ? ` of ${display(goal)}${unit}` : ''}`)}"><i></i><b>${icon(ic)}</b></div>
+    <span class="gauge-scale" aria-hidden="true"><span>0</span><span>${goal ? `Goal <b>${display(goal)}${unit}</b>` : ''}</span></span>
   </div>`;
 }
 

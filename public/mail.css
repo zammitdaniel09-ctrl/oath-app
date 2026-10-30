@@ -6,22 +6,25 @@
    Everything else as quiet rows grouped by kind. The setup is a short card of three steps. */
 .ml-status { margin: 4px 0 0; font-size: 0.8125rem; color: var(--text-3); }
 .ml-cards { display: grid; gap: 10px; }
-.ml-card { margin-top: 0; padding: var(--pad-sm) var(--pad); display: grid; gap: 6px; }
-.ml-card.done { opacity: 0.6; }
+/* A coloured left edge says where it stands: Honey with a date to act by, Menthol once done. */
+.ml-card { --edge: var(--chrome-c); margin-top: 0; padding: var(--pad-sm) var(--pad); display: grid; gap: 6px; box-shadow: inset 3px 0 0 var(--edge), var(--rim); }
+.ml-card:has(.ml-due) { --edge: var(--honey); }
+.ml-card.done { --edge: var(--menthol); opacity: 0.6; }
 .ml-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .ml-from { min-width: 0; overflow: hidden; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
 .ml-top time, .ml-row time { flex: none; font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.04em; color: var(--text-3); }
 .ml-subject { margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--text); overflow-wrap: anywhere; }
 .ml-summary { margin: 0; font-size: 0.9375rem; line-height: 1.45; color: var(--text-2); overflow-wrap: anywhere; }
 .ml-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+/* What to do, by when and why, as status chips (kit.css). */
 .ml-action, .ml-due, .ml-reason {
-  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 0.8125rem; font-weight: 620;
-  background: var(--fill); box-shadow: inset 0 0 0 1px var(--line);
+  --st: var(--text-2);
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 999px; font-size: 0.8125rem; font-weight: 640;
+  color: var(--st); background: color-mix(in srgb, var(--st) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--st) 26%, transparent);
 }
-.ml-action { color: var(--text); }
+.ml-action { --st: var(--chrome-c); }
 .ml-action .ic, .ml-due .ic { width: 14px; height: 14px; }
-.ml-due { color: var(--amber); box-shadow: inset 0 0 0 1px rgba(255, 194, 51, 0.35); }
-.ml-reason { color: var(--text-2); }
+.ml-due { --st: var(--amber); }
 .ml-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; }
 .ml-open { margin-left: auto; }
 .ml-open .ic { width: 14px; height: 14px; }

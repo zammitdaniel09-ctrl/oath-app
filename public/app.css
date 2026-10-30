@@ -688,9 +688,10 @@ button.li:active .chk { transform: scale(0.86); transition: background-color var
 }
 .li.pending { animation: tick-flash 0.8s var(--ease); }
 @keyframes tick-flash { 0% { background-color: rgba(63, 240, 185, 0.24); } 100% { background-color: transparent; } }
+/* HP at stake: the status chip's shape (kit.css) in Merlot, small enough to sit in a line of text. */
 .hp-chip {
-  display: inline-block; padding: 0 6px; border-radius: 6px; font-size: 0.75rem; font-weight: 750; line-height: 1.5;
-  color: #fff; background: var(--merlot); vertical-align: 1px;
+  display: inline-block; padding: 0 7px; border-radius: 999px; font-size: 0.75rem; font-weight: 750; line-height: 1.55;
+  color: var(--merlot-hi); background: color-mix(in srgb, var(--merlot) 16%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--merlot) 34%, transparent); vertical-align: 1px;
 }
 .kept .chk, .done .chk { box-shadow: 0 0 12px -2px rgba(63, 240, 185, 0.7); }
 .li-min .btn { max-width: 100%; white-space: normal; text-align: left; justify-content: flex-start; }
@@ -707,11 +708,13 @@ button.li:active .chk { transform: scale(0.86); transition: background-color var
 .pchip { padding: 3px 9px; border-radius: var(--r-badge); background: var(--raised); color: var(--text); font-weight: 600; box-shadow: inset 0 0 0 1px var(--line-ctl); }
 
 .tag {
+  --st: var(--text-2);
   display: inline-block; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
-  padding: 2px 7px; margin-right: 8px; border-radius: 6px; vertical-align: 2px; line-height: 1.4;
+  padding: 2px 8px; margin-right: 8px; border-radius: 999px; vertical-align: 2px; line-height: 1.4;
+  color: var(--st); background: color-mix(in srgb, var(--st) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--st) 26%, transparent);
 }
-.tag.bad { background: rgba(255, 45, 85, 0.14); color: var(--red); }
-.tag.uni { background: rgba(201, 206, 214, 0.14); color: var(--blue); }
+.tag.bad { --st: var(--red); }
+.tag.uni { --st: var(--blue); }
 
 .li-auto { display: flex; align-items: center; gap: 6px; font-size: 0.8125rem; color: var(--text-2); margin-top: 2px; }
 .li-auto .ic { width: 14px; height: 14px; color: var(--red); }

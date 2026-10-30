@@ -167,12 +167,14 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .rich code { font-family: var(--mono, ui-monospace, monospace); font-size: 0.9em; padding: 1px 5px; border-radius: 6px; background: var(--inset); }
 /* What a reply did, and what waits for a tap. */
 .receipts { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; }
+/* Each a status chip (kit.css) that may run to two lines: Menthol for done, Cherry for what could not be. */
 .receipts li {
-  display: flex; gap: 8px; align-items: flex-start; padding: 7px 10px; border-radius: 10px; font-size: 0.875rem; line-height: 1.4;
-  background: var(--inset); box-shadow: inset 0 0 0 1px var(--line-soft);
+  --st: var(--menthol);
+  display: flex; gap: 8px; align-items: flex-start; padding: 7px 12px 7px 10px; border-radius: 16px; font-size: 0.875rem; line-height: 1.4;
+  background: color-mix(in srgb, var(--st) 10%, var(--inset)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--st) 26%, transparent);
 }
-.receipts .ic { width: 16px; height: 16px; margin-top: 2px; color: var(--menthol); }
-.receipts li.no .ic { color: var(--cherry); }
+.receipts .ic { width: 16px; height: 16px; margin-top: 2px; color: var(--st); }
+.receipts li.no { --st: var(--cherry); }
 .confirm-row {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin-top: 10px; padding: 10px 12px;
   border-radius: var(--r-ctl); background: rgba(225, 6, 0, 0.08); box-shadow: inset 0 0 0 1px rgba(225, 6, 0, 0.5);
@@ -225,7 +227,7 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 .composer-dock { position: sticky; bottom: calc(var(--tabbar) + env(safe-area-inset-bottom) + 10px); z-index: 15; margin-top: 18px; }
 .composer-dock::before {
   content: ''; position: absolute; inset: -22px calc(-1 * var(--gutter)) -10px; z-index: -1; pointer-events: none;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.88) 46%);
+  background: radial-gradient(60% 70% at 50% 100%, color-mix(in srgb, var(--merlot) 22%, transparent), transparent 75%), linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.88) 46%);
 }
 .quick-replies {
   display: flex; gap: 8px; overflow-x: auto; margin: 0 -2px; padding: 2px 2px 10px; scrollbar-width: none; -webkit-overflow-scrolling: touch;
@@ -243,7 +245,7 @@ html:has(.cchat-page), body:has(.cchat-page) { background: #0b0b0b; }
 @media (hover: hover) { .qchip:hover:not(:disabled) { background: var(--raised-hover); } }
 .composer {
   display: flex; align-items: flex-end; gap: 8px; padding: 8px;
-  background: rgba(16, 18, 23, 0.94); border-radius: 22px;
+  background: rgba(16, 18, 23, 0.94); border-radius: 30px;
   box-shadow: inset 0 0 0 1px var(--line-ctl), 0 18px 40px -16px rgba(0, 0, 0, 0.9);
 }
 @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {

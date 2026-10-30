@@ -5,6 +5,7 @@
 // "–" is a value nobody has sourced, "+" a total missing some lines, "~" a value filled by estimate.
 import {
   $app, state, esc, api, toast, fmtDay, icon, pageHead, localToday, localNowHM, num, redrawIfIdle, uuid, store, cap,
+  miniRing,
 } from './ui.js';
 import { show, round, amountText } from './nutrition.js';
 // Grades and tags come from the shared maths when it has them.
@@ -372,12 +373,13 @@ function daySummary(d) {
   } else if (d.today && need) left = `<p class="fday-left"><b>${fmtN(need)}</b> kcal to go</p>`;
   const unknown = macroParts(t).parts.find((p) => p.key === 'unknown');
   const unk = unknown ? `<p class="fday-unk"><i class="fdot m-unknown" aria-hidden="true"></i><span><b>${fmtN(unknown.kcal)} kcal</b> from foods with no protein, carbs or fat on record</span></p>` : '';
-  // Each tile opens the foods richest in it.
+  // Each tile opens the foods richest in it: a ring to its need, lit and ticked once it is met.
   const micros = `<div class="fmicro">${KEY_MICROS.map((k) => {
     const p = riPct(t, k);
     const done = p !== null && p >= 100;
     return `<button type="button" class="fmicro-i${p === null ? ' unk' : ''}${done ? ' done' : ''}" data-action="food-rich" data-key="${k}" aria-label="${esc(`${shortLabel(k)} ${pctText(p, t.missing?.[k])}. Foods rich in it`)}">
-      <span class="fmicro-k"><span>${shortLabel(k)}</span>${icon('chevron', 'tap-hint')}</span><b>${pctText(p, t.missing?.[k])}${done ? icon('check', 'fmicro-ok') : ''}</b>${riBar(p, k)}</button>`;
+      <span class="fmicro-ring" aria-hidden="true">${miniRing(Math.min(100, p ?? 0), 40)}${done ? icon('check', 'fmicro-ok') : ''}</span>
+      <span class="fmicro-k"><span>${shortLabel(k)}</span>${icon('chevron', 'tap-hint')}</span><b>${pctText(p, t.missing?.[k])}</b></button>`;
   }).join('')}</div>`;
   const extra = ['sugars', 'satfat', 'salt', 'fibre', 'caffeine', 'alcohol'];
   const facts = `<dl class="fday-strip">${extra.map((k) => {

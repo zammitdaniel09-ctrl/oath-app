@@ -1,0 +1,128 @@
+/* The pieces every page shares since v41: one status chip, the glossy gauge, the day track and the
+   aurora floor. Built from the palette's tokens only, so each theme recolours them. After app.css. */
+
+/* ---------- The status chip: a tinted pill, its icon and its word in one colour ---------- */
+
+/* --st is the state's colour. Kept and done are Menthol, due Honey, close Blaze, missed and overdue
+   Cherry, rest Chrome, off the quiet text. A state in progress carries a dashed ring for its icon. */
+.st {
+  --st: var(--text-2);
+  display: inline-flex; align-items: center; gap: 5px; min-height: 26px; padding: 0 10px 0 8px; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 660; line-height: 1.2; white-space: nowrap; color: var(--st);
+  background: color-mix(in srgb, var(--st) 13%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--st) 26%, transparent);
+}
+.st .ic { width: 13px; height: 13px; stroke-width: 2.4; flex: none; }
+.st-ring { width: 11px; height: 11px; flex: none; border-radius: 50%; border: 1.5px dashed currentColor; }
+.st.ok { --st: var(--green); }
+.st.due { --st: var(--honey); }
+.st.soon { --st: var(--blaze); }
+.st.bad { --st: var(--red); }
+.st.rest { --st: var(--blue); }
+.st.off { --st: var(--text-3); }
+
+/* ---------- The gauge: a glossy capsule filled to its value, with a knob on the front ---------- */
+
+/* --v is the value from 0 to 1 and --g its colour. The fill's top half carries a highlight, as on glass;
+   the knob sits on the front of the fill and never leaves the track. */
+.gauge {
+  --g: var(--merlot); --v: 0;
+  position: relative; height: 14px; border-radius: 999px;
+  background: color-mix(in srgb, var(--g) 12%, var(--inset));
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45), inset 0 0 0 1px color-mix(in srgb, var(--g) 22%, transparent);
+}
+.gauge > i {
+  position: absolute; left: 0; top: 0; bottom: 0; width: max(14px, calc(var(--v) * 100%)); border-radius: inherit;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--g) 45%, transparent), var(--g));
+  box-shadow: 0 0 16px -3px color-mix(in srgb, var(--g) 80%, transparent);
+}
+.gauge > i::after {
+  content: ''; position: absolute; left: 6px; right: 6px; top: 2px; height: 38%; border-radius: 999px;
+  background: linear-gradient(rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0));
+}
+.gauge.empty > i { opacity: 0; }
+.gauge > b {
+  position: absolute; top: 50%; left: clamp(11px, calc(var(--v) * 100%), calc(100% - 11px)); width: 22px; height: 22px; margin: -11px 0 0 -11px;
+  display: grid; place-items: center; border-radius: 50%; color: var(--g);
+  background: radial-gradient(circle at 35% 30%, #fff, color-mix(in srgb, var(--g) 18%, #eef0f4) 70%);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--g) 40%, transparent), 0 4px 12px -2px rgba(0, 0, 0, 0.6);
+}
+.gauge > b .ic { width: 12px; height: 12px; stroke-width: 2.6; }
+/* A tall gauge carries words on the track: a slider, as for water. */
+.gauge.tall { height: 30px; }
+.gauge.tall > b { width: 30px; height: 30px; margin: -15px 0 0 -15px; left: clamp(15px, calc(var(--v) * 100%), calc(100% - 15px)); }
+.gauge.tall > b .ic { width: 15px; height: 15px; }
+.gauge-scale {
+  display: flex; justify-content: space-between; gap: 8px; margin-top: 7px;
+  font-family: var(--mono); font-size: 0.625rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3);
+}
+.gauge-scale b { color: var(--text); font-weight: 600; }
+
+/* ---------- The day track: a week's days as dots on one capsule, a lit band under the runs ---------- */
+
+/* The dots themselves keep their own classes and colours (.wk-dot on Today, .pl-dot on Plan); the
+   track lays them out and tints the band behind days in a row that went well. */
+/* --dot is the size of a day's dot. A day in a run carries .run, with .run-l when the day before is in
+   it too and .run-r when the day after is, so the band joins them and rounds off at the ends. */
+.daytrack {
+  --dot: 22px;
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); align-items: start; padding: 6px 4px;
+  border-radius: calc(var(--dot) / 2 + 6px); background: var(--inset); box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+.daytrack > * { position: relative; display: grid; justify-items: center; gap: 5px; min-width: 0; }
+.daytrack > .run::before {
+  content: ''; position: absolute; z-index: 0; top: 0; height: var(--dot); left: 0; right: 0;
+  background: color-mix(in srgb, var(--green) 18%, transparent);
+}
+.daytrack > .run:not(.run-l)::before { left: 50%; margin-left: calc(var(--dot) / -2); border-radius: 999px 0 0 999px; }
+.daytrack > .run:not(.run-r)::before { right: 50%; margin-right: calc(var(--dot) / -2); border-radius: 0 999px 999px 0; }
+.daytrack > .run:not(.run-l):not(.run-r)::before { border-radius: 999px; }
+.daytrack > * > :first-child { position: relative; z-index: 1; }
+
+/* ---------- The tooltip pill: a value over a chart's point ---------- */
+
+/* Placed at the point (left and top in %); it stands above it. At the right end (.end) it leans left so it stays inside the chart. */
+.tip-pill {
+  position: absolute; z-index: 2; transform: translate(-50%, calc(-100% - 12px)); padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+  font-size: 0.75rem; font-weight: 720; font-variant-numeric: tabular-nums; color: var(--text);
+  background: color-mix(in srgb, var(--tip, var(--merlot)) 30%, var(--raised)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tip, var(--merlot)) 55%, transparent), 0 6px 14px -6px rgba(0, 0, 0, 0.8);
+}
+.tip-pill.end { transform: translate(calc(-100% + 14px), calc(-100% - 12px)); }
+
+/* ---------- The aurora floor: a card lit from its bottom edge ---------- */
+
+/* <i class="aurora"> as the card's first child. --a1 to --a3 are the page's own colours; the glow sits
+   behind the card's words and never takes a touch. */
+.has-aurora { position: relative; isolation: isolate; overflow: hidden; }
+.aurora {
+  position: absolute; z-index: -1; left: -8%; right: -8%; bottom: -2px; height: 72%; pointer-events: none;
+  background:
+    radial-gradient(48% 85% at 18% 100%, color-mix(in srgb, var(--a1, var(--merlot)) 46%, transparent), transparent 70%),
+    radial-gradient(44% 75% at 82% 100%, color-mix(in srgb, var(--a2, var(--blaze)) 36%, transparent), transparent 72%),
+    radial-gradient(34% 55% at 50% 100%, color-mix(in srgb, var(--a3, var(--honey)) 26%, transparent), transparent 75%);
+  opacity: var(--aurora, 0.8);
+}
+
+/* ---------- The streak moment: a big number on a glow, with rays and sparks ---------- */
+
+.glow-card {
+  position: relative; isolation: isolate; overflow: hidden; display: grid; justify-items: center; text-align: center; gap: 2px;
+  padding: 26px var(--pad) var(--pad); border-radius: var(--r-card);
+  background: radial-gradient(70% 60% at 50% 42%, color-mix(in srgb, var(--merlot) 55%, transparent), color-mix(in srgb, var(--merlot) 14%, transparent) 55%, transparent 80%), var(--card);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--blaze) 30%, var(--line)), var(--lift);
+}
+/* Two soft beams from the sides and a scatter of sparks, still. */
+.glow-card::before {
+  content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none;
+  background:
+    conic-gradient(from 248deg at 50% 44%, transparent 0deg, rgba(255, 255, 255, 0.07) 10deg, transparent 26deg, transparent 154deg, rgba(255, 255, 255, 0.07) 170deg, transparent 186deg),
+    radial-gradient(1.5px 1.5px at 18% 22%, var(--blaze), transparent), radial-gradient(1.5px 1.5px at 82% 30%, var(--honey), transparent),
+    radial-gradient(1px 1px at 30% 70%, var(--blaze), transparent), radial-gradient(1.5px 1.5px at 74% 64%, var(--ember), transparent),
+    radial-gradient(1px 1px at 60% 14%, var(--honey), transparent), radial-gradient(1px 1px at 10% 52%, var(--ember), transparent);
+}
+.glow-flame { display: grid; place-items: center; width: 44px; height: 44px; color: var(--blaze); filter: drop-shadow(0 0 12px color-mix(in srgb, var(--blaze) 80%, transparent)); }
+.glow-flame .ic { width: 34px; height: 34px; stroke-width: 2.2; }
+.glow-num { font-size: clamp(4rem, 3rem + 6vw, 5.5rem); font-weight: 800; line-height: 0.95; letter-spacing: -0.05em; color: var(--text); text-shadow: 0 6px 30px color-mix(in srgb, var(--merlot) 70%, transparent); font-variant-numeric: tabular-nums; }
+.glow-label { font-size: 1.125rem; font-weight: 720; letter-spacing: -0.01em; color: var(--blaze); }
+.glow-sub { margin-top: 4px; max-width: 34ch; font-size: 0.875rem; line-height: 1.45; color: var(--text-2); }
+.glow-card .daytrack { width: 100%; max-width: 340px; margin-top: 14px; background: color-mix(in srgb, var(--bg) 55%, transparent); }

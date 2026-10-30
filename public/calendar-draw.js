@@ -1,7 +1,7 @@
 // What the Calendar shows (calendar.js): the day and multi-day grids with their events and deadline
 // flags, the week strip, the month, the chosen day under it on a phone, and the bar on top with the
 // sync status. Plain strings from the page's state and its days (calendar-days.js).
-import { safeColor, esc, icon, addDays, localToday, localNowHM, fmtDay, ago } from './ui.js';
+import { safeColor, esc, icon, addDays, localToday, localNowHM, fmtDay, ago, state, miniRing } from './ui.js';
 import {
   hm, evSpan, minutesOf, lanes, dayInfo, longDay, DOW, weekdayOf, gridDays, gridStart, monday, firstOf, addMonths, cols,
   monthYear,
@@ -30,7 +30,7 @@ function markHtml(mk, stack, wide) {
   const time = mk.min >= 1440 ? 'midnight' : hm(mk.min);
   // One that is already kept or done shrinks to its mark, so it does not cover the day's events.
   const named = wide && !mk.done;
-  return `<div class="${cls}" style="top:${top.toFixed(3)}%;--k:${stack}${safeColor(mk.color) ? `;--c:${safeColor(mk.color)}` : ''}"><button type="button" class="cal-mk-chip${named ? '' : ' bare'}" data-action="cal-mark" data-key="${esc(mk.key)}" aria-label="${label}, due ${time}${mk.done ? ', done' : ''}"><i></i>${named ? `<span>${label}</span>` : ''}</button></div>`;
+  return `<div class="${cls}" style="top:${top.toFixed(3)}%;--k:${stack}${safeColor(mk.color) ? `;--c:${safeColor(mk.color)}` : ''}"><button type="button" class="cal-mk-chip${named ? '' : ' bare'}" data-action="cal-mark" data-key="${esc(mk.key)}" aria-label="${label}, due ${time}${mk.done ? ', done' : ''}"><i></i>${named ? `<span>${label}</span><small class="cal-mk-due">${mk.min >= 1440 ? 'By midnight' : `Due ${time}`}</small>` : ''}</button></div>`;
 }
 
 function columnHtml(d, info, n, today, nowMin) {
@@ -85,8 +85,9 @@ function gridPane(start, n, rows, today, nowMin) {
   const allDay = rows ? `<div class="cal-allday" style="--n:${n};--rows:${rows}"><span class="cal-allday-l">all-day</span>${infos.map(allDayCell).join('')}</div>` : '';
   const showNow = days.includes(today);
   const nowLabel = showNow ? `<span class="cal-nowlbl" style="top:${((nowMin / 1440) * 100).toFixed(3)}%">${hm(nowMin)}</span>` : '';
+  const rail = showNow ? `<i class="cal-rail" style="height:${((nowMin / 1440) * 100).toFixed(3)}%"></i>` : '';
   return `<div class="cal-pane">${heads}${allDay}<div class="cal-body" style="--n:${n}">
-    <div class="cal-hours" aria-hidden="true">${hourLabels()}${nowLabel}</div>
+    <div class="cal-hours" aria-hidden="true">${rail}${hourLabels()}${nowLabel}</div>
     <div class="cal-cols${n > 1 ? ' multi' : ''}">${days.map((d, i) => columnHtml(d, infos[i], n, today, nowMin)).join('')}</div></div></div>`;
 }
 
@@ -226,6 +227,14 @@ function horizonHtml(c) {
   return `<p class="cal-horizon">Your calendars are synced up to ${esc(fmtDay(c.syncedTo, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }))}.</p>`;
 }
 
+// How much of what is due today is done, as a ring with the share in it, when Today has been loaded.
+function dayRing() {
+  const p = state.today?.progress;
+  if (!p?.total) return '';
+  const pct = Math.round((p.done / p.total) * 100);
+  return `<a class="cal-ring${p.done >= p.total ? ' done' : ''}" href="#/today" aria-label="${p.done} of ${p.total} due today done">${miniRing(pct, 38)}<b>${pct}</b></a>`;
+}
+
 export function topHtml(c) {
   const today = localToday();
   const names = [['day', 'Day'], ['span', cols() === 7 ? 'Week' : '3 days'], ['month', 'Month']];
@@ -236,6 +245,7 @@ export function topHtml(c) {
         ${c.date === today ? '' : '<button type="button" class="btn tinted small cal-today" data-action="cal-today">Today</button>'}
         <button type="button" class="icon-btn cal-step" data-action="cal-prev" aria-label="Previous">${icon('back')}</button>
         <button type="button" class="icon-btn cal-step" data-action="cal-next" aria-label="Next">${icon('chevron')}</button>
+        ${dayRing()}
       </div>${seg}</div>
     ${syncHtml(c)}${horizonHtml(c)}
     ${c.view === 'month' || (c.view === 'span' && cols() === 7) ? '' : stripHtml(c)}</div>`;

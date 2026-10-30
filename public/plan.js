@@ -62,14 +62,16 @@ function weekDays(p) {
   });
 }
 
-function dayCell(d) {
+function dayCell(d, i, days) {
   const pct = d.due ? Math.round((d.done / d.due) * 100) : 0;
   const inner = d.s === 'today' || d.s === 'kept' ? miniRing(pct, 30)
     : d.s === 'clean' ? icon('check') : d.s === 'missed' ? icon('close') : d.s === 'future' && d.due ? `<b>${d.due}</b>` : '';
   const what = d.s === 'rest' ? 'Rest day' : d.s === 'future' ? `${plural(d.due, 'habit')} due` : d.s === 'quiet' ? 'Nothing due'
     : `${d.done} of ${d.due} kept${d.missed ? `, ${d.missed} missed` : ''}${d.s === 'today' ? ' so far' : ''}`;
   const stake = d.stake && d.s !== 'rest' ? `${d.stake} HP on the line` : '';
-  return `<span class="pl-day ${d.s}" title="${esc(`${fmtDay(d.date, { weekday: 'long', day: 'numeric', month: 'short' })}: ${what}${stake ? `, ${stake}` : ''}`)}">
+  const clean = (x) => x?.s === 'clean';
+  const run = clean(d) ? ` run${clean(days[i - 1]) ? ' run-l' : ''}${clean(days[i + 1]) ? ' run-r' : ''}` : '';
+  return `<span class="pl-day ${d.s}${run}" title="${esc(`${fmtDay(d.date, { weekday: 'long', day: 'numeric', month: 'short' })}: ${what}${stake ? `, ${stake}` : ''}`)}">
     <span class="pl-dot">${inner}</span>
     <span class="pl-dl">${esc(fmtDay(d.date, { weekday: 'narrow' }))}</span></span>`;
 }
@@ -103,7 +105,7 @@ export function planHero(p) {
       </div>
       <div class="pl-hero-ring ${pct >= 90 ? 'strong' : pct >= 60 ? 'mid' : 'new'}" role="img" aria-label="${pct}% kept this week">${miniRing(pct, 76)}<b>${pct}<small>%</small></b></div>
     </div>
-    <div class="pl-week" role="img" aria-label="${esc(spoken)}">${days.map(dayCell).join('')}</div>
+    <div class="pl-week daytrack" role="img" aria-label="${esc(spoken)}">${days.map(dayCell).join('')}</div>
     <div class="pl-stats">
       ${stat(`strength ${level(avg)}`, 'trend', 'Strength', `${avg}%`, strong ? `${strong} established` : 'All still building')}
       ${stat(worst > cap ? 'over' : '', 'shield', 'Worst day', `${worst} HP`, `Cap ${cap} HP a day`)}
@@ -152,11 +154,17 @@ function todayPill(h) {
   return ['off', 'Not today'];
 }
 
-function strip(heat) {
-  const days = heat.slice(-14);
-  const kept = days.filter((s) => DONE.has(s)).length;
-  const missed = days.filter((s) => s === 'missed').length;
-  return `<span class="pl-strip" role="img" aria-label="Last 14 days: ${kept} kept, ${missed} missed">${days.map((s) => `<i class="h-${s}"></i>`).join('')}</span>`;
+// The last 30 weeks across the card (a phone shows the last 20, plan.css), one column a week, Monday
+// on top, this week on the right with the days to come left empty. The whole history is in the details.
+const WEEKS = 30;
+function weeks(heat, today) {
+  const dow = (new Date(`${today}T12:00:00Z`).getUTCDay() + 6) % 7;
+  const n = (WEEKS - 1) * 7 + dow + 1;
+  const past = heat.slice(-n);
+  const cells = [...Array(n - past.length).fill('pad'), ...past, ...Array(6 - dow).fill('future')];
+  const kept = past.filter((s) => DONE.has(s)).length;
+  const missed = past.filter((s) => s === 'missed').length;
+  return `<span class="pl-weeks" role="img" aria-label="Last ${WEEKS} weeks: ${kept} kept, ${missed} missed">${cells.map((s) => `<i class="h-${s}"></i>`).join('')}</span>`;
 }
 
 function habitRow(h, p) {
@@ -188,9 +196,9 @@ function habitRow(h, p) {
       <span class="pl-h-body">
         <span class="pl-h-name">${esc(h.name)}</span>
         <span class="pl-chips">${chips}</span>
-        ${strip(h.heat)}
       </span>
-      <span class="pl-h-side"><span class="pl-pill ${pill}">${pill === 'done' ? icon('check') : ''}${esc(pillText)}</span>${icon('chevron', 'pl-chev')}</span>
+      <span class="pl-h-side"><span class="pl-pill ${pill}">${pill === 'done' ? icon('check') : pill === 'missed' ? icon('close') : pill.startsWith('open') ? '<i class="st-ring" aria-hidden="true"></i>' : ''}${esc(pillText)}</span>${icon('chevron', 'pl-chev')}</span>
+      ${weeks(h.heat, p.today)}
     </button>
     <div class="pl-h-more" id="hm-${h.id}"${open ? '' : ' hidden'}>
       ${facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}
@@ -325,7 +333,7 @@ export function planTasks(p) {
   return `<section class="section"><div class="gh"><h2>Tasks</h2><button class="gh-link" data-action="sheet" data-kind="task">${icon('plus')}New task</button></div>
     <div class="card pl-loadcard"><p class="pl-sum">${summary}</p>${loadChart(p)}</div>
     <div class="group pl-add">${quickAdd('plan-quick')}</div>
-    ${lists || '<p class="pl-none">No open tasks. Add one above, or tell the coach.</p>'}
+    ${lists ? `<div class="pl-board">${lists}</div>` : '<p class="pl-none">No open tasks. Add one above, or tell the coach.</p>'}
   </section>`;
 }
 

@@ -18,10 +18,21 @@
 .goal-card.pace-ahead, .goal-card.pace-on { box-shadow: inset 3px 0 0 var(--menthol), var(--rim); }
 .goal-next { display: flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 0.875rem; font-weight: 600; color: var(--text); min-width: 0; }
 .goal-next .ic { width: 14px; height: 14px; flex: none; color: var(--honey); }
-/* On pace, ahead or behind, against an even pace from the day the goal was set. */
-.pace { display: inline-block; margin-right: 8px; padding: 1px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 720; vertical-align: 1px; white-space: nowrap; }
-.pace.pace-on, .pace.pace-ahead { color: var(--menthol); background: rgba(63, 240, 185, 0.12); }
-.pace.pace-behind { color: var(--ember); background: rgba(255, 90, 31, 0.14); }
+/* On pace, ahead or behind, against an even pace from the day the goal was set: a status chip (kit.css). */
+.pace {
+  --st: var(--text-2);
+  display: inline-block; margin-right: 8px; padding: 1px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 720; vertical-align: 1px; white-space: nowrap;
+  color: var(--st); background: color-mix(in srgb, var(--st) 13%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--st) 28%, transparent);
+}
+.pace.pace-on, .pace.pace-ahead { --st: var(--menthol); }
+.pace.pace-behind { --st: var(--ember); }
+/* The card's gauge: Merlot like its ring, the notch where an even pace would be. */
+.goal-gauge { --g: var(--merlot-hi); display: block; height: 12px; margin: 8px 0 2px; }
+.goal-gauge > b { width: 20px; height: 20px; margin: -10px 0 0 -10px; }
+.goal-gauge > b .ic { width: 11px; height: 11px; }
+.goal-gauge s { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--text-2); }
+.goal-card.pace-behind .goal-gauge { --g: var(--ember); }
+.next-step { --a1: var(--honey); --a2: var(--blaze); --a3: var(--merlot); --aurora: 0.5; }
 .goal-ring b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8125rem; font-weight: 700; color: var(--text); }
 .goal-ring b small { font-size: 0.5625rem; }
 .goal-ring b.na { color: var(--text-3); font-weight: 600; }

@@ -1,7 +1,10 @@
 // Today's overview: the ring hero and the small charts under it. Each tile opens the page with the
 // detail; the day's own lists follow below them (today-list.js). Plain strings, drawn on every redraw, so
 // anything that moves remembers where it was and never replays on a redraw.
-import { state, esc, api, icon, num, reduced, addDays, rings, RING_MS, ringEase, ringFx, fmtInt, fmtDay, fmtHours, daysBetween, miniRing, safeColor, redrawIfIdle } from './ui.js';
+import {
+  state, esc, api, icon, num, reduced, addDays, rings, RING_MS, ringEase, ringFx, fmtInt, fmtDay, daysBetween, miniRing,
+  safeColor, redrawIfIdle,
+} from './ui.js';
 import { NUTRIENT, refOf, drinksRef } from './nutrition.js';
 
 let ctx = { render: () => {} };
@@ -82,8 +85,8 @@ function runTallies() {
 
 // ---------- Entrances, once per session ----------
 
-// A chart draws itself the first time it is seen: bars rise, a line runs out, the week's days pop
-// in. A redraw in the middle carries on from where it was; after that it simply shows.
+// A chart draws itself the first time it is seen: bars rise, a gauge fills, the week's days and the
+// macro rings pop in. A redraw in the middle carries on from where it was; after that it simply shows.
 const entered = new Map();
 const ENTER_MS = 900;
 function runEntrances() {
@@ -101,14 +104,15 @@ function runEntrances() {
           const a = b.animate([{ transform: 'scaleY(0)' }, { transform: 'none' }], { duration: 640, delay: 140 + i * 45, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'backwards' });
           a.currentTime = t;
         });
-      } else if (kind === 'line') {
-        const a = el.animate([{ clipPath: 'inset(-8px 100% -8px 0)' }, { clipPath: 'inset(-8px -8px -8px 0)' }], { duration: ENTER_MS, delay: 120, easing: 'cubic-bezier(0.65, 0, 0.35, 1)', fill: 'backwards' });
-        a.currentTime = t;
-      } else if (kind === 'split') {
-        const a = el.animate([{ clipPath: 'inset(0 100% 0 0 round 4px)' }, { clipPath: 'inset(0 0 0 0 round 4px)' }], { duration: 720, delay: 160, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'backwards' });
-        a.currentTime = t;
+      } else if (kind === 'gauge') {
+        const fill = el.querySelector('i');
+        const knob = el.querySelector('b');
+        const a = fill?.animate([{ transform: 'scaleX(0)' }, { transform: 'none' }], { duration: ENTER_MS, delay: 120, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'backwards' });
+        const k = knob?.animate([{ transform: 'scale(0.4)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 480, delay: 120 + ENTER_MS * 0.6, easing: 'cubic-bezier(0.34, 1.45, 0.64, 1)', fill: 'backwards' });
+        if (a) a.currentTime = t;
+        if (k) k.currentTime = t;
       } else if (kind === 'dots') {
-        el.querySelectorAll('.wk-dot').forEach((b, i) => {
+        el.querySelectorAll('.wk-dot, .ov-ring > .mring').forEach((b, i) => {
           const a = b.animate([{ transform: 'scale(0.4)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 520, delay: 120 + i * 50, easing: 'cubic-bezier(0.34, 1.45, 0.64, 1)', fill: 'backwards' });
           a.currentTime = t;
         });
@@ -200,7 +204,7 @@ export function ringHero(t, food, foot) {
   // first sweep and not a change to celebrate.
   const fuelSet = rings(fuelRows.map((f) => f.ring), { set: 'fuel', center: icon('food'), ready: Boolean(food) });
 
-  return `<section class="card rings-card${lowHp ? ' low' : ''}${ticked ? ' ticked' : ''}">
+  return `<section class="card rings-card has-aurora${lowHp ? ' low' : ''}${ticked ? ' ticked' : ''}"><i class="aurora" aria-hidden="true"></i>
     <div class="rc-set rc-day">${daySet}<div class="legend">
       ${lg(`r-hp${lowHp ? ' low' : ''}`, 'HP', tn('hp', g.hp), `/${g.maxHp}`, `Season ${g.season}, day ${seasonDay}`)}
       ${lg(`r-day${dayDone ? ' done' : ''}`, 'Today', tn('done', p.done), `/${p.total}`, daySub)}
@@ -240,27 +244,6 @@ function columns(values, { key, labels, titles, fmt, unit = '', ref = null, refL
       ${ref ? `<span class="oc-ref-label" style="bottom:${(((H - refY) / H) * 100).toFixed(1)}%" aria-hidden="true">${esc(refText ?? compact(ref))}</span>` : ''}</div>
     <div class="oc-axis" aria-hidden="true">${labels.map((l, i) => `<span${i === n - 1 ? ' class="cur"' : ''}>${esc(l)}</span>`).join('')}</div>
   </div>`;
-}
-
-// A line with a wash under it and a dot on its last point, on a fixed 0 to max scale so a fall
-// looks like one. The line keeps 2 px however wide the tile is.
-function spark(values, { key, max, titles, unit, label }) {
-  const n = values.length;
-  if (n < 2) return '';
-  const H = 40;
-  const pts = values.map((v, i) => [(i / (n - 1)) * 100, H - 3 - (Math.max(0, Math.min(max, v)) / max) * (H - 6)]);
-  const line = pts.map(([x, yy], i) => `${i ? 'L' : 'M'}${x.toFixed(2)} ${yy.toFixed(2)}`).join(' ');
-  const area = `${line} L100 ${H} L0 ${H} Z`;
-  const [lx, ly] = pts[n - 1];
-  const hits = pts.map(([x], i) => `<rect x="${Math.max(0, x - 50 / (n - 1)).toFixed(2)}" y="0" width="${(100 / (n - 1)).toFixed(2)}" height="${H}" class="sp-hit"><title>${esc(titles[i])}: ${values[i]}${unit}</title></rect>`).join('');
-  const lo = Math.min(...values);
-  const hi = Math.max(...values);
-  return `<div class="ov-spark" data-enter="${key}" data-kind="line">
-    <svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(`${label}: from ${values[0]} to ${values[n - 1]}${unit}, low ${lo}, high ${hi}`)}">
-      <defs><linearGradient id="sp-wash-${key}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sp-w0"/><stop offset="1" class="sp-w1"/></linearGradient></defs>
-      <line x1="0" x2="100" y1="${H - 0.5}" y2="${H - 0.5}" class="sp-base"/>
-      <path d="${area}" class="sp-area" fill="url(#sp-wash-${key})"/><path d="${line}" class="sp-line"/>${hits}</svg>
-    <i class="sp-dot" style="left:${lx}%;top:${((ly / H) * 100).toFixed(1)}%" aria-hidden="true"></i></div>`;
 }
 
 const tile = (href, cls, ic, label, body) => `<a class="card ov-tile ${cls}" href="${href}">
@@ -307,10 +290,12 @@ function foodTile(food) {
   const live = parts.filter((x) => x.kcal > 0);
   const share = (x) => (sum > 0 ? Math.round((x.kcal / sum) * 100) : 0);
   const spoken = live.map((x) => `${x.label} ${share(x)}%`).join(', ');
-  const split = sum > 0 ? `<div class="ov-split" role="img" aria-label="${esc(`Energy split: ${spoken}`)}" data-enter="split" data-kind="split">
-      ${live.map((x) => `<i class="m-${x.k}" style="flex-grow:${x.kcal.toFixed(1)}"></i>`).join('')}</div>
-    <span class="ov-key" aria-hidden="true">${live.map((x) => `<span><i class="m-${x.k}"></i>${x.label} ${share(x)}%</span>`).join('')}</span>` : '';
-  return tile('#/food', 'ov-food', 'food', 'Food', `${big(tn('kcal', Math.round(kcal)), 'kcal')}${split}`);
+  // A ring for each macro's share of the day's energy; energy none of them accounts for is a line under them.
+  const unknown = live.find((x) => x.k === 'unknown');
+  const macros = sum > 0 ? `<span class="ov-rings" role="img" aria-label="${esc(`Energy split: ${spoken}`)}" data-enter="split" data-kind="dots">
+      ${parts.filter((x) => x.k !== 'unknown').map((x) => `<span class="ov-ring m-${x.k}">${miniRing(share(x), 40)}<b>${share(x)}<small>%</small></b><span>${x.label}</span></span>`).join('')}</span>
+    ${unknown ? sub(`Unknown ${share(unknown)}%`) : ''}` : '';
+  return tile('#/food', 'ov-food', 'food', 'Food', `${big(tn('kcal', Math.round(kcal)), 'kcal')}${macros}`);
 }
 
 // Energy over the last seven days, today live, against the average of the days before it. A day the
@@ -332,21 +317,20 @@ function energyTile(t, food, hist) {
   return tile('#/food/trends', 'ov-energy', 'trend', 'Energy', `${avg ? big(tn('kcal-avg', Math.round(avg)), 'avg') : big('<span class="na">–</span>')}${chart}${note ? sub(note) : ''}`);
 }
 
-// HP at the end of each recent day, and now.
+// HP now, as a battery from 0 to the most there is, and how it moved on a week ago.
 function hpTile(t) {
   const g = t.game;
   const days = (t.recentDays || []).slice(-13);
-  const values = [...days.map((d) => d.hp_end), g.hp];
-  const titles = [...days.map((d) => fmtDay(d.date)), 'Now'];
   const weekAgo = days.length >= 7 ? days[days.length - 7] : days[0];
   const diff = weekAgo ? g.hp - weekAgo.hp_end : null;
   const note = diff === null ? `Season ${g.season}` : diff === 0 ? 'Level with a week ago' : `${diff > 0 ? 'Up' : 'Down'} ${Math.abs(diff)} on a week ago`;
-  const chart = spark(values, { key: 'hp', max: g.maxHp, titles, unit: ' HP', label: `HP over the last ${values.length} days` });
-  return tile('#/review', `ov-hp${g.hp <= 30 ? ' low' : ''}`, 'heart', 'HP', `${big(tn('hp-t', g.hp), `/${g.maxHp}`)}${chart}${sub(note)}`);
+  const gauge = `<div class="gauge ov-gauge" style="--v:${Math.max(0, Math.min(1, g.hp / g.maxHp)).toFixed(3)}" role="img" aria-label="${g.hp} of ${g.maxHp} HP" data-enter="hp" data-kind="gauge"><i></i><b>${icon('heart')}</b></div>
+    <span class="gauge-scale" aria-hidden="true"><span>0</span><span>${g.maxHp}</span></span>`;
+  return tile('#/review', `ov-hp${g.hp <= 30 ? ' low' : ''}`, 'heart', 'HP', `${big(tn('hp-t', g.hp), `/${g.maxHp}`)}${gauge}${sub(note)}`);
 }
 
 // This week, Monday first: clean days, misses, rest, today in progress, and what is still to come.
-function weekTile(t) {
+function weekCells(t) {
   const byDate = new Map((t.recentDays || []).map((d) => [d.date, d]));
   const dow = (new Date(`${t.today}T12:00:00Z`).getUTCDay() + 6) % 7;
   const start = addDays(t.today, -dow);
@@ -368,23 +352,42 @@ function weekTile(t) {
     if (d.kept > 0) return { date, s: 'kept', label: 'Kept' };
     return { date, s: 'quiet', label: 'Nothing due' };
   });
-  const closed = cells.filter((c) => ['clean', 'kept', 'missed', 'quiet'].includes(c.s));
-  const clean = cells.filter((c) => c.s === 'clean').length;
-  // Clean days in a row up to yesterday; rest days neither break nor add to it.
+  return cells;
+}
+
+// Clean days in a row up to yesterday; rest days neither break nor add to it.
+export function cleanRun(t) {
   let run = 0;
   for (const d of [...(t.recentDays || [])].reverse()) {
     if (d.rest) continue;
     if (!d.clean) break;
     run += 1;
   }
-  const note = run >= 2 ? `${run} clean in a row` : run === 1 ? 'Clean yesterday' : closed.length ? 'A clean day starts a run' : 'The week starts today';
-  const dots = cells.map((c) => {
+  return run;
+}
+
+// The week's days on one track, a band under the clean days in a row. today: what today counts as,
+// when it should show as clean already (the day secured).
+export function weekTrack(t, { key = 'week', today = null } = {}) {
+  const cells = weekCells(t).map((c) => (c.s === 'today' && today ? { ...c, s: today } : c));
+  const good = cells.map((c) => c.s === 'clean');
+  const dots = cells.map((c, i) => {
     const inner = c.s === 'today' ? miniRing(c.pct, 26) : c.s === 'clean' ? icon('check') : c.s === 'missed' ? icon('close') : '';
-    return `<span class="wk-day ${c.s}" title="${esc(`${fmtDay(c.date)}: ${c.label}`)}"><span class="wk-dot">${inner}</span><span class="wk-l">${esc(dayLetter(c.date))}</span></span>`;
+    const runCls = good[i] ? ` run${good[i - 1] ? ' run-l' : ''}${good[i + 1] ? ' run-r' : ''}` : '';
+    return `<span class="wk-day ${c.s}${runCls}" title="${esc(`${fmtDay(c.date)}: ${c.label}`)}"><span class="wk-dot">${inner}</span><span class="wk-l">${esc(dayLetter(c.date))}</span></span>`;
   }).join('');
   const spoken = cells.map((c) => `${fmtDay(c.date, { weekday: 'long' })} ${c.label}`).join(', ');
+  return `<span class="wk daytrack" role="img" aria-label="${esc(spoken)}" data-enter="${key}" data-kind="dots">${dots}</span>`;
+}
+
+function weekTile(t) {
+  const cells = weekCells(t);
+  const closed = cells.filter((c) => ['clean', 'kept', 'missed', 'quiet'].includes(c.s));
+  const clean = cells.filter((c) => c.s === 'clean').length;
+  const run = cleanRun(t);
+  const note = run >= 2 ? `${run} clean in a row` : run === 1 ? 'Clean yesterday' : closed.length ? 'A clean day starts a run' : 'The week starts today';
   const val = closed.length ? big(tn('clean-week', clean), ` of ${closed.length} clean`) : big(tn('clean-week', clean), ' clean');
-  return tile('#/plan', 'ov-week', 'today', 'This week', `${val}<span class="wk" role="img" aria-label="${esc(spoken)}" data-enter="week" data-kind="dots">${dots}</span>${sub(note)}`);
+  return tile('#/plan', 'ov-week', 'today', 'This week', `${val}${weekTrack(t)}${sub(note)}`);
 }
 
 // Steps for the last seven days from Apple Health, today live.

@@ -4,10 +4,10 @@
 import {
   icon, fmtInt, bar, strengthChip, fmtDay, esc, left, urgency, CHECK, fmtClock, state, addDays, fmtMin, localNowHM,
   safeColor, isIOS, isStandalone, ago, miniRing, brandMark, pageHead, iconLink, haptic, act, api, reduced, RING_MS, fx,
-  react, toast, $app, form2obj,
+  react, toast, $app, form2obj, dayShare,
 } from './ui.js';
 import { AUTO_LABELS, autoValue } from './data.js';
-import { ringHero, nextTile, overview, afterToday } from './today.js';
+import { ringHero, nextTile, overview, afterToday, weekTrack, cleanRun } from './today.js';
 import { mailChip } from './mail.js';
 import { richHtml } from './rich.js';
 import { goalsHref } from './goals.js';
@@ -251,6 +251,30 @@ export function dodgeItem(ref) {
   return k && { kind: 'task', id: k.id, title: k.title, heavy: k.heavy, deadline: k.deadline };
 }
 
+// Up next's deadline as a gauge from the start of the day: the knob is now and moves on (app.js), the
+// end is the deadline. It takes the card's colour, which warms as the deadline nears.
+function deadlineGauge(n) {
+  const v = dayShare(n.dueAt);
+  return `<div class="now-gauge">
+      <div class="gauge" style="--v:${v.toFixed(3)}" data-gauge-due="${n.dueAt}" role="img" aria-label="${esc(`Due ${dueLabel(n.deadline)}`)}"><i></i><b>${icon('bolt')}</b></div>
+      <span class="gauge-scale" aria-hidden="true"><span>Today</span><span>Due <b>${esc(dueLabel(n.deadline))}</b></span></span>
+    </div>`;
+}
+
+// Everything due today done with nothing missed: the run of clean days, counting today, big on a glow,
+// with the week's days under it.
+function securedCard(t) {
+  // A rest day neither breaks nor adds to the run, but the moment still counts at least this day.
+  const run = Math.max(1, cleanRun(t) + (t.rest ? 0 : 1));
+  return `<section class="card now secured glow-card" aria-label="Day secured">
+    <span class="glow-flame" aria-hidden="true">${icon('flame')}</span>
+    <b class="glow-num">${run}</b>
+    <span class="glow-label">${run === 1 ? 'Day secured' : 'clean days in a row'}</span>
+    <p class="glow-sub">Everything due today is done.${t.bonusDue > 0 ? ` Keep it clean to midnight for +${t.bonusDue} HP.` : ''}</p>
+    ${weekTrack(t, { key: 'week-glow', today: t.rest ? null : 'clean' })}
+  </section>`;
+}
+
 function nowPanel(t) {
   if (t.focus) {
     const total = t.focus.minutes * 60000;
@@ -272,10 +296,10 @@ function nowPanel(t) {
     if (!t.progress.total) return '';
     // "Secured" only when nothing was missed; otherwise it is just over for today.
     const missed = t.progress.total - t.progress.done - t.progress.open > 0;
+    if (!missed) return securedCard(t);
     return `<section class="card now secured">
-      <p class="eyebrow">${icon('check')}${missed ? 'Nothing left today' : 'Day secured'}</p>
-      <h2 class="now-title">${missed ? 'Everything else due today is done, Boss.' : 'Everything due today is done.'}</h2>
-      ${!missed && t.bonusDue > 0 ? `<p class="now-meta">Keep it clean to midnight for +${t.bonusDue} HP.</p>` : ''}
+      <p class="eyebrow">${icon('check')}Nothing left today</p>
+      <h2 class="now-title">Everything else due today is done, Boss.</h2>
     </section>`;
   }
   const l = n.dueAt ? left(n.dueAt) : null;
@@ -309,6 +333,7 @@ function nowPanel(t) {
     <div class="now-top"><p class="eyebrow">${icon(n.isFocus ? 'focus' : 'bolt')}${label}</p>${l ? `<span class="now-left ${l.cls}" data-left="${n.dueAt}">${l.text}</span>` : ''}</div>
     <h2 class="now-title">${esc(n.title)}</h2>
     <p class="now-meta">${metaParts.join(', ')}</p>
+    ${n.dueAt ? deadlineGauge(n) : ''}
     ${sub.length ? `<p class="now-cue">${sub.join('<br>')}</p>` : ''}
     <div class="now-progress">
       <div class="np-bar" aria-hidden="true"><i data-grow="day" style="width:${p.total ? Math.round((p.done / p.total) * 100) : 0}%"></i></div>
@@ -385,9 +410,9 @@ function timeline(t) {
       nowPlaced = true;
       marker = `<div class="tl-now"><span>${now}</span></div>`;
     }
-    return `${marker}<div class="tl-row ${r.kind}${r.past ? ' past' : ''}${r.done ? ' done' : ''}">
+    return `${marker}<div class="tl-row ${r.kind}${r.past ? ' past' : ''}${r.done ? ' done' : ''}"${safeColor(r.color) ? ` style="--c:${safeColor(r.color)}"` : ''}>
       <span class="tl-time">${r.time}</span>
-      <span class="tl-bar"${safeColor(r.color) ? ` style="--c:${safeColor(r.color)}"` : ''}></span>
+      <span class="tl-bar"></span>
       <span class="tl-body"><span class="tl-title">${r.done ? icon('check', 'done-ic') : ''}${esc(r.title)}</span>${r.sub ? `<span class="tl-sub">${esc(r.sub)}</span>` : ''}</span>
     </div>`;
   }).join('') + (nowPlaced ? '' : `<div class="tl-now"><span>${now}</span></div>`);

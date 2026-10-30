@@ -32,11 +32,13 @@
 .need-how { margin-top: 10px; color: var(--text-3); line-height: 1.5; }
 .need-more { margin-top: 12px; }
 .need-more summary { cursor: pointer; font-weight: 620; color: var(--text-2); margin-bottom: 10px; }
+/* Each card's icon on a tile of its own, as on a habit card: lit a little from the top. */
 .sic {
-  width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; flex: none;
-  background: var(--raised); color: var(--text); box-shadow: inset 0 0 0 1px var(--line);
+  width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; flex: none; color: var(--text);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--text) 10%, var(--raised)), var(--inset));
+  box-shadow: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
-.sic .ic { width: 18px; height: 18px; }
+.sic .ic { width: 19px; height: 19px; }
 .scard > p.muted { line-height: 1.55; }
 .howto { margin-top: 14px; }
 .howto summary { color: var(--silver); padding: 0 2px; border-radius: 10px; }

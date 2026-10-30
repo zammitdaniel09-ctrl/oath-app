@@ -105,7 +105,7 @@ function followToday(c) {
   c.today = today;
 }
 
-// The red line and its label creep down the day without a redraw; at midnight the page redraws for the new day.
+// The red line, its label and the rail creep down the day without a redraw; at midnight the page redraws for the new day.
 setInterval(() => {
   if (state.route !== 'calendar') return;
   const c = cal();
@@ -117,6 +117,7 @@ setInterval(() => {
   const min = minutesOf(localNowHM());
   $app.querySelectorAll('.cal-now').forEach((el) => { el.style.top = `${((min / 1440) * 100).toFixed(3)}%`; });
   $app.querySelectorAll('.cal-nowlbl').forEach((el) => { el.style.top = `${((min / 1440) * 100).toFixed(3)}%`; el.textContent = hm(min); });
+  $app.querySelectorAll('.cal-rail').forEach((el) => { el.style.height = `${((min / 1440) * 100).toFixed(3)}%`; });
 }, 30000);
 
 // The next full hour, at the latest 23:00 so a new event still starts today.

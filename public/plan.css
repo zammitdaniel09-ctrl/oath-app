@@ -20,7 +20,8 @@
 .pl-hero-ring b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.1875rem; font-weight: 740; color: var(--text); font-variant-numeric: tabular-nums; }
 .pl-hero-ring b small { font-size: 0.625rem; }
 
-.pl-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+/* The days on the day track (kit.css), a band under clean days in a row. */
+.pl-week { --dot: 34px; margin-top: 18px; }
 .pl-day { display: grid; justify-items: center; gap: 5px; min-width: 0; }
 .pl-dot {
   width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
@@ -86,21 +87,22 @@
 
 /* Small labelled facts in a row: a time, the HP, a streak, a goal. */
 .pl-chips { display: flex; flex-wrap: wrap; gap: 5px 6px; min-width: 0; }
+/* Small facts as status chips (kit.css): --st is the colour, the tint and the rim follow it. */
 .pl-chip {
-  display: inline-flex; align-items: center; gap: 4px; max-width: 100%; min-height: 22px; padding: 0 8px; border-radius: 7px;
-  background: var(--fill-2); color: var(--text-2); font-size: 0.75rem; font-weight: 580; line-height: 1.2;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  --st: var(--text-2);
+  display: inline-flex; align-items: center; gap: 4px; max-width: 100%; min-height: 24px; padding: 0 9px 0 8px; border-radius: 999px;
+  color: var(--st); background: color-mix(in srgb, var(--st) 11%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--st) 20%, transparent);
+  font-size: 0.75rem; font-weight: 620; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pl-chip .ic { width: 12px; height: 12px; flex: none; }
-.pl-chip.hp { font-family: var(--mono); font-weight: 500; }
-.pl-chip.nn, .pl-chip.hard { color: var(--red); background: rgba(255, 45, 85, 0.11); }
-.pl-chip.streak { color: var(--blaze); background: rgba(255, 140, 26, 0.1); }
+.pl-chip.hp { --st: var(--merlot-hi); font-family: var(--mono); font-weight: 500; }
+.pl-chip.nn, .pl-chip.hard, .pl-chip.late { --st: var(--red); }
+.pl-chip.streak { --st: var(--blaze); }
 .pl-chip.auto .ic { color: var(--red); }
 .pl-chip.goal { max-width: min(220px, 100%); }
-.pl-chip.late { color: var(--red); background: rgba(255, 45, 85, 0.11); }
-.pl-chip.due.honey { color: var(--honey); }
-.pl-chip.due.blaze { color: var(--blaze); }
-.pl-chip.due.ember, .pl-chip.due.over { color: var(--ember); background: rgba(255, 90, 31, 0.12); }
+.pl-chip.due.honey { --st: var(--honey); }
+.pl-chip.due.blaze { --st: var(--blaze); }
+.pl-chip.due.ember, .pl-chip.due.over { --st: var(--ember); }
 
 /* ---------- Habits ---------- */
 
@@ -127,40 +129,55 @@
 .pl-chev { width: 16px; height: 16px; color: var(--text-3); transform: rotate(90deg); transition: transform var(--spring-ms) var(--spring); }
 .pl-habit.open .pl-chev { transform: rotate(-90deg); }
 
-/* A habit's days as small squares: the last two weeks on its card, and the full history (.heat) with its
-   key when it is open. The same colours in all three. */
+/* A habit's days as squares: the last weeks across its card (.pl-weeks, 30 drawn, 20 on a phone), and the full history (.heat)
+   with its key when it is open. The same colours in all three. On the card, as on a heatmap, a day not
+   done is a dim square of the colour a kept one is lit in. */
 @keyframes heat-in { from { opacity: 0; transform: translateY(-4px); } }
-.pl-strip { display: grid; grid-template-columns: repeat(14, minmax(0, 9px)); gap: 3px; }
-.pl-strip i { height: 9px; border-radius: 2.5px; background: var(--fill-2); }
-.pl-strip i.h-off, .pl-strip i.h-pad { background: transparent; box-shadow: inset 0 0 0 1px var(--line-soft); }
+.pl-weeks {
+  --wk: 20;
+  grid-column: 1 / -1; display: grid; grid-template-rows: repeat(7, auto); grid-template-columns: repeat(var(--wk), minmax(0, 1fr)); grid-auto-flow: column;
+  gap: 3px; margin-top: 2px;
+}
+.pl-weeks i:nth-child(-n + 70) { display: none; }
+@media (min-width: 700px) {
+  .pl-weeks { --wk: 30; }
+  .pl-weeks i:nth-child(-n + 70) { display: block; }
+}
+.pl-weeks i { aspect-ratio: 1; border-radius: 30%; background: color-mix(in srgb, var(--green) 9%, var(--inset)); }
+.pl-weeks i.h-future { background: transparent; box-shadow: inset 0 0 0 1px var(--line-soft); }
+.pl-weeks i:is(.h-off, .h-pad) { background: color-mix(in srgb, var(--text) 4%, transparent); }
 .heat { display: grid; grid-template-rows: repeat(7, 11px); grid-auto-flow: column; grid-auto-columns: 11px; gap: 3px; margin-top: 16px; overflow-x: auto; padding-bottom: 2px; }
 .heat i, .heat-key i { border-radius: 3px; background: var(--fill-2); }
 .heat i.h-pad, .heat i.h-off { background: transparent; }
-:is(.heat, .heat-key, .pl-strip) i:is(.h-none, .h-flex) { background: var(--raised); }
-:is(.heat, .heat-key, .pl-strip) i.h-kept { background: var(--green); }
-:is(.heat, .heat-key, .pl-strip) i.h-min { background: rgba(63, 240, 185, 0.45); }
-:is(.heat, .heat-key, .pl-strip) i.h-pardoned { background: repeating-linear-gradient(45deg, var(--text-3) 0 2px, transparent 2px 4px); }
-:is(.heat, .heat-key, .pl-strip) i.h-missed { background: var(--red); }
-:is(.heat, .heat-key, .pl-strip) i.h-rest { background: transparent; box-shadow: inset 0 0 0 1.5px var(--blue); }
-:is(.heat, .heat-key, .pl-strip) i.h-open { background: transparent; box-shadow: inset 0 0 0 1.5px var(--silver); }
+:is(.heat, .heat-key) i:is(.h-none, .h-flex) { background: var(--raised); }
+:is(.heat, .heat-key, .pl-weeks) i.h-kept { background: var(--green); }
+.pl-weeks i.h-kept { box-shadow: 0 0 6px -1px color-mix(in srgb, var(--green) 55%, transparent); }
+:is(.heat, .heat-key, .pl-weeks) i.h-min { background: rgba(63, 240, 185, 0.45); }
+:is(.heat, .heat-key, .pl-weeks) i.h-pardoned { background: repeating-linear-gradient(45deg, var(--text-3) 0 2px, transparent 2px 4px); }
+:is(.heat, .heat-key, .pl-weeks) i.h-missed { background: var(--red); }
+:is(.heat, .heat-key, .pl-weeks) i.h-rest { background: transparent; box-shadow: inset 0 0 0 1.5px var(--blue); }
+:is(.heat, .heat-key, .pl-weeks) i.h-open { background: transparent; box-shadow: inset 0 0 0 1.5px var(--silver); }
 .heat-key i:is(.h-none, .h-flex) { box-shadow: inset 0 0 0 1px var(--line-strong); }
 .heat-key { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; font-size: 0.75rem; color: var(--text-2); }
 .heat-key span { display: inline-flex; align-items: center; gap: 5px; }
 .heat-key i { width: 10px; height: 10px; display: inline-block; }
 
+/* Today's state as a status chip: done with a tick, open with a dashed ring that warms as the deadline nears, missed with a cross. */
 .pl-pill {
-  display: inline-flex; align-items: center; gap: 4px; min-height: 26px; padding: 0 10px; border-radius: 999px;
-  background: var(--raised); color: var(--text-2); font-size: 0.75rem; font-weight: 660; white-space: nowrap; box-shadow: inset 0 0 0 1px var(--line);
+  --st: var(--text-2);
+  display: inline-flex; align-items: center; gap: 5px; min-height: 28px; padding: 0 11px 0 9px; border-radius: 999px;
+  color: var(--st); background: color-mix(in srgb, var(--st) 13%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--st) 28%, transparent);
+  font-size: 0.75rem; font-weight: 680; white-space: nowrap;
 }
 .pl-pill .ic { width: 13px; height: 13px; stroke-width: 2.6; }
-.pl-pill.done { background: rgba(63, 240, 185, 0.14); color: var(--menthol); box-shadow: none; }
-.pl-pill.missed { background: rgba(255, 45, 85, 0.14); color: var(--red); box-shadow: none; }
-.pl-pill.open, .pl-pill.week { color: var(--text); box-shadow: inset 0 0 0 1px var(--line-strong); }
-.pl-pill.open.honey { color: var(--honey); box-shadow: inset 0 0 0 1px rgba(255, 194, 51, 0.5); }
-.pl-pill.open.blaze { color: var(--blaze); box-shadow: inset 0 0 0 1px rgba(255, 140, 26, 0.55); }
-.pl-pill.open.ember, .pl-pill.open.over { color: var(--ember); background: rgba(255, 90, 31, 0.12); box-shadow: inset 0 0 0 1px rgba(255, 90, 31, 0.6); }
-.pl-pill.rest, .pl-pill.off { background: transparent; color: var(--text-3); }
-.pl-pill.leaving { color: var(--amber); }
+.pl-pill.done { --st: var(--menthol); }
+.pl-pill.missed { --st: var(--red); }
+.pl-pill.open, .pl-pill.week { --st: var(--chrome-c); }
+.pl-pill.open.honey { --st: var(--honey); }
+.pl-pill.open.blaze { --st: var(--blaze); }
+.pl-pill.open.ember, .pl-pill.open.over { --st: var(--ember); }
+.pl-pill.rest, .pl-pill.off { --st: var(--text-3); }
+.pl-pill.leaving { --st: var(--amber); }
 
 .pl-h-more { padding: 0 16px 14px; border-top: 1px solid var(--line-soft); }
 .pl-h-more:not([hidden]) { animation: heat-in 220ms var(--ease) both; }
@@ -207,6 +224,13 @@
 .pl-col.is-today .pl-dl { color: var(--text); font-weight: 700; }
 
 .pl-add { margin-top: 10px; }
+.pl-group { --edge: var(--line-strong); }
+.pl-group.overdue { --edge: var(--red); }
+.pl-group.today { --edge: var(--honey); }
+.pl-group.tomorrow { --edge: var(--blaze); }
+.pl-group.week { --edge: var(--chrome-c); }
+.pl-group .pl-gh h3::before { content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--edge); vertical-align: 2px; }
+.pl-group .pl-task { box-shadow: inset 3px 0 0 var(--edge); }
 
 .pl-task { grid-template-columns: 50px minmax(0, 1fr); gap: 0; min-height: 0; padding: 0; }
 .pl-task + .pl-task::before { left: 56px; }
@@ -228,9 +252,13 @@
   .pl-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
+@media (min-width: 1240px) {
+  .pl-board { display: grid; grid-template-columns: repeat(auto-fill, minmax(228px, 1fr)); gap: 0 14px; align-items: start; }
+}
+
 @media (min-width: 960px) {
   .pl-hero { display: grid; grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.5fr); gap: 0 36px; align-items: center; padding: 22px 24px 20px; }
-  .pl-week { margin-top: 0; padding-top: 0; border-top: 0; }
+  .pl-week { --dot: 40px; margin-top: 0; }
   .pl-dot { width: 40px; height: 40px; }
   .pl-stats { grid-column: 1 / -1; margin-top: 20px; }
   .pl-filters { flex-wrap: wrap; overflow: visible; margin: 0 0 2px; padding: 2px 0 6px; }

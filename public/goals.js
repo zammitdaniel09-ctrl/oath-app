@@ -36,11 +36,13 @@ function paceChip(g) {
 function goalCard(g) {
   const closed = g.status !== 'active';
   const next = !closed && g.nextStep ? `<span class="goal-next">${icon('bolt')}Next: ${esc(g.nextStep.title)}</span>` : '';
+  // How far it has come as a gauge, with a notch where an even pace would have it by today.
+  const gauge = !closed && g.pct !== null ? `<span class="gauge goal-gauge" style="--v:${(Math.max(0, Math.min(100, g.pct)) / 100).toFixed(3)}" role="img" aria-label="${g.pct}% of the way${g.pace ? `, an even pace would be at ${g.pace.expected}%` : ''}"><i></i><b>${icon('goals')}</b>${g.pace ? `<s style="left:${Math.max(0, Math.min(100, g.pace.expected))}%"></s>` : ''}</span>` : '';
   return `<a class="goal-card${closed ? ' closed' : ''}${g.pace ? ` pace-${g.pace.state}` : ''}" href="#/goals/${g.id}">
     <span class="goal-ring">${miniRing(g.pct ?? 0, 52)}${g.pct === null ? '<b class="na">–<span class="sr"> not measured yet</span></b>' : `<b>${g.pct}<small>%</small></b>`}</span>
     <span class="goal-text"><span class="goal-title">${esc(g.title)}</span>
       <span class="goal-meta">${closed ? `<span class="goal-status${g.status === 'done' ? ' done' : ''}">${g.status === 'done' ? 'Achieved' : 'Dropped'}</span>` : `${paceChip(g)}${esc(g.label)}`}${dueText(g) && !closed ? `${String(g.label || '').endsWith('.') ? '' : '.'} ${dueText(g)}` : ''}</span>
-      ${next}</span>
+      ${gauge}${next}</span>
     ${icon('chevron', 'chev')}
   </a>`;
 }
@@ -334,7 +336,7 @@ export function viewGoal() {
     </div>
     <div class="goal-bar${g.pace ? ` pace-${g.pace.state}` : ''}">${bar(g.pct, 'big', `goal-${g.id}`)}${g.pace ? `<i class="pace-mark" style="left:${g.pace.expected}%" title="Even pace: ${g.pace.expected}%"></i>` : ''}</div>
     ${g.pace ? `<p class="pace-line">${paceChip(g)}<span>Even pace: ${g.pace.expected}%</span></p>` : ''}
-    ${!closed && g.nextStep ? `<div class="card next-step">
+    ${!closed && g.nextStep ? `<div class="card next-step has-aurora"><i class="aurora" aria-hidden="true"></i>
       <p class="eyebrow">${icon('bolt')}Next step</p>
       <p class="next-step-title">${esc(g.nextStep.title)}</p>
       ${g.nextStep.dueDate ? `<p class="small muted">Due ${fmtDay(g.nextStep.dueDate)}${g.nextStep.deadline ? ` ${esc(g.nextStep.deadline)}` : ''}${g.nextStep.hard ? ', hard' : ''}</p>` : ''}

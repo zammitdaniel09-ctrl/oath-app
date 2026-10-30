@@ -1,7 +1,7 @@
 // The weekly review: the week in numbers, the coach's write-up and the decisions it asks for, the season,
 // HP over 30 days and the longest streaks.
 import {
-  fmtMin, esc, fmtDay, state, icon, strengthChip, pageHead, iconLink, emptyState, toast, act, api, form2obj,
+  fmtMin, esc, fmtDay, state, icon, strengthChip, pageHead, iconLink, emptyState, toast, act, api, form2obj, smoothPath,
 } from './ui.js';
 import { richHtml } from './rich.js';
 import { goalsStrip } from './today-list.js';
@@ -58,22 +58,38 @@ function reviewCard(r) {
     </div></section>`;
 }
 
-// HP over the last 30 days as a filled line on a fixed 0 to max scale, deaths marked at 0.
+// HP over the last 30 days as a smooth filled curve on a fixed 0 to max scale, deaths marked at 0, and
+// today's HP in a pill over its point.
 function hpArea(days, maxHp) {
   if (days.length < 2) return '<p class="muted small">Not enough days yet</p>';
   const w = 300;
   const h = 84;
   const step = w / (days.length - 1);
   const y = (hp) => (h - 4 - (Math.max(0, hp) / maxHp) * (h - 10)).toFixed(1);
-  const pts = days.map((d, i) => `${(i * step).toFixed(1)} ${y(d.hp_end)}`);
-  const line = `M${pts.join(' L')}`;
+  const pts = days.map((d, i) => [i * step, Number(y(d.hp_end))]);
+  const line = smoothPath(pts);
+  const [lx, ly] = pts[pts.length - 1];
   const deaths = days.map((d, i) => (d.hp_end <= 0 ? `<line x1="${(i * step).toFixed(1)}" x2="${(i * step).toFixed(1)}" y1="0" y2="${h}" class="hp-death"/>` : '')).join('');
   const low = days.reduce((a, d) => (d.hp_end < a.hp_end ? d : a), days[0]);
   const label = `HP at the end of each of the last ${days.length} days, from ${days[0].hp_end} to ${days[days.length - 1].hp_end}, lowest ${low.hp_end} on ${fmtDay(low.date)}.`;
-  return `<svg class="hp-area" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="${label}">
+  return `<div class="hp-plot"><svg class="hp-area" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="${label}">
     <defs><linearGradient id="hp-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--hp-area-0, rgba(225,6,0,0.45))"/><stop offset="1" style="stop-color:var(--hp-area-1, rgba(225,6,0,0))"/></linearGradient></defs>
     ${deaths}<path d="${line} L${w} ${h} L0 ${h} Z" fill="url(#hp-fill)"/><path d="${line}" class="hp-line"/></svg>
+    <i class="hp-dot" style="left:${((lx / w) * 100).toFixed(1)}%;top:${((ly / h) * 100).toFixed(1)}%" aria-hidden="true"></i>
+    <span class="tip-pill end" style="left:${((lx / w) * 100).toFixed(1)}%;top:${((ly / h) * 100).toFixed(1)}%" aria-hidden="true">${days[days.length - 1].hp_end} HP</span></div>
     <div class="bc-axis" aria-hidden="true"><span>${fmtDay(days[0].date)}</span><span class="last">${fmtDay(days[days.length - 1].date)}</span></div>`;
+}
+
+// The longest streak running, big on a glow: the number, a flame, the habit.
+function streakGlow(x) {
+  if (!x?.streak) return '';
+  const unit = x.weekly ? (x.streak === 1 ? 'week' : 'weeks') : (x.streak === 1 ? 'day' : 'days');
+  return `<section class="section"><div class="glow-card" role="img" aria-label="${esc(`Longest streak: ${x.name}, ${x.streak} ${unit}`)}">
+      <span class="glow-flame" aria-hidden="true">${icon('flame')}</span>
+      <b class="glow-num">${x.streak}</b>
+      <span class="glow-label">${unit === 'days' || unit === 'day' ? `${unit === 'day' ? 'Day' : 'Days'} streak` : `${unit === 'week' ? 'Week' : 'Weeks'} streak`}</span>
+      <p class="glow-sub">${esc(x.name)}</p>
+    </div></section>`;
 }
 
 // The season at the head of the review: HP now and over 30 days, pardons, and the longest streaks.
@@ -103,7 +119,7 @@ export function viewReview() {
   const dayRows = r.days.slice(0, 30).map((d) => `<tr><td>${fmtDay(d.date)}${d.rest ? ' <span class="faint">rest</span>' : ''}</td><td class="num">${d.kept}</td><td class="num">${d.missed ? `<span class="bad">${d.missed}</span>` : 0}</td><td class="num">${d.hp_end}${d.bonus ? ` <span class="faint">(+${d.bonus})</span>` : ''}</td></tr>`).join('');
   const missRows = r.misses.slice(0, 40).map((m) => `<div class="li li-plain">
       <span class="li-body"><span class="li-title">${esc(m.title)}</span>${m.pardoned || m.overturned ? `<span class="li-sub">${m.overturned ? 'Overturned by Apple Health' : `Pardoned: ${esc(m.reason)}${m.plan ? `<br>Plan: ${esc(m.plan)}` : ''}`}</span>` : ''}</span>
-      <span class="li-side small">${fmtDay(m.date)}<br>${m.overturned ? '<span class="good">overturned</span>' : m.pardoned ? 'pardoned' : `<span class="bad">minus ${m.hpLost}${m.repeat ? ', twice' : ''}</span>`}</span></div>`).join('');
+      <span class="li-side small miss-side">${fmtDay(m.date)}${m.overturned ? `<span class="st ok">${icon('check')}Overturned</span>` : m.pardoned ? '<span class="st off">Pardoned</span>' : `<span class="st bad">${icon('close')}${m.hpLost} HP${m.repeat ? ', twice' : ''}</span>`}</span></div>`).join('');
   const deaths = r.deaths.map((d) => `<div class="li li-plain"><span class="li-body"><span class="li-title">Killed by ${esc(d.cause)}</span></span><span class="li-side small faint">${fmtDay(d.date)}, season ${d.season - 1} ended</span></div>`).join('');
   const stale = r.stale.map((k) => `<div class="triage-row"><span class="li-title">${esc(k.title)}</span>
       <div class="triage-actions" role="group" aria-label="Decide">
@@ -115,6 +131,7 @@ export function viewReview() {
   ctx.shell(`${pageHead('Review', { actions: iconLink('#/settings', 'settings', 'Settings') })}
     <div class="split"><div>
       ${seasonCard(state.season)}
+      ${streakGlow(state.season?.streaks?.[0])}
       ${reviewCard(r)}
       <section class="section"><div class="gh"><h2>This week so far</h2></div><div class="card">${weekStats(r.thisWeek)}</div></section>
       ${stale ? `<section class="section"><div class="gh"><h2>Clear the backlog</h2><span class="gh-count">${r.stale.length}</span></div><div class="card triage">${stale}</div></section>` : ''}
