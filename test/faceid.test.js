@@ -289,12 +289,13 @@ test('the password alone opens Oath when he allows it, and eight characters are 
 
 test('a theme is saved with the settings, comes back with the day, and an unknown one is refused', async () => {
   assert.equal((await call('GET', '/api/settings')).data.theme, 'oath', 'the original look by default');
-  const r = await call('PATCH', '/api/settings', { theme: 'atelier' });
+  const r = await call('PATCH', '/api/settings', { theme: 'tape' });
   assert.equal(r.status, 200);
-  assert.equal(r.data.theme, 'atelier');
-  assert.equal((await call('GET', '/api/today')).data.settings.theme, 'atelier', 'other devices follow it');
+  assert.equal(r.data.theme, 'tape');
+  assert.equal((await call('GET', '/api/today')).data.settings.theme, 'tape', 'other devices follow it');
   assert.equal((await call('PATCH', '/api/settings', { theme: 'neon' })).status, 400);
-  assert.equal((await call('GET', '/api/settings')).data.theme, 'atelier');
+  for (const gone of ['atelier', 'sovereign']) assert.equal((await call('PATCH', '/api/settings', { theme: gone })).status, 400, `${gone} was removed`);
+  assert.equal((await call('GET', '/api/settings')).data.theme, 'tape');
   assert.equal((await call('PATCH', '/api/settings', { theme: 'oath' })).status, 200);
 });
 

@@ -37,9 +37,10 @@
   <link rel="stylesheet" href="/plan.css">
   <script>
     // The saved theme before the first paint (theme.js switches and saves): its stylesheet and colours. The icon is one for every theme.
+    // Only the looks still offered (THEMES in theme.js, besides the original): a removed one paints as Oath.
     try {
       var t = JSON.parse(localStorage.getItem('oath.theme') || 'null'), d = document;
-      if (t && /^[a-z]+$/.test(t.id) && t.id !== 'oath') {
+      if (t && /^(liquid|tape)$/.test(t.id)) {
         d.documentElement.setAttribute('data-theme', t.id);
         d.write('<link rel="stylesheet" id="theme-css" href="/themes/' + t.id + '.css">');
         if (/^#[0-9a-f]{6}$/i.test(t.color)) d.querySelector('meta[name="theme-color"]').content = t.color;

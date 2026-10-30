@@ -18,19 +18,9 @@ export const THEMES = [
     p: { bg: '#000', card: 'rgba(255,255,255,0.07)', text: '#f5f5f7', sub: '#8e8e99', a: '#f5f5f7', b: '#9d9da8', c: '#28c840', font: "'Satoshi', system-ui, sans-serif", r: '20px', fx: 'liquid' },
   },
   {
-    id: 'atelier', name: 'Atelier', line: 'A journal in colour', note: 'Dark glass under a lime glow, big figures in vivid gradients, pills and a lime key action.',
-    color: '#030303', light: false,
-    p: { bg: '#030303', card: '#181818', text: '#f6f6f4', sub: '#8e8e8a', a: '#ffc53d', b: '#c6f03a', c: '#2fd4ae', font: "'Satoshi', system-ui, sans-serif", r: '16px', fx: 'atelier' },
-  },
-  {
     id: 'tape', name: 'Tape', line: 'Dot-matrix dashboard', note: 'Charcoal tiles on a warm peach ground, figures in dots and one orange-red signal.',
     color: '#f2bc95', light: true,
     p: { bg: '#eeb08a', card: '#1e1d1c', text: '#fffaf5', sub: '#5a4337', a: '#ff3b1f', b: '#ffffff', c: '#a39c94', font: "'Oath Dot', 'Geist Mono', ui-monospace, monospace", r: '12px', fx: 'tape' },
-  },
-  {
-    id: 'sovereign', name: 'Blueprint', line: 'Cobalt on white', note: 'White drafting paper, cobalt line work on a grid, serif capitals and technical panels.',
-    color: '#f7f8fc', light: true,
-    p: { bg: '#f7f8fc', card: '#ffffff', text: '#2341c4', sub: '#5a69b6', a: '#2341c4', b: '#5b7cff', c: '#3a9ae0', font: "'New York', 'Iowan Old Style', ui-serif, Georgia, serif", r: '2px', fx: 'blueprint' },
   },
 ];
 const BY_ID = Object.fromEntries(THEMES.map((t) => [t.id, t]));

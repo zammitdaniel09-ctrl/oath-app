@@ -4,8 +4,9 @@ import { logEvent } from './db.js';
 import { validTime } from './time.js';
 import { saveSettings, getSettings, withGame, RuleError } from './engine.js';
 
-// The looks public/theme.js offers; the app sends one of these names.
-const THEMES = ['oath', 'liquid', 'atelier', 'tape', 'sovereign'];
+// The looks public/theme.js offers; the app sends one of these names. Atelier and Blueprint
+// ('sovereign') were removed in v42 and are refused.
+const THEMES = ['oath', 'liquid', 'tape'];
 
 // The game's rules, with the range each one may take. Steps keep the numbers round.
 export const RULES = {
