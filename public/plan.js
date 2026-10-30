@@ -164,7 +164,17 @@ function weeks(heat, today) {
   const cells = [...Array(n - past.length).fill('pad'), ...past, ...Array(6 - dow).fill('future')];
   const kept = past.filter((s) => DONE.has(s)).length;
   const missed = past.filter((s) => s === 'missed').length;
-  return `<span class="pl-weeks" role="img" aria-label="Last ${WEEKS} weeks: ${kept} kept, ${missed} missed">${cells.map((s) => `<i class="h-${s}"></i>`).join('')}</span>`;
+  // The month over the week it starts in, for themes that show them (hidden in the base, plan.css). --c is
+  // its column of 30, --cp its column of the phone's last 20; the first ten columns are .early.
+  const monday = addDays(today, -dow);
+  let last = '';
+  const months = Array.from({ length: WEEKS }, (_, i) => {
+    const m = fmtDay(addDays(monday, -7 * (WEEKS - 1 - i)), { month: 'short' });
+    const label = i && m !== last ? `<i class="${i < 10 ? 'early' : ''}" style="--c:${i + 1};--cp:${i - 9}">${esc(m)}</i>` : '';
+    last = m;
+    return label;
+  }).join('');
+  return `<span class="pl-months" aria-hidden="true">${months}</span><span class="pl-weeks" role="img" aria-label="Last ${WEEKS} weeks: ${kept} kept, ${missed} missed">${cells.map((s) => `<i class="h-${s}"></i>`).join('')}</span>`;
 }
 
 function habitRow(h, p) {
