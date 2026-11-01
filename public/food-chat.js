@@ -3,7 +3,7 @@
 // the meal to log it to, and Log. While a card is open the next message changes it ("make it three
 // eggs", "no toast"), and the card that comes back is the whole meal as it now stands. Nothing is logged
 // until Log. The thread is kept on this phone; anything logged from a sheet while here is said in it too.
-import { state, esc, api, toast, icon, haptic, num, fmtDay, localToday, reportProblem } from './ui.js';
+import { state, esc, api, toast, icon, haptic, num, fmtDay, localToday, reportProblem, addDays } from './ui.js';
 import { show, amountText, total, refOf } from './nutrition.js';
 import { chatToEnd } from './motion.js';
 
@@ -118,7 +118,7 @@ async function readText(text, before, open) {
     if (r.kind === 'meal') {
       const still = open && find(open.id);
       if (still) still.state = 'replaced';
-      push({ role: 'food', kind: 'card', state: 'open', reply: r.reply || null, title: r.summary || null, items: D.photoItemsFrom(r), said, slot: open?.slot || null });
+      push({ role: 'food', kind: 'card', state: 'open', reply: r.reply || null, title: r.summary || null, items: D.photoItemsFrom(r), said, slot: r.slot || open?.slot || null, date: r.date || open?.date || null });
     } else {
       push({ role: 'food', kind: 'say', ask: true, text: r.question || 'What did you have?', said });
     }
@@ -223,7 +223,7 @@ async function logCard(m) {
   m.mealLogId = m.mealLogId || D.uuid();
   save();
   setBusy('log');
-  const { n, queued } = await D.logReviewed(m.items, slot, { asMeal, name, id: m.mealLogId });
+  const { n, queued } = await D.logReviewed(m.items, slot, { asMeal, name, id: m.mealLogId, date: m.date || null });
   chat().busy = null;
   if (!n) {
     render();
@@ -231,16 +231,17 @@ async function logCard(m) {
   }
   haptic('log-food');
   m.state = 'logged';
-  m.done = { rows, slot, meal: asMeal ? name : null };
+  m.done = { rows, slot, meal: asMeal ? name : null, date: m.date || null };
   state.foodToday = null;
   await loadChatDay().catch(() => {});
-  const word = D.SLOT[slot].toLowerCase();
+  const word = `${D.SLOT[slot].toLowerCase()}${onDay(m.date)}`;
   const est = m.items.some((it) => !it.edited) ? '~' : '';
   push({
     role: 'food', kind: 'logged', queued,
     text: asMeal ? `Logged ${name.replace(/^(A|An|The) /, (w) => w.toLowerCase())} as one meal (${rows.length} foods) to ${word}` : `${n === 1 ? `Logged ${rows[0]?.name || 'it'}` : `Logged ${n} foods`} to ${word}`,
     kcal: num(t?.kcal) === null ? null : `${est}${fmt(t.kcal)}${t.missing?.kcal ? '+' : ''}`,
-    day: queued ? null : daySnap(),
+    // Where today stands only after a log to today.
+    day: queued || m.date ? null : daySnap(),
   });
   render();
 }
@@ -277,6 +278,20 @@ const dayOf = (iso) => {
   const d = new Date(iso);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
+// " yesterday" or " on Saturday 31 Oct" after a meal's name, for a log that is not today's.
+function onDay(date) {
+  if (!date || date === localToday()) return '';
+  return date === addDays(localToday(), -1) ? ' yesterday' : ` on ${fmtDay(date, { weekday: 'long', day: 'numeric', month: 'short' })}`;
+}
+
+// The days a card can log to: today, yesterday, and the day he named when it was further back.
+function dayChoices(date) {
+  const yesterday = addDays(localToday(), -1);
+  const out = [['', 'Today'], [yesterday, 'Yesterday']];
+  if (date && date < yesterday) out.push([date, fmtDay(date, { weekday: 'short', day: 'numeric', month: 'short' })]);
+  return out;
+}
+
 function dayWord(date) {
   const today = localToday();
   if (date === today) return 'Today';
@@ -381,6 +396,7 @@ function cardHtml(m) {
     ${asMeal ? `<label class="fc-meal-name"><span>Meal name</span><input class="input" value="${esc(m.mealName ?? m.title ?? '')}" maxlength="120" autocomplete="off" placeholder="Meal" data-chat-cid="${m.id}" data-chat-meal></label>` : ''}
     <ul class="fc-items">${m.items.map((it, i) => itemHtml(m, it, i)).join('') || '<li class="fc-empty">Nothing left on this card.</li>'}</ul>
     ${totalHtml(m)}
+    <div class="fc-slots fc-days" role="radiogroup" aria-label="Day">${dayChoices(m.date).map(([d, l]) => `<button type="button" role="radio" aria-checked="${d === (m.date || '')}" class="fc-slot${d === (m.date || '') ? ' on' : ''}" data-action="food-chat-day" data-cid="${m.id}" data-date="${d}">${l}</button>`).join('')}</div>
     <div class="fc-slots" role="radiogroup" aria-label="Log to">${D.SLOTS.map(([v, l]) => `<button type="button" role="radio" aria-checked="${v === slot}" class="fc-slot${v === slot ? ' on' : ''}" data-action="food-chat-slot" data-cid="${m.id}" data-slot="${v}">${l}</button>`).join('')}</div>
     <button type="button" class="fc-log" data-action="food-chat-log" data-cid="${m.id}"${n && !busy ? '' : ' disabled'}><span>${label}</span></button>
   </div>`;
@@ -526,6 +542,14 @@ export async function chatClick(a, el) {
           b.setAttribute('aria-checked', String(on));
         });
         haptic('toggle');
+      }
+      return true;
+    case 'food-chat-day':
+      if (m) {
+        m.date = el.dataset.date || null;
+        save();
+        haptic('toggle');
+        render();
       }
       return true;
     case 'food-chat-log':

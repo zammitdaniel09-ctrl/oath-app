@@ -379,3 +379,33 @@ test('the food chat: a correction is read against what was listed before, and th
   assert.equal(askedText(d, 0), 'medium grapes');
   assert.equal(plain.reply, null);
 });
+
+test('the food chat: a meal he says was yesterday, at lunch, comes back for that day and meal, and is logged there', async () => {
+  const grapes = (over) => said({ kind: 'meal', summary: 'Medium grapes', reply: '', question: null, items: [mediumGrapes], ...over });
+  const c = scripted([grapes({ days_ago: 1, meal: 'lunch' }), refused]);
+  coach.setCoachClient(c);
+  const y = await post('/api/food/describe', { text: 'yesterday for lunch I had medium grapes' });
+  assert.equal(y.date, '2026-11-01', 'yesterday, in his time zone');
+  assert.equal(y.slot, 'lunch');
+  assert.match(c.requests[0].system[0]?.text || JSON.stringify(c.requests[0].system), /days_ago is the day he ate it/);
+
+  // Today, or no day said: no date, so the card logs to today; a meal he did not name stays open.
+  coach.setCoachClient(scripted([grapes({ days_ago: 0, meal: '' }), refused]));
+  const now = await post('/api/food/describe', { text: 'medium grapes' });
+  assert.equal(now.date, null);
+  assert.equal(now.slot, null);
+  coach.setCoachClient(scripted([typed('Medium grapes', [mediumGrapes]), refused]));
+  assert.equal((await post('/api/food/describe', { text: 'medium grapes' })).date, null, 'an answer without the field is today');
+  // Never further back than six days.
+  coach.setCoachClient(scripted([grapes({ days_ago: 40, meal: 'dinner' }), refused]));
+  assert.equal((await post('/api/food/describe', { text: 'grapes a while ago' })).date, '2026-10-27');
+
+  // What the card sends with that date lands on yesterday's lunch, not today.
+  const e = (await post('/api/food/quick', { id: 'chat-yesterday-grapes', name: 'Grapes', kcal: 104, slot: y.slot, date: y.date })).entry;
+  assert.equal(e.date, '2026-11-01');
+  assert.equal(e.slot, 'lunch');
+  const day = ok(await call('GET', '/api/food/day?date=2026-11-01'));
+  assert.ok(day.entries.some((x) => x.id === e.id), 'on yesterday');
+  const today = ok(await call('GET', '/api/food/day'));
+  assert.ok(!today.entries.some((x) => x.id === e.id), 'not on today');
+});

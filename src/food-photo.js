@@ -20,7 +20,8 @@
 // core values as it is logged (logFood's `fill`), the vitamins, minerals and the rest once the filler
 // has tried a USDA reference and the web (food-enrich.js). Filled values stay marked as estimated.
 import { logEvent } from './db.js';
-import { RuleError } from './engine.js';
+import { RuleError, localNow } from './engine.js';
+import { addDays } from './time.js';
 import { readStructured, aiEnabled, FOOD_MODEL } from './coach.js';
 import { searchFoods, FILL_KEYS, ESTIMATE_KEYS, MICRO_TEXT, cleanFill } from './food.js';
 import { productByBarcode } from './off.js';
@@ -647,6 +648,8 @@ export const TEXT_SCHEMA = obj({
   kind: { type: 'string', enum: ['meal', 'unclear'] },
   summary: STR,
   reply: STR,
+  days_ago: { type: 'integer' },
+  meal: { type: 'string', enum: ['', 'breakfast', 'lunch', 'dinner', 'snacks', 'drinks'] },
   items: { type: 'array', items: obj(MEAL_ITEM) },
   question: maybe(STR),
 });
@@ -660,6 +663,10 @@ kind:
 summary is one short line, such as "Large Burger King fries and a Coke". Never judge the food or call it good or bad.
 
 reply is one short, friendly line back to him in the food chat, under 15 words: what you took it to be and any size you assumed. Call him Boss, never by name, such as "Went with a regular kebab and medium chips, Boss." No judging, no emoji. "" when kind is "unclear".
+
+days_ago is the day he ate it, counted back from today: 0 for today or when he does not say, 1 for yesterday or last night, 2 for the day before yesterday, and for a weekday he names ("on Saturday") the days back to the last one. Never more than 6.
+
+meal is the meal he names ("for lunch", "at breakfast", "dinner", "a snack", "drinks"), or "" when he does not name one.
 
 When the text starts with "Earlier in this chat", he is answering your question or correcting what you listed before: return the whole list as it now stands (the items he did not change as they were, his changes applied, anything new added), never only the change.
 
@@ -695,5 +702,14 @@ export async function readFoodText({ text, before = null } = {}) {
     return unclear(read.question || 'That does not read like food or drink. Try something like "two eggs on toast and a flat white".');
   }
   const items = await matchItems(read.items.slice(0, 12).map(understood), { context: prior ? `${prior}. Now: ${words}` : words });
-  return { kind: 'meal', source: 'text', summary: read.summary, reply: read.reply || null, items };
+  return { kind: 'meal', source: 'text', summary: read.summary, reply: read.reply || null, items, ...(await whenEaten(read)) };
+}
+
+// The day and meal he said, for the chat's card to log to: date only when it was not today (in his time
+// zone), slot only when he named one.
+async function whenEaten(read) {
+  const back = Number.isInteger(read.days_ago) ? Math.min(6, Math.max(0, read.days_ago)) : 0;
+  const slot = ['breakfast', 'lunch', 'dinner', 'snacks', 'drinks'].includes(read.meal) ? read.meal : null;
+  const { today, tz } = back ? await localNow() : {};
+  return { date: back ? addDays(today, -back, tz) : null, slot };
 }

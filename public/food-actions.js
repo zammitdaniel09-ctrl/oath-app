@@ -79,7 +79,9 @@ export async function afterLog(r, name, info = {}) {
 // waiting on this phone.
 // As one meal (`asMeal`, two or more foods): one diary entry named `name`, each food inside it with its
 // own amount, values and estimate; `id` keeps a retry from logging it twice.
-export async function logReviewed(items, slot, { asMeal = false, name = '', id = null } = {}) {
+// date: the day to log to when it is not the one the diary shows (the food chat's card carries its own).
+export async function logReviewed(items, slot, { asMeal = false, name = '', id = null, date = null } = {}) {
+  const dated = () => (date ? { date } : ctx.dated());
   const ready = items.filter((it) => reviewItem(it).mode !== 'none');
   if (asMeal && ready.length > 1) {
     const lines = ready.map((it) => (reviewItem(it).mode === 'match'
@@ -87,7 +89,7 @@ export async function logReviewed(items, slot, { asMeal = false, name = '', id =
       : { ref: 'own', ...ownParts(it) }));
     const title = String(name || '').trim() || 'Meal';
     const kcal = total(ready.map(reviewNutrients)).kcal;
-    const body = { lines, name: title, slot, estimate: ready.some((it) => !it.edited), id: id || uuid(), ...ctx.dated() };
+    const body = { lines, name: title, slot, estimate: ready.some((it) => !it.edited), id: id || uuid(), ...dated() };
     const r = await act(() => ctx.foodPost('meal', body, { name: title, amount: `${lines.length} foods`, kcal }));
     return { n: r ? 1 : 0, queued: Boolean(r?.queued), meal: Boolean(r) };
   }
@@ -98,12 +100,12 @@ export async function logReviewed(items, slot, { asMeal = false, name = '', id =
     let r = null;
     if (m.mode === 'match') {
       // The matched record's gaps, estimated per 100, go back with the line so the server keeps them.
-      const body = { key: it.match.key, qty: Number(it.qty), unit: it.unit, slot, estimate: !it.edited, id: it.logId, ...(it.fill ? { fill: it.fill } : {}), ...ctx.dated() };
+      const body = { key: it.match.key, qty: Number(it.qty), unit: it.unit, slot, estimate: !it.edited, id: it.logId, ...(it.fill ? { fill: it.fill } : {}), ...dated() };
       r = await act(() => ctx.foodPost('log', body, { name: it.match.name, amount: amountText(it.qty, it.unit, it.match), kcal: m.line.nutrients.kcal }));
     } else if (m.mode === 'rough' || m.mode === 'own') {
       // Not in the catalogue, or with his own values: a quick add with its weight, marked as an estimate
       // when it is one.
-      const body = { ...ownParts(it), slot, id: it.logId, ...ctx.dated() };
+      const body = { ...ownParts(it), slot, id: it.logId, ...dated() };
       r = await act(() => ctx.foodPost('quick', body, { name: body.name, amount: body.amount, kcal: body.kcal ?? it.guess?.kcal }));
     } else if (m.error) toast(`${it.match.name}: ${m.error}`, true);
     if (r) { n += 1; queued = queued || r.queued; }
