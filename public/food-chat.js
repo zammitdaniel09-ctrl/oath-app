@@ -284,12 +284,17 @@ function onDay(date) {
   return date === addDays(localToday(), -1) ? ' yesterday' : ` on ${fmtDay(date, { weekday: 'long', day: 'numeric', month: 'short' })}`;
 }
 
-// The days a card can log to: today, yesterday, and the day he named when it was further back.
-function dayChoices(date) {
-  const yesterday = addDays(localToday(), -1);
-  const out = [['', 'Today'], [yesterday, 'Yesterday']];
-  if (date && date < yesterday) out.push([date, fmtDay(date, { weekday: 'short', day: 'numeric', month: 'short' })]);
-  return out;
+// The day a card logs to: Today, Yesterday, or any earlier day from the date picker, which then shows that day.
+// The picker's input covers its chip, so a tap on a phone opens the system's own calendar.
+function dayRow(m) {
+  const today = localToday();
+  const yesterday = addDays(today, -1);
+  const on = m.date || '';
+  const older = Boolean(on) && on < yesterday;
+  const chip = (d, l) => `<button type="button" role="radio" aria-checked="${d === on}" class="fc-slot${d === on ? ' on' : ''}" data-action="food-chat-day" data-cid="${m.id}" data-date="${d}">${l}</button>`;
+  return `<div class="fc-slots fc-days" role="radiogroup" aria-label="Day">${chip('', 'Today')}${chip(yesterday, 'Yesterday')}
+    <label class="fc-slot fc-dpick${older ? ' on' : ''}">${icon('calendar')}<span>${older ? fmtDay(on, { weekday: 'short', day: 'numeric', month: 'short' }) : 'Other day'}</span><input type="date" max="${today}" value="${older ? on : ''}" aria-label="Pick the day" data-action="food-chat-pick-day" data-chat-cid="${m.id}" data-chat-day></label>
+  </div>`;
 }
 
 function dayWord(date) {
@@ -396,7 +401,7 @@ function cardHtml(m) {
     ${asMeal ? `<label class="fc-meal-name"><span>Meal name</span><input class="input" value="${esc(m.mealName ?? m.title ?? '')}" maxlength="120" autocomplete="off" placeholder="Meal" data-chat-cid="${m.id}" data-chat-meal></label>` : ''}
     <ul class="fc-items">${m.items.map((it, i) => itemHtml(m, it, i)).join('') || '<li class="fc-empty">Nothing left on this card.</li>'}</ul>
     ${totalHtml(m)}
-    <div class="fc-slots fc-days" role="radiogroup" aria-label="Day">${dayChoices(m.date).map(([d, l]) => `<button type="button" role="radio" aria-checked="${d === (m.date || '')}" class="fc-slot${d === (m.date || '') ? ' on' : ''}" data-action="food-chat-day" data-cid="${m.id}" data-date="${d}">${l}</button>`).join('')}</div>
+    ${dayRow(m)}
     <div class="fc-slots" role="radiogroup" aria-label="Log to">${D.SLOTS.map(([v, l]) => `<button type="button" role="radio" aria-checked="${v === slot}" class="fc-slot${v === slot ? ' on' : ''}" data-action="food-chat-slot" data-cid="${m.id}" data-slot="${v}">${l}</button>`).join('')}</div>
     <button type="button" class="fc-log" data-action="food-chat-log" data-cid="${m.id}"${n && !busy ? '' : ' disabled'}><span>${label}</span></button>
   </div>`;
@@ -552,6 +557,10 @@ export async function chatClick(a, el) {
         render();
       }
       return true;
+    // On a computer a click on the date field does not open its calendar by itself.
+    case 'food-chat-pick-day':
+      try { el.showPicker?.(); } catch { /* already open, or the browser opens it on its own */ }
+      return true;
     case 'food-chat-log':
       if (m?.state === 'open' && !chat().busy) await logCard(m);
       return true;
@@ -644,6 +653,18 @@ export function chatInput(el) {
   if (m && el.matches('[data-chat-meal]')) {
     m.mealName = el.value;
     save();
+    return;
+  }
+  // A day from the picker: today means no date, a day after today is not a log.
+  if (m && el.matches('[data-chat-day]')) {
+    const today = localToday();
+    if (!el.value || el.value > today) return;
+    const date = el.value === today ? null : el.value;
+    if (date === (m.date || null)) return;
+    m.date = date;
+    save();
+    haptic('toggle');
+    render();
     return;
   }
   const it = m?.items?.[i];

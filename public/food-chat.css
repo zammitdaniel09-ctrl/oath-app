@@ -129,6 +129,10 @@
 }
 .fc-slot:active { transform: scale(0.94); transition: transform var(--t-press) var(--ease); }
 .fc-slot.on { color: var(--fc-ink); background: var(--fc-lime); box-shadow: none; }
+/* Any other day: the date field lies over the chip, unseen, so its own calendar opens on a tap. */
+.fc-dpick { position: relative; display: inline-flex; align-items: center; gap: 6px; overflow: hidden; }
+.fc-dpick .ic { width: 15px; height: 15px; stroke-width: 2.2; flex: none; }
+.fc-dpick input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; border: 0; opacity: 0; cursor: pointer; font-size: 16px; }
 .fc-log {
   display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 50px; margin-top: 12px; border: 0; border-radius: 16px; cursor: pointer;
   font: inherit; font-size: 1rem; font-weight: 760; letter-spacing: -0.01em; color: var(--fc-ink);

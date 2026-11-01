@@ -369,36 +369,43 @@ test('the food chat: a correction is read against what was listed before, and th
   });
   assert.equal(r.reply, 'Made it three eggs, still on one slice of toast.');
   const asked = askedText(c, 0);
-  assert.match(asked, /^Earlier in this chat, he said: "two eggs on toast", you listed: Egg, boiled, 2 large; Toast, 1 slice\.\nNow he says: "actually it was three eggs"$/);
+  assert.match(asked, /^Today is \w+ \d+ \w+ \d{4} \(\d{4}-\d{2}-\d{2}\)\.\nEarlier in this chat, he said: "two eggs on toast", you listed: Egg, boiled, 2 large; Toast, 1 slice\.\nNow he says: "actually it was three eggs"$/);
   assert.match(c.requests[0].system[0]?.text || JSON.stringify(c.requests[0].system), /return the whole list as it now stands/);
 
-  // Without anything before, the words go as typed; an empty reply is no reply.
+  // Without anything before, the words go as typed after the date; an empty reply is no reply.
   const d = scripted([typed('Medium grapes', [mediumGrapes]), refused]);
   coach.setCoachClient(d);
   const plain = await post('/api/food/describe', { text: 'medium grapes', before: { said: '', items: [] } });
-  assert.equal(askedText(d, 0), 'medium grapes');
+  assert.match(askedText(d, 0), /^Today is [^\n]+\.\nmedium grapes$/);
   assert.equal(plain.reply, null);
 });
 
-test('the food chat: a meal he says was yesterday, at lunch, comes back for that day and meal, and is logged there', async () => {
+test('the food chat: a meal he says was on another day, at lunch, comes back for that day and meal, and is logged there', async () => {
   const grapes = (over) => said({ kind: 'meal', summary: 'Medium grapes', reply: '', question: null, items: [mediumGrapes], ...over });
-  const c = scripted([grapes({ days_ago: 1, meal: 'lunch' }), refused]);
+  const c = scripted([grapes({ day: '2026-11-01', meal: 'lunch' }), refused]);
   coach.setCoachClient(c);
   const y = await post('/api/food/describe', { text: 'yesterday for lunch I had medium grapes' });
   assert.equal(y.date, '2026-11-01', 'yesterday, in his time zone');
   assert.equal(y.slot, 'lunch');
-  assert.match(c.requests[0].system[0]?.text || JSON.stringify(c.requests[0].system), /days_ago is the day he ate it/);
+  assert.match(askedText(c, 0), /^Today is Monday 2 November 2026 \(2026-11-02\)\.\nyesterday for lunch/, 'the reader is told which day today is');
+  assert.match(c.requests[0].system[0]?.text || JSON.stringify(c.requests[0].system), /day is the date he ate it/);
 
-  // Today, or no day said: no date, so the card logs to today; a meal he did not name stays open.
-  coach.setCoachClient(scripted([grapes({ days_ago: 0, meal: '' }), refused]));
-  const now = await post('/api/food/describe', { text: 'medium grapes' });
-  assert.equal(now.date, null);
-  assert.equal(now.slot, null);
+  // Any earlier day he names counts, weeks back too.
+  coach.setCoachClient(scripted([grapes({ day: '2026-10-04', meal: 'dinner' }), refused]));
+  const back = await post('/api/food/describe', { text: 'grapes for dinner on 4 October' });
+  assert.equal(back.date, '2026-10-04');
+  assert.equal(back.slot, 'dinner');
+
+  // Today, no day said, or no real day before today within the year: no date, so the card logs to today;
+  // a meal he did not name stays open.
+  for (const day of ['', '2026-11-02', '2026-11-05', '2026-02-30', 'yesterday', '2025-10-01']) {
+    coach.setCoachClient(scripted([grapes({ day, meal: '' }), refused]));
+    const now = await post('/api/food/describe', { text: 'medium grapes' });
+    assert.equal(now.date, null, day);
+    assert.equal(now.slot, null);
+  }
   coach.setCoachClient(scripted([typed('Medium grapes', [mediumGrapes]), refused]));
   assert.equal((await post('/api/food/describe', { text: 'medium grapes' })).date, null, 'an answer without the field is today');
-  // Never further back than six days.
-  coach.setCoachClient(scripted([grapes({ days_ago: 40, meal: 'dinner' }), refused]));
-  assert.equal((await post('/api/food/describe', { text: 'grapes a while ago' })).date, '2026-10-27');
 
   // What the card sends with that date lands on yesterday's lunch, not today.
   const e = (await post('/api/food/quick', { id: 'chat-yesterday-grapes', name: 'Grapes', kcal: 104, slot: y.slot, date: y.date })).entry;

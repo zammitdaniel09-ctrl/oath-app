@@ -559,7 +559,7 @@ test('describe: typed words become catalogue matches with estimated amounts; a f
   assert.deepEqual(props.per100.required, per100Keys);
   assert.equal(req.messages[0].content.length, 1);
   assert.equal(req.messages[0].content[0].type, 'text');
-  assert.equal(req.messages[0].content[0].text, 'a banana and a zzqx mystery wrap');
+  assert.equal(req.messages[0].content[0].text, 'Today is Monday 2 November 2026 (2026-11-02).\na banana and a zzqx mystery wrap', 'his words, after the day it is');
 
   coach.setCoachClient(scripted([said({ kind: 'unclear', summary: '', items: [], question: null })]));
   const not = await post('/api/food/describe', { text: 'my car keys' });

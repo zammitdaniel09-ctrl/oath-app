@@ -21,7 +21,7 @@
 // has tried a USDA reference and the web (food-enrich.js). Filled values stay marked as estimated.
 import { logEvent } from './db.js';
 import { RuleError, localNow } from './engine.js';
-import { addDays } from './time.js';
+import { addDays, validDate } from './time.js';
 import { readStructured, aiEnabled, FOOD_MODEL } from './coach.js';
 import { searchFoods, FILL_KEYS, ESTIMATE_KEYS, MICRO_TEXT, cleanFill } from './food.js';
 import { productByBarcode } from './off.js';
@@ -648,7 +648,7 @@ export const TEXT_SCHEMA = obj({
   kind: { type: 'string', enum: ['meal', 'unclear'] },
   summary: STR,
   reply: STR,
-  days_ago: { type: 'integer' },
+  day: STR,
   meal: { type: 'string', enum: ['', 'breakfast', 'lunch', 'dinner', 'snacks', 'drinks'] },
   items: { type: 'array', items: obj(MEAL_ITEM) },
   question: maybe(STR),
@@ -664,7 +664,7 @@ summary is one short line, such as "Large Burger King fries and a Coke". Never j
 
 reply is one short, friendly line back to him in the food chat, under 15 words: what you took it to be and any size you assumed. Call him Boss, never by name, such as "Went with a regular kebab and medium chips, Boss." No judging, no emoji. "" when kind is "unclear".
 
-days_ago is the day he ate it, counted back from today: 0 for today or when he does not say, 1 for yesterday or last night, 2 for the day before yesterday, and for a weekday he names ("on Saturday") the days back to the last one. Never more than 6.
+day is the date he ate it, as YYYY-MM-DD, worked out from the date at the top of his message: "" for today or when he does not say. Any earlier day he names counts: "yesterday" or "last night", "the day before yesterday", "3 days ago", "on Saturday" or "last Friday" (the most recent one before today), "on the 12th", "on 4 October". Never a day after today.
 
 meal is the meal he names ("for lunch", "at breakfast", "dinner", "a snack", "drinks"), or "" when he does not name one.
 
@@ -693,7 +693,8 @@ export async function readFoodText({ text, before = null } = {}) {
   if (words.length > 600) throw new RuleError('That is a lot at once. Type one meal at a time.');
   if (!aiEnabled()) throw new RuleError('Working out a typed meal needs the AI key, which is not set on the server.', 503);
   const prior = earlier(before);
-  const ask = prior ? `${prior}.\nNow he says: "${words}"` : words;
+  const { local, today, tz } = await localNow();
+  const ask = `Today is ${local.toFormat('cccc d LLLL yyyy')} (${today}).\n${prior ? `${prior}.\nNow he says: "${words}"` : words}`;
   const read = await readStructured({ system: TEXT_SYSTEM, schema: TEXT_SCHEMA, content: [{ type: 'text', text: ask }], maxTokens: 10000, model: FOOD_MODEL() });
   const unclear = (question) => ({ kind: 'unclear', source: 'text', summary: read.summary || '', question });
   if (read.refused) return unclear('I could not read that as food. What did you have?');
@@ -702,14 +703,13 @@ export async function readFoodText({ text, before = null } = {}) {
     return unclear(read.question || 'That does not read like food or drink. Try something like "two eggs on toast and a flat white".');
   }
   const items = await matchItems(read.items.slice(0, 12).map(understood), { context: prior ? `${prior}. Now: ${words}` : words });
-  return { kind: 'meal', source: 'text', summary: read.summary, reply: read.reply || null, items, ...(await whenEaten(read)) };
+  return { kind: 'meal', source: 'text', summary: read.summary, reply: read.reply || null, items, ...whenEaten(read, today, tz) };
 }
 
-// The day and meal he said, for the chat's card to log to: date only when it was not today (in his time
-// zone), slot only when he named one.
-async function whenEaten(read) {
-  const back = Number.isInteger(read.days_ago) ? Math.min(6, Math.max(0, read.days_ago)) : 0;
+// The day and meal he said, for the chat's card to log to: date only for a real day before today (in his
+// time zone) within the last year, slot only when he named one.
+function whenEaten(read, today, tz) {
+  const day = typeof read.day === 'string' && validDate(read.day) ? read.day : null;
   const slot = ['breakfast', 'lunch', 'dinner', 'snacks', 'drinks'].includes(read.meal) ? read.meal : null;
-  const { today, tz } = back ? await localNow() : {};
-  return { date: back ? addDays(today, -back, tz) : null, slot };
+  return { date: day && day < today && day >= addDays(today, -366, tz) ? day : null, slot };
 }
