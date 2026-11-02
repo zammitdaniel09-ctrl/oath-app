@@ -1,4 +1,4 @@
-// The app icon, the same in every theme: a dark tile, the word, a 0 to 100 scale and a glass gauge of
+// The app icon: a dark tile, the word, a 0 to 100 scale and a glass gauge of
 // liquid. Inside the app it moves the way the reference video does: full and green, it drains through yellow
 // and orange to a red sliver, sloshes there, and fills back to green. The Home Screen icons are this
 // drawing at rest (rendered to PNG by ../tools/themekit/render-app-icon.cjs): iOS fixes an icon when

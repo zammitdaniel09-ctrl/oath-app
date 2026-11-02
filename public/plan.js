@@ -164,7 +164,7 @@ function weeks(heat, today) {
   const cells = [...Array(n - past.length).fill('pad'), ...past, ...Array(6 - dow).fill('future')];
   const kept = past.filter((s) => DONE.has(s)).length;
   const missed = past.filter((s) => s === 'missed').length;
-  // The month over the week it starts in, for themes that show them (hidden in the base, plan.css). --c is
+  // The month over the week it starts in, shown by liquid.css (hidden in plan.css). --c is
   // its column of 30, --cp its column of the phone's last 20; the first ten columns are .early.
   const monday = addDays(today, -dow);
   let last = '';

@@ -543,7 +543,7 @@ let markCount = 0;
 export function brandMark(size = 32, cls = '') {
   markCount += 1;
   const g = `bm${markCount}`;
-  // R 21, stroke 10.5, a 2.4 gap and a 5.6 step. Its colours are --mark-* variables a theme can set.
+  // R 21, stroke 10.5, a 2.4 gap and a 5.6 step. Its colours are --mark-* variables, set by liquid.css.
   const half = (side, stroke, r = 21, w = 10.5, extra = '') => `<g clip-path="url(#${g}${side})" transform="translate(0 ${side === 'L' ? 2.8 : -2.8})"><circle cx="32" cy="32" r="${r}" fill="none" style="stroke:${stroke}" stroke-width="${w}"${extra}/></g>`;
   return `<svg class="mark${cls ? ` ${cls}` : ''}" width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true">
     <defs><clipPath id="${g}L"><rect width="30.8" height="64"/></clipPath><clipPath id="${g}R"><rect x="33.2" width="30.8" height="64"/></clipPath>

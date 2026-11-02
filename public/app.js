@@ -28,7 +28,6 @@ import {
 } from './lock.js';
 import { refreshPushState, resyncPush } from './push.js';
 import { initUpdate, checkBuild, resumeFresh, watchForUpdates } from './update.js';
-import { followTheme } from './theme.js';
 
 // This copy of the app. sw.js carries the same name, and test/syntax.test.js keeps the two in step.
 const BUILD = 'oath-v45';
@@ -198,7 +197,6 @@ async function fetchToday() {
   try {
     state.today = await api('GET', '/api/today');
     state.offline = null;
-    followTheme(state.today.settings?.theme);
     rememberPasswordAlone(state.today.settings?.passwordAlone === true);
     cacheToday(state.today);
   } catch (err) {
@@ -256,7 +254,6 @@ async function loadSettings() {
   if (lost) throw lost.reason;
   if (settings.status === 'rejected') throw settings.reason;
   state.settings = settings.value;
-  followTheme(state.settings.theme);
   if (setup.status === 'fulfilled') state.setup = setup.value;
   if (passkeys.status === 'fulfilled') state.passkeys = passkeys.value.passkeys;
   if (body.status === 'fulfilled') state.body = body.value;

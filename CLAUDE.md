@@ -7,7 +7,7 @@ Oath is the owner's personal habit, task, food and health PWA. Replies to him ar
 Code is refactored before any big launch or update, to avoid excessive context. Audit first, then, in a
 commit of its own that changes no behaviour, split every file over about 1,000 lines or mixing unrelated
 parts and remove dead code and copies. The same tests must pass and the screenshots must match the branch
-before it, in every theme. Only then start the launch or update, so each piece fits in a small context.
+before it. Only then start the launch or update, so each piece fits in a small context.
 Write the pass up as a new section of `docs/audit-2026-10-29.md`. The tools are in `../tools/refactor-kit/`
 (`deadcode.cjs`, `links.cjs`, `xref.cjs`, `split.cjs`, `prune.cjs`, `cssmove.cjs`, `compare.cjs`).
 
@@ -22,11 +22,15 @@ Write the pass up as a new section of `docs/audit-2026-10-29.md`. The tools are 
 - When moving code, carry its default imports too: Node's global `crypto` hides a missing
   `import crypto from 'node:crypto'` until `randomBytes` or `createHash` is called.
 
-## Themes
+## The look
 
-- `public/theme.js` lists the themes and switches them; `index.html` applies the saved one before the first paint. A theme is `public/themes/<id>.css` (every selector under `:root[data-theme="<id>"]`, about 45 KB at most, only transform and opacity animate, at most one fixed background layer) and an entry in `THEMES`; its id also goes in `src/settings.js` and in the first-paint list in `index.html`. Themes have no icons or manifests of their own: the app icon is `public/app-icon.js`, the same in every theme, and its PNGs are rendered from it by `../tools/themekit/render-app-icon.cjs`.
-- When base code needs a colour a theme must change, give it a variable with the old value as fallback (as `--mark-*` in `brandMark` and `--hp-area-*` in `review.js`), never a hard-coded colour in an inline style.
-- A change to a shared component is seen in three looks (Oath, Liquid, Tape): shoot it in each theme before calling it done.
+- Liquid is the one look; Oath, Tape and the theme switcher were removed in v46. `public/liquid.css` is linked last in
+  `index.html` and dresses the base stylesheets: every selector under `:root[data-theme="liquid"]` (set on `<html>`),
+  about 45 KB at most, only transform and opacity animate, at most one fixed background layer. The app icon is
+  `public/app-icon.js`, and its PNGs are rendered from it by `../tools/themekit/render-app-icon.cjs`.
+- When base code needs a colour Liquid changes, give it a variable with the old value as fallback (as `--mark-*` in
+  `brandMark` and `--hp-area-*` in `review.js`), never a hard-coded colour in an inline style.
+- Shoot a change to a shared component on the pages that use it before calling it done.
 
 ## Rules
 

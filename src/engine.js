@@ -37,7 +37,6 @@ export const DEFAULT_SETTINGS = {
   ownerName: 'Daniel',
   faceIdLock: true,
   passwordAlone: false,
-  theme: 'oath',
 };
 
 export async function getSettings() {

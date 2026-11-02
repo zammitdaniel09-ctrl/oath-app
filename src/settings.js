@@ -4,10 +4,6 @@ import { logEvent } from './db.js';
 import { validTime } from './time.js';
 import { saveSettings, getSettings, withGame, RuleError } from './engine.js';
 
-// The looks public/theme.js offers; the app sends one of these names. Atelier and Blueprint
-// ('sovereign') were removed in v42 and are refused.
-const THEMES = ['oath', 'liquid', 'tape'];
-
 // The game's rules, with the range each one may take. Steps keep the numbers round.
 export const RULES = {
   maxHp: { min: 50, max: 500, step: 1, name: 'Max HP' },
@@ -49,10 +45,6 @@ export function cleanPatch(b = {}) {
   if (b.timezone !== undefined) {
     if (!IANAZone.isValidZone(b.timezone)) throw new RuleError('Unknown time zone.');
     patch.timezone = b.timezone;
-  }
-  if (b.theme !== undefined) {
-    if (!THEMES.includes(b.theme)) throw new RuleError('Unknown theme.');
-    patch.theme = b.theme;
   }
   if (b.faceIdLock !== undefined) {
     if (typeof b.faceIdLock !== 'boolean') throw new RuleError('Face ID lock is on or off.');

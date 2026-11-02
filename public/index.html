@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="oath">
+<html lang="en" data-theme="liquid">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -35,19 +35,8 @@
   <link rel="stylesheet" href="/food-chat.css">
   <link rel="stylesheet" href="/calendar.css">
   <link rel="stylesheet" href="/plan.css">
-  <script>
-    // The saved theme before the first paint (theme.js switches and saves): its stylesheet and colours. The icon is one for every theme.
-    // Only the looks still offered (THEMES in theme.js, besides the original): a removed one paints as Oath.
-    try {
-      var t = JSON.parse(localStorage.getItem('oath.theme') || 'null'), d = document;
-      if (t && /^(liquid|tape)$/.test(t.id)) {
-        d.documentElement.setAttribute('data-theme', t.id);
-        d.write('<link rel="stylesheet" id="theme-css" href="/themes/' + t.id + '.css">');
-        if (/^#[0-9a-f]{6}$/i.test(t.color)) d.querySelector('meta[name="theme-color"]').content = t.color;
-        if (t.light) d.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').content = 'default';
-      }
-    } catch (e) { /* no saved theme */ }
-  </script>
+  <!-- The look, Liquid: every rule under data-theme="liquid", and last, so it wins over the pages above. -->
+  <link rel="stylesheet" href="/liquid.css">
 </head>
 <body>
   <div id="app" class="shell"></div>

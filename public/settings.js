@@ -1,4 +1,4 @@
-// Settings: reminders, Face ID, body and daily needs, sounds, alerts, Telegram, Siri and Shortcuts, the
+// Settings: the app icon, reminders, Face ID, body and daily needs, sounds, alerts, Telegram, Siri and Shortcuts, the
 // HP rules, the coach schedule, the password and where the data comes from.
 import {
   state, isIOS, isStandalone, icon, fmtDec, fmtDay, esc, fmtInt, localToday, keyBlock, pageHead, api, toast, ago, act,
@@ -10,11 +10,18 @@ import { setupRows } from './today-list.js';
 import { fresh, createOptions, credentialJSON, deviceName } from './passkeys.js';
 import { rememberLockMode, rememberPasswordAlone, forgetMemory, renderLogin } from './lock.js';
 import { pushOn, refreshPushState, pushOff } from './push.js';
-import { themesSection, themeClick } from './theme.js';
+import { appIcon } from './app-icon.js';
 
 let ctx = { shell: () => {}, skeleton: () => {}, load: () => {}, render: () => {}, wipePhone: () => {}, go: () => {} };
 export function initSettings(c) {
   ctx = { ...ctx, ...c };
+}
+
+// The app icon as it moves on the login and lock screens; on the Home Screen iOS keeps it still.
+function iconSection() {
+  return `<section class="section" id="app-icon"><div class="gh"><h2>App icon</h2></div>
+    <div class="appicon-row">${appIcon(64)}<p class="muted small">Here it drains and fills like a charge; on the Home Screen it rests full, as iOS keeps an icon still once Oath is added.</p></div>
+  </section>`;
 }
 
 function pushCard() {
@@ -240,7 +247,7 @@ export function viewSettings() {
       ${src('Coverage report', 'What the catalogue holds', '', '#/food/report')}
     </div>`, 'data-sources');
   ctx.shell(`${pageHead('Settings')}
-    ${themesSection()}
+    ${iconSection()}
     <div class="split"><div>
       ${bodyCard()}
       ${connections}
@@ -316,10 +323,6 @@ function faceIdCard() {
 }
 
 export async function settingsClick(a, el) {
-  if (await themeClick(a, el)) {
-    ctx.render();
-    return true;
-  }
   if (a === 'body-energy') {
     const to = el.dataset.value;
     if (to === (state.body?.body?.energyFrom || 'auto')) return true;

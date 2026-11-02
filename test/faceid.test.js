@@ -287,16 +287,12 @@ test('the password alone opens Oath when he allows it, and eight characters are 
   assert.equal((await call('POST', '/api/login', owner)).status, 200);
 });
 
-test('a theme is saved with the settings, comes back with the day, and an unknown one is refused', async () => {
-  assert.equal((await call('GET', '/api/settings')).data.theme, 'oath', 'the original look by default');
+test('Liquid is the one look: the settings hold no theme, and one sent by an older copy of the app is ignored', async () => {
+  assert.equal((await call('GET', '/api/settings')).data.theme, undefined);
   const r = await call('PATCH', '/api/settings', { theme: 'tape' });
-  assert.equal(r.status, 200);
-  assert.equal(r.data.theme, 'tape');
-  assert.equal((await call('GET', '/api/today')).data.settings.theme, 'tape', 'other devices follow it');
-  assert.equal((await call('PATCH', '/api/settings', { theme: 'neon' })).status, 400);
-  for (const gone of ['atelier', 'sovereign']) assert.equal((await call('PATCH', '/api/settings', { theme: gone })).status, 400, `${gone} was removed`);
-  assert.equal((await call('GET', '/api/settings')).data.theme, 'tape');
-  assert.equal((await call('PATCH', '/api/settings', { theme: 'oath' })).status, 200);
+  assert.equal(r.status, 200, 'an older app still saving a theme gets no error');
+  assert.equal(r.data.theme, undefined);
+  assert.equal((await call('GET', '/api/today')).data.settings.theme, undefined);
 });
 
 test('removing the last passkey ends Face ID only, so the password works alone again', async () => {

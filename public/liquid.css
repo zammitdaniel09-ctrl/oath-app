@@ -2,7 +2,8 @@
    behind; cards of clear glass with a bright rim where the light catches them; widgets lit from inside
    in their own colour; frosted bars and sheets; black islands for what is live; SF type with rounded
    figures on Apple devices. Green still means done, red a miss, gold HP and streaks.
-   Every rule sits under :root[data-theme="liquid"]. */
+   The app's one look, over the base pages: linked last in index.html, every rule under
+   :root[data-theme="liquid"] (set on <html> there), so it wins. */
 
 /* ---------- Tokens ---------- */
 
@@ -100,10 +101,10 @@
 /* ---------- Type: SF, large titles in white, labels in sentence case, rounded figures ---------- */
 
 /* :where keeps these light, so a label's own colour (the dock's deadline, the season's gold) still wins. */
-:root[data-theme="liquid"] :where(.eyebrow, .lg-label, .ov-h, .dock-label, .wk-l, .oc-axis, .tl-time, .nx-time, .theme-line, .gh-count, .fday-k, .need-h, .season-sub, .gauge-scale, .pl-gh h3, .cal-ag-time, .fwt-goal-k, .fc-daysep span, .fc-total-top span, .fusual-k, .frich-h, .rimp-k, .nf-h, .ftake-k, .goal-countdown span, .pane-h, .ml-rest-h, .pl-date small, .season-hp span, .ov-ring > span) {
+:root[data-theme="liquid"] :where(.eyebrow, .lg-label, .ov-h, .dock-label, .wk-l, .oc-axis, .tl-time, .nx-time, .gh-count, .fday-k, .need-h, .season-sub, .gauge-scale, .pl-gh h3, .cal-ag-time, .fwt-goal-k, .fc-daysep span, .fc-total-top span, .fusual-k, .frich-h, .rimp-k, .nf-h, .ftake-k, .goal-countdown span, .pane-h, .ml-rest-h, .pl-date small, .season-hp span, .ov-ring > span) {
   font: var(--label); letter-spacing: 0; text-transform: none; color: var(--text-2);
 }
-:root[data-theme="liquid"] :where(.gh-count, .wk-l, .oc-axis, .tl-time, .nx-time, .theme-line, .gauge-scale, .cal-ag-time, .ov-ring > span) { color: var(--text-3); font-weight: 500; }
+:root[data-theme="liquid"] :where(.gh-count, .wk-l, .oc-axis, .tl-time, .nx-time, .gauge-scale, .cal-ag-time, .ov-ring > span) { color: var(--text-3); font-weight: 500; }
 :root[data-theme="liquid"] .gauge-scale b { font-weight: 650; }
 :root[data-theme="liquid"] .lt-over { font: 600 0.8125rem/1.3 var(--font); letter-spacing: 0.02em; text-transform: uppercase; color: var(--text-2); }
 :root[data-theme="liquid"] :is(.lt-title, .goal-h) { font-weight: 780; letter-spacing: -0.035em; line-height: 1.05; text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35); }
@@ -469,9 +470,6 @@
 :root[data-theme="liquid"] .hp-area stop:first-child { stop-color: rgba(255, 255, 255, 0.3) !important; }
 :root[data-theme="liquid"] .hp-area stop:last-child { stop-color: rgba(255, 255, 255, 0) !important; }
 :root[data-theme="liquid"] .bchart .bc-bar { fill: #ffcc4d; }
-:root[data-theme="liquid"] .theme-card { border: 0; background: var(--glass-bg); box-shadow: var(--rim); }
-:root[data-theme="liquid"] .theme-card.on { box-shadow: 0 0 0 2px #fff, var(--lift); }
-:root[data-theme="liquid"] .theme-name { font-weight: 740; letter-spacing: -0.03em; }
 
 /* ---------- Repairs, preferences ---------- */
 

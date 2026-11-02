@@ -1,5 +1,5 @@
 /* The pieces every page shares since v41: one status chip, the glossy gauge, the day track and the
-   aurora floor. Built from the palette's tokens only, so each theme recolours them. After app.css. */
+   aurora floor. Built from the palette's tokens only, so liquid.css recolours them. After app.css. */
 
 /* ---------- The status chip: a tinted pill, its icon and its word in one colour ---------- */
 
